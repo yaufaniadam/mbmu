@@ -27,6 +27,8 @@ class Sppg extends Model
     protected $fillable = [
         'nama_sppg',
         'kode_sppg',
+        'nama_bank',
+        'nomor_va',
         'alamat',
         'kepala_sppg_id',
         'lembaga_pengusul_id',
@@ -59,7 +61,7 @@ class Sppg extends Model
      */
     public function staff(): BelongsToMany
     {
-         return $this->belongsToMany(User::class, 'sppg_user_role')
+        return $this->belongsToMany(User::class, 'sppg_user_role')
             ->withPivot('role_id')
             ->withTimestamps();
     }

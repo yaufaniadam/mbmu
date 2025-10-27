@@ -17,9 +17,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/sppg', function () {
-    return view('sppg.index');
-})->middleware('auth')->name('sppg.index'); 
-
+// Route::get('/sppg', function () {
+//     return view('sppg.index');
+// })->middleware('auth')->name('sppg.index');
 
 require __DIR__.'/auth.php';
