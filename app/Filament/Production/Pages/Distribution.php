@@ -49,14 +49,34 @@ class Distribution extends Page implements HasForms
         }
 
 
-        $this->isEditable = $this->record->status === 'Direncanakan';
+        $this->isEditable = $this->record->status === 'Terverifikasi';
 
         // load previous verification note if exists
         $this->verificationNote = FoodVerification::where('jadwal_produksi_id', $this->record->id)->latest()->first();
+    }
 
-        $this->form->fill([
-            'status' => $this->record->status,
-            'catatan' => $this->verificationNote?->catatan,
+    public function save(): void
+    {
+        if (! $this->isEditable || ! $this->record) {
+            Notification::make()
+                ->title('Data tidak dapat diedit.')
+                ->warning()
+                ->send();
+            return;
+        }
+
+        // update production schedule status
+        $this->record->update([
+            'status' => "Didistribusikan",
         ]);
+
+        Notification::make()
+            ->title('Data berhasil diperbarui!')
+            ->success()
+            ->send();
+
+        // **Important**: refresh model and refill form so disabled states re-evaluate immediately
+        $this->record->refresh();
+        $this->isEditable = $this->record->status === 'Terverifikasi';
     }
 }

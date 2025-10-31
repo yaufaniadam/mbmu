@@ -14,10 +14,6 @@
             </p>
         </div>
 
-        <x-filament::badge color="success" class="mt-4">
-            Makanan siap untuk didistribusikan.
-        </x-filament::badge>
-
         <div>
             <p class="text-2xl">
                 Daftar sekolah penerima makanan
@@ -25,18 +21,29 @@
             <div class="mt-8">
                 <ul>
                     @foreach ($record->sppg->schools as $item)
-                        <li class="">
-                            {{ $item->nama_sekolah }}
+                        <li class="mb-2">
+                            <p>{{ $item->nama_sekolah }}</p>
+                            <p>{{ $item->alamat }}</p>
                         </li>
                     @endforeach
                 </ul>
             </div>
         </div>
+        @if ($this->isEditable)
+            <x-filament::button wire:click="save" class="mt-4">
+                Selesaikan Pengiriman.
+            </x-filament::button>
+        @else
+            <x-filament::badge color="warning" class="mt-4">
+                Distribusi makanan selesai.
+            </x-filament::badge>
+        @endif
     @else
         <x-filament::badge color="warning" class="mt-4">
             Belum ada makanan yang siap didistribusikan.
         </x-filament::badge>
     @endif
+
 
 
 
