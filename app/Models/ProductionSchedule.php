@@ -20,4 +20,9 @@ class ProductionSchedule extends Model
     {
         return $this->belongsTo(Sppg::class);
     }
+
+    public function verification()
+    {
+        return $this->hasOne(FoodVerification::class, 'jadwal_produksi_id', 'id');
+    }
 }

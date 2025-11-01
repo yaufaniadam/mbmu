@@ -23,6 +23,11 @@ class Distribution extends Page implements HasForms
     protected bool $isEditable = true;
     protected ?FoodVerification $verificationNote = null;
 
+    public function getLayout(): string
+    {
+        return 'layouts.mobile-navigation';
+    }
+
     public static function getNavigationIcon(): ?string
     {
         return 'heroicon-o-truck';

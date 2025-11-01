@@ -14,4 +14,9 @@ class FoodVerification extends Model
         'checklist_data',
         'catatan',
     ];
+
+    public function productionSchedule()
+    {
+        return $this->belongsTo(ProductionSchedule::class, 'jadwal_produksi_id', 'id');
+    }
 }
