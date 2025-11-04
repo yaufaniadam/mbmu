@@ -15,14 +15,9 @@ class ProductionScheduleForm
             ->components([
                 DatePicker::make('tanggal')
                     ->label('Tanggal')
-                    // ->date()
                     ->required(),
                 Textarea::make('menu_hari_ini')
                     ->label('Menu Hari Ini')
-                    ->required(),
-                TextInput::make('jumlah')
-                    ->label('Jumlah')
-                    ->numeric()
                     ->required(),
             ]);
     }

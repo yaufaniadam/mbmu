@@ -25,4 +25,9 @@ class ProductionSchedule extends Model
     {
         return $this->hasOne(FoodVerification::class, 'jadwal_produksi_id', 'id');
     }
+
+    public function distributions()
+    {
+        return $this->hasMany(Distribution::class, 'jadwal_produksi_id', 'id');
+    }
 }
