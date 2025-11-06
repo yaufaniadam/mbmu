@@ -21,4 +21,9 @@ class Distribution extends Model
     {
         return $this->belongsTo(ProductionSchedule::class, 'jadwal_produksi_id', 'id');
     }
+
+    public function school()
+    {
+        return $this->belongsTo(School::class, 'sekolah_id', 'id');
+    }
 }
