@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Production\Pages\Delivery;
 use App\Filament\Production\Pages\Distribution;
 use App\Filament\Production\Pages\Verify;
 use Filament\Http\Middleware\Authenticate;
@@ -38,6 +39,7 @@ class ProductionPanelProvider extends PanelProvider
                 Dashboard::class,
                 Verify::class,
                 Distribution::class,
+                Delivery::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Production/Widgets'), for: 'App\Filament\Production\Widgets')
             ->widgets([
