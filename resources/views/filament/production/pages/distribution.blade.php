@@ -27,7 +27,13 @@
 
             @if ($record->status === 'Didistribusikan')
                 <p class="font-light border border-emerald-300 p-2 rounded-lg bg-emerald-950">
-                    Pengantaran selesai
+                    Produk pangan sedang didistribusikan
+                </p>
+            @endif
+
+            @if ($record->status === 'Selesai')
+                <p class="font-light border border-emerald-300 p-2 rounded-lg bg-emerald-950">
+                    Produk pangan selesai didistribusikan
                 </p>
             @endif
         </div>
@@ -64,6 +70,11 @@
                                 <div>
                                     <p class="mb-1">{{ $item->school->nama_sekolah }}</p>
                                     <p>{{ $item->school->alamat }}</p>
+                                    @if ($item->user_id)
+                                        <x-filament::badge color="warning" class="mt-4">
+                                            {{ $item->courier->name }}
+                                        </x-filament::badge>
+                                    @endif
                                 </div>
                                 <div>
                                     <x-filament::button tag="a"
@@ -79,6 +90,11 @@
                                 <div>
                                     <p class="mb-1">{{ $item->school->nama_sekolah }}</p>
                                     <p>{{ $item->school->alamat }}</p>
+                                    @if ($item->user_id)
+                                        <x-filament::badge color="warning" class="mt-4">
+                                            {{ $item->courier->name }}
+                                        </x-filament::badge>
+                                    @endif
                                 </div>
                                 <div>
                                     <x-filament::button tag="a"
@@ -94,6 +110,11 @@
                                 <div>
                                     <p class="mb-1">{{ $item->school->nama_sekolah }}</p>
                                     <p>{{ $item->school->alamat }}</p>
+                                    @if ($item->user_id)
+                                        <x-filament::badge color="warning" class="mt-4">
+                                            {{ $item->courier->name }}
+                                        </x-filament::badge>
+                                    @endif
                                 </div>
                                 <div>
                                     <x-filament::button tag="a"
@@ -107,15 +128,6 @@
                 @endforeach
             </ul>
         </div>
-        @if ($this->isEditable)
-            <x-filament::button wire:click="save" class="mt-4">
-                Selesaikan Pengiriman.
-            </x-filament::button>
-        @else
-            <x-filament::badge color="warning" class="mt-4">
-                Distribusi makanan selesai.
-            </x-filament::badge>
-        @endif
     @else
         <x-filament::badge color="warning" class="mt-4">
             Belum ada makanan yang siap didistribusikan.
