@@ -30,7 +30,7 @@
     </header>
 
     {{-- MAIN CONTENT AREA --}}
-    <main class="p-4 flex-grow">
+    <main class="p-4 pb-32">
         {{ $slot }}
     </main>
 
