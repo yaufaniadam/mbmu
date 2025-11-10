@@ -15,12 +15,17 @@ class Distribution extends Page implements HasForms
     use InteractsWithForms;
 
     protected string $view = 'filament.production.pages.distribution';
+
     protected static ?string $navigationLabel = 'Pengantaran';
+
     protected ?string $heading = '';
 
     public ?array $data = [];
+
     public ?ProductionSchedule $record = null;
+
     protected bool $isEditable = true;
+
     protected ?FoodVerification $verificationNote = null;
 
     public function getLayout(): string
@@ -38,10 +43,11 @@ class Distribution extends Page implements HasForms
         $user = Auth::user();
         $organizationId = $user->unitTugas()->first()->id;
 
-        $this->record = ProductionSchedule::where([
-            ['sppg_id', $organizationId],
-            ['status', '!=', 'Selesai'],
-        ])->with('sppg', 'sppg.schools')
+        // dd($organizationId);
+
+        $this->record = ProductionSchedule::where('sppg_id', $organizationId)
+            ->whereNotIn('status', ['Direncanakan', 'Ditolak', 'Selesai'])
+            ->with('sppg', 'sppg.schools')
             ->latest()
             ->first();
 
@@ -50,9 +56,9 @@ class Distribution extends Page implements HasForms
                 ->title('Data tidak ditemukan.')
                 ->danger()
                 ->send();
+
             return;
         }
-
 
         $this->isEditable = $this->record->status === 'Terverifikasi';
 
