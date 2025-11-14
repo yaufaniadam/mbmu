@@ -95,6 +95,7 @@ class SppgProfile extends Page implements HasForms
                     })
                     ->live()
                     ->searchable()
+                    ->dehydrateStateUsing(fn ($state) => $state === null ? null : (string) $state)
                     ->afterStateUpdated(function ($set) {
                         $set('city_code', null);
                         $set('district_code', null);
@@ -118,6 +119,7 @@ class SppgProfile extends Page implements HasForms
                     })
                     ->live()
                     ->searchable()
+                    ->dehydrateStateUsing(fn ($state) => $state === null ? null : (string) $state)
                     ->disabled(fn ($get) => ! $get('province_code')),
                 Select::make('district_code')
                     ->label('Kecamatan')
@@ -137,6 +139,7 @@ class SppgProfile extends Page implements HasForms
                     })
                     ->live()
                     ->searchable()
+                    ->dehydrateStateUsing(fn ($state) => $state === null ? null : (string) $state)
                     ->disabled(fn ($get) => ! $get('city_code')),
                 Select::make('village_code')
                     ->label('Kelurahan/Desa')
@@ -156,6 +159,7 @@ class SppgProfile extends Page implements HasForms
                     })
                     ->live()
                     ->searchable()
+                    ->dehydrateStateUsing(fn ($state) => $state === null ? null : (string) $state)
                     ->disabled(fn ($get) => ! $get('district_code')),
             ]),
         ];
