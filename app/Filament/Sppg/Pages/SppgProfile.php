@@ -158,7 +158,11 @@ class SppgProfile extends Page implements HasForms
                             ->orderBy('name')
                             ->get();
 
-                        return $villages->pluck('name', 'code');
+                        // return $villages->pluck('name', 'code');
+
+                        return $villages->mapWithKeys(fn ($v) => [
+                            (string) $v->code => $v->name,
+                        ]);
                     })
                     ->string()
                     ->live()
