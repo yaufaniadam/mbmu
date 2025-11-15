@@ -1,12 +1,6 @@
 <x-filament-panels::page>
     {{-- Page content --}}
 
-    <x-filament::empty-state icon="heroicon-o-clipboard-document-check">
-        <x-slot name="heading">
-            Belum ada produksian yang perlu di verifikasi.
-        </x-slot>
-    </x-filament::empty-state>
-
     @if ($record)
         <div class="flex justify-center">
             <p class="text-2xl font-semibold">
@@ -77,5 +71,11 @@
                 Simpan
             </x-filament::button>
         @endif
+    @else
+        <x-filament::empty-state icon="heroicon-o-clipboard-document-check">
+            <x-slot name="heading">
+                Belum ada produksian yang perlu di verifikasi.
+            </x-slot>
+        </x-filament::empty-state>
     @endif
 </x-filament-panels::page>
