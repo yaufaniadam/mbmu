@@ -23,7 +23,7 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
 
     protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
 
-    protected static ?string $navigationLabel = 'Daftar Verifikasi Produk';
+    protected static ?string $navigationLabel = 'Ceklis Verifikasi Jadwal Produksi';
 
     protected ?string $heading = 'Daftar Verifikasi';
 
@@ -94,7 +94,7 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
             if ($user->hasRole('Kepala SPPG')) {
                 $sppgId = User::find($user->id)->sppgDikepalai->id;
             } else {
-                $sppgId = User::find()->unitTugas->first()->id;
+                $sppgId = User::find($user->id)->unitTugas->first()->id;
             }
 
             if (blank($sppgId)) {
