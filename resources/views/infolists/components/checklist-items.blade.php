@@ -22,15 +22,15 @@
 
                 <x-filament::card class="mt-1">
                     @foreach ($items as $item)
-                        <div style="margin-bottom: 6px">
-                            <div style="display : flex; gap :6px; margin-bottom : 6px">
-                                @if (($item['checked'] ?? false) == true)
+                        <div style="margin-bottom: 8px">
+                            <div style="display : flex; gap :6px; margin-bottom : 4px">
+                                @if (($item['checked'] ?? 'false') == 'true')
                                     {{-- <x-filament::icon icon="heroicon-o-check-circle"
                                     class="h-5 w-5 flex-shrink-0 text-success-600" /> --}}
                                     <x-filament::input.checkbox checked disabled />
                                 @else
-                                    <x-filament::icon icon="heroicon-s-squares-2x2"
-                                        class="h-5 w-5 flex-shrink-0 text-gray-400" />
+                                    {{-- <x-filament::icon icon="heroicon-s-squares-2x2"
+                                        class="h-5 w-5 flex-shrink-0 text-gray-400" /> --}}
                                     <x-filament::input.checkbox disabled />
                                 @endif
                                 <span class="text-sm font-medium text-gray-950 dark:text-white">
