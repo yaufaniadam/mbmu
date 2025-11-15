@@ -13,7 +13,7 @@ class ProductionSchedule extends Model
         'tanggal',
         'menu_hari_ini',
         'jumlah',
-        'status'
+        'status',
     ];
 
     public function sppg()
@@ -76,5 +76,17 @@ class ProductionSchedule extends Model
         return $distributions->every(function ($distribution, $key) {
             return $distribution->status_pengantaran === 'Terkirim';
         });
+    }
+
+    public function schools()
+    {
+        return $this->hasManyThrough(
+            School::class,
+            Distribution::class,
+            'jadwal_produksi_id', // Foreign key di tabel Distribution
+            'id',                 // Foreign key di tabel School
+            'id',                 // Local key di tabel ProductionSchedule
+            'sekolah_id'          // Local key di tabel Distribution
+        )->distinct(); // Gunakan distinct untuk menghindari duplikasi sekolah
     }
 }

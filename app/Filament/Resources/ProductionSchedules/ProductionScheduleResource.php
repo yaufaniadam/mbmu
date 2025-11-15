@@ -43,7 +43,15 @@ class ProductionScheduleResource extends Resource
         /** @var User $user */
         $user = Auth::user();
 
-        $sppg = User::find($user->id)->sppgDikepalai;
+        $sppg = null;
+
+        if ($user->hasRole('Kepala SPPG')) {
+            $sppg = User::find($user->id)->sppgDikepalai;
+        }
+
+        if ($user->hasRole('PJ Pelaksana')) {
+            $sppg = User::find($user->id)->unitTugas->first();
+        }
 
         $schools = $sppg ? $sppg->schools : collect(); // Assuming 'schools' is the relationship name
 
@@ -101,20 +109,8 @@ class ProductionScheduleResource extends Resource
         // 2. Get the static components from it
         $staticComponents = $infolistSchema->getComponents();
 
-        // 3. Get user and schools
-        $user = User::find(Auth::user()->id);
-
-        $sppg = $user->sppgDikepalai;
-
-        if (! $user) {
-            return $infolistSchema->schema($staticComponents);
-        }
-
-        if (! $sppg) {
-            return $infolistSchema->schema($staticComponents);
-        }
-
-        $schools = $sppg->schools()->get();
+        // 3. Get schools
+        $schools = $infolistSchema->model->schools;
         if ($schools->isEmpty()) {
             return $infolistSchema->schema($staticComponents);
         }
@@ -223,6 +219,12 @@ class ProductionScheduleResource extends Resource
             $sppg = User::find($user->id)->sppgDikepalai;
 
             return parent::getEloquentQuery()->where('sppg_id', $sppg->id);
+        }
+
+        if ($user->hasRole('PJ Pelaksana')) {
+            $unitTugas = User::find($user->id)->unitTugas->first();
+
+            return parent::getEloquentQuery()->where('sppg_id', $unitTugas->id);
         }
 
         return parent::getEloquentQuery();

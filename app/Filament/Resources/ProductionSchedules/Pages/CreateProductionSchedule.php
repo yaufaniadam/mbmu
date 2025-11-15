@@ -18,11 +18,19 @@ class CreateProductionSchedule extends CreateRecord
     {
         $user = Auth::user();
 
-        $sppgId = User::find($user->id)->sppgDikepalai;
+        $sppg = null;
 
-        if (!$sppgId) {
+        if ($user->hasRole('Kepala SPPG')) {
+            $sppg = User::find($user->id)->sppgDikepalai;
+        }
+
+        if ($user->hasRole('PJ Pelaksana')) {
+            $sppg = User::find($user->id)->unitTugas->first();
+        }
+
+        if (! $sppg) {
             Notification::make()
-                ->title('Anda tidak memiliki akses ke halaman ini. Hubungi admin.')
+                ->title('Anda tidak memiliki akses ke halaman ini.')
                 ->danger()
                 ->send();
 
@@ -32,14 +40,21 @@ class CreateProductionSchedule extends CreateRecord
         parent::mount();
     }
 
-
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $user = Auth::user();
 
-        $sppg = User::find($user->id)->sppgDikepalai;
+        $sppg = null;
 
-        if (!$sppg) {
+        if ($user->hasRole('Kepala SPPG')) {
+            $sppg = User::find($user->id)->sppgDikepalai;
+        }
+
+        if ($user->hasRole('PJ Pelaksana')) {
+            $sppg = User::find($user->id)->unitTugas->first();
+        }
+
+        if (! $sppg) {
             Notification::make()
                 ->title('Anda belum ditugaskan ke sppg. Hubungi admin.')
                 ->danger()
@@ -51,9 +66,9 @@ class CreateProductionSchedule extends CreateRecord
         }
 
         $data['sppg_id'] = $sppg->id;
+
         return $data;
     }
-
 
     protected function afterCreate(): void
     {
@@ -65,7 +80,7 @@ class CreateProductionSchedule extends CreateRecord
             foreach ($data['porsi_per_sekolah'] as $sekolahId => $porsi) {
 
                 // Ensure the 'sekolah_id' from the hidden field exists
-                if (!isset($porsi['sekolah_id'])) {
+                if (! isset($porsi['sekolah_id'])) {
                     continue; // Skip if data is incomplete
                 }
 
@@ -82,7 +97,7 @@ class CreateProductionSchedule extends CreateRecord
             }
 
             // Use mass insert for better performance
-            if (!empty($distributions)) {
+            if (! empty($distributions)) {
                 Distribution::insert($distributions);
             }
         }
