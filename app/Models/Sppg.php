@@ -18,6 +18,13 @@ class Sppg extends Model
      */
     protected $table = 'sppg';
 
+    protected $casts = [
+        'province_code' => 'string',
+        'city_code' => 'string',
+        'district_code' => 'string',
+        'village_code' => 'string',
+    ];
+
     /**
      * Atribut yang dapat diisi secara massal (mass assignable).
      * Ini PENTING untuk fungsi save() di Livewire Anda.
@@ -79,5 +86,10 @@ class Sppg extends Model
     public function staffs()
     {
         return $this->hasMany(SppgUserRole::class);
+    }
+
+    public function verificationSetting()
+    {
+        return $this->hasOne(ProductionVerificationSetting::class);
     }
 }

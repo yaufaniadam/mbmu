@@ -15,6 +15,10 @@ class FoodVerification extends Model
         'catatan',
     ];
 
+    protected $casts = [
+        'checklist_data' => 'array',
+    ];
+
     public function productionSchedule()
     {
         return $this->belongsTo(ProductionSchedule::class, 'jadwal_produksi_id', 'id');

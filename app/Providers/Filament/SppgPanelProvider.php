@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Resources\ProductionSchedules\ProductionScheduleResource;
 use App\Filament\Sppg\Pages\Dashboard;
+use App\Filament\Sppg\Pages\ProductionVerificationSetting;
 use App\Filament\Sppg\Pages\SppgProfile;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -42,6 +43,7 @@ class SppgPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
                 SppgProfile::class,
+                ProductionVerificationSetting::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
