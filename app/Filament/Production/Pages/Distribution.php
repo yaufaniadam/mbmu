@@ -46,7 +46,7 @@ class Distribution extends Page implements HasForms
         // dd($organizationId);
 
         $this->record = ProductionSchedule::where('sppg_id', $organizationId)
-            ->whereNotIn('status', ['Direncanakan', 'Ditolak', 'Selesai'])
+            ->whereNotIn('status', ['Direncanakan', 'Ditolak', 'Selesai', 'Menunggu ACC Kepala SPPG'])
             ->with('sppg', 'sppg.schools')
             ->latest()
             ->first();
