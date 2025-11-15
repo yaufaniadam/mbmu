@@ -129,8 +129,10 @@
             </ul>
         </div>
     @else
-        <x-filament::badge color="warning" class="mt-4">
-            Belum ada makanan yang siap didistribusikan.
-        </x-filament::badge>
+        <x-filament::empty-state icon="heroicon-o-truck">
+            <x-slot name="heading">
+                Belum ada makanan yang siap distribusikan.
+            </x-slot>
+        </x-filament::empty-state>
     @endif
 </x-filament-panels::page>
