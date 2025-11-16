@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Sppg extends Model
 {
@@ -63,6 +64,20 @@ class Sppg extends Model
         return $this->belongsTo(LembagaPengusul::class, 'lembaga_pengusul_id');
     }
 
+    public function kepalaPengusul(): HasOneThrough
+    {
+        // Join lembaga_pengusul.id = sppg.lembaga_pengusul_id
+        // then users.id = lembaga_pengusul.pimpinan_id
+        return $this->hasOneThrough(
+            User::class,
+            LembagaPengusul::class,
+            'id', // first key on through (lembaga_pengusul.id)
+            'id', // key on related (users.id)
+            'lembaga_pengusul_id', // local key on this model (sppg.lembaga_pengusul_id)
+            'pimpinan_id' // local key on through (lembaga_pengusul.pimpinan_id)
+        );
+    }
+
     /**
      * Mendapatkan semua user yang bertugas di SPPG ini (via pivot table).
      */
@@ -91,5 +106,17 @@ class Sppg extends Model
     public function verificationSetting()
     {
         return $this->hasOne(ProductionVerificationSetting::class);
+    }
+
+    public function distributions()
+    {
+        return $this->hasManyThrough(
+            Distribution::class,
+            ProductionSchedule::class,
+            'sppg_id',             // Foreign key on 'jadwal_produksi' table
+            'jadwal_produksi_id',  // Foreign key on 'distribusi' table
+            'id',                  // Local key on 'sppg' table
+            'id'                   // Local key on 'jadwal_produksi' table
+        );
     }
 }

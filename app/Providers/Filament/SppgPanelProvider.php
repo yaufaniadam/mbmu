@@ -6,6 +6,8 @@ use App\Filament\Resources\ProductionSchedules\ProductionScheduleResource;
 use App\Filament\Sppg\Pages\Dashboard;
 use App\Filament\Sppg\Pages\ProductionVerificationSetting;
 use App\Filament\Sppg\Pages\SppgProfile;
+use App\Livewire\AssignedSppg;
+use App\Livewire\SppgOverview;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -47,7 +49,9 @@ class SppgPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
+                // AccountWidget::class,
+                AssignedSppg::class,
+                // SppgOverview::class,
                 // FilamentInfoWidget::class,
             ])
             ->navigationGroups([

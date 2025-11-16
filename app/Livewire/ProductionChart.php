@@ -1,0 +1,56 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Models\ProductionSchedule;
+use App\Models\User;
+use Filament\Widgets\ChartWidget;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use Flowframe\Trend\Trend;
+use Flowframe\Trend\TrendValue;
+use Illuminate\Support\Facades\Auth;
+
+class ProductionChart extends ChartWidget
+{
+    use InteractsWithPageFilters;
+
+    protected ?string $heading = 'Production Chart';
+
+    protected function getData(): array
+    {
+        $user = Auth::user();
+
+        if ($user->hasRole('Kepala SPPG')) {
+            $sppgId = User::find($user->id)->sppgDikepalai->id;
+        } elseif ($user->hasRole('PJ Pelaksana')) {
+            $sppgId = User::find($user->id)->unitTugas->first()->id;
+        } else {
+            // $sppgId = User::find($user->id)->lembagaDipimpin->sppgs->first()->id;
+            $sppgId = $this->pageFilters['sppg_id'];
+        }
+
+        $data = Trend::query(ProductionSchedule::where('sppg_id', $sppgId))
+            ->between(
+                start: now()->startOfYear(),
+                end: now()->endOfYear(),
+            )
+            // ->where('sppg_id', $sppgId) // This was the error
+            ->perMonth()
+            ->count();
+
+        return [
+            'datasets' => [
+                [
+                    'label' => 'Produksi MBG Bulanan',
+                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                ],
+            ],
+            'labels' => $data->map(fn (TrendValue $value) => $value->date),
+        ];
+    }
+
+    protected function getType(): string
+    {
+        return 'line';
+    }
+}

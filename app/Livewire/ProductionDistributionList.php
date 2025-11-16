@@ -1,0 +1,71 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Models\Distribution;
+use App\Models\User;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\HasFilters;
+use Filament\Tables\Table;
+use Filament\Widgets\TableWidget;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
+
+class ProductionDistributionList extends TableWidget
+{
+    use HasFilters; // <-- 2. ADD THIS TRAIT
+
+    protected int|string|array $columnSpan = 'full';
+
+    protected static ?string $heading = 'Distribusi'; // Optional: Add a heading
+
+    public function table(Table $table): Table
+    {
+        return $table
+            // <-- 3. MODIFY THE QUERY TO USE FILTERS
+            ->query(function (): Builder {
+
+                $user = Auth::user();
+
+                $sppgId = $this->filters['sppg_id'] ?? null;
+
+                if ($user->hasRole('Kepala SPPG')) {
+                    $sppgId = User::find($user->id)->sppgDikepalai->id;
+                }
+
+                return Distribution::query()
+                    // Eager load relationships to prevent N+1 query problems
+                    ->with(['productionSchedule', 'school', 'courier'])
+                    ->when(
+                        $sppgId,
+                        // If $sppgId exists, filter via the relationship
+                        fn ($query) => $query->whereHas('productionSchedule', fn ($q) => $q->where('sppg_id', $sppgId)),
+                        // If no SPPG is selected, show nothing
+                        fn ($query) => $query->whereRaw('1 = 0')
+                    )
+                    ->latest('created_at'); // Show newest first
+            })
+            ->columns([
+                TextColumn::make('productionSchedule.tanggal')
+                    ->label('Tanggal Distribusi')
+                    // <-- 4. ADD DATE FORMATTING
+                    ->date('l, d F Y'), // e.g., "Jumat, 22 Mei 2025"
+                TextColumn::make('school.nama_sekolah')
+                    ->label('Sekolah Tujuan'),
+                TextColumn::make('status_pengantaran')
+                    ->label('Status Distribusi')
+                    ->badge()
+                    ->colors([
+                        'success' => 'Terkirim',
+                        'warning' => 'Proses',
+                        'danger' => 'Gagal',
+                    ]),
+                TextColumn::make('courier.name')
+                    ->label('Petugas Pengantar'),
+            ])
+            // ... (rest of your table code)
+            ->filters([
+                //
+            ]);
+    }
+}
