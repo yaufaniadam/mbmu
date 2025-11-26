@@ -37,11 +37,11 @@ class Delivery extends Page implements HasForms
             ->name('delivery');
     }
 
-    public static function shouldRegisterNavigation(): bool
-    {
-        // This checks the permission you just generated
-        return auth()->user()->can('View:Delivery');
-    }
+    // public static function shouldRegisterNavigation(): bool
+    // {
+    //     // This checks the permission you just generated
+    //     return auth()->user()->can('View:Delivery');
+    // }
 
     public function mount(Distribution $distribution): void
     {
@@ -54,6 +54,8 @@ class Delivery extends Page implements HasForms
 
     public function save(): void
     {
+        Gate::authorize('View:Delivery');
+
         $user = Auth::user();
         $distribution = $this->record;
         $production = $this->record->productionSchedule;
