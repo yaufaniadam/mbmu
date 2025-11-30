@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\ManageFinance;
 use App\Filament\Resources\ProductionSchedules\ProductionScheduleResource;
 use App\Filament\Sppg\Pages\Dashboard;
 use App\Filament\Sppg\Pages\ProductionVerificationSetting;
@@ -46,6 +47,7 @@ class SppgPanelProvider extends PanelProvider
                 Dashboard::class,
                 SppgProfile::class,
                 ProductionVerificationSetting::class,
+                ManageFinance::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([

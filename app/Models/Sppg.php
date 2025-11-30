@@ -126,4 +126,9 @@ class Sppg extends Model
     {
         return $this->hasOne(Bill::class)->latestOfMany('period_end');
     }
+
+    public function bills()
+    {
+        return $this->hasMany(Bill::class);
+    }
 }

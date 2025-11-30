@@ -16,4 +16,14 @@ class Bill extends Model
         'amount',
         'status',
     ];
+
+    public function sppg()
+    {
+        return $this->belongsTo(Sppg::class);
+    }
+
+    public function remittances()
+    {
+        return $this->hasMany(Remittance::class);
+    }
 }
