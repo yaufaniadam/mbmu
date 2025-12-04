@@ -18,7 +18,7 @@
 
         {{-- Tab 2: Verifikasi (Uang Masuk) --}}
         {{-- Only show this tab to Pengusul or Kornas --}}
-        @if (auth()->user()->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Staf Kornas']))
+        @if (auth()->user()->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Direktur Kornas']))
             <x-filament::tabs.item :active="$activeTab === 'verify'" wire:click="$set('activeTab', 'verify')"
                 icon="heroicon-o-check-badge">
                 Verifikasi Pembayaran
@@ -27,8 +27,8 @@
 
         {{-- Tab 3: Transaksi Masuk --}}
         {{-- Only show this tab to Pengusul or Kornas --}}
-        @if (auth()->user()->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Staf Kornas']))
-            <x-filament::tabs.item :active="$activeTab === 'income'" wire:click="$set('activeTab', 'income')"
+        @if (auth()->user()->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Direktur Kornas']))
+            <x-filament::tabs.item :active="$activeTab === 'incoming_payment'" wire:click="$set('activeTab', 'incoming_payment')"
                 icon="heroicon-o-arrow-trending-up">
                 Transaksi Masuk
             </x-filament::tabs.item>
@@ -46,9 +46,24 @@
         @endif
 
         {{-- Content for Tab 2 --}}
-        @if ($activeTab === 'verify')
+        @if ($activeTab === 'transaction')
+            {{-- This renders the TransactionList widget --}}
             {{-- This renders the IncomingVerificationTable widget --}}
-            {{-- @livewire(\App\Filament\Widgets\IncomingVerificationTable::class) --}}
+            @livewire(\App\Livewire\TransactionList::class)
+        @endif
+
+        {{-- Content for Tab 3 --}}
+        @if ($activeTab === 'incoming_payment')
+            {{-- This renders the incomeList widget --}}
+            {{-- This renders the IncomingVerificationTable widget --}}
+            @livewire(\App\Livewire\IncomingPayment::class)
+        @endif
+
+        {{-- Content for Tab 4 --}}
+        @if ($activeTab === 'verify')
+            {{-- This renders the VerifyPaymentList widget --}}
+            {{-- This renders the VerifyPaymentList widget --}}
+            @livewire(\App\Livewire\VerifyPaymentList::class)
         @endif
 
     </div>

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Bill;
 use App\Models\Remittance;
+use App\Models\User;
 use Exception;
 use Filament\Actions\Action; // Import yang dibutuhkan untuk filter header
 use Filament\Actions\BulkActionGroup;
@@ -23,6 +24,8 @@ use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
 class BillList extends TableWidget
@@ -76,6 +79,22 @@ class BillList extends TableWidget
                 if (!empty($statuses)) {
                     // Jika ada status yang valid, kembalikan query yang sudah difilter.
                     return $query->whereIn('status', $statuses);
+                }
+
+                if (Auth::user()->hasRole('Kepala SPPG')) {
+                    $query->where('sppg_id', User::find(Auth::user()->id)->sppgDikepalai->id);
+                    $query->where('billed_to_type', 'sppg');
+                }
+
+                if (Auth::user()->hasRole('PJ Pelaksana')) {
+                    $query->where('sppg_id', User::find(Auth::user()->id)->unitTugas->first()->id);
+                    $query->where('billed_to_type', 'sppg');
+                }
+
+                // dd(User::find(Auth::user()->id)->lembagaDipimpin);
+                if (Auth::user()->hasRole('Pimpinan Lembaga Pengusul')) {
+                    $query->whereIn('sppg_id', User::find(Auth::user()->id)->lembagaDipimpin->sppgs->pluck('id')->toArray());
+                    $query->where('billed_to_type', 'pengusul');
                 }
 
                 // dump($query->toSql());
@@ -136,7 +155,7 @@ class BillList extends TableWidget
                 // Menggunakan Filter generik dengan CheckboxList untuk filter status
                 Filter::make('status_filter') // Gunakan nama filter yang unik
                     ->label('Status Pembayaran')
-                    ->form([
+                    ->schema([
                         CheckboxList::make('statuses')
                             ->options([
                                 'unpaid' => 'Menunggu Pembayaran',
@@ -190,7 +209,7 @@ class BillList extends TableWidget
                     ->color('success')
                     ->icon(fn(Bill $record): string => $record->status === 'verification' ? 'heroicon-m-eye' : 'heroicon-m-banknotes')
                     // Visible jika unpaid ATAU verification
-                    ->visible(fn(Bill $record): bool => in_array($record->status, ['unpaid', 'verification']))
+                    ->visible(fn(Bill $record): bool => in_array($record->status, ['unpaid', 'verification', 'rejected']))
 
                     // Menggabungkan Infolist dan Form Schema menjadi satu array.
                     ->schema(fn(Bill $record): array => array_merge(
@@ -262,7 +281,7 @@ class BillList extends TableWidget
                     ->icon('heroicon-m-clock')
                     ->schema([
                         TextEntry::make('source_bank_name')
-                            ->label('Bank Pengirim')
+                            ->label('Sumber Dana')
                             ->state($remittance->source_bank_name),
                         TextEntry::make('destination_bank_name')
                             ->label('Bank Tujuan')
@@ -287,6 +306,36 @@ class BillList extends TableWidget
                             ->imageHeight('300px')
                             ->imageWidth('100%')
                             ->state($remittance->proof_file_path),
+
+                        Action::make('view_full_image')
+                            ->label('Lihat Gambar Penuh')
+                            ->icon('heroicon-m-magnifying-glass-plus')
+                            ->color('gray')
+                            ->modalWidth('7xl') // Ukuran modal sangat besar (7xl)
+                            ->modalHeading('Bukti Transfer - Tampilan Penuh')
+                            ->modalSubmitAction(false) // Hilangkan tombol submit
+                            ->modalCancelAction(false) // Hilangkan tombol cancel
+                            // Render gambar menggunakan Base64 agar aman (tanpa public URL)
+                            ->modalContent(function () use ($remittance) {
+                                $path = $remittance->proof_file_path;
+
+                                if (!$path || !Storage::disk('local')->exists($path)) {
+                                    return new HtmlString('<div style="padding: 1rem; text-align: center; color: #ef4444;">File bukti transfer tidak ditemukan pada server. Path: ' . $path . '</div>');
+                                }
+
+                                // Baca file dan konversi ke base64
+                                $fileContent = Storage::disk('local')->get($path);
+                                $mimeType = Storage::disk('local')->mimeType($path);
+                                $base64 = base64_encode($fileContent);
+                                $src = "data:{$mimeType};base64,{$base64}";
+
+                                return new HtmlString('
+                                        <div style="display: flex; justify-content: center; align-items: center; border-radius: 0.5rem; padding: 0.5rem;">
+                                            <img src="' . $src . '" alt="Bukti Transfer Full" style="max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 8px;">
+                                        </div>
+                                    ');
+                            }),
+
 
                     ])
                     ->columns(3)
@@ -331,7 +380,7 @@ class BillList extends TableWidget
     protected function getRemittanceFormSchema(Bill $record): array
     {
         // Form hanya diperlukan saat status unpaid
-        $isUnpaid = $record->status === 'unpaid';
+        $isAvailable = $record->status === 'unpaid';
 
         return [
             Section::make('bank_transfer_section')
@@ -339,25 +388,25 @@ class BillList extends TableWidget
                 ->description('Silakan isi detail transfer bank Anda di bawah ini untuk memproses pembayaran tagihan.')
                 ->schema([
                     TextInput::make('source_bank_name')
-                        ->label('Nama Bank Asal')
-                        ->required($isUnpaid)
-                        ->visible($isUnpaid) // Sembunyikan jika tidak unpaid
+                        ->label('Sumber Dana')
+                        ->required($isAvailable)
+                        ->visible($isAvailable) // Sembunyikan jika tidak unpaid
                         ->columnSpan(1),
 
                     TextInput::make('destination_bank_name')
                         ->label('Nama Bank Tujuan')
-                        ->required($isUnpaid)
-                        ->visible($isUnpaid)
+                        ->required($isAvailable)
+                        ->visible($isAvailable)
                         ->columnSpan(1),
                 ])
-                ->visible($isUnpaid)
+                ->visible($isAvailable)
                 ->columns(2),
 
             DatePicker::make('transfer_date')
                 ->label('Tanggal Transfer')
                 ->default(now())
-                ->required($isUnpaid)
-                ->visible($isUnpaid)
+                ->required($isAvailable)
+                ->visible($isAvailable)
                 ->maxDate(now())
                 ->columnSpan(1),
 
@@ -365,15 +414,15 @@ class BillList extends TableWidget
             //     ->label('Jumlah Dibayar')
             //     ->numeric()
             //     ->default(fn(Bill $record) => $record->amount)
-            //     ->required($isUnpaid)
+            //     ->required($isAvailable)
             //     ->minValue(fn(Bill $record) => $record->amount)
-            //     ->visible($isUnpaid)
+            //     ->visible($isAvailable)
             //     ->columnSpanFull(),
 
             FileUpload::make('proof_file_path') // Menggunakan nama kolom model
                 ->label('Bukti Transfer')
-                ->required($isUnpaid)
-                ->visible($isUnpaid) // Sembunyikan jika tidak unpaid
+                ->required($isAvailable)
+                ->visible($isAvailable) // Sembunyikan jika tidak unpaid
                 ->image()
                 ->disk('local')
                 ->directory('remittances/proofs')
