@@ -277,7 +277,7 @@ class VerifyPaymentList extends TableWidget
                                     ->requiresConfirmation()
                                     ->modalHeading('Konfirmasi Verifikasi')
                                     ->modalDescription('Apakah Anda yakin ingin menyetujui dan memverifikasi pembayaran ini? Konfirmasi pembayaran tidak dapat dibatalkan.')
-                                    ->action(function (?Remittance $record, Action $action) {
+                                    ->action(function (?Remittance $record) {
                                         try {
                                             DB::beginTransaction();
 
@@ -308,18 +308,19 @@ class VerifyPaymentList extends TableWidget
                                     ])
                                     ->modalHeading('Tolak Pembayaran')
                                     ->modalDescription('Masukkan alasan penolakan. Status tagihan terkait juga akan diubah menjadi "rejected".')
-                                    ->action(function (?Remittance $record, array $data, Action $action) {
+                                    ->action(function (?Remittance $record, array $data) {
                                         try {
-                                            DB::beginTransaction();
+                                            // DB::beginTransaction();
 
-                                            $record->update([
-                                                'status' => 'rejected',
-                                                'rejection_reason' => $data['rejection_reason'],
-                                            ]);
-                                            $record->bill->update(['status' => 'unpaid']);
+                                            // $record->update([
+                                            //     'status' => 'rejected',
+                                            //     'rejection_reason' => $data['rejection_reason'],
+                                            // ]);
+                                            // $record->bill->update(['status' => 'unpaid']);
 
-                                            DB::commit();
-                                            // $action->cancel();
+                                            // DB::commit();
+                                            $this->dispatch('close-modal');
+                                            $this->dispatch('close-modal');
                                             Notification::make()->title('Pembayaran Ditolak')->success()->send();
                                         } catch (Exception $e) {
                                             DB::rollBack();
@@ -338,6 +339,6 @@ class VerifyPaymentList extends TableWidget
     {
         $user = Auth::user();
         // Ganti 'Kepala Lembaga Pengusul' dan 'Staf Kornas' sesuai dengan nama role yang sebenarnya di database Anda.
-        return $user && ($user->hasRole('Pimpinan Lembaga Pengusul') || $user->hasRole('Staf Kornas'));
+        return $user && ($user->hasAnyRole(['Kepala Lembaga Pengusul', 'Staf Kornas', 'Direktur Kornas']));
     }
 }
