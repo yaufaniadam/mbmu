@@ -103,32 +103,34 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
     {
         try {
             // 1. Get the user's SPPG ID
-            $user = Auth::user();
+            // $user = Auth::user();
 
-            $sppgId = null;
+            // $sppgId = null;
 
-            if ($user->hasRole('Kepala SPPG')) {
-                $sppgId = User::find($user->id)->sppgDikepalai->id;
-            } else {
-                $sppgId = User::find($user->id)->unitTugas->first()->id;
-            }
+            // if ($user->hasRole('Kepala SPPG')) {
+            //     $sppgId = User::find($user->id)->sppgDikepalai->id;
+            // } else {
+            //     $sppgId = User::find($user->id)->unitTugas->first()->id;
+            // }
 
-            if (blank($sppgId)) {
-                Notification::make()
-                    ->title('Error')
-                    ->body('Your user account is not associated with an SPPG.')
-                    ->danger()
-                    ->send();
+            // if (blank($sppgId)) {
+            //     Notification::make()
+            //         ->title('Error')
+            //         ->body('Your user account is not associated with an SPPG.')
+            //         ->danger()
+            //         ->send();
 
-                return;
-            }
+            //     return;
+            // }
+
+            $verificationSetting = ModelsProductionVerificationSetting::first();
 
             // 2. Get the data from the form
             $data = $this->form->getState();
 
             // 3. Find the setting for this SPPG or create a new one
             ModelsProductionVerificationSetting::updateOrCreate(
-                ['sppg_id' => $sppgId], // The "where" clause
+                ['id' => $verificationSetting->id], // The "where" clause
                 ['checklist_data' => $data['checklist_data'] ?? []] // The "update" data
             );
 
