@@ -310,17 +310,17 @@ class VerifyPaymentList extends TableWidget
                                     ->modalDescription('Masukkan alasan penolakan. Status tagihan terkait juga akan diubah menjadi "rejected".')
                                     ->action(function (?Remittance $record, array $data) {
                                         try {
-                                            // DB::beginTransaction();
+                                            DB::beginTransaction();
 
-                                            // $record->update([
-                                            //     'status' => 'rejected',
-                                            //     'rejection_reason' => $data['rejection_reason'],
-                                            // ]);
-                                            // $record->bill->update(['status' => 'unpaid']);
+                                            $record->update([
+                                                'status' => 'rejected',
+                                                'rejection_reason' => $data['rejection_reason'],
+                                            ]);
+                                            $record->bill->update(['status' => 'unpaid']);
 
-                                            // DB::commit();
-                                            $this->dispatch('close-modal');
-                                            $this->dispatch('close-modal');
+                                            DB::commit();
+                                            // $this->dispatch('close-modal');
+                                            // $this->dispatch('close-modal');
                                             Notification::make()->title('Pembayaran Ditolak')->success()->send();
                                         } catch (Exception $e) {
                                             DB::rollBack();
@@ -339,6 +339,6 @@ class VerifyPaymentList extends TableWidget
     {
         $user = Auth::user();
         // Ganti 'Kepala Lembaga Pengusul' dan 'Staf Kornas' sesuai dengan nama role yang sebenarnya di database Anda.
-        return $user && ($user->hasAnyRole(['Kepala Lembaga Pengusul', 'Staf Kornas', 'Direktur Kornas']));
+        return $user && ($user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Direktur Kornas']));
     }
 }

@@ -21,10 +21,10 @@ class ManageFinance extends Page implements HasForms
 
     public $activeTab = 'pay';
 
-    public static function canAccess(): bool
-    {
-        return false;
-    }
+    // public static function canAccess(): bool
+    // {
+    //     return false;
+    // }
 
     protected $queryString = [
         'activeTab',

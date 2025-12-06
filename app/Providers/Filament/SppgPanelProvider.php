@@ -42,7 +42,7 @@ class SppgPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
                 SppgProfile::class,
-                // ManageFinance::class,
+                ManageFinance::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
