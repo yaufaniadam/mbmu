@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Filament\Sppg\Pages;
+namespace App\Filament\Pages;
 
+use App\Models\FoodVerification;
 use App\Models\ProductionVerificationSetting as ModelsProductionVerificationSetting;
 use App\Models\User;
 use Filament\Actions\Action;
@@ -56,11 +57,17 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
 
         if ($user->hasRole('Kepala SPPG')) {
             $this->sppg = User::find($user->id)->sppgDikepalai;
-        } else {
+            $this->form->fill(['checklist_data' => $this->sppg->verificationSetting->checklist_data ?? []]);
+        } elseif ($user->hasRole('PJ Pelaksana')) {
             $this->sppg = User::find($user->id)->unitTugas->first();
+            $this->form->fill(['checklist_data' => $this->sppg->verificationSetting->checklist_data ?? []]);
+        } elseif ($user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas'])) {
+            $checklist = FoodVerification::first()->checklist_data;
+            $this->sppg = null; // Superadmin and Kornas staff do not have a specific SPPG
+            $this->form->fill(['checklist_data' => $checklist ?? []]);
+        } else {
+            abort(403, 'Unauthorized action.');
         }
-
-        $this->form->fill(['checklist_data' => $this->sppg->verificationSetting->checklist_data ?? []]);
     }
 
     public function getFormSchema(): array
