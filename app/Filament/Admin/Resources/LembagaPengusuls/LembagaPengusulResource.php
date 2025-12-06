@@ -18,6 +18,8 @@ class LembagaPengusulResource extends Resource
 {
     protected static ?string $model = LembagaPengusul::class;
 
+    protected static ?string $navigationLabel = 'Lembaga Pengusul';
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function form(Schema $schema): Schema
