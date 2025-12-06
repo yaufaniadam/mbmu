@@ -83,7 +83,8 @@ class Verify extends Page implements HasForms
         // --- LOGIKA DAFTAR PERIKSA BARU DIMULAI ---
 
         // 1. Dapatkan templat daftar periksa dari Pengaturan
-        $setting = ProductionVerificationSetting::firstWhere('sppg_id', $this->record->sppg_id);
+        // $setting = ProductionVerificationSetting::firstWhere('sppg_id', $this->record->sppg_id);
+        $setting = ProductionVerificationSetting::first();
         $templateItems = $setting?->checklist_data ?? [];
 
         // 2. Dapatkan data daftar periksa yang tersimpan dari verifikasi ini
@@ -146,9 +147,9 @@ class Verify extends Page implements HasForms
             Textarea::make('catatan')
                 ->label('Catatan (wajib jika ditolak)')
                 ->columnSpanFull()
-                ->visible(fn (Get $get) => $get('status') === 'Ditolak')
-                ->required(fn (Get $get) => $get('status') === 'Ditolak')
-                ->disabled(fn () => $this->record && $this->record->status !== 'Direncanakan'),
+                ->visible(fn(Get $get) => $get('status') === 'Ditolak')
+                ->required(fn(Get $get) => $get('status') === 'Ditolak')
+                ->disabled(fn() => $this->record && $this->record->status !== 'Direncanakan'),
 
             // --- 8. REPEATER DAFTAR PERIKSA BARU ---
             Section::make('Daftar Periksa Verifikasi')
@@ -160,9 +161,9 @@ class Verify extends Page implements HasForms
                             Hidden::make('item_name'),
 
                             Checkbox::make('checked')
-                                ->label(fn (Get $get): string => $get('item_name') ?? 'Item')
+                                ->label(fn(Get $get): string => $get('item_name') ?? 'Item')
                                 ->disabled(! $this->isEditable)
-                                ->dehydrateStateUsing(fn ($state): string => $state ? 'true' : 'false'),
+                                ->dehydrateStateUsing(fn($state): string => $state ? 'true' : 'false'),
 
                             Textarea::make('catatan_item')
                                 ->label('Catatan Item')
@@ -180,7 +181,7 @@ class Verify extends Page implements HasForms
                     // --- AKHIR TAMBAHAN ---
 
                 ])
-                ->hidden(fn () => ! $this->record),
+                ->hidden(fn() => ! $this->record),
         ];
     }
 
@@ -201,7 +202,7 @@ class Verify extends Page implements HasForms
         // --- TAMBAHAN BARU DI SINI ---
         // Kita akan menyusun ulang array secara manual di sini
         $checklistData = $data['checklist_data'] ?? [];
-        $reorderedChecklistData = collect($checklistData)->map(fn ($item) => [
+        $reorderedChecklistData = collect($checklistData)->map(fn($item) => [
             'item_name' => $item['item_name'] ?? null,
             'checked' => $item['checked'] ?? 'false',
             'catatan_item' => $item['catatan_item'] ?? null,
