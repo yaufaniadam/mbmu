@@ -98,13 +98,13 @@ class SppgProfile extends Page implements HasForms
                         return DB::table('indonesia_provinces')
                             ->orderBy('name')
                             ->get()
-                            ->mapWithKeys(fn ($p) => [
+                            ->mapWithKeys(fn($p) => [
                                 (string) $p->code => $p->name,
                             ]);
                     })
                     ->live()
                     ->searchable()
-                    ->dehydrateStateUsing(fn ($state) => $state === null ? null : (string) $state)
+                    ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
                     ->afterStateUpdated(function ($set) {
                         $set('city_code', null);
                         $set('district_code', null);
@@ -122,14 +122,14 @@ class SppgProfile extends Page implements HasForms
                             ->where('province_code', $province)
                             ->orderBy('name')
                             ->get()
-                            ->mapWithKeys(fn ($c) => [
+                            ->mapWithKeys(fn($c) => [
                                 (string) $c->code => $c->name,
                             ]);
                     })
                     ->live()
                     ->searchable()
-                    ->dehydrateStateUsing(fn ($state) => $state === null ? null : (string) $state)
-                    ->disabled(fn ($get) => ! $get('province_code')),
+                    ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
+                    ->disabled(fn($get) => ! $get('province_code')),
                 Select::make('district_code')
                     ->label('Kecamatan')
                     ->options(function (callable $get) {
@@ -142,14 +142,14 @@ class SppgProfile extends Page implements HasForms
                             ->where('city_code', $city)
                             ->orderBy('name')
                             ->get()
-                            ->mapWithKeys(fn ($d) => [
+                            ->mapWithKeys(fn($d) => [
                                 (string) $d->code => $d->name,
                             ]);
                     })
                     ->live()
                     ->searchable()
-                    ->dehydrateStateUsing(fn ($state) => $state === null ? null : (string) $state)
-                    ->disabled(fn ($get) => ! $get('city_code')),
+                    ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
+                    ->disabled(fn($get) => ! $get('city_code')),
                 Select::make('village_code')
                     ->label('Kelurahan/Desa')
                     ->options(function (callable $get) {
@@ -162,15 +162,24 @@ class SppgProfile extends Page implements HasForms
                             ->where('district_code', $district)
                             ->orderBy('name')
                             ->get()
-                            ->mapWithKeys(fn ($v) => [
+                            ->mapWithKeys(fn($v) => [
                                 (string) $v->code => $v->name,
                             ]);
                     })
                     ->live()
                     ->searchable()
-                    ->dehydrateStateUsing(fn ($state) => $state === null ? null : (string) $state)
-                    ->disabled(fn ($get) => ! $get('district_code')),
+                    ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
+                    ->disabled(fn($get) => ! $get('district_code')),
             ]),
+            Fieldset::make('Koordinat')
+                ->schema([
+                    TextInput::make('latitude')
+                        ->label('Latitude')
+                        ->required(),
+                    TextInput::make('longitude')
+                        ->label('Longitude')
+                        ->required(),
+                ]),
         ];
     }
 
