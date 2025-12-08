@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('relawan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sppg_id')->constrained('sppg')->cascadeOnDelete();
-            $table->string('nama_relawan');
-            $table->string('posisi');
+            $table->string('nama_relawan')->nullable();
+            $table->string('gender')->nullable();
+            $table->text('address')->nullable();
+            $table->string('posisi')->nullable();
             $table->string('kontak')->nullable();
             $table->timestamps();
         });
