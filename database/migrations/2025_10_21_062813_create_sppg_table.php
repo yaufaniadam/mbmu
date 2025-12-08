@@ -28,6 +28,9 @@ return new class extends Migration
             $table->char('district_code', 7)->nullable();
             $table->char('village_code', 10)->nullable();
 
+            $table->text('latitude')->nullable();
+            $table->text('longitude')->nullable();
+
             $table->timestamps();
 
             $table->foreign('province_code')->references('code')->on('indonesia_provinces')->onDelete('set null');
