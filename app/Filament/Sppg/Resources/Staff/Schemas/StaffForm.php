@@ -3,6 +3,7 @@
 namespace App\Filament\Sppg\Resources\Staff\Schemas;
 
 use App\Models\User;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -23,13 +24,19 @@ class StaffForm
                     ->label('Email')
                     ->email()
                     ->required(),
+                Radio::make('gender')
+                    ->label('Jenis Kelamin')
+                    ->options([
+                        'Laki-laki' => 'Laki-laki',
+                        'Perempuan' => 'Perempuan',
+                    ])
+                    ->required(),
                 TextInput::make('telepon')
                     ->label('Telepon')
                     ->required(),
                 Textarea::make('alamat')
                     ->label('Alamat')
-                    ->rows(3)
-                    ->required(),
+                    ->rows(3),
                 TextInput::make('nik')
                     ->label('NIK')
                     ->required(),
