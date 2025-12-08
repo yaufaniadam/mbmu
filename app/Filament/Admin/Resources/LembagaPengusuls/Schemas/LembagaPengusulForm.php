@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\LembagaPengusuls\Schemas;
 
 use App\Models\Sppg;
 use App\Models\User;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -137,6 +138,10 @@ class LembagaPengusulForm
                                                         ->required(),
                                                     TextInput::make('kode_sppg')
                                                         ->label('Kode SPPG')
+                                                        ->required(),
+                                                    DatePicker::make('tanggal_mulai_sewa')
+                                                        ->label('Tanggal SPPG Mulai Beroperasi')
+                                                        ->helperText('Bisa diisikan tanggal sppg akan mulai ditagih, jika sppg sudah beroperasi sebelum aplikasi ini dibuat.')
                                                         ->required(),
                                                     Section::make('Akun Kepala SPPG')
                                                         ->description('Pilih akun kepala sppg atau buat baru.')
