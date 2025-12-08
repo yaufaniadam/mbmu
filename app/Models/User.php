@@ -27,6 +27,7 @@ class User extends Authenticatable
         'telepon',
         'alamat',
         'nik',
+        'gender',
         // Tambahkan 'sppg_id' jika Anda menggunakannya sebagai SPPG "utama" atau "asal" user.
         // Ini opsional, karena peran utama ditentukan oleh relasi.
         // 'sppg_id',
