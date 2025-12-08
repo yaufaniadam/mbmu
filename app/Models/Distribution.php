@@ -16,6 +16,8 @@ class Distribution extends Model
         'jumlah_porsi_kecil',
         'status_pengantaran',
         'delivered_at',
+        'photo_of_proof',
+        'notes',
     ];
 
     public function productionSchedule()
