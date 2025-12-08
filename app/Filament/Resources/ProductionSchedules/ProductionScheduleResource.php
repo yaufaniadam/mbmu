@@ -12,8 +12,10 @@ use App\Filament\Resources\ProductionSchedules\Tables\ProductionSchedulesTable;
 use App\Models\ProductionSchedule;
 use App\Models\User;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Fieldset;
@@ -23,6 +25,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 
 class ProductionScheduleResource extends Resource
 {
@@ -198,6 +202,55 @@ class ProductionScheduleResource extends Resource
                         })
                         ->badge()
                         ->columnSpanFull(),
+                    ImageEntry::make('photo_of_proof_for_' . $school->id)
+                        ->label('Foto Bukti Pengantaran')
+                        ->columnSpanFull()
+                        ->imageHeight('300px')
+                        ->imageWidth('100%')
+                        ->visible(function (ProductionSchedule $record) use ($school) {
+                            $distribution = $record->distributions()
+                                ->where('sekolah_id', $school->id)
+                                ->first();
+                            return $distribution->status_pengantaran == 'Terkirim';
+                        })
+                        ->state(function (ProductionSchedule $record) use ($school) {
+                            $distribution = $record->distributions()
+                                ->where('sekolah_id', $school->id)
+                                ->first();
+                            return $distribution->photo_of_proof;
+                        }),
+
+                    Action::make('view_full_image')
+                        ->label('Lihat Gambar Penuh')
+                        ->icon('heroicon-m-magnifying-glass-plus')
+                        ->color('gray')
+                        ->modalWidth('7xl') // Ukuran modal sangat besar (7xl)
+                        ->modalHeading('Bukti Pengantaran - Tampilan Penuh')
+                        ->modalSubmitAction(false) // Hilangkan tombol submit
+                        ->modalCancelAction(false) // Hilangkan tombol cancel
+                        // Render gambar menggunakan Base64 agar aman (tanpa public URL)
+                        ->modalContent(function (ProductionSchedule $record) use ($school) {
+                            $distribution = $record->distributions()
+                                ->where('sekolah_id', $school->id)
+                                ->first();
+                            $path = $distribution->photo_of_proof;
+
+                            if (!$path || !Storage::disk('local')->exists($path)) {
+                                return new HtmlString('<div style="padding: 1rem; text-align: center; color: #ef4444;">File bukti pengantaran tidak ditemukan.</div>');
+                            }
+
+                            // Baca file dan konversi ke base64
+                            $fileContent = Storage::disk('local')->get($path);
+                            $mimeType = Storage::disk('local')->mimeType($path);
+                            $base64 = base64_encode($fileContent);
+                            $src = "data:{$mimeType};base64,{$base64}";
+
+                            return new HtmlString('
+                                        <div style="display: flex; justify-content: center; align-items: center; border-radius: 0.5rem; padding: 0.5rem;">
+                                            <img src="' . $src . '" alt="Bukti Pengantaran Full" style="max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 8px;">
+                                        </div>
+                                    ');
+                        }),
                 ])
                 ->columns(2);
         }
