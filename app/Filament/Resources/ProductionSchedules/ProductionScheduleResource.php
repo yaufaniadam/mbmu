@@ -220,7 +220,7 @@ class ProductionScheduleResource extends Resource
                             return $distribution->photo_of_proof;
                         }),
 
-                    Action::make('view_full_image')
+                    Action::make('view_full_image_for_' . $school->id)
                         ->label('Lihat Gambar Penuh')
                         ->icon('heroicon-m-magnifying-glass-plus')
                         ->color('gray')
