@@ -195,6 +195,12 @@ class Delivery extends Page implements HasForms
                 'photo_of_proof' => $data['photo_of_proof'], // path inside private storage
                 'delivered_at' => now(),
             ]);
+
+            if ($this->record->productionSchedule->getIsFullyDeliveredAttribute()) {
+                $this->record->productionSchedule->update([
+                    'status' => 'Selesai',
+                ]);
+            }
         });
 
         Notification::make()
