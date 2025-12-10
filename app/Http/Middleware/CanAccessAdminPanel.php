@@ -16,7 +16,7 @@ class CanAccessAdminPanel
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas'])) {
+        if (Auth::check() && Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas', 'Pimpinan Lembaga Pengusul'])) {
             return $next($request);
         }
 
