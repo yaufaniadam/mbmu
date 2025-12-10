@@ -6,6 +6,7 @@ use App\Filament\Pages\ManageFinance;
 use App\Filament\Resources\ProductionSchedules\ProductionScheduleResource;
 use App\Filament\Sppg\Pages\Dashboard;
 use App\Filament\Sppg\Pages\SppgProfile;
+use App\Http\Middleware\CanAccessSppgPanel;
 use App\Livewire\AssignedSppg;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -67,6 +68,7 @@ class SppgPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                CanAccessSppgPanel::class,
             ])
             ->spa(hasPrefetching: true);
     }

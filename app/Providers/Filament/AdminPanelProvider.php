@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\ManageFinance;
 use App\Filament\Pages\ProductionVerificationSetting;
+use App\Http\Middleware\CanAccessAdminPanel;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -62,6 +63,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                CanAccessAdminPanel::class,
             ])
             ->spa(hasPrefetching: true);
     }

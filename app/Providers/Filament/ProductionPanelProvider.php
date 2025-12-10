@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Production\Pages\Delivery;
 use App\Filament\Production\Pages\Distribution;
 use App\Filament\Production\Pages\Verify;
+use App\Http\Middleware\CanAccessProductionPanel;
 use App\Livewire\AssignedSppg;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -61,6 +62,7 @@ class ProductionPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                CanAccessProductionPanel::class,
             ])
             ->spa(hasPrefetching: true);
     }
