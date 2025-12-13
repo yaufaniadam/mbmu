@@ -43,15 +43,14 @@ class ProductionScheduleResource extends Resource
         // Kepala SPPG → Only show schedules for their SPPG
         if ($user->hasRole('Kepala SPPG')) {
             $sppg = $user->sppgDikepalai;
-
-            return ProductionSchedule::where([['sppg_id', $sppg->id], ['status', '==', 'Menunggu ACC Kepala SPPG']])->count();
+            return ProductionSchedule::where([['sppg_id', '=', $sppg->id], ['status', '=', 'Menunggu ACC Kepala SPPG']])->count();
         }
 
         // PJ Pelaksana → Only schedules for their unit tugas
         if ($user->hasRole('PJ Pelaksana')) {
             $unitTugas = $user->unitTugas->first();
 
-            return ProductionSchedule::where([['sppg_id', $unitTugas->id], ['status', '==', 'Menunggu ACC Kepala SPPG']])->count();
+            return ProductionSchedule::where([['sppg_id', '=', $unitTugas->id], ['status', '=', 'Menunggu ACC Kepala SPPG']])->count();
         }
 
         // Default → all schedules
