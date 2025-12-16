@@ -45,13 +45,17 @@ class SppgForm
                 Select::make('province_code')
                     ->label('Provinsi')
                     ->options(function () {
-                        $provinces = DB::table('indonesia_provinces')->select('code', 'name')->orderBy('name')->get();
-
-                        return $provinces->pluck('name', 'code');
+                        return DB::table('indonesia_provinces')
+                            ->orderBy('name')
+                            ->get()
+                            ->mapWithKeys(fn($p) => [
+                                (string) $p->code => $p->name,
+                            ]);
                     })
                     ->live()
                     ->searchable()
-                    ->afterStateUpdated(function (callable $set) {
+                    ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
+                    ->afterStateUpdated(function ($set) {
                         $set('city_code', null);
                         $set('district_code', null);
                         $set('village_code', null);
@@ -59,66 +63,67 @@ class SppgForm
                 Select::make('city_code')
                     ->label('Kota/Kabupaten')
                     ->options(function (callable $get) {
-
-                        $provinceCode = $get('province_code');
-
-                        if (! $provinceCode) {
+                        $province = $get('province_code');
+                        if (! $province) {
                             return [];
                         }
 
-                        $cities = DB::table('indonesia_cities')
-                            ->where('province_code', $provinceCode)
-                            ->select('code', 'name')
+                        return DB::table('indonesia_cities')
+                            ->where('province_code', $province)
                             ->orderBy('name')
-                            ->get();
-
-                        return $cities->pluck('name', 'code');
+                            ->get()
+                            ->mapWithKeys(fn($c) => [
+                                (string) $c->code => $c->name,
+                            ]);
                     })
                     ->live()
                     ->searchable()
-                    ->disabled(fn(callable $get) => ! $get('province_code')),
+                    ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
+                    ->disabled(fn($get) => ! $get('province_code')),
                 Select::make('district_code')
                     ->label('Kecamatan')
                     ->options(function (callable $get) {
-
-                        $cityCode = $get('city_code');
-
-                        if (! $cityCode) {
+                        $city = $get('city_code');
+                        if (! $city) {
                             return [];
                         }
 
-                        $districts = DB::table('indonesia_districts')
-                            ->where('city_code', $cityCode)
-                            ->select('code', 'name')
+                        return DB::table('indonesia_districts')
+                            ->where('city_code', $city)
                             ->orderBy('name')
-                            ->get();
-
-                        return $districts->pluck('name', 'code');
+                            ->get()
+                            ->mapWithKeys(fn($d) => [
+                                (string) $d->code => $d->name,
+                            ]);
                     })
                     ->live()
                     ->searchable()
-                    ->disabled(fn(callable $get) => ! $get('city_code')),
+                    ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
+                    ->disabled(fn($get) => ! $get('city_code')),
                 Select::make('village_code')
                     ->label('Kelurahan/Desa')
                     ->options(function (callable $get) {
-
-                        $districtCode = $get('district_code');
-
-                        if (! $districtCode) {
+                        $district = $get('district_code');
+                        if (! $district) {
                             return [];
                         }
 
-                        $villages = DB::table('indonesia_villages')
-                            ->where('district_code', $districtCode)
-                            ->select('code', 'name')
+                        return DB::table('indonesia_villages')
+                            ->where('district_code', $district)
                             ->orderBy('name')
-                            ->get();
-
-                        return $villages->pluck('name', 'code');
+                            ->get()
+                            ->mapWithKeys(fn($v) => [
+                                (string) $v->code => $v->name,
+                            ]);
                     })
                     ->live()
                     ->searchable()
-                    ->disabled(fn(callable $get) => ! $get('district_code')),
+                    ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
+                    ->disabled(fn($get) => ! $get('district_code')),
+                TextInput::make('latitude')
+                    ->label('Latitude'),
+                TextInput::make('longitude')
+                    ->label('Longitude')
             ]);
 
         // return $schema
