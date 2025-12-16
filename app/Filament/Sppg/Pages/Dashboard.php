@@ -2,6 +2,7 @@
 
 namespace App\Filament\Sppg\Pages;
 
+use App\Livewire\OsmMapWidget;
 use App\Livewire\ProductionChart;
 use App\Livewire\ProductionDistributionList;
 use App\Livewire\ProductionScheduleList;
@@ -15,6 +16,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Dashboard extends BaseDashboard
 {
@@ -40,6 +42,7 @@ class Dashboard extends BaseDashboard
     {
         return [
             AccountWidget::class,
+            OsmMapWidget::class,
         ];
     }
 
@@ -55,27 +58,36 @@ class Dashboard extends BaseDashboard
 
     public function filtersForm(Schema $schema): Schema
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
-        $canSeeFilter = $user->hasRole('Pimpinan Lembaga Pengusul') || $user->hasRole('Superadmin');
 
-        // --- 1. Prepare data *before* the form ---
+        // 1. Define the roles allowed to see the Map Widget (and thus the Province Filter)
+        $mapRoles = ['Superadmin', 'Staf Kornas', 'Direktur Kornas'];
+
+        // Check if user has ANY of these roles
+        $isMapRole = $user->hasAnyRole($mapRoles);
+
+        // Check if user is Pimpinan
+        $isPimpinan = $user->hasRole('Pimpinan Lembaga Pengusul');
+
+        // 2. Section Visibility: Visible if user is EITHER a Map Role OR Pimpinan
+        $canSeeSection = $isMapRole || $isPimpinan;
+
+        // --- Prepare SPPG Data ---
         $sppgOptions = [];
         $defaultSppgId = null;
 
-        if ($canSeeFilter) {
-            // Use null-safe operators (?->) to prevent errors
-            if (User::find($user->id)->hasRole('Pimpinan Lembaga Pengusul')) {
-                $sppgs = $user->lembagaDipimpin?->sppgs;
+        if ($canSeeSection) {
+            // Logic: Pimpinan sees their own SPPGs; Map Roles see ALL.
+            if ($isPimpinan) {
+                // Re-fetch user to ensure relationships are loaded if needed, or use Auth user directly
+                $sppgs = User::find($user->id)->lembagaDipimpin?->sppgs;
             } else {
                 $sppgs = Sppg::all();
             }
 
-            // Check if we actually got any SPPGs
             if ($sppgs && $sppgs->isNotEmpty()) {
-                // 2. Create the options array for the Select
                 $sppgOptions = $sppgs->pluck('nama_sppg', 'id');
-
-                // 3. Get the ID of the *first* SPPG in the collection
                 $defaultSppgId = $sppgs->first()->id;
             }
         }
@@ -84,21 +96,26 @@ class Dashboard extends BaseDashboard
             ->components([
                 Section::make()
                     ->schema([
+                        Select::make('province_code')
+                            ->label('Filter peta SPPG per provinsi')
+                            ->options(fn() => DB::table('indonesia_provinces')->pluck('name', 'code'))
+                            ->searchable()
+                            ->preload()
+                            ->live()
+                            ->afterStateUpdated(fn() => $this->dispatch('refresh-map-widget'))
+                            // VISIBILITY RESTRICTION: Only Map Roles can see this
+                            ->visible($isMapRole),
+
                         Select::make('sppg_id')
                             ->label('SPPG')
-                            // 4. Pass the prepared options array
                             ->options($sppgOptions)
-
-                            // 5. Set the default value
                             ->default($defaultSppgId)
-
                             ->searchable()
                             ->preload(true)
                             ->live(),
                     ])
                     ->columns(1)
-                    // Use visible() here, not hidden()
-                    ->visible($canSeeFilter),
+                    ->visible($canSeeSection),
             ]);
     }
 }

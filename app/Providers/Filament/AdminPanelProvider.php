@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\ManageFinance;
 use App\Filament\Pages\ProductionVerificationSetting;
+use App\Filament\Sppg\Pages\Dashboard;
 use App\Http\Middleware\CanAccessAdminPanel;
 use App\Livewire\OsmMapWidget;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -11,7 +12,6 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -67,6 +67,14 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
                 CanAccessAdminPanel::class,
             ])
-            ->spa(hasPrefetching: true);
+            ->spa(hasPrefetching: true)
+            ->renderHook(
+                'panels::head.end',
+                fn(): string => '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />'
+            )
+            ->renderHook(
+                'panels::body.end',
+                fn(): string => '<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>'
+            );
     }
 }
