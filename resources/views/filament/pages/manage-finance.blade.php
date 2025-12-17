@@ -34,6 +34,15 @@
             </x-filament::tabs.item>
         @endif
 
+        {{-- Tab 4: Biaya Operasional --}}
+        {{-- Only show this tab to Sppg or Kornas --}}
+        @if (auth()->user()->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Kornas', 'Direktur Kornas']))
+            <x-filament::tabs.item :active="$activeTab === 'operating_expenses'" wire:click="$set('activeTab', 'operating_expenses')"
+                icon="heroicon-o-arrow-trending-up">
+                Biaya Operasional
+            </x-filament::tabs.item>
+        @endif
+
     </x-filament::tabs>
 
     {{-- 2. The Tab Content (Lazy Loaded Widgets) --}}
@@ -64,6 +73,17 @@
             {{-- This renders the VerifyPaymentList widget --}}
             {{-- This renders the VerifyPaymentList widget --}}
             @livewire(\App\Livewire\VerifyPaymentList::class)
+        @endif
+
+        {{-- Content for Tab 5 --}}
+        @if ($activeTab === 'operating_expenses')
+            {{-- This renders the OperatingExpenses widget --}}
+            {{-- This renders the OperatingExpenses widget --}}
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                @livewire(\App\Livewire\OperatingExpensesStats::class)
+                @livewire(\App\Livewire\OperatingExpensesChart::class)
+                @livewire(\App\Livewire\OperatingExpenses::class)
+            </div>
         @endif
 
     </div>
