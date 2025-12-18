@@ -37,6 +37,7 @@ class Sppg extends Model
         'kode_sppg',
         'nama_bank',
         'nomor_va',
+        'balance',
         'alamat',
         'is_active',
         'tanggal_mulai_sewa',
@@ -137,5 +138,15 @@ class Sppg extends Model
     public function operatingExpenses()
     {
         return $this->hasMany(OperatingExpense::class);
+    }
+
+    public function operatingExpenseCategories()
+    {
+        return $this->hasMany(OperatingExpenseCategory::class);
+    }
+
+    public function incomingFunds()
+    {
+        return $this->hasMany(SppgIncomingFund::class);
     }
 }
