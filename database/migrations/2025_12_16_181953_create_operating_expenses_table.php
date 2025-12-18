@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('operating_expenses', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('previous_version_id')->nullable()->constrained('operating_expenses')->nullOnDelete();
             $table->foreignId('sppg_id')->nullable()->constrained('sppg')->cascadeOnDelete();
             $table->string('name')->nullable();
             $table->decimal('amount')->nullable();
             $table->date('date')->nullable();
             $table->string('category')->nullable();
             $table->text('attachment')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
