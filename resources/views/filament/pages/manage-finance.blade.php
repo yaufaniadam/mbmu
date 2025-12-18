@@ -99,7 +99,10 @@
         @if ($activeTab === 'incoming_funds')
             {{-- This renders the OperatingExpenses widget --}}
             {{-- This renders the OperatingExpenses widget --}}
-            @livewire(\App\Livewire\IncomingFunds::class)
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                @livewire(\App\Livewire\SppgFunds::class)
+                @livewire(\App\Livewire\IncomingFunds::class)
+            </div>
         @endif
 
     </div>

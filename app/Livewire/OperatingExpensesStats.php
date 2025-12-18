@@ -65,18 +65,26 @@ class OperatingExpensesStats extends StatsOverviewWidget
         $stats = [
             Stat::make('Biaya Operasional', $formatIdr($opsAmount))
                 ->icon('heroicon-o-banknotes', IconPosition::Before)
-                ->color('secondary'),
+                ->color('secondary')
+                ->columnSpan(2),
         ];
 
         // 6. Conditionally add Rent and Total stats
         if ($showRentAndTotal) {
             $stats[] = Stat::make('Biaya Sewa', $formatIdr($rentAmount))
                 ->icon('heroicon-o-banknotes', IconPosition::Before)
-                ->color('secondary');
+                ->color('secondary')
+                ->columnSpan(2);
 
             $stats[] = Stat::make('Total Biaya', $formatIdr($opsAmount + $rentAmount))
                 ->icon('heroicon-o-calculator', IconPosition::Before)
-                ->color('primary');
+                ->color('primary')
+                ->columnSpan(2);
+
+            $stats[] = Stat::make('Dana SPPG', $formatIdr($sppg?->balance ?? 0))
+                ->icon('heroicon-o-currency-dollar', IconPosition::Before)
+                ->color('success')
+                ->columnSpan(2);
         }
 
         return $stats;
