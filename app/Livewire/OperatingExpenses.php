@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\OperatingExpense;
+use App\Models\OperatingExpenseCategories;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -10,6 +11,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -125,7 +127,7 @@ class OperatingExpenses extends TableWidget
                 CreateAction::make()
                     ->label('Tambah Pengeluaran')
                     ->modalHeading('Catat Biaya Operasional Baru')
-                    ->mutateFormDataUsing(function (array $data): array {
+                    ->mutateDataUsing(function (array $data): array {
                         $user = Auth::user();
                         $sppgId = null;
 
@@ -158,16 +160,22 @@ class OperatingExpenses extends TableWidget
                 ->required()
                 ->maxLength(255),
 
-            TextInput::make('category')
+            Select::make('category')
                 ->label('Kategori')
                 ->required()
-                ->datalist([
-                    'Transportasi',
-                    'Konsumsi',
-                    'Alat Tulis Kantor',
-                    'Sewa Tempat',
-                    'Lainnya',
-                ]),
+                ->searchable()
+                // Use 'name' as both the key and the value since your DB stores the string name
+                ->options(OperatingExpenseCategories::pluck('name', 'name'))
+                ->createOptionForm([
+                    TextInput::make('name')
+                        ->label('Nama Kategori')
+                        ->required()
+                        ->maxLength(255),
+                ])
+                ->createOptionUsing(function (array $data) {
+                    // Create the category and return the 'name' to be selected
+                    return OperatingExpenseCategories::create($data)->name;
+                }),
 
             TextInput::make('amount')
                 ->label('Jumlah Biaya')
