@@ -10,6 +10,7 @@ class OperatingExpense extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'previous_version_id',
         'sppg_id',
         'name',
         'amount',
