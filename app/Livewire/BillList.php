@@ -26,7 +26,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HtmlString;
-use Livewire\Component;
 
 class BillList extends TableWidget
 {
@@ -76,7 +75,7 @@ class BillList extends TableWidget
                 $statuses = array_values(array_filter($this->selectedStatuses, 'is_string'));
 
                 // 2. Menerapkan filter hanya jika ada status yang valid.
-                if (!empty($statuses)) {
+                if (! empty($statuses)) {
                     // Jika ada status yang valid, kembalikan query yang sudah difilter.
                     return $query->whereIn('status', $statuses);
                 }
@@ -108,7 +107,7 @@ class BillList extends TableWidget
                     TextColumn::make('period_range')
                         ->label('Periode')
                         // SAFE ACCESS: Memastikan $record tidak null sebelum diakses
-                        ->state(fn(?Bill $record): ?string => $record ? "Periode {$record->period_start} s.d {$record->period_end}" : null)
+                        ->state(fn (?Bill $record): ?string => $record ? "Periode {$record->period_start} s.d {$record->period_end}" : null)
                         ->icon('heroicon-m-calendar'),
 
                     TextColumn::make('amount')
@@ -118,21 +117,21 @@ class BillList extends TableWidget
 
                     TextColumn::make('status')
                         ->badge()
-                        ->formatStateUsing(fn(string $state): string => match ($state) {
+                        ->formatStateUsing(fn (string $state): string => match ($state) {
                             'unpaid' => 'Menunggu Pembayaran',
                             'verification' => 'Menunggu Verifikasi',
                             'paid' => 'Pembayaran Berhasil',
                             'rejected' => 'Pembayaran Ditolak',
                             default => $state,
                         })
-                        ->color(fn(string $state): string => match ($state) {
+                        ->color(fn (string $state): string => match ($state) {
                             'unpaid' => 'warning',
                             'verification' => 'info',
                             'paid' => 'success',
                             'rejected' => 'danger',
                             default => 'gray',
                         })
-                        ->icon(fn(string $state): string => match ($state) {
+                        ->icon(fn (string $state): string => match ($state) {
                             'unpaid' => 'heroicon-m-credit-card',
                             'verification' => 'heroicon-m-arrow-path',
                             'paid' => 'heroicon-m-check',
@@ -143,13 +142,13 @@ class BillList extends TableWidget
                     // Rejection reason column, visible only when status is 'rejected'
                     TextColumn::make('rejection_reason')
                         ->label('Alasan Penolakan')
-                        ->visible(fn(?Bill $record): bool => $record && $record->status === 'rejected')
+                        ->visible(fn (?Bill $record): bool => $record && $record->status === 'rejected')
                         ->color('danger')
                         ->prefix('Alasan: ')
                         ->wrap()
                         ->size('sm')
-                        ->state(fn(?Bill $record): ?string => $record?->remittance?->rejection_reason),
-                ])
+                        ->state(fn (?Bill $record): ?string => $record?->remittance?->rejection_reason),
+                ]),
             ])
             ->filters([
                 // Menggunakan Filter generik dengan CheckboxList untuk filter status
@@ -163,7 +162,7 @@ class BillList extends TableWidget
                                 'paid' => 'Pembayaran Berhasil',
                                 'rejected' => 'Pembayaran Ditolak',
                             ])
-                            ->columns(2) // Opsional: Tampilkan dalam 2 kolom
+                            ->columns(2), // Opsional: Tampilkan dalam 2 kolom
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         if (empty($data['statuses'])) {
@@ -175,44 +174,17 @@ class BillList extends TableWidget
                     }),
             ])
 
-            // ->headerActions(
-            //     // Membuat Action Button untuk setiap status
-            //     array_map(function (string $statusKey, array $data) {
-            //         $isActive = in_array($statusKey, $this->selectedStatuses);
-
-            //         dump('this is filter status ' . $statusKey . ' isActive: ' . ($isActive ? 'true' : 'false'));
-            //         dump('this is selectedStatuses :' . implode(', ', $this->selectedStatuses));
-
-
-            //         return Action::make('filter_' . $statusKey)
-            //             ->action(function () use ($statusKey) {
-            //                 $this->toggleStatusFilter($statusKey);
-            //             })
-            //             ->label($data['label'])
-            //             ->icon($data['icon'])
-            //             // Mengatur warna: jika aktif, gunakan warna status; jika tidak, gunakan abu-abu dan outline
-            //             ->color(function () use ($data, $isActive) {
-            //                 if ($isActive) {
-            //                     return $data['color'];
-            //                 }
-            //                 return 'gray';
-            //             })
-            //             ->outlined(!$isActive)
-            //             ->button(); // Menampilkan sebagai tombol/badge
-            //         // ->action(fn() => $this->toggleStatusFilter($statusKey));
-            //     }, array_keys($this->getStatusOptions()), $this->getStatusOptions())
-            // )
             ->recordActions([
                 Action::make('create_remittance')
-                    ->label(fn(Bill $record): string => $record->status === 'verification' ? 'Detail Transaksi' : 'Buat Pembayaran')
+                    ->label(fn (Bill $record): string => $record->status === 'verification' ? 'Detail Transaksi' : 'Buat Pembayaran')
                     ->button()
                     ->color('success')
-                    ->icon(fn(Bill $record): string => $record->status === 'verification' ? 'heroicon-m-eye' : 'heroicon-m-banknotes')
+                    ->icon(fn (Bill $record): string => $record->status === 'verification' ? 'heroicon-m-eye' : 'heroicon-m-banknotes')
                     // Visible jika unpaid ATAU verification
-                    ->visible(fn(Bill $record): bool => in_array($record->status, ['unpaid', 'verification', 'rejected']))
+                    ->visible(fn (Bill $record): bool => in_array($record->status, ['unpaid', 'verification', 'rejected']))
 
                     // Menggabungkan Infolist dan Form Schema menjadi satu array.
-                    ->schema(fn(Bill $record): array => array_merge(
+                    ->schema(fn (Bill $record): array => array_merge(
                         $this->getInfolistSchema($record), // Infolist (Detail Invoice/Remittance)
                         $this->getRemittanceFormSchema($record) // Form Fields
                     ))
@@ -221,6 +193,35 @@ class BillList extends TableWidget
                     ->action(function (Bill $record, array $data) {
                         try {
                             DB::beginTransaction();
+
+                            $user = Auth::user();
+
+                            $sppg = null;
+
+                            if ($user->hasRole('Kepala SPPG')) {
+                                $sppg = User::find($user->id)->sppgDikepalai;
+                                if ($sppg->balance < $record->amount) {
+                                    Notification::make()
+                                        ->title('Gagal Mencatat Pembayaran')
+                                        ->body('Saldo SPPG Anda tidak mencukupi untuk melakukan pembayaran tagihan ini.')
+                                        ->danger()
+                                        ->send();
+
+                                    return;
+                                }
+                            }
+                            if ($user->hasRole('PJ Pelaksana')) {
+                                $sppg = User::find($user->id)->unitTugas->first();
+                                if ($sppg->balance < $record->amount) {
+                                    Notification::make()
+                                        ->title('Gagal Mencatat Pembayaran')
+                                        ->body('Saldo SPPG Anda tidak mencukupi untuk melakukan pembayaran tagihan ini.')
+                                        ->danger()
+                                        ->send();
+
+                                    return;
+                                }
+                            }
 
                             // 1. Buat Record Remittance: Menyimpan semua data dari form dan mengaitkannya dengan Bill dan User.
                             Remittance::create([
@@ -243,14 +244,14 @@ class BillList extends TableWidget
 
                             Notification::make()
                                 ->title('Pembayaran Berhasil Dicatat')
-                                ->body('Bukti transfer Anda telah berhasil diunggah. Tagihan **' . $record->invoice_number . '** sedang menunggu verifikasi.')
+                                ->body('Bukti transfer Anda telah berhasil diunggah. Tagihan **'.$record->invoice_number.'** sedang menunggu verifikasi.')
                                 ->success()
                                 ->send();
                         } catch (Exception $e) {
                             DB::rollBack();
                             Notification::make()
                                 ->title('Gagal Mencatat Pembayaran')
-                                ->body('Terjadi kesalahan saat menyimpan data: ' . $e->getMessage())
+                                ->body('Terjadi kesalahan saat menyimpan data: '.$e->getMessage())
                                 ->danger()
                                 ->send();
                         }
@@ -319,8 +320,8 @@ class BillList extends TableWidget
                             ->modalContent(function () use ($remittance) {
                                 $path = $remittance->proof_file_path;
 
-                                if (!$path || !Storage::disk('local')->exists($path)) {
-                                    return new HtmlString('<div style="padding: 1rem; text-align: center; color: #ef4444;">File bukti transfer tidak ditemukan pada server. Path: ' . $path . '</div>');
+                                if (! $path || ! Storage::disk('local')->exists($path)) {
+                                    return new HtmlString('<div style="padding: 1rem; text-align: center; color: #ef4444;">File bukti transfer tidak ditemukan pada server. Path: '.$path.'</div>');
                                 }
 
                                 // Baca file dan konversi ke base64
@@ -331,14 +332,13 @@ class BillList extends TableWidget
 
                                 return new HtmlString('
                                         <div style="display: flex; justify-content: center; align-items: center; border-radius: 0.5rem; padding: 0.5rem;">
-                                            <img src="' . $src . '" alt="Bukti Transfer Full" style="max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 8px;">
+                                            <img src="'.$src.'" alt="Bukti Transfer Full" style="max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 8px;">
                                         </div>
                                     ');
                             }),
 
-
                     ])
-                    ->columns(3)
+                    ->columns(3),
                 // Mengarahkan state Infolist ke objek Remittance
                 // ->state($remittance)
             ];
@@ -358,12 +358,12 @@ class BillList extends TableWidget
                         ->copyable(),
                     TextEntry::make('period_range')
                         ->label('Periode Tagihan')
-                        ->state(fn(Bill $record): string => "{$record->period_start} s.d {$record->period_end}"),
+                        ->state(fn (Bill $record): string => "{$record->period_start} s.d {$record->period_end}"),
                     TextEntry::make('status')
                         ->label('Status Saat Ini')
                         ->badge()
                         ->color('warning')
-                        ->formatStateUsing(fn(string $state): string => match ($state) {
+                        ->formatStateUsing(fn (string $state): string => match ($state) {
                             'unpaid' => 'Menunggu Pembayaran',
                             default => $state,
                         }),
@@ -373,7 +373,7 @@ class BillList extends TableWidget
                         ->size('lg')
                         ->color('primary')
                         ->columnSpanFull(),
-                ])
+                ]),
         ];
     }
 
@@ -409,15 +409,6 @@ class BillList extends TableWidget
                 ->visible($isAvailable)
                 ->maxDate(now())
                 ->columnSpan(1),
-
-            // TextInput::make('paid_amount')
-            //     ->label('Jumlah Dibayar')
-            //     ->numeric()
-            //     ->default(fn(Bill $record) => $record->amount)
-            //     ->required($isAvailable)
-            //     ->minValue(fn(Bill $record) => $record->amount)
-            //     ->visible($isAvailable)
-            //     ->columnSpanFull(),
 
             FileUpload::make('proof_file_path') // Menggunakan nama kolom model
                 ->label('Bukti Transfer')
