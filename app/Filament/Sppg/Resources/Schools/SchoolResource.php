@@ -12,6 +12,7 @@ use App\Filament\Sppg\Resources\Schools\Tables\SchoolsTable;
 use App\Models\School;
 use App\Models\User;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -24,6 +25,10 @@ class SchoolResource extends Resource
     protected static ?string $model = School::class;
 
     protected static ?string $navigationLabel = 'Daftar Sekolah Penerima SPPG';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Data Master';
+
+    protected static ?int $navigationSort = 1;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

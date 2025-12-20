@@ -9,6 +9,7 @@ use App\Filament\Sppg\Resources\Staff\Schemas\StaffForm;
 use App\Filament\Sppg\Resources\Staff\Tables\StaffTable;
 use App\Models\User;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -21,6 +22,10 @@ class StaffResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationLabel = 'Staff'; // ✅ label shown in sidebar
+
+    protected static string|UnitEnum|null $navigationGroup = 'Data Master';
+
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $slug = 'staff';
 

@@ -20,7 +20,8 @@ class FinancialCategorySeeder extends Seeder
             'Dana Talangan',
             'Setoran Lembaga Pengusul',
             'Bunga Bank / Jasa Giro',
-            'Pengembalian Dana (Refund)',
+            'Refund',
+            'BGN',
             'Lain-lain',
         ];
 

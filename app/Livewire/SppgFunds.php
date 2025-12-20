@@ -24,14 +24,14 @@ class SppgFunds extends StatsOverviewWidget
     protected function getStats(): array
     {
         $user = Auth::user();
-        $isNational = $user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']);
+        $isNational = \Filament\Facades\Filament::getCurrentPanel()->getId() === 'admin';
         
         $balance = 0;
         $label = 'Dana SPPG';
         $desc = 'Saldo Dana SPPG';
 
         if ($isNational) {
-            // Calculate National Balance
+            // Calculate National Balance (Always Kornas Kas)
             $income = \App\Models\SppgIncomingFund::whereNull('sppg_id')->sum('amount');
             $expense = \App\Models\OperatingExpense::whereNull('sppg_id')->sum('amount');
             $balance = $income - $expense;
@@ -39,7 +39,7 @@ class SppgFunds extends StatsOverviewWidget
             $label = 'Dana Kas Kornas';
             $desc = 'Saldo Kas Kantor Nasional';
         } else {
-            // SPPG Logic
+            // SPPG Panel Logic: Always show specific SPPG balance
             $sppg = $user->hasRole('Kepala SPPG')
                 ? $user->sppgDikepalai
                 : $user->unitTugas->first();

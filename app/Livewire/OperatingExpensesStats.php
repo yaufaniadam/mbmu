@@ -25,17 +25,17 @@ class OperatingExpensesStats extends StatsOverviewWidget
     protected function getStats(): array
     {
         $user = Auth::user();
+        $panelId = \Filament\Facades\Filament::getCurrentPanel()->getId();
 
         // 1. Initialize variables
         $opsAmount = 0;
         $rentAmount = 0;
-        $showRentAndTotal = false; // By default, only show Ops (matches your admin logic)
+        $showRentAndTotal = false;
 
-        // 2. Logic for Local Roles (Kepala SPPG / PJ Pelaksana)
-        if ($user->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana'])) {
+        // 2. Logic for SPPG Panel (Always show local stats)
+        if ($panelId === 'sppg') {
             $showRentAndTotal = true;
 
-            // Determine SPPG based on role
             $sppg = $user->hasRole('Kepala SPPG')
                 ? $user->sppgDikepalai
                 : $user->unitTugas->first();
@@ -49,11 +49,10 @@ class OperatingExpensesStats extends StatsOverviewWidget
                     ->sum('amount');
             }
         }
-        // 3. Logic for Admin Roles
-        elseif ($user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Direktur Kornas'])) {
+        // 3. Logic for Admin Panel (Show National stats)
+        elseif ($panelId === 'admin') {
             $opsAmount = OperatingExpense::whereNull('sppg_id')->sum('amount');
         } else {
-            // If user has no relevant role, return empty
             return [];
         }
 

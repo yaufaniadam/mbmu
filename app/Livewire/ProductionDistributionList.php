@@ -69,7 +69,7 @@ class ProductionDistributionList extends TableWidget
                     ->label('Petugas Pengantar'),
             ])
             ->actions([
-                \Filament\Tables\Actions\Action::make('deliver')
+                \Filament\Actions\Action::make('deliver')
                     ->label('Antarkan')
                     ->icon('heroicon-m-truck')
                     ->color('primary')

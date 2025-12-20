@@ -53,6 +53,8 @@ class SppgPanelProvider extends PanelProvider
                 // FilamentInfoWidget::class,
             ])
             ->navigationGroups([
+                'Operasional',
+                'Data Master',
                 'Pengaturan',
             ])
             ->middleware([

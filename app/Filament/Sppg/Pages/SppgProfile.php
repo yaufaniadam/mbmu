@@ -26,6 +26,8 @@ class SppgProfile extends Page implements HasForms
 
     protected static ?string $navigationLabel = 'Profil SPPG';
 
+    protected static ?int $navigationSort = 1;
+
     protected ?string $heading = 'Profil SPPG';
 
     public ?array $data = [];

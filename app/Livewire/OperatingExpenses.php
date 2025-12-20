@@ -44,16 +44,20 @@ class OperatingExpenses extends TableWidget
             ->query(function (): Builder {
                 $query = OperatingExpense::query();
                 $user = Auth::user();
+                $panelId = \Filament\Facades\Filament::getCurrentPanel()->getId();
 
-                if ($user->hasRole('Kepala SPPG')) {
-                    return $query->where('sppg_id', $user->sppgDikepalai?->id);
+                if ($panelId === 'admin') {
+                    // National roles in Admin Panel: See 'Central' expenses (sppg_id = null)
+                    return $query->whereNull('sppg_id');
                 }
-                if ($user->hasRole('PJ Pelaksana')) {
-                    return $query->where('sppg_id', $user->unitTugas->first()?->id);
-                }
-                if ($user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas'])) {
-                    // National roles see ALL expenses
-                    return $query;
+
+                // Any role in SPPG panel: Scope to their assigned SPPG
+                $sppgId = $user->hasRole('Kepala SPPG')
+                    ? $user->sppgDikepalai?->id
+                    : $user->unitTugas->first()?->id;
+
+                if ($sppgId) {
+                    return $query->where('sppg_id', $sppgId);
                 }
 
                 return $query->whereRaw('1 = 0');
@@ -65,7 +69,7 @@ class OperatingExpenses extends TableWidget
                     ->color('gray')
                     ->searchable()
                     ->sortable()
-                    ->visible(fn () => Auth::user()->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas'])),
+                    ->visible(fn () => \Filament\Facades\Filament::getCurrentPanel()->getId() === 'admin'),
                 TextColumn::make('name')
                     ->label('Nama Pengeluaran')
                     ->searchable(),
@@ -87,7 +91,7 @@ class OperatingExpenses extends TableWidget
                     ->relationship('sppg', 'nama_sppg')
                     ->searchable()
                     ->preload()
-                    ->visible(fn () => Auth::user()->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas'])),
+                    ->visible(fn () => \Filament\Facades\Filament::getCurrentPanel()->getId() === 'admin'),
             ])
             ->recordActions([
                 // 1. View Image Action (Only visible if image)
@@ -205,6 +209,7 @@ class OperatingExpenses extends TableWidget
                 ->required()
                 ->searchable()
                 ->preload()
+                ->native(false)
                 ->createOptionForm([
                     TextInput::make('name')
                         ->label('Nama Kategori Baru')

@@ -12,6 +12,7 @@ use App\Filament\Sppg\Resources\Volunteers\Tables\VolunteersTable;
 use App\Models\User;
 use App\Models\Volunteer;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -24,6 +25,10 @@ class VolunteerResource extends Resource
     protected static ?string $model = Volunteer::class;
 
     protected static ?string $navigationLabel = 'Relawan';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Data Master';
+
+    protected static ?int $navigationSort = 3;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

@@ -41,16 +41,20 @@ class IncomingFunds extends TableWidget
             ->query(function (): Builder {
                 $query = SppgIncomingFund::query();
                 $user = Auth::user();
-
-                if ($user->hasRole('Kepala SPPG')) {
-                    return $query->where('sppg_id', $user->sppgDikepalai?->id);
-                }
-                if ($user->hasRole('PJ Pelaksana')) {
-                    return $query->where('sppg_id', $user->unitTugas->first()?->id);
-                }
-                if ($user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas'])) {
-                    // National roles: See 'Central' funds (sppg_id = null)
+                $panelId = \Filament\Facades\Filament::getCurrentPanel()->getId();
+                
+                if ($panelId === 'admin') {
+                    // National roles in Admin Panel: See 'Central' funds (sppg_id = null)
                     return $query->whereNull('sppg_id');
+                }
+
+                // Any role in SPPG panel: Scope to their assigned SPPG
+                $sppgId = $user->hasRole('Kepala SPPG')
+                    ? $user->sppgDikepalai?->id
+                    : $user->unitTugas->first()?->id;
+
+                if ($sppgId) {
+                    return $query->where('sppg_id', $sppgId);
                 }
 
                 return $query->whereRaw('1 = 0');
@@ -177,16 +181,32 @@ class IncomingFunds extends TableWidget
         return [
             Select::make('category_id')
                 ->label('Kategori Dana')
-                ->relationship('category', 'name')
+                ->relationship('category', 'name', function (Builder $query) {
+                    $panelId = \Filament\Facades\Filament::getCurrentPanel()->getId();
+                    if ($panelId === 'sppg') {
+                        return $query->whereIn('name', [
+                            'Lain-lain',
+                            'Bunga Bank / Jasa Giro',
+                            'Refund',
+                            'BGN'
+                        ]);
+                    }
+                    
+                    // Admin panel: Show central categories
+                    return $query->whereIn('name', [
+                        'Subsidi PP Muhammadiyah',
+                        'Donasi / Infaq',
+                        'Dana Talangan',
+                        'Setoran Lembaga Pengusul',
+                        'Bunga Bank / Jasa Giro',
+                        'Refund',
+                        'Lain-lain'
+                    ]);
+                })
                 ->required()
                 ->searchable()
                 ->preload()
-                ->createOptionForm([
-                    TextInput::make('name')
-                        ->label('Nama Kategori Baru')
-                        ->required()
-                        ->maxLength(255),
-                ]),
+                ->native(false),
 
             TextInput::make('source')
                 ->label('Keterangan Sumber (Pihak Pengirim)')
