@@ -37,7 +37,7 @@ class SppgFunds extends StatsOverviewWidget
             $balance = $income - $expense;
             
             $label = 'Dana Kas Kornas';
-            $desc = 'Saldo Kas Kantor Nasional';
+            $desc = 'Saldo Kas Koordinator Nasional';
         } else {
             // SPPG Panel Logic: Always show specific SPPG balance
             $sppg = $user->hasRole('Kepala SPPG')
