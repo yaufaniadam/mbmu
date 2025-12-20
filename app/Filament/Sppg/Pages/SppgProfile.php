@@ -30,7 +30,7 @@ class SppgProfile extends Page implements HasForms
 
     public ?array $data = [];
 
-    public Sppg $sppg;
+    public ?Sppg $sppg = null;
 
     public static function getNavigationIcon(): ?string
     {
@@ -60,9 +60,16 @@ class SppgProfile extends Page implements HasForms
             $this->sppg = User::find($user->id)->unitTugas->first();
         }
 
-        // dd($this->sppg->attributesToArray());
-
-        $this->form->fill($this->sppg->attributesToArray());
+        if ($this->sppg) {
+            $this->form->fill($this->sppg->attributesToArray());
+        } else {
+            // Handle empty state, maybe just empty form or notification
+             Notification::make()
+                ->title('Data SPPG Belum Ada')
+                ->body('Akun Anda belum terhubung dengan unit SPPG manapun.')
+                ->warning()
+                ->send();
+        }
     }
 
     public function getFormSchema(): array

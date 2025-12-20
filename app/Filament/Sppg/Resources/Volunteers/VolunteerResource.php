@@ -65,6 +65,10 @@ class VolunteerResource extends Resource
         if ($user->hasRole('Kepala SPPG')) {
             $sppg = User::find($user->id)->sppgDikepalai;
 
+            if (!$sppg) {
+                return parent::getEloquentQuery()->whereRaw('1 = 0');
+            }
+
             return parent::getEloquentQuery()->where('sppg_id', $sppg->id);
         }
 

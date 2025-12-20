@@ -32,7 +32,7 @@ class ProductionScheduleList extends TableWidget
                 $sppgId = $this->pageFilters['sppg_id'] ?? null;
 
                 if ($user->hasRole('Kepala SPPG')) {
-                    $sppgId = User::find($user->id)->sppgDikepalai->id;
+                    $sppgId = User::find($user->id)->sppgDikepalai?->id;
                 }
 
                 return ProductionSchedule::query()

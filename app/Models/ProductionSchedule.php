@@ -23,7 +23,7 @@ class ProductionSchedule extends Model
 
     public function verification()
     {
-        return $this->hasOne(FoodVerification::class, 'jadwal_produksi_id', 'id');
+        return $this->hasOne(ProductionVerification::class, 'production_schedule_id');
     }
 
     public function distributions()

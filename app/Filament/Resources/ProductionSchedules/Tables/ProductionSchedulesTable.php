@@ -64,6 +64,78 @@ class ProductionSchedulesTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                \Filament\Actions\Action::make('verify')
+                    ->label('Verifikasi')
+                    ->icon('heroicon-o-clipboard-document-check')
+                    ->color('success')
+                    ->visible(fn(ProductionSchedule $record) => \Illuminate\Support\Facades\Auth::user()->hasRole('Ahli Gizi') && !$record->verification)
+                    ->form(function () {
+                        $settings = \App\Models\ProductionVerificationSetting::first();
+                        $checklist = $settings?->checklist_data ?? [];
+
+                        $schema = [];
+                        foreach ($checklist as $item) {
+                            $label = $item['item_name'] ?? 'Kriteria';
+                            // Safe key for form data (replace spaces with underscores)
+                            $key = \Illuminate\Support\Str::slug($label); 
+
+                            $schema[] = \Filament\Forms\Components\Select::make("checklist_results.{$key}")
+                                ->label($label)
+                                ->options([
+                                    'Sesuai' => 'Sesuai',
+                                    'Tidak Sesuai' => 'Tidak Sesuai',
+                                    'Perlu Perbaikan' => 'Perlu Perbaikan'
+                                ])
+                                ->required()
+                                ->native(false);
+                        }
+                        
+                        $schema[] = \Filament\Forms\Components\Textarea::make('notes')
+                            ->label('Catatan Tambahan');
+
+                        return $schema;
+                    })
+                    ->action(function (ProductionSchedule $record, array $data) {
+                        // Re-map flat data back to array structure if needed, 
+                        // or just store as is if we changed the model to accept different structure.
+                        // But wait, the model expects 'checklist_results' as array of objects or just key-value?
+                        // The previous implementation used Repeater which stores array of checks.
+                        // Let's adapt data to match the Model's expectation.
+                        
+                        // We need to store it so it can be read back. 
+                        // Let's transform: ['checklist_results' => ['rasa' => 'Sesuai']] 
+                        // into [{'item': 'Rasa', 'status': 'Sesuai'}]?
+                        
+                        $settings = \App\Models\ProductionVerificationSetting::first();
+                        $originalChecklist = $settings?->checklist_data ?? [];
+                        
+                        $formattedResults = [];
+                        foreach ($originalChecklist as $item) {
+                            $label = $item['item_name'];
+                            $key = \Illuminate\Support\Str::slug($label);
+                            $status = $data['checklist_results'][$key] ?? null;
+                            
+                            $formattedResults[] = [
+                                'item' => $label,
+                                'status' => $status,
+                                'keterangan' => null
+                            ];
+                        }
+
+                        \App\Models\ProductionVerification::create([
+                            'production_schedule_id' => $record->id,
+                            'sppg_id' => $record->sppg_id,
+                            'user_id' => \Illuminate\Support\Facades\Auth::id(),
+                            'date' => now(),
+                            'checklist_results' => $formattedResults,
+                            'notes' => $data['notes'] ?? null,
+                        ]);
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Verifikasi Berhasil')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -48,14 +48,14 @@ class ProductionScheduleResource extends Resource
         // Kepala SPPG → Only show schedules for their SPPG
         if ($user->hasRole('Kepala SPPG')) {
             $sppg = $user->sppgDikepalai;
-            return ProductionSchedule::where([['sppg_id', '=', $sppg->id], ['status', '=', 'Menunggu ACC Kepala SPPG']])->count();
+            return $sppg ? ProductionSchedule::where([['sppg_id', '=', $sppg->id], ['status', '=', 'Menunggu ACC Kepala SPPG']])->count() : 0;
         }
 
         // PJ Pelaksana → Only schedules for their unit tugas
         if ($user->hasRole('PJ Pelaksana')) {
             $unitTugas = $user->unitTugas->first();
 
-            return ProductionSchedule::where([['sppg_id', '=', $unitTugas->id], ['status', '=', 'Menunggu ACC Kepala SPPG']])->count();
+            return $unitTugas ? ProductionSchedule::where([['sppg_id', '=', $unitTugas->id], ['status', '=', 'Menunggu ACC Kepala SPPG']])->count() : 0;
         }
 
         // Default → all schedules
@@ -236,6 +236,10 @@ class ProductionScheduleResource extends Resource
 
         if ($user->hasRole('Kepala SPPG')) {
             $sppg = User::find($user->id)->sppgDikepalai;
+            
+            if (!$sppg) {
+                return $query->whereRaw('1 = 0'); // Empty result if no SPPG
+            }
 
             return $query->where('sppg_id', $sppg->id);
         }
@@ -243,11 +247,19 @@ class ProductionScheduleResource extends Resource
         if ($user->hasRole('PJ Pelaksana')) {
             $unitTugas = User::find($user->id)->unitTugas->first();
 
+            if (!$unitTugas) {
+                return $query->whereRaw('1 = 0'); // Empty result if no Unit Tugas
+            }
+
             return $query->where('sppg_id', $unitTugas->id);
         }
 
         if ($user->hasRole('Pimpinan Lembaga Pengusul')) {
             $unitTugas = User::find($user->id)->lembagaDipimpin;
+
+            if (!$unitTugas) {
+                return $query->whereRaw('1 = 0'); // Empty result
+            }
 
             return $query->whereHas('sppg', function (Builder $query) use ($unitTugas) {
                 $query->where('lembaga_pengusul_id', $unitTugas->id);

@@ -57,19 +57,20 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
 
         $user = Auth::user();
 
-        if ($user->hasRole('Kepala SPPG')) {
-            $this->sppg = User::find($user->id)->sppgDikepalai;
-            $this->form->fill(['checklist_data' => $this->sppg->verificationSetting->checklist_data ?? []]);
-        } elseif ($user->hasRole('PJ Pelaksana')) {
-            $this->sppg = User::find($user->id)->unitTugas->first();
-            $this->form->fill(['checklist_data' => $this->sppg->verificationSetting->checklist_data ?? []]);
-        } elseif ($user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas'])) {
-            $checklist = ModelsProductionVerificationSetting::first()?->checklist_data;
-            $this->sppg = null; // Superadmin and Kornas staff do not have a specific SPPG
-            $this->form->fill(['checklist_data' => $checklist ?? []]);
-        } else {
-            abort(403, 'Unauthorized action.');
+        // STRICT CHECK: Only National Roles can access this Settings Page
+        if (! $user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas', 'Staf Akuntan Kornas'])) {
+             abort(403, 'Halaman ini khusus untuk pengaturan kriteria verifikasi oleh tingkat Pusat (Kornas).');
         }
+
+        // Load Global Settings
+        $globalSetting = ModelsProductionVerificationSetting::first();
+        
+        // If not exists, maybe create one or just empty
+        $this->productionVerificationSetting = $globalSetting ?? new ModelsProductionVerificationSetting();
+        
+        $this->form->fill([
+            'checklist_data' => $globalSetting?->checklist_data ?? []
+        ]);
     }
 
     public function getFormSchema(): array

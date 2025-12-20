@@ -30,5 +30,15 @@ class DatabaseSeeder extends Seeder
             LembagaPengusulSeeder::class,
          ]);
 
+         // Post-Seeding: Link Kepala SPPG Users to Sppg Records
+         $sppgs = \App\Models\Sppg::all();
+         $kepalaSppgUsers = \App\Models\User::role('Kepala SPPG')->get();
+
+         foreach ($sppgs as $index => $sppg) {
+             if (isset($kepalaSppgUsers[$index])) {
+                 $sppg->update(['kepala_sppg_id' => $kepalaSppgUsers[$index]->id]);
+             }
+         }
+
     }
 }
