@@ -14,5 +14,26 @@ class AuthServiceProvider extends ServiceProvider
         Gate::before(function ($user, $ability) {
             return $user->hasRole('Superadmin') ? true : null;
         });
+
+        Gate::define('View:ManageFinance', function ($user) {
+            return $user->hasAnyRole([
+                'Pimpinan Lembaga Pengusul',
+                'Kepala SPPG',
+                'PJ Pelaksana',
+                'Staf Kornas',
+                'Direktur Kornas',
+                'Staf Akuntan Kornas' // Added new role
+            ]);
+        });
+
+        Gate::define('View:ProductionVerificationSetting', function ($user) {
+            return $user->hasAnyRole([
+                'Kepala SPPG',
+                'PJ Pelaksana',
+                'Superadmin',
+                'Direktur Kornas',
+                'Staf Kornas'
+            ]);
+        });
     }
 }
