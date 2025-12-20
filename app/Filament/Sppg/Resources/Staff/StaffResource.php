@@ -71,6 +71,19 @@ class StaffResource extends Resource
                 });
         }
 
+        if ($user->hasRole('Staf Administrator SPPG')) {
+            $unitTugas = User::find($user->id)->unitTugas->first();
+
+            if (!$unitTugas) {
+                return parent::getEloquentQuery()->whereRaw('1 = 0');
+            }
+
+            return parent::getEloquentQuery()
+                ->whereHas('unitTugas', function (Builder $query) use ($unitTugas) {
+                    $query->where('sppg_id', $unitTugas->id);
+                });
+        }
+
         return parent::getEloquentQuery();
     }
 }

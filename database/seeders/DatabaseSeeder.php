@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             DistrictsSeeder::class,
             VillagesSeeder::class,
             SppgSeeder::class,
+            ProductionVerificationSettingSeeder::class, // Added this line
             RolePermissionSeeder::class,
             LembagaPengusulSeeder::class,
          ]);

@@ -2,7 +2,7 @@
 
 namespace App\Filament\Production\Pages;
 
-use App\Models\FoodVerification;
+use App\Models\ProductionVerification;
 use App\Models\ProductionSchedule;
 use App\Models\ProductionVerificationSetting;
 use Filament\Forms\Components\Checkbox;
@@ -34,7 +34,7 @@ class Verify extends Page implements HasForms
 
     protected bool $isEditable = true;
 
-    protected ?FoodVerification $verificationNote = null;
+    protected ?ProductionVerification $verificationNote = null;
 
     public function getLayout(): string
     {
@@ -62,7 +62,11 @@ class Verify extends Page implements HasForms
         Gate::authorize('View:Verify');
 
         $user = Auth::user();
-        $organizationId = $user->unitTugas()->first()->id;
+        $organizationId = $user->unitTugas()->first()?->id;
+
+        if (!$organizationId) {
+             abort(403, 'Anda belum terdaftar di unit tugas manapun.');
+        }
 
         $this->record = ProductionSchedule::where('sppg_id', $organizationId)
             ->latest()
@@ -70,7 +74,7 @@ class Verify extends Page implements HasForms
 
         if (! $this->record) {
             Notification::make()
-                ->title('Data tidak ditemukan.')
+                ->title('Jadwal produksi tidak ditemukan.')
                 ->danger()
                 ->send();
 
@@ -78,48 +82,35 @@ class Verify extends Page implements HasForms
         }
 
         $this->isEditable = $this->record->status === 'Direncanakan';
-        $this->verificationNote = FoodVerification::where('jadwal_produksi_id', $this->record->id)->latest()->first();
+        $this->verificationNote = $this->record->verification;
 
-        // --- LOGIKA DAFTAR PERIKSA BARU DIMULAI ---
-
-        // 1. Dapatkan templat daftar periksa dari Pengaturan
-        // $setting = ProductionVerificationSetting::firstWhere('sppg_id', $this->record->sppg_id);
+        // 1. Get template
         $setting = ProductionVerificationSetting::first();
         $templateItems = $setting?->checklist_data ?? [];
 
-        // 2. Dapatkan data daftar periksa yang tersimpan dari verifikasi ini
-        $savedItems = $this->verificationNote?->checklist_data ?? [];
+        // 2. Get saved results
+        $savedResults = $this->verificationNote?->checklist_results ?? [];
 
-        // 3. Gabungkan keduanya (LOGIKA DIPERBARUI)
+        // 3. Merge
         $finalChecklistData = [];
         foreach ($templateItems as $templateItem) {
             $itemName = $templateItem['item_name'];
-            $savedItem = collect($savedItems)->firstWhere('item_name', $itemName);
+            $savedItem = collect($savedResults)->firstWhere('item', $itemName);
 
-            // --- PERBAIKAN DI SINI ---
-            // Kita ubah menjadi BOOELAN untuk Toggle, bukan string.
-            $isChecked = false; // Default baru adalah boolean false
-            if ($savedItem) {
-                if (isset($savedItem['checked'])) {
-                    // Konversi string "true" yang disimpan menjadi boolean true
-                    $isChecked = $savedItem['checked'] === 'true';
-                } elseif (isset($savedItem['is_verified'])) {
-                    // Konversi data boolean lama
-                    $isChecked = (bool) $savedItem['is_verified'];
-                }
-            }
-
+            // In our new simplified mobile UI for field staff, we use discrete status
+            // mapping from boolean toggle to 'Sesuai' / 'Tidak Sesuai' if needed
+            // But let's keep it simple: Sesuai (checked) or Tidak Sesuai (unchecked)
+            $status = $savedItem['status'] ?? 'Tidak Sesuai';
+            
             $finalChecklistData[] = [
                 'item_name' => $itemName,
-                'checked' => $isChecked, // <-- Key 'checked' sekarang berisi boolean
-                'catatan_item' => $savedItem['catatan_item'] ?? null,
+                'checked' => $status === 'Sesuai', 
+                'catatan_item' => $savedItem['keterangan'] ?? null,
             ];
         }
-        // --- LOGIKA DAFTAR PERIKSA BARU BERAKHIR ---
 
         $this->form->fill([
-            'status' => $this->record->status,
-            'catatan' => $this->verificationNote?->catatan,
+            'notes' => $this->verificationNote?->notes,
             'checklist_data' => $finalChecklistData,
         ]);
     }
@@ -127,43 +118,16 @@ class Verify extends Page implements HasForms
     public function getFormSchema(): array
     {
         return [
-            // Radio::make('status')
-            //     ->label('Status Verifikasi')
-            //     ->options([
-            //         'Ditolak' => 'Ditolak',
-            //         'Terverifikasi' => 'Terverifikasi',
-            //     ])
-            //     ->inline()
-            //     ->live()
-            //     ->required()
-            //     // disabled depends on the record's current status
-            //     ->disabled(fn () => $this->record && $this->record->status !== 'Direncanakan')
-            //     ->afterStateUpdated(function ($state, Set $set) {
-            //         if ($state !== 'Ditolak') {
-            //             $set('catatan', null);
-            //         }
-            //     }),
-
-            Textarea::make('catatan')
-                ->label('Catatan (wajib jika ditolak)')
-                ->columnSpanFull()
-                ->visible(fn(Get $get) => $get('status') === 'Ditolak')
-                ->required(fn(Get $get) => $get('status') === 'Ditolak')
-                ->disabled(fn() => $this->record && $this->record->status !== 'Direncanakan'),
-
-            // --- 8. REPEATER DAFTAR PERIKSA BARU ---
             Section::make('Daftar Periksa Verifikasi')
                 ->schema([
                     Repeater::make('checklist_data')
                         ->label('Item Verifikasi')
                         ->schema([
-                            // ... (schema internal Repeater tidak berubah)
                             Hidden::make('item_name'),
 
                             Checkbox::make('checked')
                                 ->label(fn(Get $get): string => $get('item_name') ?? 'Item')
-                                ->disabled(! $this->isEditable)
-                                ->dehydrateStateUsing(fn($state): string => $state ? 'true' : 'false'),
+                                ->disabled(! $this->isEditable),
 
                             Textarea::make('catatan_item')
                                 ->label('Catatan Item')
@@ -171,17 +135,20 @@ class Verify extends Page implements HasForms
                                 ->columnSpanFull()
                                 ->disabled(! $this->isEditable),
                         ])
-                        // ... (addable, deletable, dll. tidak berubah)
                         ->addable(false)
                         ->deletable(false)
                         ->reorderable(false)
                         ->columnSpanFull()
                         ->grid(1)
                         ->compact(),
-                    // --- AKHIR TAMBAHAN ---
-
                 ])
                 ->hidden(fn() => ! $this->record),
+
+            Textarea::make('notes')
+                ->label('Catatan Evaluasi Keseluruhan')
+                ->placeholder('Misal: Ok semua, atau ada catatan tertentu...')
+                ->columnSpanFull()
+                ->disabled(! $this->isEditable),
         ];
     }
 
@@ -199,40 +166,38 @@ class Verify extends Page implements HasForms
         $data = $this->form->getState();
         $user = Auth::user();
 
-        // --- TAMBAHAN BARU DI SINI ---
-        // Kita akan menyusun ulang array secara manual di sini
+        // Map to ProductionVerification format
         $checklistData = $data['checklist_data'] ?? [];
-        $reorderedChecklistData = collect($checklistData)->map(fn($item) => [
-            'item_name' => $item['item_name'] ?? null,
-            'checked' => $item['checked'] ?? 'false',
-            'catatan_item' => $item['catatan_item'] ?? null,
-        ])->all();
-        // --- AKHIR TAMBAHAN ---
+        $formattedResults = [];
+        foreach ($checklistData as $item) {
+            $formattedResults[] = [
+                'item' => $item['item_name'],
+                'status' => $item['checked'] ? 'Sesuai' : 'Tidak Sesuai',
+                'keterangan' => $item['catatan_item'] ?? null,
+            ];
+        }
 
-        $this->record->update([
-            'status' => 'Menunggu ACC Kepala SPPG',
-        ]);
-
-        FoodVerification::updateOrCreate(
-            ['jadwal_produksi_id' => $this->record->id],
+        ProductionVerification::updateOrCreate(
+            ['production_schedule_id' => $this->record->id],
             [
+                'sppg_id' => $this->record->sppg_id,
                 'user_id' => $user->id,
-                'catatan' => $data['catatan'] ?? null,
-                'checklist_data' => $reorderedChecklistData, // <-- Menggunakan variabel yang baru
+                'date' => now(),
+                'checklist_results' => $formattedResults,
+                'notes' => $data['notes'] ?? null,
             ]
         );
 
+        $this->record->update([
+            'status' => 'Terverifikasi',
+        ]);
+
         Notification::make()
-            ->title('Data berhasil diperbarui!')
+            ->title('Evaluasi Mandiri Berhasil Disimpan!')
             ->success()
             ->send();
 
-        // ... (sisa metode save tidak berubah)
         $this->record->refresh();
-        $this->verificationNote = FoodVerification::where('jadwal_produksi_id', $this->record->id)->latest()->first();
-        $thisId = $this->isEditable = $this->record->status === 'Direncanakan';
-
-        // Panggil mount() lagi untuk memuat ulang data
         $this->mount();
     }
 }

@@ -42,8 +42,8 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
 
     public static function shouldRegisterNavigation(): bool
     {
-        // This checks the permission you just generated
-        return auth()->user()->can('View:ProductionVerificationSetting');
+        return \Filament\Facades\Filament::getCurrentPanel()?->getId() === 'admin' && 
+               auth()->user()->can('View:ProductionVerificationSetting');
     }
 
     public function getFormStatePath(): string
@@ -53,11 +53,16 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
 
     public function mount(): void
     {
+        // STRICT PANEL CHECK: Only allow access from the 'admin' panel.
+        if (\Filament\Facades\Filament::getCurrentPanel()?->getId() !== 'admin') {
+            abort(403, 'Akses ditolak. Pengaturan ini hanya dapat diakses melalui panel Admin Pusat.');
+        }
+
         Gate::authorize('View:ProductionVerificationSetting');
 
         $user = Auth::user();
 
-        // STRICT CHECK: Only National Roles can access this Settings Page
+        // STRICT ROLE CHECK: Only National Roles can access this Settings Page
         if (! $user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas', 'Staf Akuntan Kornas'])) {
              abort(403, 'Halaman ini khusus untuk pengaturan kriteria verifikasi oleh tingkat Pusat (Kornas).');
         }

@@ -25,7 +25,7 @@ class SppgStatsOverview extends StatsOverviewWidget
 
         if ($user->hasRole('Kepala SPPG')) {
             $sppg = User::find($user->id)->sppgDikepalai;
-        } elseif ($user->hasRole('PJ Pelaksana')) {
+        } elseif ($user->hasAnyRole(['PJ Pelaksana', 'Ahli Gizi', 'Staf Administrator SPPG', 'Staf Akuntan', 'Staf Gizi', 'Staf Pengantaran'])) {
             $sppg = User::find($user->id)->unitTugas->first();
         } else {
             $sppgId = $this->pageFilters['sppg_id'] ?? null;

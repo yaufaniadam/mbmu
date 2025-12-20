@@ -93,12 +93,12 @@ class ManageFinance extends Page implements HasForms
         }
 
         return match ($tab) {
-            'pay' => $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana']),
-            'transaction' => $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana']),
+            'pay' => $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']),
+            'transaction' => $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']),
             'verify' => $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
             'incoming_payment' => $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
-            'operating_expenses' => $user->hasAnyRole(['Kepala SPPG', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
-            'incoming_funds' => $user->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
+            'operating_expenses' => $user->hasAnyRole(['Kepala SPPG', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
+            'incoming_funds' => $user->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
             default => false,
         };
     }

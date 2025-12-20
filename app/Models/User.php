@@ -28,6 +28,7 @@ class User extends Authenticatable
         'alamat',
         'nik',
         'gender',
+        'photo_path',
         // Tambahkan 'sppg_id' jika Anda menggunakannya sebagai SPPG "utama" atau "asal" user.
         // Ini opsional, karena peran utama ditentukan oleh relasi.
         // 'sppg_id',

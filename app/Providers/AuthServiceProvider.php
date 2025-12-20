@@ -22,7 +22,30 @@ class AuthServiceProvider extends ServiceProvider
                 'PJ Pelaksana',
                 'Staf Kornas',
                 'Direktur Kornas',
-                'Staf Akuntan Kornas' // Added new role
+                'Staf Akuntan Kornas',
+                'Staf Akuntan'
+            ]);
+        });
+
+        Gate::define('View:Verify', function ($user) {
+            return $user->hasAnyRole([
+                'Ahli Gizi',
+                'Staf Gizi',
+                'Superadmin'
+            ]);
+        });
+
+        Gate::define('View:Distribution', function ($user) {
+            return $user->hasAnyRole([
+                'Staf Pengantaran',
+                'Superadmin'
+            ]);
+        });
+
+        Gate::define('View:Delivery', function ($user) {
+            return $user->hasAnyRole([
+                'Staf Pengantaran',
+                'Superadmin'
             ]);
         });
 

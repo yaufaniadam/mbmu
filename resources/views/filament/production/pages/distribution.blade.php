@@ -46,12 +46,12 @@
 
                 <span class="col-span-3">Jumlah Porsi Besar :</span>
                 <span class="col-span-4">
-                    {{ $record->getTotalPorsiBesarAttribute() }} Porsi
+                    {{ $record->total_porsi_besar }} Porsi
                 </span>
 
                 <span class="col-span-3">Jumlah Porsi Kecil :</span>
                 <span class="col-span-4">
-                    {{ $record->getTotalPorsiKecilAttribute() }} Porsi
+                    {{ $record->total_porsi_kecil }} Porsi
                 </span>
 
             </div>

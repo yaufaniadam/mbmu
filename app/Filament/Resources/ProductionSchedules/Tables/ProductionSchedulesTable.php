@@ -64,11 +64,11 @@ class ProductionSchedulesTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                \Filament\Actions\Action::make('verify')
-                    ->label('Verifikasi')
+                \Filament\Actions\Action::make('evaluate')
+                    ->label('Evaluasi')
                     ->icon('heroicon-o-clipboard-document-check')
                     ->color('success')
-                    ->visible(fn(ProductionSchedule $record) => \Illuminate\Support\Facades\Auth::user()->hasRole('Ahli Gizi') && !$record->verification)
+                    ->visible(fn(ProductionSchedule $record) => \Illuminate\Support\Facades\Auth::user()->hasAnyRole(['Ahli Gizi', 'Staf Gizi']) && !$record->verification)
                     ->form(function () {
                         $settings = \App\Models\ProductionVerificationSetting::first();
                         $checklist = $settings?->checklist_data ?? [];
@@ -76,7 +76,6 @@ class ProductionSchedulesTable
                         $schema = [];
                         foreach ($checklist as $item) {
                             $label = $item['item_name'] ?? 'Kriteria';
-                            // Safe key for form data (replace spaces with underscores)
                             $key = \Illuminate\Support\Str::slug($label); 
 
                             $schema[] = \Filament\Forms\Components\Select::make("checklist_results.{$key}")
@@ -96,16 +95,6 @@ class ProductionSchedulesTable
                         return $schema;
                     })
                     ->action(function (ProductionSchedule $record, array $data) {
-                        // Re-map flat data back to array structure if needed, 
-                        // or just store as is if we changed the model to accept different structure.
-                        // But wait, the model expects 'checklist_results' as array of objects or just key-value?
-                        // The previous implementation used Repeater which stores array of checks.
-                        // Let's adapt data to match the Model's expectation.
-                        
-                        // We need to store it so it can be read back. 
-                        // Let's transform: ['checklist_results' => ['rasa' => 'Sesuai']] 
-                        // into [{'item': 'Rasa', 'status': 'Sesuai'}]?
-                        
                         $settings = \App\Models\ProductionVerificationSetting::first();
                         $originalChecklist = $settings?->checklist_data ?? [];
                         
@@ -131,11 +120,24 @@ class ProductionSchedulesTable
                             'notes' => $data['notes'] ?? null,
                         ]);
 
+                        // Update status to indicate evaluation is done
+                        $record->update(['status' => 'Terverifikasi']);
+
                         \Filament\Notifications\Notification::make()
-                            ->title('Verifikasi Berhasil')
+                            ->title('Evaluasi Berhasil Disimpan')
                             ->success()
                             ->send();
                     }),
+                \Filament\Actions\Action::make('view_evaluation')
+                    ->label('Lihat Evaluasi')
+                    ->icon('heroicon-o-document-magnifying-glass')
+                    ->color('info')
+                    ->visible(fn(ProductionSchedule $record) => $record->verification !== null)
+                    ->infolist(function (\Filament\Schemas\Schema $schema) {
+                        return \App\Filament\Resources\ProductionSchedules\Schemas\ProductionScheduleInfolist::configure($schema);
+                    })
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Tutup'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

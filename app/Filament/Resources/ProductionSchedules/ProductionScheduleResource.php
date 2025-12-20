@@ -244,7 +244,7 @@ class ProductionScheduleResource extends Resource
             return $query->where('sppg_id', $sppg->id);
         }
 
-        if ($user->hasRole('PJ Pelaksana')) {
+        if ($user->hasAnyRole(['PJ Pelaksana', 'Ahli Gizi', 'Staf Administrator SPPG', 'Staf Akuntan', 'Staf Gizi', 'Staf Pengantaran'])) {
             $unitTugas = User::find($user->id)->unitTugas->first();
 
             if (!$unitTugas) {

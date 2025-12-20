@@ -28,6 +28,8 @@ class ProductionVerificationResource extends Resource
 
     protected static ?string $navigationLabel = 'Evaluasi Mandiri';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string|UnitEnum|null $navigationGroup = 'Operasional';
     
     protected static ?int $navigationSort = 2;
@@ -94,7 +96,7 @@ class ProductionVerificationResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                \Filament\Actions\ViewAction::make(),
                 // Tables\Actions\EditAction::make(), // Maybe allow edit?
             ])
             ->bulkActions([

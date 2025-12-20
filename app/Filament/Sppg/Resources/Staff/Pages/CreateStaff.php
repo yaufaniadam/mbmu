@@ -49,7 +49,6 @@ class CreateStaff extends CreateRecord
             ]);
         }
 
-        $data['password'] = 'p4$$w0rd'; // Set default password
         return $data;
     }
 
@@ -61,12 +60,29 @@ class CreateStaff extends CreateRecord
         $sppgId = $user->sppgDiKepalai?->id;
 
         if ($sppgId) {
-            DB::table('sppg_user_roles')->insert(
-                [
-                    'user_id' => $record->id,
-                    'sppg_id' => $sppgId,
-                ],
-            );
+            // Get the roles that were just assigned to the user (via the form's relationship field)
+            $roles = $record->roles; 
+
+            foreach ($roles as $role) {
+                // Check if this specific user-role-sppg combination already exists to avoid duplicates
+                // (though insert usually throws error on unique constraint, here we use insert or first check)
+                
+                $exists = DB::table('sppg_user_roles')
+                    ->where('user_id', $record->id)
+                    ->where('sppg_id', $sppgId)
+                    ->where('role_id', $role->id)
+                    ->exists();
+
+                if (!$exists) {
+                    DB::table('sppg_user_roles')->insert([
+                        'user_id' => $record->id,
+                        'sppg_id' => $sppgId,
+                        'role_id' => $role->id,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
         }
         // if ($organizationId) {
         //     DB::table('sppg_user_roles')->upsert(

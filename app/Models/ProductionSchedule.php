@@ -34,7 +34,7 @@ class ProductionSchedule extends Model
     /**
      * Get the total 'jumlah_porsi_besar' from all related distributions.
      */
-    protected function totalPorsiBesar(): \Illuminate\Database\Eloquent\Casts\Attribute
+    public function totalPorsiBesar(): \Illuminate\Database\Eloquent\Casts\Attribute
     {
         return \Illuminate\Database\Eloquent\Casts\Attribute::make(
             get: fn() => $this->distributions->sum('jumlah_porsi_besar'),
@@ -44,7 +44,7 @@ class ProductionSchedule extends Model
     /**
      * Get the total 'jumlah_porsi_kecil' from all related distributions.
      */
-    protected function totalPorsiKecil(): \Illuminate\Database\Eloquent\Casts\Attribute
+    public function totalPorsiKecil(): \Illuminate\Database\Eloquent\Casts\Attribute
     {
         return \Illuminate\Database\Eloquent\Casts\Attribute::make(
             get: fn() => $this->distributions->sum('jumlah_porsi_kecil'),

@@ -16,7 +16,15 @@ class CanAccessSppgPanel
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana'])) {
+        if (Auth::check() && Auth::user()->hasAnyRole([
+            'Kepala SPPG', 
+            'PJ Pelaksana', 
+            'Ahli Gizi', 
+            'Staf Administrator SPPG', 
+            'Staf Akuntan', 
+            'Staf Gizi', 
+            'Staf Pengantaran'
+        ])) {
             return $next($request);
         }
 
