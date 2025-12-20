@@ -45,7 +45,7 @@
 
         {{-- Tab 5: Dana Masuk --}}
         {{-- Only show this tab to Sppg --}}
-        @if (auth()->user()->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana']))
+        @if (auth()->user()->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Kornas', 'Direktur Kornas']))
             <x-filament::tabs.item :active="$activeTab === 'incoming_funds'" wire:click="$set('activeTab', 'incoming_funds')"
                 icon="heroicon-o-banknotes">
                 Dana Masuk

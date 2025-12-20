@@ -98,6 +98,7 @@ class ManageFinance extends Page implements HasForms
             'verify' => $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Direktur Kornas']),
             'incoming_payment' => $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Direktur Kornas']),
             'operating_expenses' => $user->hasAnyRole(['Kepala SPPG', 'Staf Kornas', 'Direktur Kornas']),
+            'incoming_funds' => $user->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Kornas', 'Direktur Kornas']),
             default => false,
         };
     }

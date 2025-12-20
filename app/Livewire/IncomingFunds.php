@@ -27,6 +27,9 @@ class IncomingFunds extends TableWidget
         return Auth::user()->hasAnyRole([
             'Kepala SPPG',
             'PJ Pelaksana',
+            'Superadmin',
+            'Staf Kornas',
+            'Direktur Kornas',
         ]);
     }
 
@@ -44,7 +47,7 @@ class IncomingFunds extends TableWidget
                     return $query->where('sppg_id', $user->unitTugas->first()?->id);
                 }
                 if ($user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Direktur Kornas'])) {
-                    // Assuming Admins see 'Central' funds (sppg_id = null)
+                    // National roles: See 'Central' funds (sppg_id = null)
                     return $query->whereNull('sppg_id');
                 }
 
@@ -152,6 +155,7 @@ class IncomingFunds extends TableWidget
                         } elseif ($user->hasRole('PJ Pelaksana')) {
                             $sppgId = $user->unitTugas->first()?->id;
                         }
+                        // National roles (Staf Ag) will have $sppgId = null, which is correct for Central funds
 
                         if ($sppgId) {
                             $data['sppg_id'] = $sppgId;
