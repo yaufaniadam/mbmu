@@ -18,37 +18,50 @@ class SppgStatsOverview extends StatsOverviewWidget
 
     protected function getStats(): array
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         $sppg = null;
+        $isNationalView = false;
+
         if ($user->hasRole('Kepala SPPG')) {
             $sppg = User::find($user->id)->sppgDikepalai;
         } elseif ($user->hasRole('PJ Pelaksana')) {
             $sppg = User::find($user->id)->unitTugas->first();
         } else {
-            // if ($this->pageFilters['sppg_id']) {
-            $sppg = Sppg::find($this->pageFilters['sppg_id']);
-            // } else {
-            //     $sppg = User::find($user->id)->lembagaDipimpin->sppgs->first();
-            // }
+            $sppgId = $this->pageFilters['sppg_id'] ?? null;
+            if ($sppgId) {
+                $sppg = Sppg::find($sppgId);
+            } else {
+                $isNationalView = true;
+            }
         }
 
-        if ($sppg) {
+        if ($isNationalView) {
+            $distributions = \App\Models\Distribution::count();
+            $productions = \App\Models\ProductionSchedule::count();
+            $sppgCount = Sppg::count();
+        } else if ($sppg) {
             $distributions = $sppg->distributions()->count();
             $productions = $sppg->productionSchedules()->count();
         }
 
         return [
-            Stat::make('SPPG', $sppg->nama_sppg ?? 'N/A')
-                ->icon('heroicon-o-home', IconPosition::Before)
-                ->description($sppg->kepalaSppg->name ?? 'Tidak ada kepala SPPG')
-                ->color('secondary'),
+            $isNationalView
+                ? Stat::make('Total SPPG Terdaftar', $sppgCount ?? 0)
+                    ->icon('heroicon-o-home-modern', IconPosition::Before)
+                    ->description('Seluruh Indonesia')
+                    ->color('primary')
+                : Stat::make('SPPG', $sppg->nama_sppg ?? 'N/A')
+                    ->icon('heroicon-o-home', IconPosition::Before)
+                    ->description($sppg->kepalaSppg->name ?? 'Tidak ada kepala SPPG')
+                    ->color('secondary'),
             Stat::make('Pengantaran', $distributions ?? 0)
                 ->icon('heroicon-o-truck', IconPosition::Before)
-                ->description('pengantaran selesai')
+                ->description($isNationalView ? 'Total pengantaran nasional' : 'pengantaran selesai')
                 ->color('secondary'),
             Stat::make('Produksi', $productions ?? 0)
                 ->icon('heroicon-o-home-modern', IconPosition::Before)
-                ->description('produksi selesai')
+                ->description($isNationalView ? 'Total produksi nasional' : 'produksi selesai')
                 ->color('secondary'),
         ];
     }

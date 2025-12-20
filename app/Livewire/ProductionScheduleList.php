@@ -26,9 +26,10 @@ class ProductionScheduleList extends TableWidget
         return $table
             // <-- 3. MODIFY THE QUERY TO USE FILTERS
             ->query(function (): Builder {
+                /** @var \App\Models\User $user */
                 $user = Auth::user();
 
-                $sppgId = $this->filters['sppg_id'] ?? null;
+                $sppgId = $this->pageFilters['sppg_id'] ?? null;
 
                 if ($user->hasRole('Kepala SPPG')) {
                     $sppgId = User::find($user->id)->sppgDikepalai->id;
@@ -37,10 +38,7 @@ class ProductionScheduleList extends TableWidget
                 return ProductionSchedule::query()
                     ->when(
                         $sppgId,
-                        // If $sppgId exists, filter by it
-                        fn ($query) => $query->where('sppg_id', $sppgId),
-                        // If no SPPG is selected, show nothing
-                        fn ($query) => $query->whereRaw('1 = 0')
+                        fn ($query) => $query->where('sppg_id', $sppgId)
                     )
                     ->latest('tanggal'); // Show newest first
             })

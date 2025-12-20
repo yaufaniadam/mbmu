@@ -27,6 +27,7 @@ class RolePermissionSeeder extends Seeder
             'manage-sppg',
             'manage-all-users',
             'manage-roles',
+            'manage-lembaga-pengusul',
 
             // Manajemen Data SPPG (oleh Kepala SPPG)
             'manage-sppg-users',
@@ -51,51 +52,71 @@ class RolePermissionSeeder extends Seeder
         }
 
         // 3. Buat Roles (Peran Pengguna)
-        $superadminRole = Role::firstOrCreate(['name' => 'Superadmin']);
-        $direkturKornasRole = Role::firstOrCreate(['name' => 'Direktur Kornas']);
-        $stafKornasRole = Role::firstOrCreate(['name' => 'Staf Kornas']);
-        $kepalaSppgRole = Role::firstOrCreate(['name' => 'Kepala SPPG']);
-        $stafAdminSppgRole = Role::firstOrCreate(['name' => 'Staf Administrator SPPG']);
-        $stafGiziRole = Role::firstOrCreate(['name' => 'Staf Gizi']);
-        $stafPengantaranRole = Role::firstOrCreate(['name' => 'Staf Pengantaran']);
-        $stafAkuntanRole = Role::firstOrCreate(['name' => 'Staf Akuntan']);
-        // === PERAN BARU ===
-        $pjPelaksanaRole = Role::firstOrCreate(['name' => 'PJ Pelaksana']);
-        $penerimaKuasaRole = Role::firstOrCreate(['name' => 'Penerima Kuasa']);
-        $pimpinanPengusulRole = Role::firstOrCreate(['name' => 'Pimpinan Lembaga Pengusul']);
+        $roles = [
+            'Superadmin',
+            'Direktur Kornas',
+            'Staf Kornas',
+            'Pimpinan Lembaga Pengusul',
+            'Kepala SPPG',
+            'PJ Pelaksana',
+            'Penerima Kuasa',
+            'Staf Administrator SPPG',
+            'Staf Gizi',
+            'Staf Akuntan',
+            'Staf Pengantaran',
+        ];
+
+        $roleModels = [];
+        foreach ($roles as $roleName) {
+            $roleModels[$roleName] = Role::firstOrCreate(['name' => $roleName]);
+        }
 
         // 4. Berikan Permissions ke Roles
-        // Superadmin mendapatkan semua akses via AuthServiceProvider
-
         // Direktur Kornas
-        $direkturKornasRole->syncPermissions(['view-national-dashboard', 'view-national-reports']);
+        $roleModels['Direktur Kornas']->syncPermissions(['view-national-dashboard', 'view-national-reports']);
 
         // Staf Kornas
-        $stafKornasRole->syncPermissions(['view-national-dashboard', 'view-national-reports', 'manage-sppg', 'manage-all-users', 'confirm-kornas-deposit']);
+        $roleModels['Staf Kornas']->syncPermissions([
+            'view-national-dashboard',
+            'view-national-reports',
+            'manage-sppg',
+            'manage-all-users',
+            'manage-lembaga-pengusul',
+            'confirm-kornas-deposit'
+        ]);
+
+        // Pimpinan Lembaga Pengusul
+        $roleModels['Pimpinan Lembaga Pengusul']->syncPermissions(['view-sppg-dashboard', 'view-sppg-reports']);
 
         // Kepala SPPG
-        $kepalaSppgRole->syncPermissions(['view-sppg-dashboard', 'manage-sppg-users', 'manage-sppg-mitra', 'manage-sppg-sekolah', 'manage-sppg-relawan', 'manage-jadwal-produksi', 'view-sppg-reports', 'manage-sppg-finance']);
+        $roleModels['Kepala SPPG']->syncPermissions([
+            'view-sppg-dashboard',
+            'manage-sppg-users',
+            'manage-sppg-mitra',
+            'manage-sppg-sekolah',
+            'manage-sppg-relawan',
+            'manage-jadwal-produksi',
+            'view-sppg-reports',
+            'manage-sppg-finance'
+        ]);
+
+        // PJ Pelaksana
+        $roleModels['PJ Pelaksana']->syncPermissions(['view-sppg-dashboard', 'view-sppg-reports']);
+
+        // Penerima Kuasa
+        $roleModels['Penerima Kuasa']->syncPermissions(['view-sppg-dashboard', 'view-sppg-reports']);
 
         // Staf Administrator SPPG
-        $stafAdminSppgRole->syncPermissions(['view-sppg-dashboard', 'manage-jadwal-produksi']);
+        $roleModels['Staf Administrator SPPG']->syncPermissions(['view-sppg-dashboard', 'manage-jadwal-produksi']);
 
         // Staf Gizi
-        $stafGiziRole->syncPermissions(['perform-verifikasi-pangan']);
-
-        // Staf Pengantaran
-        $stafPengantaranRole->syncPermissions(['confirm-distribusi']);
+        $roleModels['Staf Gizi']->syncPermissions(['perform-verifikasi-pangan', 'view-sppg-dashboard']);
 
         // Staf Akuntan
-        $stafAkuntanRole->syncPermissions(['view-sppg-reports', 'manage-sppg-finance']);
+        $roleModels['Staf Akuntan']->syncPermissions(['view-sppg-reports', 'manage-sppg-finance', 'view-sppg-dashboard']);
 
-        // === IZIN UNTUK PERAN BARU ===
-        // PJ Pelaksana: Hanya bisa melihat dashboard dan laporan SPPG terkait
-        $pjPelaksanaRole->syncPermissions(['view-sppg-dashboard', 'view-sppg-reports']);
-
-        // Penerima Kuasa: Sama seperti PJ Pelaksana, hanya bisa melihat
-        $penerimaKuasaRole->syncPermissions(['view-sppg-dashboard', 'view-sppg-reports']);
-
-        $pimpinanPengusulRole->syncPermissions(['view-sppg-dashboard', 'view-sppg-reports']);
+        // Staf Pengantaran
+        $roleModels['Staf Pengantaran']->syncPermissions(['confirm-distribusi', 'view-sppg-dashboard']);
 
 
         // 5. Buat Users Bawaan
@@ -104,69 +125,41 @@ class RolePermissionSeeder extends Seeder
             ['email' => 'superadmin@mbm.com'],
             ['name' => 'Super Admin', 'password' => Hash::make('p4$$w0rd')]
         );
-        $superAdmin->assignRole($superadminRole);
+        $superAdmin->assignRole($roleModels['Superadmin']);
 
         $direktur = User::firstOrCreate(
             ['email' => 'direktur.kornas@mbm.com'],
             ['name' => 'Direktur Kornas MBM', 'password' => Hash::make('p4$$w0rd')]
         );
-        $direktur->assignRole($direkturKornasRole);
+        $direktur->assignRole($roleModels['Direktur Kornas']);
 
         $stafKornas = User::firstOrCreate(
             ['email' => 'staf.kornas@mbm.com'],
             ['name' => 'Staf Kornas MBM', 'password' => Hash::make('p4$$w0rd')]
         );
-        $stafKornas->assignRole($stafKornasRole);
-        
+        $stafKornas->assignRole($roleModels['Staf Kornas']);
+
 
         // User Level SPPG (terikat pada SPPG pertama yang ada di database)
         $firstSppg = Sppg::first();
         if ($firstSppg) {
-            // Kepala SPPG (Contoh: Menjadi kepala di SPPG pertama)
-            $kepalaSppg = User::firstOrCreate(
-                ['email' => 'kepala.sppg.pcmbaki@mbm.com'],
-                ['name' => 'Kepala SPPG PCM BAKI', 'password' => Hash::make('p4$$w0rd')]
-            );
-            // Memberikan peran dalam konteks SPPG spesifik
-            $kepalaSppg->assignRole($kepalaSppgRole->name, $firstSppg->id);
+            $sppgUsers = [
+                ['email' => 'kepala.sppg.pcmbaki@mbm.com', 'name' => 'Kepala SPPG PCM BAKI', 'role' => 'Kepala SPPG'],
+                ['email' => 'admin.sppg.pcmbaki@mbm.com', 'name' => 'Admin SPPG PCM BAKI', 'role' => 'Staf Administrator SPPG'],
+                ['email' => 'gizi.sppg.pcmbaki@mbm.com', 'name' => 'Gizi SPPG PCM BAKI', 'role' => 'Staf Gizi'],
+                ['email' => 'kurir.sppg.pcmbaki@mbm.com', 'name' => 'Kurir SPPG PCM BAKI', 'role' => 'Staf Pengantaran'],
+                ['email' => 'akuntan.sppg.pcmbaki@mbm.com', 'name' => 'Akuntan SPPG PCM BAKI', 'role' => 'Staf Akuntan'],
+                ['email' => 'pj.sppg.pcmbaki@mbm.com', 'name' => 'PJ Pelaksana SPPG PCM BAKI', 'role' => 'PJ Pelaksana'],
+                ['email' => 'kuasa.sppg.pcmbaki@mbm.com', 'name' => 'Penerima Kuasa SPPG PCM BAKI', 'role' => 'Penerima Kuasa'],
+            ];
 
-            // Staf-staf lain di SPPG pertama
-            $adminSppg = User::firstOrCreate(
-                ['email' => 'admin.sppg.pcmbaki@mbm.com'],
-                ['name' => 'Admin SPPG PCM BAKI', 'password' => Hash::make('p4$$w0rd')]
-            );
-            $adminSppg->assignRole($stafAdminSppgRole->name, $firstSppg->id);
-
-            $giziSppg = User::firstOrCreate(
-                ['email' => 'gizi.sppg.pcmbaki@mbm.com'],
-                ['name' => 'Gizi SPPG PCM BAKI', 'password' => Hash::make('p4$$w0rd')]
-            );
-            $giziSppg->assignRole($stafGiziRole->name, $firstSppg->id);
-
-            $kurirSppg = User::firstOrCreate(
-                ['email' => 'kurir.sppg.pcmbaki@mbm.com'],
-                ['name' => 'Kurir SPPG PCM BAKI', 'password' => Hash::make('p4$$w0rd')]
-            );
-            $kurirSppg->assignRole($stafPengantaranRole->name, $firstSppg->id);
-
-            $akuntanSppg = User::firstOrCreate(
-                ['email' => 'akuntan.sppg.pcmbaki@mbm.com'],
-                ['name' => 'Akuntan SPPG PCM BAKI', 'password' => Hash::make('p4$$w0rd')]
-            );
-            $akuntanSppg->assignRole($stafAkuntanRole->name, $firstSppg->id);
-
-            // === CONTOH USER UNTUK PERAN BARU ===
-            $pjPelaksana = User::firstOrCreate(
-                ['email' => 'pj.sppg.pcmbaki@mbm.com'],
-                ['name' => 'PJ Pelaksana SPPG PCM BAKI', 'password' => Hash::make('p4$$w0rd')]
-            );
-            $pjPelaksana->assignRole($pjPelaksanaRole->name, $firstSppg->id);
-
-            $penerimaKuasa = User::firstOrCreate(
-                ['email' => 'kuasa.sppg.pcmbaki@mbm.com'],
-                ['name' => 'Penerima Kuasa SPPG PCM BAKI', 'password' => Hash::make('p4$$w0rd')]
-            );
-            $penerimaKuasa->assignRole($penerimaKuasaRole->name, $firstSppg->id);
+            foreach ($sppgUsers as $userData) {
+                $user = User::firstOrCreate(
+                    ['email' => $userData['email']],
+                    ['name' => $userData['name'], 'password' => Hash::make('p4$$w0rd')]
+                );
+                $user->assignRole($userData['role'], $firstSppg->id);
+            }
         }
     }
 }
