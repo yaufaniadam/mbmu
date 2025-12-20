@@ -2,7 +2,6 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\FoodVerification;
 use App\Models\ProductionVerificationSetting as ModelsProductionVerificationSetting;
 use App\Models\User;
 use Filament\Actions\Action;
@@ -62,7 +61,7 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
             $this->sppg = User::find($user->id)->unitTugas->first();
             $this->form->fill(['checklist_data' => $this->sppg->verificationSetting->checklist_data ?? []]);
         } elseif ($user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas'])) {
-            $checklist = FoodVerification::first()->checklist_data;
+            $checklist = ModelsProductionVerificationSetting::first()?->checklist_data;
             $this->sppg = null; // Superadmin and Kornas staff do not have a specific SPPG
             $this->form->fill(['checklist_data' => $checklist ?? []]);
         } else {
@@ -124,14 +123,11 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
             // }
 
             $verificationSetting = ModelsProductionVerificationSetting::first();
-
-            // 2. Get the data from the form
             $data = $this->form->getState();
 
-            // 3. Find the setting for this SPPG or create a new one
             ModelsProductionVerificationSetting::updateOrCreate(
-                ['id' => $verificationSetting->id], // The "where" clause
-                ['checklist_data' => $data['checklist_data'] ?? []] // The "update" data
+                ['id' => $verificationSetting?->id],
+                ['checklist_data' => $data['checklist_data'] ?? []]
             );
 
             Notification::make()

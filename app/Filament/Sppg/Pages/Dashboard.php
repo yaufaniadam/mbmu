@@ -112,7 +112,8 @@ class Dashboard extends BaseDashboard
                             ->default($defaultSppgId)
                             ->searchable()
                             ->preload(true)
-                            ->live(),
+                            ->live()
+                            ->afterStateUpdated(fn() => $this->dispatch('refresh-map-widget')),
                     ])
                     ->columns(1)
                     ->visible($canSeeSection),
