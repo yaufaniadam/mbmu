@@ -52,7 +52,7 @@ class LembagaPengusulForm
                                 $user = User::create([
                                     'name' => $data['name'],
                                     'email' => $data['email'],
-                                    'password' => Hash::make('p4$$w0rd'),
+                                    'password' => 'p4$$w0rd',
                                 ]);
 
                                 $user->assignRole('Pimpinan Lembaga Pengusul');

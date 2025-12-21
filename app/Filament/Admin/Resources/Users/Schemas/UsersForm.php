@@ -47,7 +47,6 @@ class UsersForm
                             ->label('Password')
                             ->password()
                             ->revealable() // Adds the eye icon
-                            ->dehydrateStateUsing(fn ($state) => \Illuminate\Support\Facades\Hash::make($state))
                             ->dehydrated(fn ($state) => filled($state))
                             ->required(fn (string $operation): bool => $operation === 'create')
                             ->same('passwordConfirmation'),
