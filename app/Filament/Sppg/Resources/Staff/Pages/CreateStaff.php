@@ -3,11 +3,11 @@
 namespace App\Filament\Sppg\Resources\Staff\Pages;
 
 use App\Filament\Sppg\Resources\Staff\StaffResource;
+use App\Models\SppgUserRole;
 use App\Models\User;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class CreateStaff extends CreateRecord
@@ -49,7 +49,6 @@ class CreateStaff extends CreateRecord
             ]);
         }
 
-        $data['password'] = 'p4$$w0rd'; // Set default password
         return $data;
     }
 
@@ -61,24 +60,19 @@ class CreateStaff extends CreateRecord
         $sppgId = $user->sppgDiKepalai?->id;
 
         if ($sppgId) {
-            DB::table('sppg_user_roles')->insert(
-                [
+            // Get the roles that were just assigned to the user (via the form's relationship field)
+            $roles = $record->roles; 
+
+            foreach ($roles as $role) {
+                // Check if this specific user-role-sppg combination already exists to avoid duplicates
+                // (though insert usually throws error on unique constraint, here we use insert or first check)
+                
+                SppgUserRole::firstOrCreate([
                     'user_id' => $record->id,
                     'sppg_id' => $sppgId,
-                ],
-            );
+                    'role_id' => $role->id,
+                ]);
+            }
         }
-        // if ($organizationId) {
-        //     DB::table('sppg_user_roles')->upsert(
-        //         [
-        //             [
-        //                 'user_id' => $record->id,
-        //                 'sppg_id' => $organizationId,
-        //             ],
-        //         ],
-        //         ['user_id'], // unique key
-        //         ['sppg_id'] // columns to update if exists
-        //     );
-        // }
     }
 }

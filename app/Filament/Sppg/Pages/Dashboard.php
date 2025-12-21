@@ -49,6 +49,7 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
+            \App\Filament\Sppg\Widgets\IncompletePlanAlert::class,
             SppgStatsOverview::class,
             ProductionChart::class,
             ProductionScheduleList::class,
@@ -112,7 +113,8 @@ class Dashboard extends BaseDashboard
                             ->default($defaultSppgId)
                             ->searchable()
                             ->preload(true)
-                            ->live(),
+                            ->live()
+                            ->afterStateUpdated(fn() => $this->dispatch('refresh-map-widget')),
                     ])
                     ->columns(1)
                     ->visible($canSeeSection),

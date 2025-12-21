@@ -9,13 +9,17 @@ class School extends Model
     protected $table = 'sekolah';
 
     protected $fillable = [
-        'sppg_id',
         'nama_sekolah',
         'alamat',
         'province_code',
         'city_code',
         'district_code',
         'village_code',
+        'sppg_id',
+        'latitude',
+        'longitude',
+        'default_porsi_besar',
+        'default_porsi_kecil',
     ];
 
     public function sppg()

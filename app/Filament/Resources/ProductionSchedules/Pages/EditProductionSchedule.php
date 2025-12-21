@@ -32,12 +32,20 @@ class EditProductionSchedule extends EditRecord
             return $data;
         }
 
-        $unitTugas = $user->unitTugas()->first();
-        if (!$unitTugas) {
+        // 1. Get the SPPG scope for the current user
+        $sppg = null;
+        if ($user->hasRole('Kepala SPPG')) {
+            $sppg = $user->sppgDikepalai;
+        } elseif ($user->hasAnyRole(['PJ Pelaksana', 'Staf Administrator SPPG', 'Ahli Gizi', 'Staf Gizi', 'Staf Akuntan', 'Staf Pengantaran'])) {
+            $sppg = $user->unitTugas->first();
+        }
+
+        if (!$sppg) {
             return $data;
         }
 
-        $schools = $unitTugas->schools()->get();
+        // Use the schools from this SPPG
+        $schools = $sppg->schools;
         if ($schools->isEmpty()) {
             return $data;
         }

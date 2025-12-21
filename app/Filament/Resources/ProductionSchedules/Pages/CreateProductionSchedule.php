@@ -30,7 +30,7 @@ class CreateProductionSchedule extends CreateRecord
 
         if (! $sppg) {
             Notification::make()
-                ->title('Anda tidak memiliki akses ke halaman ini.')
+                ->title('Akun Anda belum terhubung dengan SPPG manapun. Silakan hubungi admin.')
                 ->danger()
                 ->send();
 
@@ -66,6 +66,16 @@ class CreateProductionSchedule extends CreateRecord
         }
 
         $data['sppg_id'] = $sppg->id;
+        
+        // Calculate total portions
+        $totalPortions = 0;
+        if (isset($data['porsi_per_sekolah']) && is_array($data['porsi_per_sekolah'])) {
+            foreach ($data['porsi_per_sekolah'] as $porsi) {
+                $totalPortions += (int) ($porsi['jumlah_porsi_besar'] ?? 0);
+                $totalPortions += (int) ($porsi['jumlah_porsi_kecil'] ?? 0);
+            }
+        }
+        $data['jumlah'] = $totalPortions;
 
         return $data;
     }

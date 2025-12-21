@@ -13,7 +13,8 @@ class ListProductionSchedules extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->hidden(fn () => in_array(\Filament\Facades\Filament::getCurrentPanel()->getId(), ['admin', 'sppg'])),
         ];
     }
 }

@@ -24,11 +24,21 @@ class SchoolPolicy
 
     public function create(AuthUser $authUser): bool
     {
+        // Allow SPPG staff to create schools for their SPPG
+        if ($authUser->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Administrator SPPG'])) {
+            return true;
+        }
+        
         return $authUser->can('Create:School');
     }
 
     public function update(AuthUser $authUser, School $school): bool
     {
+        // Allow SPPG staff to update schools in their SPPG
+        if ($authUser->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Administrator SPPG'])) {
+            return true;
+        }
+        
         return $authUser->can('Update:School');
     }
 

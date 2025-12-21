@@ -33,6 +33,7 @@ class OperatingExpenses extends TableWidget
             'PJ Pelaksana',
             'Superadmin',
             'Staf Kornas',
+            'Staf Akuntan Kornas',
             'Direktur Kornas',
         ]);
     }
@@ -43,20 +44,32 @@ class OperatingExpenses extends TableWidget
             ->query(function (): Builder {
                 $query = OperatingExpense::query();
                 $user = Auth::user();
+                $panelId = \Filament\Facades\Filament::getCurrentPanel()->getId();
 
-                if ($user->hasRole('Kepala SPPG')) {
-                    return $query->where('sppg_id', $user->sppgDikepalai?->id);
-                }
-                if ($user->hasRole('PJ Pelaksana')) {
-                    return $query->where('sppg_id', $user->unitTugas->first()?->id);
-                }
-                if ($user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Direktur Kornas'])) {
+                if ($panelId === 'admin') {
+                    // National roles in Admin Panel: See 'Central' expenses (sppg_id = null)
                     return $query->whereNull('sppg_id');
+                }
+
+                // Any role in SPPG panel: Scope to their assigned SPPG
+                $sppgId = $user->hasRole('Kepala SPPG')
+                    ? $user->sppgDikepalai?->id
+                    : $user->unitTugas->first()?->id;
+
+                if ($sppgId) {
+                    return $query->where('sppg_id', $sppgId);
                 }
 
                 return $query->whereRaw('1 = 0');
             })
             ->columns([
+                TextColumn::make('sppg.nama_sppg')
+                    ->label('Unit SPPG')
+                    ->badge()
+                    ->color('gray')
+                    ->searchable()
+                    ->sortable()
+                    ->visible(fn () => \Filament\Facades\Filament::getCurrentPanel()->getId() === 'admin'),
                 TextColumn::make('name')
                     ->label('Nama Pengeluaran')
                     ->searchable(),
@@ -68,9 +81,17 @@ class OperatingExpenses extends TableWidget
                     ->label('Tanggal')
                     ->date('d M Y')
                     ->sortable(),
-                TextColumn::make('category')
+                TextColumn::make('categoryData.name')
                     ->label('Kategori')
                     ->badge(),
+            ])
+            ->filters([
+                \Filament\Tables\Filters\SelectFilter::make('sppg_id')
+                    ->label('Filter per SPPG')
+                    ->relationship('sppg', 'nama_sppg')
+                    ->searchable()
+                    ->preload()
+                    ->visible(fn () => \Filament\Facades\Filament::getCurrentPanel()->getId() === 'admin'),
             ])
             ->recordActions([
                 // 1. View Image Action (Only visible if image)
@@ -110,6 +131,7 @@ class OperatingExpenses extends TableWidget
                     ->label('Revisi')
                     ->icon('heroicon-m-pencil-square')
                     ->color('warning')
+                    ->visible(fn () => ! Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas']))
                     ->modalHeading('Revisi Biaya Operasional')
                     ->modalDescription('PERHATIAN: Mengubah data ini akan membuat catatan baru dan mengarsipkan catatan lama sebagai histori (Audit Trail).')
                     ->schema($this->getFormSchema())
@@ -140,6 +162,7 @@ class OperatingExpenses extends TableWidget
                 // 4. SOFT DELETE ACTION
                 DeleteAction::make()
                     ->label('Arsipkan')
+                    ->visible(fn () => ! Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas']))
                     ->modalHeading('Arsipkan Pengeluaran Ini?')
                     ->modalDescription('Data akan dihapus dari daftar aktif, namun tetap tersimpan di database untuk keperluan audit.'),
                 // IMPORTANT: Removed the 'after' hook that deleted the file.
@@ -148,6 +171,7 @@ class OperatingExpenses extends TableWidget
             ->headerActions([
                 CreateAction::make()
                     ->label('Tambah Pengeluaran')
+                    ->visible(fn () => ! Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas']))
                     ->modalHeading('Catat Biaya Operasional Baru')
                     ->mutateDataUsing(function (array $data): array {
                         $user = Auth::user();
@@ -182,57 +206,19 @@ class OperatingExpenses extends TableWidget
                 ->required()
                 ->maxLength(255),
 
-            Select::make('category')
+            Select::make('category_id')
                 ->label('Kategori')
+                ->relationship('categoryData', 'name')
                 ->required()
                 ->searchable()
-                ->options(function () {
-                    $user = Auth::user();
-                    $sppgId = null;
-
-                    // 1. Determine SPPG ID
-                    if ($user->hasRole('Kepala SPPG')) {
-                        $sppgId = $user->sppgDikepalai?->id;
-                    } elseif ($user->hasRole('PJ Pelaksana')) {
-                        $sppgId = $user->unitTugas->first()?->id;
-                    }
-
-                    // 2. Query Logic
-                    return OperatingExpenseCategory::query()
-                        ->when($sppgId, function ($query) use ($sppgId) {
-                            // Local Users: See Global (null) + Their Own ($sppgId)
-                            return $query->where('sppg_id', $sppgId);
-                        })
-                        ->when(! $sppgId, function ($query) {
-                            // Admins: See only Global (null)
-                            return $query->whereNull('sppg_id');
-                        })
-                        ->pluck('name', 'name');
-                })
+                ->preload()
+                ->native(false)
                 ->createOptionForm([
                     TextInput::make('name')
-                        ->label('Nama Kategori')
+                        ->label('Nama Kategori Baru')
                         ->required()
                         ->maxLength(255),
-                ])
-                ->createOptionUsing(function (array $data) {
-                    $user = Auth::user();
-                    $sppgId = null;
-
-                    // 1. Determine SPPG ID
-                    if ($user->hasRole('Kepala SPPG')) {
-                        $sppgId = $user->sppgDikepalai?->id;
-                    } elseif ($user->hasRole('PJ Pelaksana')) {
-                        $sppgId = $user->unitTugas->first()?->id;
-                    }
-
-                    // 2. Assign ID if Local User (Admins keep it null)
-                    if ($sppgId) {
-                        $data['sppg_id'] = $sppgId;
-                    }
-
-                    return OperatingExpenseCategory::create($data)->name;
-                }),
+                ]),
 
             TextInput::make('amount')
                 ->label('Jumlah Biaya')

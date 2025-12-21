@@ -17,6 +17,19 @@ class SchoolForm
                 TextInput::make('nama_sekolah')
                     ->label('Nama Sekolah')
                     ->required(),
+                \Filament\Schemas\Components\Grid::make(2)
+                    ->schema([
+                        TextInput::make('default_porsi_besar')
+                            ->label('Default Porsi Besar')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0),
+                        TextInput::make('default_porsi_kecil')
+                            ->label('Default Porsi Kecil')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0),
+                    ]),
                 Textarea::make('alamat')
                     ->label('Alamat')
                     ->rows(3)

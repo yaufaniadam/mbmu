@@ -21,11 +21,21 @@ class UserPolicy
 
     public function create(AuthUser $authUser): bool
     {
+        // Allow SPPG staff to create users (staff) for their SPPG
+        if ($authUser->hasAnyRole(['Kepala SPPG', 'Staf Administrator SPPG'])) {
+            return true;
+        }
+        
         return $authUser->can('Create:User');
     }
 
     public function update(AuthUser $authUser): bool
     {
+        // Allow SPPG staff to update users (staff) in their SPPG
+        if ($authUser->hasAnyRole(['Kepala SPPG', 'Staf Administrator SPPG'])) {
+            return true;
+        }
+        
         return $authUser->can('Update:User');
     }
 

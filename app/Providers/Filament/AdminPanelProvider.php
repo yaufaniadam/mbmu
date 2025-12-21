@@ -40,16 +40,20 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
+            ->resources([
+                \App\Filament\Admin\Resources\Schools\AdminSchoolResource::class,
+                \App\Filament\Admin\Resources\Volunteers\RelawanResource::class,
+            ])
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
             ->pages([
-                Dashboard::class,
+                \App\Filament\Pages\Dashboard::class,
                 ManageFinance::class,
                 ProductionVerificationSetting::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
             ->widgets([
                 AccountWidget::class,
-                OsmMapWidget::class,
+                // OsmMapWidget::class, // Moved to Dashboard
                 // FilamentInfoWidget::class,
             ])
             ->middleware([

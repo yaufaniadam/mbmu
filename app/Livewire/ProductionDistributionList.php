@@ -27,24 +27,27 @@ class ProductionDistributionList extends TableWidget
             // <-- 3. MODIFY THE QUERY TO USE FILTERS
             ->query(function (): Builder {
 
+                /** @var \App\Models\User $user */
                 $user = Auth::user();
 
-                $sppgId = $this->filters['sppg_id'] ?? null;
+                $sppgId = $this->pageFilters['sppg_id'] ?? null;
 
                 if ($user->hasRole('Kepala SPPG')) {
-                    $sppgId = User::find($user->id)->sppgDikepalai->id;
+                    $sppgId = User::find($user->id)->sppgDikepalai?->id;
+                } elseif ($user->hasAnyRole(['PJ Pelaksana', 'Ahli Gizi', 'Staf Administrator SPPG', 'Staf Akuntan', 'Staf Gizi', 'Staf Pengantaran'])) {
+                    $sppgId = User::find($user->id)->unitTugas->first()?->id;
                 }
 
                 return Distribution::query()
                     // Eager load relationships to prevent N+1 query problems
                     ->with(['productionSchedule', 'school', 'courier'])
-                    ->when(
-                        $sppgId,
-                        // If $sppgId exists, filter via the relationship
-                        fn ($query) => $query->whereHas('productionSchedule', fn ($q) => $q->where('sppg_id', $sppgId)),
-                        // If no SPPG is selected, show nothing
-                        fn ($query) => $query->whereRaw('1 = 0')
-                    )
+                    // Show only distributions for schedules that are verified or further
+                    ->whereHas('productionSchedule', function ($query) use ($sppgId) {
+                        $query->whereIn('status', ['Terverifikasi', 'Didistribusikan', 'Selesai']);
+                        if ($sppgId) {
+                            $query->where('sppg_id', $sppgId);
+                        }
+                    })
                     ->latest('created_at'); // Show newest first
             })
             ->columns([
@@ -65,7 +68,15 @@ class ProductionDistributionList extends TableWidget
                 TextColumn::make('courier.name')
                     ->label('Petugas Pengantar'),
             ])
-            // ... (rest of your table code)
+            ->actions([
+                \Filament\Actions\Action::make('deliver')
+                    ->label('Antarkan')
+                    ->icon('heroicon-m-truck')
+                    ->color('primary')
+                    ->url(fn ($record) => "/production/delivery/{$record->id}")
+                    ->openUrlInNewTab(false)
+                    ->visible(fn () => Auth::user()->hasAnyRole(['Staf Pengantaran', 'Superadmin'])),
+            ])
             ->filters([
                 //
             ]);

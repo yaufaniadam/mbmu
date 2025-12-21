@@ -12,6 +12,7 @@ use App\Filament\Resources\ProductionSchedules\Tables\ProductionSchedulesTable;
 use App\Models\ProductionSchedule;
 use App\Models\User;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\TextInput;
@@ -32,9 +33,23 @@ class ProductionScheduleResource extends Resource
 {
     protected static ?string $model = ProductionSchedule::class;
 
-    protected static ?string $navigationLabel = 'Jadwal Produksi';
+    protected static ?string $navigationLabel = 'Rencana Distribusi';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|UnitEnum|null $navigationGroup = 'Operasional';
+
+    protected static ?int $navigationSort = 1;
+
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
+
+    public static function getModelLabel(): string
+    {
+        return 'Rencana Distribusi';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Rencana Distribusi';
+    }
 
     public static function getNavigationBadge(): ?string
     {
@@ -43,14 +58,14 @@ class ProductionScheduleResource extends Resource
         // Kepala SPPG → Only show schedules for their SPPG
         if ($user->hasRole('Kepala SPPG')) {
             $sppg = $user->sppgDikepalai;
-            return ProductionSchedule::where([['sppg_id', '=', $sppg->id], ['status', '=', 'Menunggu ACC Kepala SPPG']])->count();
+            return $sppg ? ProductionSchedule::where([['sppg_id', '=', $sppg->id], ['status', '=', 'Menunggu ACC Kepala SPPG']])->count() : 0;
         }
 
         // PJ Pelaksana → Only schedules for their unit tugas
         if ($user->hasRole('PJ Pelaksana')) {
             $unitTugas = $user->unitTugas->first();
 
-            return ProductionSchedule::where([['sppg_id', '=', $unitTugas->id], ['status', '=', 'Menunggu ACC Kepala SPPG']])->count();
+            return $unitTugas ? ProductionSchedule::where([['sppg_id', '=', $unitTugas->id], ['status', '=', 'Menunggu ACC Kepala SPPG']])->count() : 0;
         }
 
         // Default → all schedules
@@ -59,75 +74,7 @@ class ProductionScheduleResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        // 1. Get the Schema object configured with static components
-        $formSchema = ProductionScheduleForm::configure($schema);
-
-        // 2. Prepare an empty array for our dynamic fields
-        $dynamicSchoolComponents = [];
-
-        /** @var User $user */
-        $user = Auth::user();
-
-        $sppg = null;
-
-        if ($user->hasRole('Kepala SPPG')) {
-            $sppg = User::find($user->id)->sppgDikepalai;
-        }
-
-        if ($user->hasRole('PJ Pelaksana')) {
-            $sppg = User::find($user->id)->unitTugas->first();
-        }
-
-        $schools = $sppg ? $sppg->schools : collect(); // Assuming 'schools' is the relationship name
-
-        // 4. If the user has schools, create an inner Fieldset for each one
-        if ($schools->isNotEmpty()) {
-
-            // We use map() to transform each school into its own Fieldset component
-            $schoolFieldsets = $schools->map(function ($school) {
-                $latest = $school->distributions()
-                    ->orderByDesc('id')
-                    ->first();
-                // This is the inner fieldset for each school
-                return Fieldset::make($school->nama_sekolah) // Use school name as the label
-                    ->schema([
-                        // *** ADDED THIS HIDDEN FIELD ***
-                        // This field holds the school ID as part of the data
-                        Hidden::make('porsi_per_sekolah.' . $school->id . '.sekolah_id')
-                            ->default($school->id),
-                        // The path now uses dot notation for the nested JSON structure
-                        TextInput::make('porsi_per_sekolah.' . $school->id . '.jumlah_porsi_besar')
-                            ->label('Jumlah Porsi Besar')
-                            ->numeric()
-                            ->default($latest?->jumlah_porsi_besar ?? '')
-                            ->required(),
-                        TextInput::make('porsi_per_sekolah.' . $school->id . '.jumlah_porsi_kecil')
-                            ->label('Jumlah Porsi Kecil')
-                            ->numeric()
-                            ->default($latest?->jumlah_porsi_kecil ?? '')
-                            ->required(),
-                    ])
-                    ->columns(2); // Two columns inside this inner fieldset
-            })->all(); // Convert the collection to a plain array
-
-            // 5. Wrap all the individual school fieldsets in one main Fieldset
-            $dynamicSchoolComponents = [
-                Fieldset::make('Jumlah Porsi Per Sekolah')
-                    ->schema($schoolFieldsets) // Add the array of fieldsets
-                    ->columns(1), // Stack each school's fieldset vertically
-            ];
-        }
-
-        // 6. Get static components from the schema and merge with dynamic ones
-        $staticComponents = $formSchema->getComponents();
-
-        // 7. Return the final schema by setting its components
-        return $schema->schema(
-            array_merge(
-                $staticComponents,
-                $dynamicSchoolComponents
-            )
-        );
+        return ProductionScheduleForm::configure($schema);
     }
 
     public static function infolist(Schema $schema): Schema
@@ -266,12 +213,31 @@ class ProductionScheduleResource extends Resource
         return ProductionSchedulesTable::configure($table);
     }
 
-    /**
-     * Conditionally prevent editing based on record status.
-     */
-    public static function canEdit(Model $record): bool
+    public static function canCreate(): bool
     {
+        $panelId = \Filament\Facades\Filament::getCurrentPanel()?->getId();
+        
+        // SPPG panel: Auto-generated only, no manual creation
+        if ($panelId === 'sppg') {
+            return false;
+        }
+        
+        // Admin panel: Also read-only
+        return $panelId !== 'admin';
+    }
+
+    public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        if (\Filament\Facades\Filament::getCurrentPanel()?->getId() === 'admin') {
+            return false;
+        }
+
         return $record->status === 'Direncanakan';
+    }
+
+    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        return \Filament\Facades\Filament::getCurrentPanel()?->getId() !== 'admin';
     }
 
     public static function getRelations(): array
@@ -299,18 +265,30 @@ class ProductionScheduleResource extends Resource
 
         if ($user->hasRole('Kepala SPPG')) {
             $sppg = User::find($user->id)->sppgDikepalai;
+            
+            if (!$sppg) {
+                return $query->whereRaw('1 = 0'); // Empty result if no SPPG
+            }
 
             return $query->where('sppg_id', $sppg->id);
         }
 
-        if ($user->hasRole('PJ Pelaksana')) {
+        if ($user->hasAnyRole(['PJ Pelaksana', 'Ahli Gizi', 'Staf Administrator SPPG', 'Staf Akuntan', 'Staf Gizi', 'Staf Pengantaran'])) {
             $unitTugas = User::find($user->id)->unitTugas->first();
+
+            if (!$unitTugas) {
+                return $query->whereRaw('1 = 0'); // Empty result if no Unit Tugas
+            }
 
             return $query->where('sppg_id', $unitTugas->id);
         }
 
         if ($user->hasRole('Pimpinan Lembaga Pengusul')) {
             $unitTugas = User::find($user->id)->lembagaDipimpin;
+
+            if (!$unitTugas) {
+                return $query->whereRaw('1 = 0'); // Empty result
+            }
 
             return $query->whereHas('sppg', function (Builder $query) use ($unitTugas) {
                 $query->where('lembaga_pengusul_id', $unitTugas->id);

@@ -16,9 +16,23 @@ class CanAccessProductionPanel
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->hasAnyRole(['Staf Gizi', 'Staf Pengantaran', 'Staf Akuntan'])) {
+        $user = Auth::user();
+        
+        if (Auth::check() && $user->hasAnyRole([
+            'Superadmin',
+            'Ahli Gizi', 
+            'Staf Gizi', 
+            'Staf Pengantaran', 
+            'Staf Akuntan'
+        ])) {
             return $next($request);
         }
+
+        \Illuminate\Support\Facades\Log::warning('Unauthorized access attempt to production panel', [
+            'user_id' => $user?->id,
+            'email' => $user?->email,
+            'roles' => $user?->getRoleNames(),
+        ]);
 
         abort(403, 'Unauthorized access to production panel.');
     }

@@ -9,6 +9,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
@@ -27,6 +28,10 @@ class IncomingFunds extends TableWidget
         return Auth::user()->hasAnyRole([
             'Kepala SPPG',
             'PJ Pelaksana',
+            'Superadmin',
+            'Staf Kornas',
+            'Staf Akuntan Kornas',
+            'Direktur Kornas',
         ]);
     }
 
@@ -36,23 +41,30 @@ class IncomingFunds extends TableWidget
             ->query(function (): Builder {
                 $query = SppgIncomingFund::query();
                 $user = Auth::user();
-
-                if ($user->hasRole('Kepala SPPG')) {
-                    return $query->where('sppg_id', $user->sppgDikepalai?->id);
-                }
-                if ($user->hasRole('PJ Pelaksana')) {
-                    return $query->where('sppg_id', $user->unitTugas->first()?->id);
-                }
-                if ($user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Direktur Kornas'])) {
-                    // Assuming Admins see 'Central' funds (sppg_id = null)
+                $panelId = \Filament\Facades\Filament::getCurrentPanel()->getId();
+                
+                if ($panelId === 'admin') {
+                    // National roles in Admin Panel: See 'Central' funds (sppg_id = null)
                     return $query->whereNull('sppg_id');
+                }
+
+                // Any role in SPPG panel: Scope to their assigned SPPG
+                $sppgId = $user->hasRole('Kepala SPPG')
+                    ? $user->sppgDikepalai?->id
+                    : $user->unitTugas->first()?->id;
+
+                if ($sppgId) {
+                    return $query->where('sppg_id', $sppgId);
                 }
 
                 return $query->whereRaw('1 = 0');
             })
             ->columns([
+                TextColumn::make('category.name')
+                    ->label('Kategori')
+                    ->badge(),
                 TextColumn::make('source')
-                    ->label('Sumber Dana')
+                    ->label('Keterangan Sumber')
                     ->searchable(),
                 TextColumn::make('amount')
                     ->label('Jumlah')
@@ -103,6 +115,7 @@ class IncomingFunds extends TableWidget
                     ->label('Revisi')
                     ->icon('heroicon-m-pencil-square')
                     ->color('warning')
+                    ->visible(fn () => ! Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas']))
                     ->modalHeading('Revisi Data Dana Masuk')
                     ->modalDescription('PERHATIAN: Mengubah data ini akan membuat catatan baru dan mengarsipkan catatan lama sebagai histori (Audit Trail).')
                     ->schema($this->getFormSchema())
@@ -131,6 +144,7 @@ class IncomingFunds extends TableWidget
                 // 4. SOFT DELETE ACTION
                 DeleteAction::make()
                     ->label('Arsipkan')
+                    ->visible(fn () => ! Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas']))
                     ->modalHeading('Arsipkan Data Ini?')
                     ->modalDescription('Data akan dihapus dari daftar aktif, namun tetap tersimpan di database untuk keperluan audit.'),
                 // We REMOVED the 'after' hook that deleted the file.
@@ -139,6 +153,7 @@ class IncomingFunds extends TableWidget
             ->headerActions([
                 CreateAction::make()
                     ->label('Catat Dana Masuk')
+                    ->visible(fn () => ! Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas']))
                     ->modalHeading('Catat Penerimaan Dana Baru')
                     ->schema($this->getFormSchema())
                     ->using(function (array $data, string $model): SppgIncomingFund {
@@ -152,6 +167,7 @@ class IncomingFunds extends TableWidget
                         } elseif ($user->hasRole('PJ Pelaksana')) {
                             $sppgId = $user->unitTugas->first()?->id;
                         }
+                        // National roles (Staf Ag) will have $sppgId = null, which is correct for Central funds
 
                         if ($sppgId) {
                             $data['sppg_id'] = $sppgId;
@@ -166,9 +182,38 @@ class IncomingFunds extends TableWidget
     protected function getFormSchema(): array
     {
         return [
+            Select::make('category_id')
+                ->label('Kategori Dana')
+                ->relationship('category', 'name', function (Builder $query) {
+                    $panelId = \Filament\Facades\Filament::getCurrentPanel()->getId();
+                    if ($panelId === 'sppg') {
+                        return $query->whereIn('name', [
+                            'Lain-lain',
+                            'Bunga Bank / Jasa Giro',
+                            'Refund',
+                            'BGN'
+                        ]);
+                    }
+                    
+                    // Admin panel: Show central categories
+                    return $query->whereIn('name', [
+                        'Subsidi PP Muhammadiyah',
+                        'Donasi / Infaq',
+                        'Dana Talangan',
+                        'Setoran Lembaga Pengusul',
+                        'Bunga Bank / Jasa Giro',
+                        'Refund',
+                        'Lain-lain'
+                    ]);
+                })
+                ->required()
+                ->searchable()
+                ->preload()
+                ->native(false),
+
             TextInput::make('source')
-                ->label('Sumber Dana')
-                ->placeholder('Contoh: Donasi, Kas Pusat, dll')
+                ->label('Keterangan Sumber (Pihak Pengirim)')
+                ->placeholder('Contoh: PP Muhammadiyah, Hamba Allah')
                 ->required()
                 ->maxLength(255),
 

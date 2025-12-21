@@ -45,6 +45,7 @@ class OsmMapWidget extends Widget
     {
         // 1. Get Filter Values from Dashboard
         $provinceCode = $this->filters['province_code'] ?? null;
+        $sppgId = $this->filters['sppg_id'] ?? null;
 
         // 2. Base Query
         $query = Sppg::query()
@@ -54,6 +55,10 @@ class OsmMapWidget extends Widget
         // 3. Apply Filters if they exist
         if ($provinceCode) {
             $query->where('province_code', $provinceCode);
+        }
+
+        if ($sppgId) {
+            $query->where('id', $sppgId);
         }
 
         // 4. Fetch Data & Format

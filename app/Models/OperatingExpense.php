@@ -15,13 +15,19 @@ class OperatingExpense extends Model
         'name',
         'amount',
         'date',
-        'category',
+        'category', // Deprecated, use category_id
+        'category_id',
         'attachment',
     ];
 
     public function sppg()
     {
         return $this->belongsTo(Sppg::class);
+    }
+
+    public function categoryData()
+    {
+        return $this->belongsTo(OperatingExpenseCategory::class, 'category_id');
     }
 
     // Relationship to see the OLD version

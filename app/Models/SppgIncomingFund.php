@@ -14,7 +14,8 @@ class SppgIncomingFund extends Model
         'sppg_id',
         'user_id',
         'amount',
-        'source',
+        'source', // Deprecated? Or keep as specific detail?
+        'category_id',
         'received_at',
         'notes',
         'attachment',
@@ -23,6 +24,11 @@ class SppgIncomingFund extends Model
     public function sppg()
     {
         return $this->belongsTo(Sppg::class);
+    }
+    
+    public function category() // Relationship
+    {
+        return $this->belongsTo(SppgIncomingFundCategory::class, 'category_id');
     }
 
     public function user()

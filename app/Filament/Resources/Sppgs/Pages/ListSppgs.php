@@ -9,11 +9,4 @@ use Filament\Resources\Pages\ListRecords;
 class ListSppgs extends ListRecords
 {
     protected static string $resource = SppgResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            CreateAction::make(),
-        ];
-    }
 }

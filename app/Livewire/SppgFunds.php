@@ -14,22 +14,43 @@ class SppgFunds extends StatsOverviewWidget
         return Auth::user()->hasAnyRole([
             'Kepala SPPG',
             'PJ Pelaksana',
+            'Superadmin',
+            'Staf Kornas',
+            'Staf Akuntan Kornas',
+            'Direktur Kornas',
         ]);
     }
 
     protected function getStats(): array
     {
         $user = Auth::user();
+        $isNational = \Filament\Facades\Filament::getCurrentPanel()->getId() === 'admin';
+        
+        $balance = 0;
+        $label = 'Dana SPPG';
+        $desc = 'Saldo Dana SPPG';
 
-        $sppg = $user->hasRole('Kepala SPPG')
-            ? $user->sppgDikepalai
-            : $user->unitTugas->first();
+        if ($isNational) {
+            // Calculate National Balance (Always Kornas Kas)
+            $income = \App\Models\SppgIncomingFund::whereNull('sppg_id')->sum('amount');
+            $expense = \App\Models\OperatingExpense::whereNull('sppg_id')->sum('amount');
+            $balance = $income - $expense;
+            
+            $label = 'Dana Kas Kornas';
+            $desc = 'Saldo Kas Koordinator Nasional';
+        } else {
+            // SPPG Panel Logic: Always show specific SPPG balance
+            $sppg = $user->hasRole('Kepala SPPG')
+                ? $user->sppgDikepalai
+                : $user->unitTugas->first();
+            $balance = $sppg?->balance ?? 0;
+        }
 
         $formatIdr = fn (int|float $value) => 'Rp '.number_format($value, 0, ',', '.');
 
         return [
-            Stat::make('Dana SPPG', $formatIdr($sppg?->balance ?? 0))
-                ->description('Saldo Dana SPPG')
+            Stat::make($label, $formatIdr($balance))
+                ->description($desc)
                 ->icon('heroicon-o-currency-dollar', IconPosition::Before)
                 ->color('success'),
         ];

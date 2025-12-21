@@ -88,7 +88,7 @@ class Sppg extends Model
      */
     public function staff(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'sppg_user_role')
+        return $this->belongsToMany(User::class, 'sppg_user_roles')
             ->withPivot('role_id')
             ->withTimestamps();
     }

@@ -26,21 +26,21 @@ class OperatingExpensesChart extends ChartWidget
     protected function getData(): array
     {
         $user = Auth::user();
+        $panelId = \Filament\Facades\Filament::getCurrentPanel()->getId();
 
-        // 1. Determine the SPPG ID scope based on role
+        // 1. Determine the SPPG ID scope based on panel
         $sppgId = null;
         $shouldShowRent = true;
 
-        if ($user->hasRole('Kepala SPPG')) {
-            $sppgId = $user->sppgDikepalai?->id;
-        } elseif ($user->hasRole('PJ Pelaksana')) {
-            $sppgId = $user->unitTugas->first()?->id;
-        } elseif ($user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Direktur Kornas'])) {
-            // Admin sees global expenses (sppg_id = null) and usually no local rent
+        if ($panelId === 'sppg') {
+            $sppgId = $user->hasRole('Kepala SPPG')
+                ? $user->sppgDikepalai?->id
+                : $user->unitTugas->first()?->id;
+        } elseif ($panelId === 'admin') {
+            // Admin panel sees national data (sppg_id = null)
             $sppgId = null;
             $shouldShowRent = false;
         } else {
-            // Fallback for unauthorized users or other roles
             return ['datasets' => [], 'labels' => []];
         }
 

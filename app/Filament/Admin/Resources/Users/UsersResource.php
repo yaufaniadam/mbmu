@@ -9,6 +9,7 @@ use App\Filament\Admin\Resources\Users\Schemas\UsersForm;
 use App\Filament\Admin\Resources\Users\Tables\UsersTable;
 use App\Models\User;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -18,7 +19,13 @@ class UsersResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel = 'Manajemen User';
+
+    protected static string|UnitEnum|null $navigationGroup = 'SDM & Pengguna';
+
+    protected static ?int $navigationSort = 2;
+
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
     public static function form(Schema $schema): Schema
     {

@@ -46,6 +46,7 @@ class SppgPanelProvider extends PanelProvider
                 ManageFinance::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Sppg/Widgets'), for: 'App\Filament\Sppg\Widgets')
             ->widgets([
                 // AccountWidget::class,
                 AssignedSppg::class,
@@ -53,6 +54,8 @@ class SppgPanelProvider extends PanelProvider
                 // FilamentInfoWidget::class,
             ])
             ->navigationGroups([
+                'Operasional',
+                'Data Master',
                 'Pengaturan',
             ])
             ->middleware([

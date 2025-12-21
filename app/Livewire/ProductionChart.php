@@ -21,15 +21,19 @@ class ProductionChart extends ChartWidget
         $user = Auth::user();
 
         if ($user->hasRole('Kepala SPPG')) {
-            $sppgId = User::find($user->id)->sppgDikepalai->id;
-        } elseif ($user->hasRole('PJ Pelaksana')) {
-            $sppgId = User::find($user->id)->unitTugas->first()->id;
+            $sppgId = User::find($user->id)->sppgDikepalai?->id;
+        } elseif ($user->hasAnyRole(['PJ Pelaksana', 'Ahli Gizi', 'Staf Administrator SPPG', 'Staf Akuntan', 'Staf Gizi', 'Staf Pengantaran'])) {
+            $sppgId = User::find($user->id)->unitTugas->first()?->id;
         } else {
-            // $sppgId = User::find($user->id)->lembagaDipimpin->sppgs->first()->id;
-            $sppgId = $this->pageFilters['sppg_id'];
+            $sppgId = $this->pageFilters['sppg_id'] ?? null;
         }
 
-        $data = Trend::query(ProductionSchedule::where('sppg_id', $sppgId))
+        $query = ProductionSchedule::query();
+        if ($sppgId) {
+            $query->where('sppg_id', $sppgId);
+        }
+
+        $data = Trend::query($query)
             ->between(
                 start: now()->startOfYear(),
                 end: now()->endOfYear(),

@@ -10,6 +10,7 @@ use App\Filament\Resources\Sppgs\Tables\SppgsTable;
 use App\Models\Sppg;
 use App\Models\User;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -21,7 +22,18 @@ class SppgResource extends Resource
 {
     protected static ?string $model = Sppg::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel = 'Unit SPPG';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Kelembagaan';
+
+    protected static ?int $navigationSort = 1;
+
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 
     public static function form(Schema $schema): Schema
     {

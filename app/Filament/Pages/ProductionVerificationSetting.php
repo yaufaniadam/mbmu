@@ -2,7 +2,6 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\FoodVerification;
 use App\Models\ProductionVerificationSetting as ModelsProductionVerificationSetting;
 use App\Models\User;
 use Filament\Actions\Action;
@@ -16,6 +15,7 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use UnitEnum;
 
 class ProductionVerificationSetting extends Page implements HasActions, HasForms
 {
@@ -23,11 +23,13 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
 
     protected string $view = 'filament.pages.production-verification-setting';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
+    protected static string|UnitEnum|null $navigationGroup = 'Sistem';
 
-    protected static ?string $navigationLabel = 'Ceklis Verifikasi Jadwal Produksi';
+    protected static ?int $navigationSort = 1;
 
-    protected ?string $heading = 'Daftar Verifikasi';
+    protected static ?string $navigationLabel = 'Ketentuan Verifikasi';
+
+    protected ?string $heading = 'Ketentuan Verifikasi Produksi';
 
     public ?array $data = [];
 
@@ -40,8 +42,8 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
 
     public static function shouldRegisterNavigation(): bool
     {
-        // This checks the permission you just generated
-        return auth()->user()->can('View:ProductionVerificationSetting');
+        return \Filament\Facades\Filament::getCurrentPanel()?->getId() === 'admin' && 
+               auth()->user()->can('View:ProductionVerificationSetting');
     }
 
     public function getFormStatePath(): string
@@ -51,23 +53,29 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
 
     public function mount(): void
     {
+        // STRICT PANEL CHECK: Only allow access from the 'admin' panel.
+        if (\Filament\Facades\Filament::getCurrentPanel()?->getId() !== 'admin') {
+            abort(403, 'Akses ditolak. Pengaturan ini hanya dapat diakses melalui panel Admin Pusat.');
+        }
+
         Gate::authorize('View:ProductionVerificationSetting');
 
         $user = Auth::user();
 
-        if ($user->hasRole('Kepala SPPG')) {
-            $this->sppg = User::find($user->id)->sppgDikepalai;
-            $this->form->fill(['checklist_data' => $this->sppg->verificationSetting->checklist_data ?? []]);
-        } elseif ($user->hasRole('PJ Pelaksana')) {
-            $this->sppg = User::find($user->id)->unitTugas->first();
-            $this->form->fill(['checklist_data' => $this->sppg->verificationSetting->checklist_data ?? []]);
-        } elseif ($user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas'])) {
-            $checklist = FoodVerification::first()->checklist_data;
-            $this->sppg = null; // Superadmin and Kornas staff do not have a specific SPPG
-            $this->form->fill(['checklist_data' => $checklist ?? []]);
-        } else {
-            abort(403, 'Unauthorized action.');
+        // STRICT ROLE CHECK: Only National Roles can access this Settings Page
+        if (! $user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas', 'Staf Akuntan Kornas'])) {
+             abort(403, 'Halaman ini khusus untuk pengaturan kriteria verifikasi oleh tingkat Pusat (Kornas).');
         }
+
+        // Load Global Settings
+        $globalSetting = ModelsProductionVerificationSetting::first();
+        
+        // If not exists, maybe create one or just empty
+        $this->productionVerificationSetting = $globalSetting ?? new ModelsProductionVerificationSetting();
+        
+        $this->form->fill([
+            'checklist_data' => $globalSetting?->checklist_data ?? []
+        ]);
     }
 
     public function getFormSchema(): array
@@ -124,14 +132,11 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
             // }
 
             $verificationSetting = ModelsProductionVerificationSetting::first();
-
-            // 2. Get the data from the form
             $data = $this->form->getState();
 
-            // 3. Find the setting for this SPPG or create a new one
             ModelsProductionVerificationSetting::updateOrCreate(
-                ['id' => $verificationSetting->id], // The "where" clause
-                ['checklist_data' => $data['checklist_data'] ?? []] // The "update" data
+                ['id' => $verificationSetting?->id],
+                ['checklist_data' => $data['checklist_data'] ?? []]
             );
 
             Notification::make()

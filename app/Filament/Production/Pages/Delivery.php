@@ -225,7 +225,7 @@ class Delivery extends Page implements HasForms
 
         if ($production->status === 'Ditolak') {
             Notification::make()
-                ->title('Produksi ditolak, makanan batal untuk dikirm.')
+                ->title('Distribusi ditolak, makanan batal untuk dikirim.')
                 ->success()
                 ->send();
 
