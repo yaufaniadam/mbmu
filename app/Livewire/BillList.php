@@ -2,433 +2,160 @@
 
 namespace App\Livewire;
 
-use App\Models\Bill;
-use App\Models\Remittance;
+use App\Models\Invoice;
 use App\Models\User;
-use Exception;
-use Filament\Actions\Action; // Import yang dibutuhkan untuk filter header
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
-use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\ImageEntry;
-use Filament\Infolists\Components\TextEntry;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
-use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\HtmlString;
 
 class BillList extends TableWidget
 {
     protected static ?string $heading = 'Daftar Tagihan';
 
-    // Properti publik untuk melacak status yang dipilih (Digunakan untuk filter)
-    public array $selectedStatuses = [];
-
-    public array $selectedStatusesComputed = [];
-
-    public static function canView(): bool
-    {
-        return Auth::user()->hasAnyRole([
-            'Kepala SPPG',
-            'PJ Pelaksana',
-            'Pimpinan Lembaga Pengusul',
-            'Staf Kornas',
-            'Direktur Kornas',
-        ]);
-    }
-
-    // Helper untuk mendefinisikan status dan propertinya
-    protected function getStatusOptions(): array
-    {
-        return [
-            'unpaid' => ['label' => 'Menunggu Pembayaran', 'color' => 'warning', 'icon' => 'heroicon-m-credit-card'],
-            'verification' => ['label' => 'Menunggu Verifikasi', 'color' => 'info', 'icon' => 'heroicon-m-arrow-path'],
-            'paid' => ['label' => 'Pembayaran Berhasil', 'color' => 'success', 'icon' => 'heroicon-m-check'],
-            'rejected' => ['label' => 'Pembayaran Ditolak', 'color' => 'danger', 'icon' => 'heroicon-m-x-mark'],
-        ];
-    }
-
-    // Metode untuk menambah atau menghapus status dari filter saat tombol diklik
-    public function toggleStatusFilter(string $status): void
-    {
-        if (in_array($status, $this->selectedStatuses)) {
-            // Hapus status: Gunakan array_diff untuk menghapus value dan array_values untuk reset key
-            $this->selectedStatuses = array_values(array_diff($this->selectedStatuses, [$status]));
-        } else {
-            // Tambah status: Gabungkan array dan gunakan array_values
-            $this->selectedStatuses = array_values(array_merge($this->selectedStatuses, [$status]));
-        }
-
-        // dump('this is selectedStatuses debugged inside toggleStatusFilter: ' . implode(', ', $this->selectedStatuses));
-
-        // Memuat ulang tabel dengan event Livewire
-        // $this->dispatch('$refresh');
-    }
-
     public function table(Table $table): Table
     {
         return $table
-            // PENTING: Menggunakan closure query yang membaca properti $selectedStatuses
             ->query(function (): Builder {
-                $query = Bill::query();
+                $user = Auth::user();
+                $query = Invoice::query();
+                
+                // Show ONLY SPPG Rent Invoices here
+                $query->where('type', 'SPPG_SEWA');
 
-                // 1. Membersihkan array dari nilai non-string atau kosong dan mengatur ulang indeks.
-                $statuses = array_values(array_filter($this->selectedStatuses, 'is_string'));
-
-                // 2. Menerapkan filter hanya jika ada status yang valid.
-                if (! empty($statuses)) {
-                    // Jika ada status yang valid, kembalikan query yang sudah difilter.
-                    return $query->whereIn('status', $statuses);
+                $sppg = null;
+                if ($user->hasRole('Kepala SPPG')) {
+                    $sppg = $user->sppgDikepalai;
+                } elseif ($user->hasAnyRole(['PJ Pelaksana', 'Staf Akuntan', 'Staf Administrator SPPG'])) {
+                     $sppg = $user->unitTugas->first();
                 }
 
-                if (Auth::user()->hasRole('Kepala SPPG')) {
-                    $query->where('sppg_id', User::find(Auth::user()->id)->sppgDikepalai->id);
-                    $query->where('billed_to_type', 'sppg');
+                if ($sppg) {
+                     return $query->where('sppg_id', $sppg->id);
                 }
-
-                if (Auth::user()->hasRole('PJ Pelaksana')) {
-                    $query->where('sppg_id', User::find(Auth::user()->id)->unitTugas->first()->id);
-                    $query->where('billed_to_type', 'sppg');
-                }
-
-                // dd(User::find(Auth::user()->id)->lembagaDipimpin);
-                if (Auth::user()->hasRole('Pimpinan Lembaga Pengusul')) {
-                    $query->whereIn('sppg_id', User::find(Auth::user()->id)->lembagaDipimpin->sppgs->pluck('id')->toArray());
-                    $query->where('billed_to_type', 'pengusul');
-                }
-
-                // dump($query->toSql());
-
-                // 3. Jika tidak ada status yang valid, kembalikan query dasar (tidak terfilter).
-                return $query;
+                
+                return $query->whereRaw('1=0');
             })
             ->columns([
-                Stack::make([
-                    // Menggunakan struktur column dari code terbaru user
-                    TextColumn::make('period_range')
-                        ->label('Periode')
-                        // SAFE ACCESS: Memastikan $record tidak null sebelum diakses
-                        ->state(fn(?Bill $record): ?string => $record ? "Periode {$record->period_start} s.d {$record->period_end}" : null)
-                        ->icon('heroicon-m-calendar'),
-
-                    TextColumn::make('amount')
-                        ->label('Nominal')
-                        ->money('idr', true)
-                        ->icon('heroicon-m-banknotes'),
-
-                    TextColumn::make('status')
-                        ->badge()
-                        ->formatStateUsing(fn(string $state): string => match ($state) {
-                            'unpaid' => 'Menunggu Pembayaran',
-                            'verification' => 'Menunggu Verifikasi',
-                            'paid' => 'Pembayaran Berhasil',
-                            'rejected' => 'Pembayaran Ditolak',
-                            default => $state,
-                        })
-                        ->color(fn(string $state): string => match ($state) {
-                            'unpaid' => 'warning',
-                            'verification' => 'info',
-                            'paid' => 'success',
-                            'rejected' => 'danger',
-                            default => 'gray',
-                        })
-                        ->icon(fn(string $state): string => match ($state) {
-                            'unpaid' => 'heroicon-m-credit-card',
-                            'verification' => 'heroicon-m-arrow-path',
-                            'paid' => 'heroicon-m-check',
-                            'rejected' => 'heroicon-m-x-mark',
-                            default => null,
-                        }),
-
-                    // Rejection reason column, visible only when status is 'rejected'
-                    TextColumn::make('rejection_reason')
-                        ->label('Alasan Penolakan')
-                        ->visible(fn(?Bill $record): bool => $record && $record->status === 'rejected')
-                        ->color('danger')
-                        ->prefix('Alasan: ')
-                        ->wrap()
-                        ->size('sm')
-                        ->state(fn(?Bill $record): ?string => $record?->remittance?->rejection_reason),
-                ]),
+                TextColumn::make('invoice_number')
+                    ->label('No. Invoice')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('period')
+                    ->label('Periode')
+                    ->state(fn (Invoice $record) => $record->start_date->format('d M') . ' - ' . $record->end_date->format('d M')),
+                TextColumn::make('amount')
+                    ->label('Jumlah')
+                    ->money('IDR')
+                    ->sortable(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'UNPAID' => 'gray',
+                        'WAITING_VERIFICATION' => 'warning',
+                        'PAID' => 'success',
+                        'REJECTED' => 'danger',
+                    }),
+                TextColumn::make('due_date')
+                    ->label('Jatuh Tempo')
+                    ->date()
+                    ->sortable(),
             ])
             ->filters([
-                // Menggunakan Filter generik dengan CheckboxList untuk filter status
-                Filter::make('status_filter') // Gunakan nama filter yang unik
-                    ->label('Status Pembayaran')
-                    ->schema([
-                        CheckboxList::make('statuses')
-                            ->options([
-                                'unpaid' => 'Menunggu Pembayaran',
-                                'verification' => 'Menunggu Verifikasi',
-                                'paid' => 'Pembayaran Berhasil',
-                                'rejected' => 'Pembayaran Ditolak',
-                            ])
-                            ->columns(2), // Opsional: Tampilkan dalam 2 kolom
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        if (empty($data['statuses'])) {
-                            return $query;
-                        }
-
-                        // Memfilter berdasarkan status yang dipilih
-                        return $query->whereIn('status', $data['statuses']);
-                    }),
+                SelectFilter::make('status')
+                    ->options([
+                        'UNPAID' => 'Belum Bayar',
+                        'WAITING_VERIFICATION' => 'Menunggu Verifikasi',
+                        'PAID' => 'Lunas',
+                        'REJECTED' => 'Ditolak',
+                    ]),
             ])
-
             ->recordActions([
-                Action::make('create_remittance')
-                    ->label(fn(Bill $record): string => $record->status === 'verification' ? 'Detail Transaksi' : 'Buat Pembayaran')
-                    ->button()
-                    ->color('success')
-                    ->icon(fn(Bill $record): string => $record->status === 'verification' ? 'heroicon-m-eye' : 'heroicon-m-banknotes')
-                    // Visible jika unpaid ATAU verification
-                    ->visible(fn(Bill $record): bool => in_array($record->status, ['unpaid', 'verification', 'rejected']))
+                 Action::make('pay')
+                    ->label(fn(Invoice $record) => $record->status === 'PAID' ? 'Lihat Bukti' : ($record->status === 'WAITING_VERIFICATION' ? 'Sedang Diverifikasi' : 'Bayar'))
+                    ->icon(fn(Invoice $record) => $record->status === 'PAID' ? 'heroicon-m-eye' : 'heroicon-m-credit-card')
+                    ->color(fn(Invoice $record) => $record->status === 'PAID' ? 'secondary' : 'primary')
+                    ->modalHeading(fn($record) => $record->status === 'PAID' ? 'Detail Pembayaran' : 'Konfirmasi Pembayaran')
+                    ->modalDescription(fn($record) => $record->status === 'PAID' ? 'Berikut adalah data pembayaran yang telah diverifikasi.' : 'Silakan isi formulir di bawah ini.')
+                    ->visible(fn(Invoice $record) => true)
+                    ->disabled(fn(Invoice $record) => $record->status === 'WAITING_VERIFICATION')
+                    ->form([
+                        Section::make('Informasi Transfer')
+                            ->schema([
+                                TextInput::make('source_bank')
+                                    ->label('Bank Sumber')
+                                    ->placeholder('Contoh: BSI, Mandiri')
+                                    ->required()
+                                    ->disabled(fn ($record) => $record->status !== 'UNPAID' && $record->status !== 'REJECTED'),
+                                    
+                                TextInput::make('destination_bank')
+                                    ->label('Bank Tujuan')
+                                    ->placeholder('Nama Bank Penerima')
+                                    ->required()
+                                    ->disabled(fn ($record) => $record->status !== 'UNPAID' && $record->status !== 'REJECTED'),
+                                    
+                                DatePicker::make('transfer_date')
+                                    ->label('Tanggal Transfer')
+                                    ->default(now())
+                                    ->required()
+                                    ->disabled(fn ($record) => $record->status !== 'UNPAID' && $record->status !== 'REJECTED')
+                                    ->columnSpanFull(),
+                            ])->columns(2),
 
-                    // Menggabungkan Infolist dan Form Schema menjadi satu array.
-                    ->schema(fn(Bill $record): array => array_merge(
-                        $this->getInfolistSchema($record), // Infolist (Detail Invoice/Remittance)
-                        $this->getRemittanceFormSchema($record) // Form Fields
-                    ))
-                    // ->column(3)
-                    // === END: INFOLIST (Invoice View) ===
-                    ->action(function (Bill $record, array $data) {
-                        try {
-                            DB::transaction(function () use ($record, $data) {
-                                $user = Auth::user();
+                        Textarea::make('rejection_reason_view')
+                            ->label('Alasan Penolakan')
+                            ->helperText('Perbaiki data pembayaran sesuai catatan di sini.')
+                            ->visible(fn ($record) => $record->status === 'REJECTED')
+                            ->disabled()
+                            ->columnSpanFull()
+                            ->default(fn ($record) => $record->rejection_reason),
 
-                                // --- LOGIC 1: BALANCE CHECK (SKIP FOR PIMPINAN) ---
-                                // We only check balance if the user is NOT a Pimpinan
-                                if (! $user->hasRole('Pimpinan Lembaga Pengusul')) {
-
-                                    $sppg = null;
-
-                                    if ($user->hasRole('Kepala SPPG')) {
-                                        $sppg = $user->sppgDikepalai;
-                                    } elseif ($user->hasRole('PJ Pelaksana')) {
-                                        $sppg = $user->unitTugas->first();
-                                    }
-
-                                    if ($sppg) {
-                                        $sppg->refresh(); // Get latest data
-
-                                        if ($sppg->balance < $record->amount) {
-                                            Notification::make()
-                                                ->title('Saldo Tidak Mencukupi')
-                                                ->body('Saldo SPPG: Rp ' . number_format($sppg->balance, 0, ',', '.') . '. Tagihan: Rp ' . number_format($record->amount, 0, ',', '.'))
-                                                ->danger()
-                                                ->send();
-
-                                            // Stop execution
-                                            throw new Exception('Insufficient funds');
-                                        }
-                                    } else {
-                                        // Safety check if a non-Pimpinan user has no SPPG
-                                        throw new Exception('Akun Anda tidak terhubung dengan SPPG untuk pembayaran saldo.');
-                                    }
-                                }
-
-                                // --- LOGIC 2: CREATE REMITTANCE (STANDARD) ---
-                                Remittance::create([
-                                    'bill_id' => $record->id,
-                                    'user_id' => $user->id,
-                                    'amount_sent' => $record->amount,
-                                    'status' => 'pending',
-                                    'proof_file_path' => $data['proof_file_path'],
-                                    'source_bank_name' => $data['source_bank_name'],
-                                    'destination_bank_name' => $data['destination_bank_name'],
-                                    'transfer_date' => $data['transfer_date'],
-                                ]);
-
-                                $record->update(['status' => 'verification']);
-                            });
-
-                            Notification::make()
-                                ->title('Pembayaran Berhasil Dicatat')
-                                ->body('Tagihan menunggu verifikasi.')
-                                ->success()
-                                ->send();
-                        } catch (Exception $e) {
-                            DB::rollBack();
-                            Notification::make()
-                                ->title('Gagal Mencatat Pembayaran')
-                                ->body('Terjadi kesalahan saat menyimpan data: ' . $e->getMessage())
-                                ->danger()
-                                ->send();
+                        FileUpload::make('proof_of_payment')
+                            ->label('Bukti Transfer')
+                            ->image()
+                            ->directory('invoice-proofs')
+                            ->visibility('public')
+                            ->required()
+                            ->disabled(fn ($record) => $record->status === 'PAID')
+                            ->columnSpanFull(),
+                    ])
+                    ->action(function (Invoice $record, array $data) {
+                        if ($record->status === 'PAID' || $record->status === 'WAITING_VERIFICATION') {
+                            return; 
                         }
-                    }),
+                        
+                        $record->update([
+                            'proof_of_payment' => $data['proof_of_payment'],
+                            'source_bank' => $data['source_bank'],
+                            'destination_bank' => $data['destination_bank'],
+                            'transfer_date' => $data['transfer_date'],
+                            'status' => 'WAITING_VERIFICATION',
+                            'rejection_reason' => null, 
+                        ]);
+
+                        Notification::make()
+                            ->title('Pembayaran Dikirim')
+                            ->body('Detail pembayaran bank Anda telah disimpan.')
+                            ->success()
+                            ->send();
+                    })
+                    ->modalSubmitActionLabel('Kirim Konfirmasi')
             ])
             ->toolbarActions([
-                BulkActionGroup::make([
-                    //
-                ]),
+                //
             ]);
-    }
-
-    protected function getInfolistSchema(Bill $record): array
-    {
-        // Cek apakah tagihan sudah diverifikasi/menunggu verifikasi
-        $isVerification = $record->status === 'verification';
-
-        // Cari remittance yang statusnya "verification" (diasumsikan ini status pending)
-        // Catatan: Pastikan relasi 'remittances' ada di model Bill
-        $remittance = $isVerification ? $record->remittances()->where('status', 'pending')->latest()->first() : null;
-
-        // Jika status verification dan remittance ditemukan, tampilkan detail Remittance
-        if ($isVerification && $remittance) {
-            return [
-                Section::make('Detail Transaksi Pembayaran')
-                    ->heading('Bukti Pembayaran (Menunggu Verifikasi)')
-                    ->description('Data pembayaran yang telah Anda kirimkan untuk tagihan ini. Menunggu verifikasi dari administrator.')
-                    ->icon('heroicon-m-clock')
-                    ->schema([
-                        TextEntry::make('source_bank_name')
-                            ->label('Sumber Dana')
-                            ->state($remittance->source_bank_name),
-                        TextEntry::make('destination_bank_name')
-                            ->label('Bank Tujuan')
-                            ->state($remittance->destination_bank_name),
-                        TextEntry::make('transfer_date')
-                            ->label('Tanggal Transfer')
-                            ->date('d M Y')
-                            ->state($remittance->transfer_date),
-                        TextEntry::make('amount')
-                            ->label('Jumlah Dibayar')
-                            ->money('idr', true)
-                            ->size('lg')
-                            ->color('success')
-                            ->columnSpanFull()
-                            ->state($remittance->amount_sent),
-
-                        // Perhatian: 'proof_file_path' harus diakses dari objek Remittance
-                        ImageEntry::make('proof_file_path')
-                            ->label('Bukti Transfer')
-                            ->disk('local') // Pastikan ini sama dengan disk FileUpload
-                            ->columnSpanFull()
-                            ->imageHeight('300px')
-                            ->imageWidth('100%')
-                            ->state($remittance->proof_file_path),
-
-                        Action::make('view_full_image')
-                            ->label('Lihat Gambar Penuh')
-                            ->icon('heroicon-m-magnifying-glass-plus')
-                            ->color('gray')
-                            ->modalWidth('7xl') // Ukuran modal sangat besar (7xl)
-                            ->modalHeading('Bukti Transfer - Tampilan Penuh')
-                            ->modalSubmitAction(false) // Hilangkan tombol submit
-                            ->modalCancelAction(false) // Hilangkan tombol cancel
-                            // Render gambar menggunakan Base64 agar aman (tanpa public URL)
-                            ->modalContent(function () use ($remittance) {
-                                $path = $remittance->proof_file_path;
-
-                                if (! $path || ! Storage::disk('local')->exists($path)) {
-                                    return new HtmlString('<div style="padding: 1rem; text-align: center; color: #ef4444;">File bukti transfer tidak ditemukan pada server. Path: ' . $path . '</div>');
-                                }
-
-                                // Baca file dan konversi ke base64
-                                $fileContent = Storage::disk('local')->get($path);
-                                $mimeType = Storage::disk('local')->mimeType($path);
-                                $base64 = base64_encode($fileContent);
-                                $src = "data:{$mimeType};base64,{$base64}";
-
-                                return new HtmlString('
-                                        <div style="display: flex; justify-content: center; align-items: center; border-radius: 0.5rem; padding: 0.5rem;">
-                                            <img src="' . $src . '" alt="Bukti Transfer Full" style="max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 8px;">
-                                        </div>
-                                    ');
-                            }),
-
-                    ])
-                    ->columns(3),
-                // Mengarahkan state Infolist ke objek Remittance
-                // ->state($remittance)
-            ];
-        }
-
-        // Default: Jika unpaid, tampilkan Detail Tagihan (Invoice View)
-        return [
-            Section::make('Detail Tagihan')
-                ->heading('Faktur Pembayaran')
-                ->description('Harap verifikasi detail tagihan di bawah sebelum melanjutkan ke pembayaran.')
-                ->icon('heroicon-m-document-text')
-                ->columns(3)
-                ->schema([
-                    TextEntry::make('invoice_number')
-                        ->label('Nomor Invoice')
-                        ->weight('bold')
-                        ->copyable(),
-                    TextEntry::make('period_range')
-                        ->label('Periode Tagihan')
-                        ->state(fn(Bill $record): string => "{$record->period_start} s.d {$record->period_end}"),
-                    TextEntry::make('status')
-                        ->label('Status Saat Ini')
-                        ->badge()
-                        ->color('warning')
-                        ->formatStateUsing(fn(string $state): string => match ($state) {
-                            'unpaid' => 'Menunggu Pembayaran',
-                            default => $state,
-                        }),
-                    TextEntry::make('amount')
-                        ->label('Total Pembayaran')
-                        ->money('idr', true)
-                        ->size('lg')
-                        ->color('primary')
-                        ->columnSpanFull(),
-                ]),
-        ];
-    }
-
-    protected function getRemittanceFormSchema(Bill $record): array
-    {
-        // Form hanya diperlukan saat status unpaid
-        $isAvailable = $record->status === 'unpaid';
-
-        return [
-            Section::make('bank_transfer_section')
-                ->heading('Informasi Transfer Bank')
-                ->description('Silakan isi detail transfer bank Anda di bawah ini untuk memproses pembayaran tagihan.')
-                ->schema([
-                    TextInput::make('source_bank_name')
-                        ->label('Sumber Dana')
-                        ->required($isAvailable)
-                        ->visible($isAvailable) // Sembunyikan jika tidak unpaid
-                        ->columnSpan(1),
-
-                    TextInput::make('destination_bank_name')
-                        ->label('Nama Bank Tujuan')
-                        ->required($isAvailable)
-                        ->visible($isAvailable)
-                        ->columnSpan(1),
-                ])
-                ->visible($isAvailable)
-                ->columns(2),
-
-            DatePicker::make('transfer_date')
-                ->label('Tanggal Transfer')
-                ->default(now())
-                ->required($isAvailable)
-                ->visible($isAvailable)
-                ->maxDate(now())
-                ->columnSpan(1),
-
-            FileUpload::make('proof_file_path') // Menggunakan nama kolom model
-                ->label('Bukti Transfer')
-                ->required($isAvailable)
-                ->visible($isAvailable) // Sembunyikan jika tidak unpaid
-                ->image()
-                ->disk('local')
-                ->directory('remittances/proofs')
-                ->visibility('private')
-                ->maxSize(5120),
-        ];
     }
 }

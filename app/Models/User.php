@@ -10,10 +10,31 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
+
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if ($panel->getId() === 'admin') {
+            // Only Admin/Management roles access Admin Panel
+            return $this->hasRole(['Super Admin', 'Administrator', 'Lembaga Pengusul', 'Kornas']);
+        }
+
+        if ($panel->getId() === 'sppg') {
+            // SPPG Panel for Operational roles
+            // Super Admin also allowed for verification/debugging
+            return $this->hasRole(['Super Admin', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Administrator SPPG']) 
+                   || $this->sppgDiKepalai()->exists() 
+                   || $this->unitTugas()->exists();
+        }
+
+        return true;
+    }
 
     /**
      * The attributes that are mass assignable.

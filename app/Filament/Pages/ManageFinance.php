@@ -14,7 +14,7 @@ class ManageFinance extends Page implements HasForms
 
     protected string $view = 'filament.pages.manage-finance';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Operasional';
+    protected static string|UnitEnum|null $navigationGroup = 'Keuangan';
 
     protected static ?int $navigationSort = 2;
 
