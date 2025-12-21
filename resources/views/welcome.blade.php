@@ -49,7 +49,8 @@
         .hero-section h1 {
             font-weight: 700;
             font-size: 3rem;
-            /* max-width: 600px; */ /* Dihapus agar bisa menyesuaikan kolom */
+            /* max-width: 600px; */
+            /* Dihapus agar bisa menyesuaikan kolom */
             color: #343a40;
         }
 
@@ -57,8 +58,10 @@
             .hero-section h1 {
                 font-size: 2.25rem;
             }
+
             .hero-section {
-                text-align: center; /* Memastikan text center di mobile */
+                text-align: center;
+                /* Memastikan text center di mobile */
             }
         }
     </style>
@@ -80,9 +83,9 @@
                         Akan mengarah ke rute 'login' jika ada, 
                         jika tidak, fallback ke '/login' 
                     --}}
-                    <a href="{{ route('login') ?? url('/login') }}" class="btn btn-primary rounded-pill px-4">
+                    {{-- <a href="{{ route('login') ?? url('/login') }}" class="btn btn-primary rounded-pill px-4">
                         Login
-                    </a>
+                    </a> --}}
                 </div>
             </div>
         </nav>
@@ -115,4 +118,3 @@
 </body>
 
 </html>
-

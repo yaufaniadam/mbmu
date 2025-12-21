@@ -14,18 +14,25 @@ return new class extends Migration
         Schema::create('sppg', function (Blueprint $table) {
             $table->id();
             $table->foreignId('kepala_sppg_id')->nullable()->unique();
-            $table->string('nama_sppg');  
-            $table->string('kode_sppg'); 
-            $table->string('nama_bank')->nullable(); 
-            $table->string('nomor_va')->nullable(); 
-            $table->text('alamat');
+            $table->string('nama_sppg');
+            $table->string('kode_sppg');
 
-            
+            $table->string('nama_bank')->nullable();
+            $table->string('nomor_va')->nullable();
+            $table->decimal('balance', 15, 2)->default(0);
+
+            $table->text('alamat');
+            $table->boolean('is_active')->default(true);
+            $table->dateTime('tanggal_mulai_sewa')->nullable();
+
             // Gunakan char/string sesuai tipe kolom 'code' di laravolt
             $table->char('province_code', 2)->nullable();
             $table->char('city_code', 4)->nullable();
             $table->char('district_code', 7)->nullable();
             $table->char('village_code', 10)->nullable();
+
+            $table->text('latitude')->nullable();
+            $table->text('longitude')->nullable();
 
             $table->timestamps();
 

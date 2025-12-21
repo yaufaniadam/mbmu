@@ -26,9 +26,20 @@ class DatabaseSeeder extends Seeder
             DistrictsSeeder::class,
             VillagesSeeder::class,
             SppgSeeder::class,
+            ProductionVerificationSettingSeeder::class, // Added this line
             RolePermissionSeeder::class,
             LembagaPengusulSeeder::class,
          ]);
+
+         // Post-Seeding: Link Kepala SPPG Users to Sppg Records
+         $sppgs = \App\Models\Sppg::all();
+         $kepalaSppgUsers = \App\Models\User::role('Kepala SPPG')->get();
+
+         foreach ($sppgs as $index => $sppg) {
+             if (isset($kepalaSppgUsers[$index])) {
+                 $sppg->update(['kepala_sppg_id' => $kepalaSppgUsers[$index]->id]);
+             }
+         }
 
     }
 }

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('sppg_id')->constrained('sppg')->cascadeOnDelete();
             $table->date('tanggal');
             $table->string('menu_hari_ini');
+            $table->integer('jumlah');
             $table->enum('status', ['Direncanakan', 'Terverifikasi', 'Didistribusikan', 'Selesai'])->default('Direncanakan');
             $table->timestamps();
         });

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Sppg extends Model
 {
@@ -18,6 +19,13 @@ class Sppg extends Model
      */
     protected $table = 'sppg';
 
+    protected $casts = [
+        'province_code' => 'string',
+        'city_code' => 'string',
+        'district_code' => 'string',
+        'village_code' => 'string',
+    ];
+
     /**
      * Atribut yang dapat diisi secara massal (mass assignable).
      * Ini PENTING untuk fungsi save() di Livewire Anda.
@@ -27,13 +35,20 @@ class Sppg extends Model
     protected $fillable = [
         'nama_sppg',
         'kode_sppg',
+        'nama_bank',
+        'nomor_va',
+        'balance',
         'alamat',
+        'is_active',
+        'tanggal_mulai_sewa',
         'kepala_sppg_id',
         'lembaga_pengusul_id',
         'province_code',
         'city_code',
         'district_code',
         'village_code',
+        'latitude',
+        'longitude',
     ];
 
     /**
@@ -54,13 +69,84 @@ class Sppg extends Model
         return $this->belongsTo(LembagaPengusul::class, 'lembaga_pengusul_id');
     }
 
+    public function kepalaPengusul(): HasOneThrough
+    {
+        // Join lembaga_pengusul.id = sppg.lembaga_pengusul_id
+        // then users.id = lembaga_pengusul.pimpinan_id
+        return $this->hasOneThrough(
+            User::class,
+            LembagaPengusul::class,
+            'id', // first key on through (lembaga_pengusul.id)
+            'id', // key on related (users.id)
+            'lembaga_pengusul_id', // local key on this model (sppg.lembaga_pengusul_id)
+            'pimpinan_id' // local key on through (lembaga_pengusul.pimpinan_id)
+        );
+    }
+
     /**
      * Mendapatkan semua user yang bertugas di SPPG ini (via pivot table).
      */
     public function staff(): BelongsToMany
     {
-         return $this->belongsToMany(User::class, 'sppg_user_role')
+        return $this->belongsToMany(User::class, 'sppg_user_roles')
             ->withPivot('role_id')
             ->withTimestamps();
+    }
+
+    public function schools()
+    {
+        return $this->hasMany(School::class);
+    }
+
+    public function productionSchedules()
+    {
+        return $this->hasMany(ProductionSchedule::class);
+    }
+
+    public function staffs()
+    {
+        return $this->hasMany(SppgUserRole::class);
+    }
+
+    public function verificationSetting()
+    {
+        return $this->hasOne(ProductionVerificationSetting::class);
+    }
+
+    public function distributions()
+    {
+        return $this->hasManyThrough(
+            Distribution::class,
+            ProductionSchedule::class,
+            'sppg_id',             // Foreign key on 'jadwal_produksi' table
+            'jadwal_produksi_id',  // Foreign key on 'distribusi' table
+            'id',                  // Local key on 'sppg' table
+            'id'                   // Local key on 'jadwal_produksi' table
+        );
+    }
+
+    public function latestBill()
+    {
+        return $this->hasOne(Bill::class)->latestOfMany('period_end');
+    }
+
+    public function bills()
+    {
+        return $this->hasMany(Bill::class);
+    }
+
+    public function operatingExpenses()
+    {
+        return $this->hasMany(OperatingExpense::class);
+    }
+
+    public function operatingExpenseCategories()
+    {
+        return $this->hasMany(OperatingExpenseCategory::class);
+    }
+
+    public function incomingFunds()
+    {
+        return $this->hasMany(SppgIncomingFund::class);
     }
 }
