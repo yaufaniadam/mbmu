@@ -3,11 +3,11 @@
 namespace App\Filament\Sppg\Resources\Staff\Pages;
 
 use App\Filament\Sppg\Resources\Staff\StaffResource;
+use App\Models\SppgUserRole;
 use App\Models\User;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class CreateStaff extends CreateRecord
@@ -67,34 +67,12 @@ class CreateStaff extends CreateRecord
                 // Check if this specific user-role-sppg combination already exists to avoid duplicates
                 // (though insert usually throws error on unique constraint, here we use insert or first check)
                 
-                $exists = DB::table('sppg_user_roles')
-                    ->where('user_id', $record->id)
-                    ->where('sppg_id', $sppgId)
-                    ->where('role_id', $role->id)
-                    ->exists();
-
-                if (!$exists) {
-                    DB::table('sppg_user_roles')->insert([
-                        'user_id' => $record->id,
-                        'sppg_id' => $sppgId,
-                        'role_id' => $role->id,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
+                SppgUserRole::firstOrCreate([
+                    'user_id' => $record->id,
+                    'sppg_id' => $sppgId,
+                    'role_id' => $role->id,
+                ]);
             }
         }
-        // if ($organizationId) {
-        //     DB::table('sppg_user_roles')->upsert(
-        //         [
-        //             [
-        //                 'user_id' => $record->id,
-        //                 'sppg_id' => $organizationId,
-        //             ],
-        //         ],
-        //         ['user_id'], // unique key
-        //         ['sppg_id'] // columns to update if exists
-        //     );
-        // }
     }
 }

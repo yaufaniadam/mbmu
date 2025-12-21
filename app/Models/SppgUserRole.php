@@ -9,6 +9,7 @@ class SppgUserRole extends Model
     protected $fillable = [
         'sppg_id',
         'user_id',
+        'role_id',
     ];
 
     public function sppg()

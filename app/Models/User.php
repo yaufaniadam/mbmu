@@ -100,7 +100,7 @@ class User extends Authenticatable implements FilamentUser
     public function unitTugas(): BelongsToMany
     {
         return $this->belongsToMany(Sppg::class, 'sppg_user_roles')
-            // ->withPivot('role_id') // Ambil juga role_id dari pivot table
+            ->withPivot('role_id') // Ambil juga role_id dari pivot table
             ->limit(1);
     }
 
