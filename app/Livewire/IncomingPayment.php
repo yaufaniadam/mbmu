@@ -6,7 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
-use App\Models\Remittance;
+use App\Models\Invoice;
 use App\Models\User;
 use Exception;
 use Filament\Actions\Action;
@@ -34,33 +34,27 @@ class IncomingPayment extends TableWidget
         return $table
             ->query(function (): Builder {
 
-                $query = Remittance::query();
-
+                $query = Invoice::query();
 
                 if (Auth::user()->hasRole('Pimpinan Lembaga Pengusul')) {
-
-                    $allowedSppgIds = User::find(Auth::id())
+                    $allowedSppgIds = Auth::user()
                         ->lembagaDipimpin
                         ->sppgs
                         ->pluck('id')
                         ->toArray();
 
-                    $query
-                        ->whereHas('bill', function ($q) use ($allowedSppgIds) {
-                            $q->whereIn('sppg_id', $allowedSppgIds);
-                            $q->where('billed_to_type', 'sppg');
-                        });
+                    // Incoming Rent from SPPGs
+                    $query->whereIn('sppg_id', $allowedSppgIds)
+                          ->where('type', 'SPPG_SEWA');
                 }
 
-                // SAFE ACCESS: Memastikan $user tidak null sebelum diakses('Staf Kornas'))
-                if (Auth::user()->hasAnyRole(['Staf Kornas', 'Direktur Kornas'])) {
-                    $query->whereHas('bill', function ($q) {
-                        $q->where('billed_to_type', 'pengusul');
-                    });
-                }
+                // Kornas sees everything (no restriction needed)
 
-                $query->whereIn('status', ['verified', 'rejected']);
-                $query->orderBy('created_at', 'desc');
+                // Show Paid, Rejected AND WAITING VERIFICATION
+                // This ensures the user sees the payment immediately after submission.
+                $query->whereIn('status', ['PAID', 'REJECTED', 'WAITING_VERIFICATION']);
+
+                $query->orderBy('updated_at', 'desc');
 
                 return $query;
             })
@@ -68,76 +62,70 @@ class IncomingPayment extends TableWidget
                 Stack::make([
                     TextColumn::make('period_range')
                         ->label('Periode')
-                        // SAFE ACCESS: Memastikan $record tidak null sebelum diakses
-                        ->state(fn(?Remittance $record): ?string => $record ? "Periode {$record->bill->period_start} s.d {$record->bill->period_end}" : null)
+                        ->state(fn(Invoice $record) => "Periode " . $record->start_date->format('d M Y') . " s.d " . $record->end_date->format('d M Y'))
                         ->icon('heroicon-m-calendar'),
 
-                    TextColumn::make('bill.invoice_number')
+                    TextColumn::make('invoice_number')
                         ->label('Nomor Invoice')
-                        ->money('idr', true)
+                        ->formatStateUsing(fn ($state) => $state)
+                        ->description(fn (Invoice $record) => 'Rp ' . number_format($record->amount, 0, ',', '.'))
                         ->icon('heroicon-m-banknotes'),
 
                     TextColumn::make('status')
                         ->badge()
                         ->formatStateUsing(fn(string $state): string => match ($state) {
-                            'pending' => 'Menunggu Verifikasi',
-                            'verified' => 'Pembayaran Diterima',
-                            'rejected' => 'Pembayaran Ditolak',
+                            'WAITING_VERIFICATION' => 'Menunggu Verifikasi',
+                            'PAID' => 'Pembayaran Diterima',
+                            'REJECTED' => 'Pembayaran Ditolak',
+                            'UNPAID' => 'Belum Dibayar',
                             default => $state,
                         })
                         ->color(fn(string $state): string => match ($state) {
-                            'pending' => 'warning',
-                            'verified' => 'success',
-                            'rejected' => 'danger',
+                            'WAITING_VERIFICATION' => 'warning',
+                            'PAID' => 'success',
+                            'REJECTED' => 'danger',
                             default => 'gray',
                         })
                         ->icon(fn(string $state): string => match ($state) {
-                            'pending' => 'heroicon-m-arrow-path',
-                            'verified' => 'heroicon-m-check',
-                            'rejected' => 'heroicon-m-x-mark',
+                            'WAITING_VERIFICATION' => 'heroicon-m-arrow-path',
+                            'PAID' => 'heroicon-m-check',
+                            'REJECTED' => 'heroicon-m-x-mark',
                             default => null,
                         }),
                 ])
             ])
             ->filters([
-                Filter::make('status_filter') // Gunakan nama filter yang unik
+                Filter::make('status_filter')
                     ->label('Status Pembayaran')
                     ->schema([
                         CheckboxList::make('statuses')
                             ->options([
-                                'verified' => 'Pembayaran Diterima',
-                                'rejected' => 'Pembayaran Ditolak',
+                                'WAITING_VERIFICATION' => 'Menunggu Verifikasi',
+                                'PAID' => 'Pembayaran Diterima',
+                                'REJECTED' => 'Pembayaran Ditolak',
                             ])
-                            ->columns(2) // Opsional: Tampilkan dalam 2 kolom
+                            ->columns(2)
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         if (empty($data['statuses'])) {
                             return $query;
                         }
-
-                        // Memfilter berdasarkan status yang dipilih
                         return $query->whereIn('status', $data['statuses']);
                     }),
-                // ->visible(function (): bool {
-                //     $user = Auth::user();
-                //     // Hanya tampilkan filter ini untuk peran tertentu
-                //     return $user->hasRole('PJ Pelaksana') || $user->hasRole('Kepala SPPG');
-                // }),
             ])
             ->headerActions([
                 //
             ])
             ->recordActions([
-                // ACTION TOMBOL DETAIL
                 Action::make('view_details')
                     ->label('Detail Transaksi')
                     ->icon('heroicon-m-eye')
                     ->color('gray')
                     ->button()
                     ->modalWidth('5xl')
-                    ->modalSubmitAction(false) // Read only
+                    ->modalSubmitAction(false)
                     ->modalCancelAction(false)
-                    ->schema(fn(Remittance $record): array => $this->getDetailsSchema($record))
+                    ->schema(fn(Invoice $record): array => $this->getDetailsSchema($record))
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -146,54 +134,46 @@ class IncomingPayment extends TableWidget
             ]);
     }
 
-    protected function getDetailsSchema(Remittance $record): array
+    protected function getDetailsSchema(Invoice $record): array
     {
         return [
-            // BAGIAN 1: DETAIL TAGIHAN (Dari Relasi Bill)
+            // Section 1: Invoice Details
             Section::make('Detail Referensi Tagihan')
                 ->heading('Faktur Tagihan')
                 ->icon('heroicon-m-document-text')
                 ->columns(3)
                 ->schema([
-                    TextEntry::make('bill.invoice_number')
+                    TextEntry::make('invoice_number')
                         ->label('Nomor Invoice')
                         ->weight('bold')
                         ->copyable(),
 
-                    TextEntry::make('bill.period_range')
+                    TextEntry::make('period')
                         ->label('Periode')
-                        ->state(fn(Remittance $record) => "{$record->bill->period_start} s.d {$record->bill->period_end}"),
+                        ->state(fn(Invoice $record) => $record->start_date->format('d M Y') . " s.d " . $record->end_date->format('d M Y')),
 
-                    TextEntry::make('bill.amount')
+                    TextEntry::make('amount')
                         ->label('Total Tagihan')
                         ->money('idr', true)
                         ->color('gray'),
                 ]),
 
-            // Bagian 2: PELAKU PEMBAYARAN
+            // Section 2: Payer Info
             Section::make('Pelaku Pembayaran')
                 ->heading('Informasi Pengirim Pembayaran')
                 ->icon('heroicon-m-user-group')
                 ->columns(3)
                 ->schema([
-                    TextEntry::make('user.name')
-                        ->label('Nama Pengirim')
+                    TextEntry::make('sppg.nama_sppg')
+                        ->label('SPPG / Unit')
                         ->weight('bold')
                         ->copyable(),
-                    TextEntry::make('bill.sppg.nama_sppg')
-                        ->label('SPPG')
-                        ->weight('bold')
-                        ->copyable(),
-                    TextEntry::make('jabatan')
-                        ->label('Jabatan')
-                        ->weight('bold')
-                        ->copyable()
-                        ->state(function ($record) {
-                            return $record->user?->getRoleNames()->join(', ');
-                        }),
+                    TextEntry::make('type')
+                        ->label('Tipe Pembayaran')
+                        ->badge(),
                 ]),
 
-            // BAGIAN 3: DETAIL TRANSAKSI (Data Remittance itu sendiri)
+            // Section 3: Payment Data
             Section::make('Data Pembayaran')
                 ->heading('Detail Transfer')
                 ->icon('heroicon-m-banknotes')
@@ -203,24 +183,23 @@ class IncomingPayment extends TableWidget
                         ->label('Status Pembayaran')
                         ->badge()
                         ->formatStateUsing(fn(string $state): string => match ($state) {
-                            'pending' => 'Menunggu Verifikasi',
-                            'verification' => 'Sedang Diverifikasi', // Sesuaikan jika ada status verification
-                            'verified' => 'Pembayaran Diterima',
-                            'rejected' => 'Pembayaran Ditolak',
+                            'WAITING_VERIFICATION' => 'Menunggu Verifikasi',
+                            'PAID' => 'Pembayaran Diterima',
+                            'REJECTED' => 'Pembayaran Ditolak',
                             default => $state,
                         })
                         ->color(fn(string $state): string => match ($state) {
-                            'pending', 'verification' => 'warning',
-                            'verified' => 'success',
-                            'rejected' => 'danger',
+                            'WAITING_VERIFICATION' => 'warning',
+                            'PAID' => 'success',
+                            'REJECTED' => 'danger',
                             default => 'gray',
                         })
                         ->columnSpanFull(),
 
-                    TextEntry::make('source_bank_name')
+                    TextEntry::make('source_bank')
                         ->label('Bank Pengirim'),
 
-                    TextEntry::make('destination_bank_name')
+                    TextEntry::make('destination_bank')
                         ->label('Bank Tujuan'),
 
                     TextEntry::make('transfer_date')
@@ -234,22 +213,18 @@ class IncomingPayment extends TableWidget
                         ->color('success')
                         ->columnSpanFull(),
 
-                    // Rejection Reason (Hanya jika ditolak)
                     TextEntry::make('rejection_reason')
                         ->label('Alasan Penolakan')
                         ->color('danger')
-                        ->visible(fn(Remittance $record) => $record->status === 'rejected')
+                        ->visible(fn(Invoice $record) => $record->status === 'REJECTED')
                         ->columnSpanFull(),
 
-                    // Bukti Transfer
-                    ImageEntry::make('proof_file_path')
+                    ImageEntry::make('proof_of_payment')
                         ->label('Bukti Transfer')
-                        ->disk('local') // Pastikan sesuai dengan config filesystem
+                        ->disk('public')
                         ->columnSpanFull()
                         ->imageHeight(250)
                         ->imageWidth('100%'),
-
-                    // === TOMBOL MODAL ZOOM (Sama seperti BillList) ===
 
                     Section::make('')
                         ->schema([
@@ -263,20 +238,17 @@ class IncomingPayment extends TableWidget
                                     ->modalSubmitAction(false)
                                     ->modalCancelAction(false)
                                     ->modalContent(function () use ($record) {
-                                        $path = $record->proof_file_path;
+                                        $path = $record->proof_of_payment;
 
-                                        if (!$path || !Storage::disk('local')->exists($path)) {
-                                            return new HtmlString('<div style="padding: 1rem; text-align: center; color: #ef4444;">File bukti transfer tidak ditemukan.</div>');
+                                        if (!$path) {
+                                             return new HtmlString('<div style="padding: 1rem; text-align: center; color: #ef4444;">File bukti transfer tidak ditemukan.</div>');
                                         }
 
-                                        $fileContent = Storage::disk('local')->get($path);
-                                        $mimeType = Storage::disk('local')->mimeType($path);
-                                        $base64 = base64_encode($fileContent);
-                                        $src = "data:{$mimeType};base64,{$base64}";
+                                        $url = Storage::url($path);
 
                                         return new HtmlString('
                                     <div style="display: flex; justify-content: center; align-items: center; border-radius: 0.5rem; padding: 0.5rem;">
-                                        <img src="' . $src . '" alt="Bukti Transfer Full" style="max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 8px;">
+                                        <img src="' . $url . '" alt="Bukti Transfer Full" style="max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 8px;">
                                     </div>
                                 ');
                                     }),
