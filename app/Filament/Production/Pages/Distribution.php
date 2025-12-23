@@ -178,7 +178,7 @@ class Distribution extends Page implements HasInfolists
 
                                             // 3. Courier Status Logic
                                             .($record->user_id
-                                                ? ($record->user_id === auth()->id()
+                                                ? ($record->user_id == auth()->id()
                                                     ? '<div>'
                                                     .'<span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-700/10 dark:bg-blue-400/10 dark:text-blue-400 dark:ring-blue-400/30">'
                                                     .'Anda ditugaskan untuk mengantarkan ke alamat ini'
