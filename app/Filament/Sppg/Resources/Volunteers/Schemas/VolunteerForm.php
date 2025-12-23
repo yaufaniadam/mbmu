@@ -20,9 +20,75 @@ class VolunteerForm
                                 \Filament\Forms\Components\Select::make('user_id')
                                     ->label('Akun Pengguna Sistem')
                                     ->helperText('Hubungkan jika relawan butuh akses aplikasi (misal: Kurir)')
-                                    ->options(\App\Models\User::pluck('name', 'id'))
+                                    ->options(function ($record) {
+                                        // Get SPPG ID from record or current authenticated user
+                                        $sppgId = $record?->sppg_id;
+                                        
+                                        if (!$sppgId) {
+                                            // Try to get from authenticated user's unitTugas
+                                            $user = auth()->user();
+                                            $sppgId = $user?->unitTugas()->first()?->id;
+                                        }
+                                        
+                                        if ($sppgId) {
+                                            // Get users from sppg_user_roles pivot table
+                                            return \App\Models\User::whereHas('unitTugas', function ($query) use ($sppgId) {
+                                                $query->where('sppg_id', $sppgId);
+                                            })->pluck('name', 'id');
+                                        }
+                                        
+                                        return \App\Models\User::pluck('name', 'id');
+                                    })
                                     ->searchable()
-                                    ->nullable(),
+                                    ->nullable()
+                                    ->createOptionForm(function ($component) {
+                                        // Get nama_relawan from parent form state
+                                        $namaRelawan = $component->getLivewire()->data['nama_relawan'] ?? '';
+                                        
+                                        return [
+                                            TextInput::make('name')
+                                                ->label('Nama Lengkap')
+                                                ->required()
+                                                ->default($namaRelawan),
+                                            TextInput::make('email')
+                                                ->label('Email')
+                                                ->email()
+                                                ->required()
+                                                ->unique('users', 'email'),
+                                            TextInput::make('password')
+                                                ->label('Password')
+                                                ->password()
+                                                ->revealable()
+                                                ->required()
+                                                ->minLength(6),
+                                        ];
+                                    })
+                                    ->createOptionUsing(function (array $data, $record) {
+                                        $user = \App\Models\User::create([
+                                            'name' => $data['name'],
+                                            'email' => $data['email'],
+                                            'password' => \Illuminate\Support\Facades\Hash::make($data['password']),
+                                        ]);
+                                        
+                                        // Get SPPG ID
+                                        $sppgId = $record?->sppg_id ?? auth()->user()?->unitTugas()->first()?->id;
+                                        
+                                        // Assign role via Spatie (for Spatie permissions)
+                                        $role = \Spatie\Permission\Models\Role::where('name', 'Staf Pengantaran')->first();
+                                        if ($role) {
+                                            $user->assignRole($role);
+                                        }
+                                        
+                                        // Also assign to SPPG via pivot table
+                                        if ($sppgId && $role) {
+                                            \Illuminate\Support\Facades\DB::table('sppg_user_roles')->updateOrInsert(
+                                                ['user_id' => $user->id, 'sppg_id' => $sppgId],
+                                                ['role_id' => $role->id]
+                                            );
+                                        }
+                                        
+                                        return $user->id;
+                                    }),
                                 TextInput::make('nama_relawan')
                                     ->label('Nama Lengkap')
                                     ->required(),
@@ -36,26 +102,29 @@ class VolunteerForm
                                         'P' => 'Perempuan',
                                     ])
                                     ->required(),
-                                \Filament\Forms\Components\Select::make('category')
-                                    ->label('Kategori Relawan')
+                                \Filament\Forms\Components\Select::make('posisi')
+                                    ->label('Jabatan')
                                     ->options([
-                                        'Masak' => 'Juru Masak / Koki',
-                                        'Asisten Dapur' => 'Asisten Dapur',
-                                        'Pengantaran' => 'Staf Pengantaran / Kurir',
-                                        'Kebersihan' => 'Tenaga Kebersihan',
-                                        'Keamanan' => 'Tenaga Keamanan',
-                                        'Administrasi' => 'Staf Administrasi',
-                                        'Lainnya' => 'Lainnya',
+                                        'Asisten Lapangan' => 'Asisten Lapangan',
+                                        'Koordinator Bahan' => 'Koordinator Bahan',
+                                        'Koordinator Masak' => 'Koordinator Masak',
+                                        'Koordinator Pemorsian' => 'Koordinator Pemorsian',
+                                        'Koordinator Pencucian' => 'Koordinator Pencucian',
+                                        'Persiapan' => 'Persiapan',
+                                        'Masak' => 'Masak',
+                                        'Pemorsian' => 'Pemorsian',
+                                        'Distribusi' => 'Distribusi',
+                                        'Pencucian' => 'Pencucian',
+                                        'Cleaning Service' => 'Cleaning Service',
                                     ])
-                                    ->required(),
-                                TextInput::make('posisi')
-                                    ->label('Posisi Spesifik')
-                                    ->placeholder('Contoh: Kepala Koki, Driver Motor, dll')
-                                    ->required(),
+                                    ->searchable()
+                                    ->required()
+                                    ->live()
+                                    ->afterStateUpdated(fn ($state, callable $set) => $set('category', $state)),
+                                \Filament\Forms\Components\Hidden::make('category'),
                                 TextInput::make('kontak')
                                     ->label('Nomor WhatsApp/HP')
-                                    ->tel()
-                                    ->required(),
+                                    ->tel(),
                                 TextInput::make('daily_rate')
                                     ->label('Upah per Hari (Rate)')
                                     ->numeric()

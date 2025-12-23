@@ -189,7 +189,7 @@ class Verify extends Page implements HasForms
         );
 
         $this->record->update([
-            'status' => 'Terverifikasi',
+            'status' => 'Menunggu ACC Kepala SPPG',
         ]);
 
         Notification::make()

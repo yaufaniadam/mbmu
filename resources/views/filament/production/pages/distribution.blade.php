@@ -4,8 +4,46 @@
 @endphp
 
 <x-filament-panels::page>
-    {{-- Page content --}}
+    {{-- Pending Pickups Section --}}
+    @if ($pendingPickups && $pendingPickups->isNotEmpty())
+        <div class="mb-6">
+            <div class="mb-2 bg-amber-900 p-4 rounded-lg border border-amber-600">
+                <p class="text-lg font-semibold text-amber-200">
+                    🥄 Alat Makan Siap Dijemput ({{ $pendingPickups->count() }})
+                </p>
+            </div>
+            <ul>
+                @foreach ($pendingPickups as $item)
+                    <li class="bg-amber-950 border border-amber-700 rounded-lg p-4 mb-2">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="font-semibold text-amber-200">{{ $item->school->nama_sekolah }}</p>
+                                <p class="text-sm text-amber-300">{{ $item->school->alamat }}</p>
+                                <div class="flex gap-2 mt-2">
+                                    <x-filament::badge color="success">
+                                        Terkirim {{ $item->delivered_at?->format('H:i') }}
+                                    </x-filament::badge>
+                                    <x-filament::badge color="warning">
+                                        {{ $item->pickup_status }}
+                                    </x-filament::badge>
+                                </div>
+                            </div>
+                            <div>
+                                <x-filament::button tag="a"
+                                    href="{{ Delivery::getUrl(['distribution' => $item->id]) }}" 
+                                    size="sm"
+                                    color="warning">
+                                    Jemput
+                                </x-filament::button>
+                            </div>
+                        </div>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
+    {{-- Page content --}}
     @if ($record)
         <div class="flex justify-center">
             <p class="text-2xl font-semibold">
@@ -59,7 +97,7 @@
         <div>
             <div class="mb-2 bg-slate-800 p-4 rounded-lg">
                 <p class="text-lg">
-                    Daftar sekolah penerima :
+                Daftar penerima MBM :
                 </p>
             </div>
             <ul>
@@ -128,7 +166,7 @@
                 @endforeach
             </ul>
         </div>
-    @else
+    @elseif (!$pendingPickups || $pendingPickups->isEmpty())
         <x-filament::empty-state icon="heroicon-o-truck">
             <x-slot name="heading">
                 Belum ada makanan yang siap distribusikan.

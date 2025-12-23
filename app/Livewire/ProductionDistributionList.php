@@ -56,7 +56,7 @@ class ProductionDistributionList extends TableWidget
                     // <-- 4. ADD DATE FORMATTING
                     ->date('l, d F Y'), // e.g., "Jumat, 22 Mei 2025"
                 TextColumn::make('school.nama_sekolah')
-                    ->label('Sekolah Tujuan'),
+                    ->label('Penerima MBM'),
                 TextColumn::make('status_pengantaran')
                     ->label('Status Distribusi')
                     ->badge()

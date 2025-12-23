@@ -89,8 +89,9 @@ class Sppg extends Model
     public function staff(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'sppg_user_roles')
-            ->withPivot('role_id')
-            ->withTimestamps();
+            ->withPivot(['role_id', 'sk_path'])
+            ->withTimestamps()
+            ->distinct();
     }
 
     public function schools()
@@ -148,5 +149,15 @@ class Sppg extends Model
     public function incomingFunds()
     {
         return $this->hasMany(SppgIncomingFund::class);
+    }
+
+    public function volunteers()
+    {
+        return $this->hasMany(Volunteer::class);
+    }
+
+    public function volunteerAttendances()
+    {
+        return $this->hasMany(VolunteerAttendance::class);
     }
 }

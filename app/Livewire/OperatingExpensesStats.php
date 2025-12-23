@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Auth;
 
 class OperatingExpensesStats extends StatsOverviewWidget
 {
+    protected int | array | null $columns = 1;
+
+    public ?string $scope = null;
+
     public static function canView(): bool
     {
         return Auth::user()->hasAnyRole([
@@ -26,66 +30,53 @@ class OperatingExpensesStats extends StatsOverviewWidget
     {
         $user = Auth::user();
         $panelId = \Filament\Facades\Filament::getCurrentPanel()->getId();
-
-        // 1. Initialize variables
-        $opsAmount = 0;
-        $rentAmount = 0;
-        $showRentAndTotal = false;
-
-        // 2. Logic for SPPG Panel (Always show local stats)
-        if ($panelId === 'sppg') {
-            $showRentAndTotal = true;
-
-            $sppg = $user->hasRole('Kepala SPPG')
-                ? $user->sppgDikepalai
-                : $user->unitTugas->first();
-
-            if ($sppg) {
-                $opsAmount = $sppg->operatingExpenses()->sum('amount');
-
-                $rentAmount = $sppg->bills()
-                    ->where('type', 'sewa_lokal')
-                    ->where('status', 'paid')
-                    ->sum('amount');
-            }
-        }
-        // 3. Logic for Admin Panel (Show National stats)
-        elseif ($panelId === 'admin') {
-            $opsAmount = OperatingExpense::whereNull('sppg_id')->sum('amount');
-        } else {
-            return [];
-        }
-
-        // 4. Helper for IDR Formatting
-        // e.g., converts 5000000 to "Rp 5.000.000"
         $formatIdr = fn (int|float $value) => 'Rp '.number_format($value, 0, ',', '.');
 
-        // 5. Build the Stats Array
-        $stats = [
-            Stat::make('Biaya Operasional', $formatIdr($opsAmount))
-                ->icon('heroicon-o-banknotes', IconPosition::Before)
-                ->color('secondary')
-                ->columnSpan(2),
-        ];
-
-        // 6. Conditionally add Rent and Total stats
-        if ($showRentAndTotal) {
-            $stats[] = Stat::make('Biaya Sewa', $formatIdr($rentAmount))
-                ->icon('heroicon-o-banknotes', IconPosition::Before)
-                ->color('secondary')
-                ->columnSpan(2);
-
-            $stats[] = Stat::make('Total Biaya', $formatIdr($opsAmount + $rentAmount))
-                ->icon('heroicon-o-calculator', IconPosition::Before)
-                ->color('primary')
-                ->columnSpan(2);
-
-            $stats[] = Stat::make('Dana SPPG', $formatIdr($sppg?->balance ?? 0))
-                ->icon('heroicon-o-currency-dollar', IconPosition::Before)
-                ->color('success')
-                ->columnSpan(2);
+        // 1. Explicit Scope Handling (Priority)
+        if ($this->scope === 'central') {
+            $opsAmount = OperatingExpense::whereNull('sppg_id')->sum('amount');
+            return [
+                Stat::make('Biaya Ops. Kornas', $formatIdr($opsAmount))
+                    ->icon('heroicon-o-banknotes', IconPosition::Before)
+                    ->color('secondary')
+                    ->description('Biaya Operasional Pusat'),
+            ];
         }
 
-        return $stats;
+        if ($this->scope === 'unit') {
+            $opsAmount = OperatingExpense::whereNotNull('sppg_id')->sum('amount');
+            return [
+                Stat::make('Total Biaya Ops. SPPG', $formatIdr($opsAmount))
+                    ->icon('heroicon-o-banknotes', IconPosition::Before)
+                    ->color('info')
+                    ->description('Akumulasi Biaya Operasional Seluruh SPPG'),
+            ];
+        }
+
+        // 2. Legacy/SPPG Panel Logic (Fallback)
+        if ($panelId === 'sppg') {
+            $sppg = $user->hasRole('Kepala SPPG') ? $user->sppgDikepalai : $user->unitTugas->first();
+            if (!$sppg) return [];
+
+            $opsAmount = $sppg->operatingExpenses()->sum('amount');
+            $rentAmount = $sppg->bills()->where('type', 'sewa_lokal')->where('status', 'paid')->sum('amount');
+
+            return [
+                Stat::make('Biaya Operasional', $formatIdr($opsAmount))
+                    ->icon('heroicon-o-banknotes', IconPosition::Before)
+                    ->color('secondary'),
+                Stat::make('Biaya Sewa', $formatIdr($rentAmount))
+                    ->icon('heroicon-o-banknotes', IconPosition::Before)
+                    ->color('secondary'),
+                Stat::make('Total Biaya', $formatIdr($opsAmount + $rentAmount))
+                    ->icon('heroicon-o-calculator', IconPosition::Before)
+                    ->color('primary'),
+                Stat::make('Dana SPPG', $formatIdr($sppg->balance ?? 0))
+                    ->icon('heroicon-o-currency-dollar', IconPosition::Before)
+                    ->color('success'),
+            ];
+        }
+
+        return [];
     }
 }

@@ -46,7 +46,7 @@ class LembagaPengusulResource extends Resource
     {
         return $schema
             ->components([
-                Tabs::make('Lembaga Pengusul')
+                Tabs::make('Lembaga Pengusuls')
                     ->tabs([
                         Tab::make('Informasi Lembaga')
                             ->icon('heroicon-m-information-circle')

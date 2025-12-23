@@ -10,6 +10,7 @@ class School extends Model
 
     protected $fillable = [
         'nama_sekolah',
+        'kategori',
         'alamat',
         'province_code',
         'city_code',

@@ -55,20 +55,37 @@ class ProductionScheduleResource extends Resource
     {
         $user = Auth::user();
 
-        // Kepala SPPG → Only show schedules for their SPPG
+        // Kepala SPPG → Show all schedules for their SPPG
         if ($user->hasRole('Kepala SPPG')) {
             $sppg = $user->sppgDikepalai;
-            return $sppg ? ProductionSchedule::where([['sppg_id', '=', $sppg->id], ['status', '=', 'Menunggu ACC Kepala SPPG']])->count() : 0;
+            return $sppg ? ProductionSchedule::where('sppg_id', $sppg->id)->count() : 0;
         }
 
         // PJ Pelaksana → Only schedules for their unit tugas
         if ($user->hasRole('PJ Pelaksana')) {
             $unitTugas = $user->unitTugas->first();
-
             return $unitTugas ? ProductionSchedule::where([['sppg_id', '=', $unitTugas->id], ['status', '=', 'Menunggu ACC Kepala SPPG']])->count() : 0;
         }
 
-        // Default → all schedules
+        // Ahli Gizi & Staf Gizi → Show schedules needing evaluation
+        if ($user->hasAnyRole(['Ahli Gizi', 'Staf Gizi'])) {
+            $unitTugas = $user->unitTugas->first();
+            if (!$unitTugas) return 0;
+            
+            // Count schedules without verification (need evaluation)
+            return ProductionSchedule::where('sppg_id', $unitTugas->id)
+                ->where('status', 'Direncanakan')
+                ->whereDoesntHave('verification')
+                ->count();
+        }
+
+        // Other Staff (Staf Administrator, Akuntan, Pengantaran) → Count for their SPPG
+        if ($user->hasAnyRole(['Staf Administrator SPPG', 'Staf Akuntan', 'Staf Pengantaran'])) {
+            $unitTugas = $user->unitTugas->first();
+            return $unitTugas ? ProductionSchedule::where('sppg_id', $unitTugas->id)->count() : 0;
+        }
+
+        // Admin/Management → all schedules
         return ProductionSchedule::count();
     }
 
@@ -130,6 +147,24 @@ class ProductionScheduleResource extends Resource
                             'Menunggu' => 'warning',
                             'Sedang Dikirim' => 'info',
                             'Terkirim' => 'success',
+                            'Selesai' => 'success',
+                            default => 'gray',
+                        })
+                        ->columnSpanFull(),
+                    TextEntry::make('pickup_status_for_' . $school->id)
+                        ->label('Status Penjemputan Alat')
+                        ->state(function (ProductionSchedule $record) use ($school) {
+                            $distribution = $record->distributions()
+                                ->where('sekolah_id', $school->id)
+                                ->first();
+
+                            return $distribution ? $distribution->pickup_status : null;
+                        })
+                        ->badge()
+                        ->color(fn(?string $state): string => match ($state) {
+                            'Menunggu' => 'warning',
+                            'Sedang Dijemput' => 'info',
+                            'Dijemput' => 'success',
                             default => 'gray',
                         })
                         ->columnSpanFull(),
@@ -165,11 +200,34 @@ class ProductionScheduleResource extends Resource
                                 ->first();
                             return $distribution->photo_of_proof;
                         }),
+                    ImageEntry::make('pickup_photo_proof_for_' . $school->id)
+                        ->label('Foto Bukti Penjemputan')
+                        ->columnSpanFull()
+                        ->imageHeight('300px')
+                        ->imageWidth('100%')
+                        ->visible(function (ProductionSchedule $record) use ($school) {
+                            $distribution = $record->distributions()
+                                ->where('sekolah_id', $school->id)
+                                ->first();
+                            return $distribution && $distribution->pickup_status == 'Dijemput';
+                        })
+                        ->state(function (ProductionSchedule $record) use ($school) {
+                            $distribution = $record->distributions()
+                                ->where('sekolah_id', $school->id)
+                                ->first();
+                            return $distribution?->pickup_photo_proof;
+                        }),
 
                     Action::make('view_full_image_for_' . $school->id)
                         ->label('Lihat Gambar Penuh')
                         ->icon('heroicon-m-magnifying-glass-plus')
                         ->color('gray')
+                        ->visible(function (ProductionSchedule $record) use ($school) {
+                            $distribution = $record->distributions()
+                                ->where('sekolah_id', $school->id)
+                                ->first();
+                            return $distribution && !empty($distribution->photo_of_proof);
+                        })
                         ->modalWidth('7xl') // Ukuran modal sangat besar (7xl)
                         ->modalHeading('Bukti Pengantaran - Tampilan Penuh')
                         ->modalSubmitAction(false) // Hilangkan tombol submit

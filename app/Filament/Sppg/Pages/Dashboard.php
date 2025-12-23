@@ -7,6 +7,8 @@ use App\Livewire\ProductionChart;
 use App\Livewire\ProductionDistributionList;
 use App\Livewire\ProductionScheduleList;
 use App\Livewire\SppgStatsOverview;
+use App\Livewire\SppgTopStatsWidget;
+use App\Livewire\FinanceStatsOverview;
 use App\Models\Sppg;
 use App\Models\User;
 use Filament\Forms\Components\Select;
@@ -49,8 +51,9 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            \App\Filament\Sppg\Widgets\IncompletePlanAlert::class,
+            SppgTopStatsWidget::class,
             SppgStatsOverview::class,
+            FinanceStatsOverview::class,
             ProductionChart::class,
             ProductionScheduleList::class,
             ProductionDistributionList::class,

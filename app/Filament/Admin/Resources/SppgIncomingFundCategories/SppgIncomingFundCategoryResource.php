@@ -19,17 +19,28 @@ class SppgIncomingFundCategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-tag';
     
-    protected static ?string $navigationLabel = 'Kategori Dana Masuk';
+    protected static ?string $navigationLabel = 'Kategori Penerimaan Dana';
     
     protected static string|UnitEnum|null $navigationGroup = 'Master Keuangan';
 
     protected static ?int $navigationSort = 1;
+
+    public static function getModelLabel(): string
+    {
+        return 'Kategori Penerimaan Dana';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Kategori Penerimaan Dana';
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nama Kategori')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -40,6 +51,7 @@ class SppgIncomingFundCategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nama Kategori')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

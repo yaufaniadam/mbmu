@@ -24,6 +24,7 @@ use Illuminate\Support\HtmlString;
 
 class OperatingExpenses extends TableWidget
 {
+    public ?string $scope = null;
     protected static ?string $heading = 'Biaya Operasional';
 
     public static function canView(): bool
@@ -46,12 +47,27 @@ class OperatingExpenses extends TableWidget
                 $user = Auth::user();
                 $panelId = \Filament\Facades\Filament::getCurrentPanel()->getId();
 
-                if ($panelId === 'admin') {
-                    // National roles in Admin Panel: See 'Central' expenses (sppg_id = null)
+                // 1. Explicit Scope Handling (Preferred)
+                if ($this->scope === 'central') {
+                    return $query->whereNull('sppg_id');
+                }
+                
+                if ($this->scope === 'unit') {
+                    return $query->whereNotNull('sppg_id');
+                }
+
+                // 2. Role-based fallback
+                if ($user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas'])) {
+                    // Kornas/Admin can see everything or filter via sidebar/header
+                    return $query;
+                }
+
+                if ($panelId === 'admin' && ! $user->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Administrator SPPG'])) {
+                    // Other national roles in Admin Panel: See 'Central' expenses (sppg_id = null)
                     return $query->whereNull('sppg_id');
                 }
 
-                // Any role in SPPG panel: Scope to their assigned SPPG
+                // Any role in SPPG panel OR SPPG-linked role in Admin panel: Scope to their assigned SPPG
                 $sppgId = $user->hasRole('Kepala SPPG')
                     ? $user->sppgDikepalai?->id
                     : $user->unitTugas->first()?->id;
@@ -69,7 +85,7 @@ class OperatingExpenses extends TableWidget
                     ->color('gray')
                     ->searchable()
                     ->sortable()
-                    ->visible(fn () => \Filament\Facades\Filament::getCurrentPanel()->getId() === 'admin'),
+                    ->visible(fn () => \Filament\Facades\Filament::getCurrentPanel()->getId() === 'admin' && $this->scope !== 'central'),
                 TextColumn::make('name')
                     ->label('Nama Pengeluaran')
                     ->searchable(),
@@ -131,7 +147,7 @@ class OperatingExpenses extends TableWidget
                     ->label('Revisi')
                     ->icon('heroicon-m-pencil-square')
                     ->color('warning')
-                    ->visible(fn () => ! Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas']))
+                    ->visible(fn () => Auth::user()->hasRole('Superadmin'))
                     ->modalHeading('Revisi Biaya Operasional')
                     ->modalDescription('PERHATIAN: Mengubah data ini akan membuat catatan baru dan mengarsipkan catatan lama sebagai histori (Audit Trail).')
                     ->schema($this->getFormSchema())
@@ -161,17 +177,20 @@ class OperatingExpenses extends TableWidget
 
                 // 4. SOFT DELETE ACTION
                 DeleteAction::make()
-                    ->label('Arsipkan')
-                    ->visible(fn () => ! Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas']))
-                    ->modalHeading('Arsipkan Pengeluaran Ini?')
-                    ->modalDescription('Data akan dihapus dari daftar aktif, namun tetap tersimpan di database untuk keperluan audit.'),
+                    ->label('Hapus')
+                    ->visible(fn () => Auth::user()->hasRole('Superadmin'))
+                    ->modalHeading('Hapus Data Biaya Operasional?')
+                    ->modalDescription('PERHATIAN: Data ini akan dihapus secara permanen dari daftar aktif. Pastikan Anda memiliki alasan yang kuat untuk melakukan penghapusan ini.'),
                 // IMPORTANT: Removed the 'after' hook that deleted the file.
                 // We must keep the file evidence for archived records.
             ])
             ->headerActions([
                 CreateAction::make()
                     ->label('Tambah Pengeluaran')
-                    ->visible(fn () => ! Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas']))
+                    ->visible(fn () => 
+                        Auth::user()->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Superadmin']) || 
+                        ($this->scope !== 'unit' && ! Auth::user()->hasAnyRole(['Staf Kornas', 'Direktur Kornas']))
+                    )
                     ->modalHeading('Catat Biaya Operasional Baru')
                     ->mutateDataUsing(function (array $data): array {
                         $user = Auth::user();
@@ -235,10 +254,10 @@ class OperatingExpenses extends TableWidget
                 ->label('Bukti Lampiran (Nota/Struk)')
                 ->image() // Validates image types for upload
                 ->acceptedFileTypes(['image/*', 'application/pdf']) // Allow PDFs too if needed
-                ->disk('local')
+                ->disk('public')
                 ->directory('operating-expenses-proof')
-                ->visibility('private')
                 ->maxSize(5120)
+                ->required()
                 ->columnSpanFull(),
         ];
     }

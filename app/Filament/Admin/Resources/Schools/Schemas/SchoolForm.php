@@ -22,7 +22,7 @@ class SchoolForm
                     ->searchable()
                     ->preload(),
                 TextInput::make('nama_sekolah')
-                    ->label('Nama Sekolah')
+                    ->label('Nama Penerima')
                     ->required(),
                 Textarea::make('alamat')
                     ->label('Alamat')

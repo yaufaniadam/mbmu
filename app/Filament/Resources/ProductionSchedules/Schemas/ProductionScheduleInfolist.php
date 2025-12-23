@@ -58,6 +58,9 @@ class ProductionScheduleInfolist
                             ->columnSpanFull(),
                     ])
                     ->collapsible(),
+
+                // Section 'Status Distribusi' removed to avoid redundancy
+
             ])
             ->columns(1);
     }

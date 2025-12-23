@@ -25,11 +25,22 @@ class OperatingExpenseCategoryResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    public static function getModelLabel(): string
+    {
+        return 'Kategori Biaya Operasional';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Kategori Biaya Operasional';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nama Kategori')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -40,6 +51,7 @@ class OperatingExpenseCategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nama Kategori')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

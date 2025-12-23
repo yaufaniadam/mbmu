@@ -23,6 +23,8 @@ use Illuminate\Support\HtmlString;
 
 class IncomingFunds extends TableWidget
 {
+    public ?string $scope = null;
+
     public static function canView(): bool
     {
         return Auth::user()->hasAnyRole([
@@ -42,13 +44,28 @@ class IncomingFunds extends TableWidget
                 $query = SppgIncomingFund::query();
                 $user = Auth::user();
                 $panelId = \Filament\Facades\Filament::getCurrentPanel()->getId();
+
+                // 1. Explicit Scope Handling (Preferred)
+                if ($this->scope === 'central') {
+                    return $query->whereNull('sppg_id');
+                }
                 
-                if ($panelId === 'admin') {
-                    // National roles in Admin Panel: See 'Central' funds (sppg_id = null)
+                if ($this->scope === 'unit') {
+                    return $query->whereNotNull('sppg_id');
+                }
+
+                // 2. Role-based fallback
+                if ($user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas'])) {
+                    // Kornas/Admin can see everything
+                    return $query;
+                }
+
+                if ($panelId === 'admin' && ! $user->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Administrator SPPG'])) {
+                    // Other national roles in Admin Panel: See 'Central' funds (sppg_id = null)
                     return $query->whereNull('sppg_id');
                 }
 
-                // Any role in SPPG panel: Scope to their assigned SPPG
+                // Any role in SPPG panel OR SPPG-linked role in Admin panel: Scope to their assigned SPPG
                 $sppgId = $user->hasRole('Kepala SPPG')
                     ? $user->sppgDikepalai?->id
                     : $user->unitTugas->first()?->id;
@@ -60,6 +77,13 @@ class IncomingFunds extends TableWidget
                 return $query->whereRaw('1 = 0');
             })
             ->columns([
+                TextColumn::make('sppg.nama_sppg')
+                    ->label('Unit SPPG')
+                    ->badge()
+                    ->color('gray')
+                    ->searchable()
+                    ->sortable()
+                    ->visible(fn () => \Filament\Facades\Filament::getCurrentPanel()->getId() === 'admin' && $this->scope !== 'central'),
                 TextColumn::make('category.name')
                     ->label('Kategori')
                     ->badge(),
@@ -77,6 +101,14 @@ class IncomingFunds extends TableWidget
                 TextColumn::make('user.name')
                     ->label('Pencatat')
                     ->sortable(),
+            ])
+            ->filters([
+                \Filament\Tables\Filters\SelectFilter::make('sppg_id')
+                    ->label('Filter per SPPG')
+                    ->relationship('sppg', 'nama_sppg')
+                    ->searchable()
+                    ->preload()
+                    ->visible(fn () => \Filament\Facades\Filament::getCurrentPanel()->getId() === 'admin'),
             ])
             ->recordActions([
                 // 1. View Image Action
@@ -115,7 +147,10 @@ class IncomingFunds extends TableWidget
                     ->label('Revisi')
                     ->icon('heroicon-m-pencil-square')
                     ->color('warning')
-                    ->visible(fn () => ! Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas']))
+                    ->visible(fn (SppgIncomingFund $record) => 
+                        Auth::user()->hasRole('Superadmin') && 
+                        $record->source !== 'Penerimaan Royalti'
+                    )
                     ->modalHeading('Revisi Data Dana Masuk')
                     ->modalDescription('PERHATIAN: Mengubah data ini akan membuat catatan baru dan mengarsipkan catatan lama sebagai histori (Audit Trail).')
                     ->schema($this->getFormSchema())
@@ -143,17 +178,23 @@ class IncomingFunds extends TableWidget
 
                 // 4. SOFT DELETE ACTION
                 DeleteAction::make()
-                    ->label('Arsipkan')
-                    ->visible(fn () => ! Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas']))
-                    ->modalHeading('Arsipkan Data Ini?')
-                    ->modalDescription('Data akan dihapus dari daftar aktif, namun tetap tersimpan di database untuk keperluan audit.'),
+                    ->label('Hapus')
+                    ->visible(fn (SppgIncomingFund $record) => 
+                        Auth::user()->hasRole('Superadmin') && 
+                        $record->source !== 'Penerimaan Royalti'
+                    )
+                    ->modalHeading('Hapus Data Dana Masuk?')
+                    ->modalDescription('PERHATIAN: Data ini akan dihapus secara permanen dari daftar aktif. Pastikan Anda memiliki alasan yang kuat untuk melakukan penghapusan ini.'),
                 // We REMOVED the 'after' hook that deleted the file.
                 // File must remain on disk for soft-deleted records.
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->label('Catat Dana Masuk')
-                    ->visible(fn () => ! Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas']))
+                    ->label('Tambah Pemasukan')
+                    ->visible(fn () => 
+                        Auth::user()->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Superadmin']) || 
+                        ($this->scope !== 'unit' && ! Auth::user()->hasAnyRole(['Direktur Kornas']))
+                    )
                     ->modalHeading('Catat Penerimaan Dana Baru')
                     ->schema($this->getFormSchema())
                     ->using(function (array $data, string $model): SppgIncomingFund {
@@ -237,10 +278,10 @@ class IncomingFunds extends TableWidget
                 ->label('Bukti Transfer / Dokumen')
                 ->image() // Validates image types
                 ->acceptedFileTypes(['image/*', 'application/pdf']) // Allow PDFs
-                ->disk('local')
+                ->disk('public')
                 ->directory('incoming-funds-proof')
-                ->visibility('private')
                 ->maxSize(5120)
+                ->required()
                 ->columnSpanFull(),
         ];
     }

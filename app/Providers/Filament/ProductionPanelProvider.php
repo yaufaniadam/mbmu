@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Production\Pages\Dashboard;
 use App\Filament\Production\Pages\Delivery;
 use App\Filament\Production\Pages\Distribution;
 use App\Filament\Production\Pages\Verify;
@@ -11,7 +12,6 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -31,10 +31,13 @@ class ProductionPanelProvider extends PanelProvider
         return $panel
             ->id('production')
             ->path('production')
+            ->brandLogo(asset('logombm-small.png'))
+            ->darkModeBrandLogo(asset('logombm-w.png'))
+            ->brandLogoHeight('3rem')
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->login()
+            ->login(\App\Filament\Pages\Auth\CustomLogin::class)
             ->discoverResources(in: app_path('Filament/Production/Resources'), for: 'App\Filament\Production\Resources')
             ->discoverPages(in: app_path('Filament/Production/Pages'), for: 'App\Filament\Production\Pages')
             ->pages([

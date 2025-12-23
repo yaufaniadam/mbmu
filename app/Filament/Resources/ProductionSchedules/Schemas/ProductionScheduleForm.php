@@ -66,7 +66,7 @@ class ProductionScheduleForm
         })->all();
 
         return [
-            \Filament\Schemas\Components\Fieldset::make('Jumlah Porsi Per Sekolah')
+            \Filament\Schemas\Components\Fieldset::make('Jumlah Porsi Per Penerima MBM')
                 ->schema($schoolFieldsets)
                 ->columns(1),
         ];

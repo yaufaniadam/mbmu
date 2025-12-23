@@ -7,64 +7,63 @@
         {{-- Tab 0: Dashboard Keuangan --}}
         @if (auth()->user()->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
             <x-filament::tabs.item :active="$activeTab === 'dashboard'" wire:click="$set('activeTab', 'dashboard')" icon="heroicon-o-chart-bar">
-                Dashboard Keuangan
+                Dashboard
+            </x-filament::tabs.item>
+        @endif
+        {{-- Tab 1: Buku Kas Pusat (Kornas Only) --}}
+        @if (auth()->user()->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
+            <x-filament::tabs.item :active="$activeTab === 'buku_kas_pusat'" wire:click="$set('activeTab', 'buku_kas_pusat')" icon="heroicon-o-building-library">
+                Buku Kas Pusat
+            </x-filament::tabs.item>
+            <x-filament::tabs.item :active="$activeTab === 'audit_sppg'" wire:click="$set('activeTab', 'audit_sppg')" icon="heroicon-o-magnifying-glass-circle">
+                Monitoring SPPG
             </x-filament::tabs.item>
         @endif
 
-        {{-- Tab 1: Pembayaran (Tagihan Saya) --}}
-        @if (auth()->user()->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana']))
-            <x-filament::tabs.item :active="$activeTab === 'pay'" wire:click="$set('activeTab', 'pay')" icon="heroicon-o-credit-card">
-                Pembayaran & Tagihan
-            </x-filament::tabs.item>
 
-            <x-filament::tabs.item :active="$activeTab === 'transaction'" wire:click="$set('activeTab', 'transaction')"
-                icon="heroicon-o-credit-card">
+        {{-- Tab 2: Bayar Sewa (SPPG Only) --}}
+        @if (auth()->user()->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']))
+            <x-filament::tabs.item :active="$activeTab === 'buku_kas'" wire:click="$set('activeTab', 'buku_kas')" icon="heroicon-o-book-open">
+                Buku Kas
+            </x-filament::tabs.item>
+            <x-filament::tabs.item :active="$activeTab === 'pay_rent'" wire:click="$set('activeTab', 'pay_rent')" icon="heroicon-o-credit-card">
+                Bayar Sewa
+            </x-filament::tabs.item>
+        @endif
+
+        {{-- Tab 3: Penerimaan Sewa (LP Only) --}}
+        @if (auth()->user()->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul']))
+            <x-filament::tabs.item :active="$activeTab === 'verify_rent'" wire:click="$set('activeTab', 'verify_rent')" icon="heroicon-o-arrow-path-rounded-square">
+                Penerimaan Sewa
+            </x-filament::tabs.item>
+        @endif
+
+        {{-- Tab 4: Bayar Royalti (LP Only) --}}
+        @if (auth()->user()->hasAnyRole(['Pimpinan Lembaga Pengusul']))
+            <x-filament::tabs.item :active="$activeTab === 'pay_royalty'" wire:click="$set('activeTab', 'pay_royalty')" icon="heroicon-o-banknotes">
+                Bayar Royalti
+            </x-filament::tabs.item>
+        @endif
+
+        {{-- Tab 5: Penerimaan Royalti (Kornas Only) --}}
+        @if (auth()->user()->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
+            <x-filament::tabs.item :active="$activeTab === 'verify_royalty'" wire:click="$set('activeTab', 'verify_royalty')" icon="heroicon-o-check-badge">
+                Penerimaan Royalti
+            </x-filament::tabs.item>
+        @endif
+
+        {{-- Tab 6: Riwayat Transaksi (All) - HIDDEN --}}
+        {{-- @if (auth()->user()->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
+            <x-filament::tabs.item :active="$activeTab === 'transactions'" wire:click="$set('activeTab', 'transactions')" icon="heroicon-o-clock">
                 Riwayat Transaksi
             </x-filament::tabs.item>
-        @endif
-
-        {{-- Tab 2: Verifikasi (Uang Masuk) --}}
-        {{-- Only show this tab to Pengusul or Kornas --}}
-        @if (auth()->user()->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
-            <x-filament::tabs.item :active="$activeTab === 'verify'" wire:click="$set('activeTab', 'verify')"
-                icon="heroicon-o-check-badge">
-                Verifikasi Pembayaran
-            </x-filament::tabs.item>
-        @endif
-
-        {{-- Tab 3: Transaksi Masuk --}}
-        {{-- Only show this tab to Pengusul or Kornas --}}
-        @if (auth()->user()->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
-            <x-filament::tabs.item :active="$activeTab === 'incoming_payment'" wire:click="$set('activeTab', 'incoming_payment')"
-                icon="heroicon-o-arrow-trending-up">
-                Transaksi Masuk
-            </x-filament::tabs.item>
-        @endif
-
-        {{-- Tab 4: Biaya Operasional --}}
-        {{-- Only show this tab to Sppg or Kornas --}}
-        @if (auth()->user()->hasAnyRole(['Superadmin', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
-            <x-filament::tabs.item :active="$activeTab === 'operating_expenses'" wire:click="$set('activeTab', 'operating_expenses')"
-                icon="heroicon-o-arrow-trending-up">
-                Biaya Operasional
-            </x-filament::tabs.item>
-        @endif
-
-        {{-- Tab 5: Dana Masuk --}}
-        {{-- Only show this tab to Sppg --}}
-        @if (auth()->user()->hasAnyRole(['Superadmin', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
-            <x-filament::tabs.item :active="$activeTab === 'incoming_funds'" wire:click="$set('activeTab', 'incoming_funds')"
-                icon="heroicon-o-banknotes">
-                Dana Masuk
-            </x-filament::tabs.item>
-        @endif
+        @endif --}}
 
     </x-filament::tabs>
 
-    {{-- 2. The Tab Content (Lazy Loaded Widgets) --}}
+    {{-- Content --}}
     <div class="mt-4">
 
-        {{-- Content for Dashboard Tab --}}
         @if ($activeTab === 'dashboard')
             <div style="display: flex; flex-direction: column; gap: 2rem;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -74,52 +73,77 @@
             </div>
         @endif
 
-        {{-- Content for Tab 1 --}}
-        @if ($activeTab === 'pay')
-            {{-- This renders the MyBillsTable widget --}}
-            @livewire(\App\Livewire\BillList::class)
-        @endif
-
-        {{-- Content for Tab 2 --}}
-        @if ($activeTab === 'transaction')
-            {{-- This renders the TransactionList widget --}}
-            {{-- This renders the IncomingVerificationTable widget --}}
-            @livewire(\App\Livewire\TransactionList::class)
-        @endif
-
-        {{-- Content for Tab 3 --}}
-        @if ($activeTab === 'incoming_payment')
-            {{-- This renders the incomeList widget --}}
-            {{-- This renders the IncomingVerificationTable widget --}}
-            @livewire(\App\Livewire\IncomingPayment::class)
-        @endif
-
-        {{-- Content for Tab 4 --}}
-        @if ($activeTab === 'verify')
-            {{-- This renders the VerifyPaymentList widget --}}
-            {{-- This renders the VerifyPaymentList widget --}}
-            @livewire(\App\Livewire\VerifyPaymentList::class)
-        @endif
-
-        {{-- Content for Tab 5 --}}
-        @if ($activeTab === 'operating_expenses')
-            {{-- This renders the OperatingExpenses widget --}}
-            {{-- This renders the OperatingExpenses widget --}}
+        @if ($activeTab === 'buku_kas_pusat')
             <div style="display: flex; flex-direction: column; gap: 2rem;">
-                @livewire(\App\Livewire\OperatingExpensesStats::class)
-                @livewire(\App\Livewire\OperatingExpenses::class)
+                <div style="display: flex; gap: 2rem; width: 100%;">
+                    <div style="flex: 1;">
+                        @livewire(\App\Livewire\OperatingExpensesStats::class, ['scope' => 'central'])
+                    </div>
+                    <div style="flex: 1;">
+                        @livewire(\App\Livewire\SppgFunds::class, ['scope' => 'central'])
+                    </div>
+                </div>
+                @livewire(\App\Livewire\OperatingExpenses::class, ['scope' => 'central'])
+                @livewire(\App\Livewire\IncomingFunds::class, ['scope' => 'central'])
             </div>
         @endif
 
-        {{-- Content for Tab 6 --}}
-        @if ($activeTab === 'incoming_funds')
-            {{-- This renders the OperatingExpenses widget --}}
-            {{-- This renders the OperatingExpenses widget --}}
+        @if ($activeTab === 'audit_sppg')
             <div style="display: flex; flex-direction: column; gap: 2rem;">
-                @livewire(\App\Livewire\SppgFunds::class)
+                <x-filament::section>
+                    <x-slot name="heading">Monitoring Keuangan Unit SPPG</x-slot>
+                    <p class="text-sm text-gray-500 mb-4">Pilih unit SPPG untuk memantau detail pemasukan dan pengeluaran harian mereka.</p>
+                </x-filament::section>
+                @livewire(\App\Livewire\OperatingExpenses::class, ['scope' => 'unit'])
+                @livewire(\App\Livewire\IncomingFunds::class, ['scope' => 'unit'])
+            </div>
+        @endif
+
+
+        @if ($activeTab === 'buku_kas')
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <div style="display: flex; gap: 2rem; width: 100%;">
+                    <div style="flex: 1;">
+                        @livewire(\App\Livewire\OperatingExpensesStats::class)
+                    </div>
+                    <div style="flex: 1;">
+                        @livewire(\App\Livewire\SppgFunds::class)
+                    </div>
+                </div>
+                @livewire(\App\Livewire\OperatingExpenses::class)
                 @livewire(\App\Livewire\IncomingFunds::class)
             </div>
         @endif
+
+        @if ($activeTab === 'pay_rent')
+            @livewire(\App\Livewire\BillList::class, ['type' => 'SPPG_SEWA'])
+        @endif
+
+        @if ($activeTab === 'verify_rent')
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                @if (!auth()->user()->hasRole('Superadmin'))
+                    @livewire(\App\Livewire\VerifyPaymentList::class, ['type' => 'SPPG_SEWA'])
+                @endif
+                @livewire(\App\Livewire\IncomingPayment::class, ['type' => 'SPPG_SEWA'])
+            </div>
+        @endif
+
+        @if ($activeTab === 'pay_royalty')
+            @livewire(\App\Livewire\BillList::class, ['type' => 'LP_ROYALTY'])
+        @endif
+
+        @if ($activeTab === 'verify_royalty')
+             <div style="display: flex; flex-direction: column; gap: 2rem;">
+                @if (!auth()->user()->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']))
+                    @livewire(\App\Livewire\VerifyPaymentList::class, ['type' => 'LP_ROYALTY'])
+                @endif
+                @livewire(\App\Livewire\IncomingPayment::class, ['type' => 'LP_ROYALTY'])
+            </div>
+        @endif
+
+        {{-- @if ($activeTab === 'transactions')
+            @livewire(\App\Livewire\TransactionList::class)
+        @endif --}}
 
     </div>
 

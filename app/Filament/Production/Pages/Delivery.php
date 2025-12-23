@@ -97,12 +97,12 @@ class Delivery extends Page implements HasForms
                         ->state(fn() => $this->record->jumlah_porsi_kecil),
                 ]),
             Section::make('address_info')
-                ->heading('Alamat Tujuan')
+                ->heading('Alamat Penerima MBM')
                 ->icon('heroicon-m-home-modern')
                 ->columns(2)
                 ->schema([
                     TextEntry::make('school.nama_sekolah')
-                        ->label('Nama Sekolah')
+                        ->label('Nama Penerima')
                         ->state(fn() => $this->record->school->nama_sekolah ?? '-')
                         ->columnSpanFull(),
                     TextEntry::make('school.alamat')
@@ -170,17 +170,100 @@ class Delivery extends Page implements HasForms
 
                     // 3️⃣ SHOW PROOF IF TERKIRIM
                     ImageEntry::make('photo_of_proof')
-                        ->label('Foto Bukti')
-                        ->visible(fn() => $this->record->status_pengantaran === 'Terkirim')
+                        ->label('Foto Bukti Pengantaran')
+                        ->visible(fn() => in_array($this->record->status_pengantaran, ['Terkirim', 'Selesai']))
                         ->columnSpanFull()
                         ->imageHeight('300px')
                         ->imageWidth('100%')
                         ->state(fn() => $this->record->photo_of_proof),
 
                     TextEntry::make('notes')
-                        ->label('Catatan')
-                        ->visible(fn() => $this->record->status_pengantaran === 'Terkirim')
+                        ->label('Catatan Pengantaran')
+                        ->visible(fn() => in_array($this->record->status_pengantaran, ['Terkirim', 'Selesai']))
                         ->state(fn() => $this->record->notes ?? '-')
+                        ->columnSpanFull(),
+                ]),
+
+            // 🥄 PICKUP SECTION - Only visible after delivery completed
+            Section::make('pickup_status')
+                ->heading('Penjemputan Alat Makan')
+                ->icon('heroicon-m-arrow-uturn-left')
+                ->columns(2)
+                ->visible(fn() => $this->record->status_pengantaran === 'Terkirim' || $this->record->status_pengantaran === 'Selesai')
+                ->schema([
+                    TextEntry::make('pickup_status')
+                        ->label('Status Penjemputan')
+                        ->state(fn() => $this->record->pickup_status)
+                        ->badge()
+                        ->color(fn($state) => match ($state) {
+                            'Menunggu' => 'warning',
+                            'Sedang Dijemput' => 'info',
+                            'Dijemput' => 'success',
+                            default => 'gray',
+                        }),
+
+                    TextEntry::make('pickup_at')
+                        ->label('Waktu Dijemput')
+                        ->state(fn() => $this->record->pickup_at?->format('d M Y H:i') ?? '-')
+                        ->visible(fn() => $this->record->pickup_status === 'Dijemput'),
+
+                    // Button: Start Pickup
+                    Action::make('startPickup')
+                        ->label('Jemput Alat Makan')
+                        ->icon('heroicon-m-arrow-uturn-left')
+                        ->color('warning')
+                        ->visible(fn() => $this->record->status_pengantaran === 'Terkirim' && $this->record->pickup_status === 'Menunggu')
+                        ->action(function () {
+                            $this->record->update([
+                                'pickup_status' => 'Sedang Dijemput',
+                            ]);
+
+                            Notification::make()
+                                ->title('Anda telah ditugaskan untuk menjemput alat makan.')
+                                ->success()
+                                ->send();
+
+                            $this->dispatch('refresh-page');
+                        }),
+
+                    // Button: Complete Pickup with proof
+                    Action::make('completePickup')
+                        ->label('Selesaikan Penjemputan')
+                        ->icon('heroicon-m-check-circle')
+                        ->color('success')
+                        ->visible(fn() => $this->record->pickup_status === 'Sedang Dijemput')
+                        ->action(function (array $data) {
+                            $this->savePickupProof($data);
+                        })
+                        ->modalHeading('Selesaikan Penjemputan Alat Makan')
+                        ->modalCancelActionLabel('Batal')
+                        ->schema([
+                            FileUpload::make('pickup_photo_proof')
+                                ->label('Foto Bukti Penjemputan')
+                                ->image()
+                                ->disk('local')
+                                ->directory(fn() => "delivery/{$this->record->id}/pickup")
+                                ->preserveFilenames()
+                                ->visibility('private')
+                                ->required(),
+
+                            Textarea::make('pickup_notes')
+                                ->label('Catatan Penjemputan'),
+                        ]),
+
+                    // Show pickup proof if completed
+                    ImageEntry::make('pickup_photo_proof')
+                        ->label('Foto Bukti Penjemputan')
+                        ->visible(fn() => $this->record->pickup_status === 'Dijemput')
+                        ->columnSpanFull()
+                        ->imageHeight('300px')
+                        ->imageWidth('100%')
+                        ->state(fn() => $this->record->pickup_photo_proof),
+
+                    TextEntry::make('pickup_notes')
+                        ->label('Catatan Penjemputan')
+                        ->visible(fn() => $this->record->pickup_status === 'Dijemput')
+                        ->state(fn() => $this->record->pickup_notes ?? '-')
                         ->columnSpanFull(),
                 ]),
         ];
@@ -192,21 +275,56 @@ class Delivery extends Page implements HasForms
             $this->record->update([
                 'status_pengantaran' => 'Terkirim',
                 'notes' => $data['notes'] ?? null,
-                'photo_of_proof' => $data['photo_of_proof'], // path inside private storage
+                'photo_of_proof' => $data['photo_of_proof'],
                 'delivered_at' => now(),
+                // Pickup flow starts - status Menunggu
+                'pickup_status' => 'Menunggu',
             ]);
 
-            if ($this->record->productionSchedule->getIsFullyDeliveredAttribute()) {
-                $this->record->productionSchedule->update([
+            // Update production schedule status - but NOT Selesai yet
+            if ($this->record->productionSchedule->status === 'Didistribusikan') {
+                // Keep it at Didistribusikan until all pickups are done
+            }
+        });
+
+        Notification::make()
+            ->title('Pengantaran selesai! Silakan jemput alat makan nanti.')
+            ->success()
+            ->send();
+            
+        $this->dispatch('refresh-page');
+    }
+
+    public function savePickupProof(array $data)
+    {
+        DB::transaction(function () use ($data) {
+            $this->record->update([
+                'pickup_status' => 'Dijemput',
+                'pickup_photo_proof' => $data['pickup_photo_proof'],
+                'pickup_notes' => $data['pickup_notes'] ?? null,
+                'pickup_at' => now(),
+                'status_pengantaran' => 'Selesai', // Now mark as complete
+            ]);
+
+            // Check if ALL distributions for this production are fully complete
+            $production = $this->record->productionSchedule;
+            $allComplete = $production->distributions()
+                ->where('status_pengantaran', '!=', 'Selesai')
+                ->doesntExist();
+
+            if ($allComplete) {
+                $production->update([
                     'status' => 'Selesai',
                 ]);
             }
         });
 
         Notification::make()
-            ->title('Pengantaran diselesaikan')
+            ->title('Penjemputan alat makan selesai!')
             ->success()
             ->send();
+            
+        $this->dispatch('refresh-page');
     }
 
     public function save(): void
@@ -221,7 +339,7 @@ class Delivery extends Page implements HasForms
             return;
         }
 
-        // dd($production->getIsFullyDeliveredAttribute());
+        // dd($production->is_fully_delivered);
 
         if ($production->status === 'Ditolak') {
             Notification::make()
@@ -274,16 +392,12 @@ class Delivery extends Page implements HasForms
             $distribution->update([
                 'status_pengantaran' => 'Terkirim',
                 'delivered_at' => now(),
+                'pickup_status' => 'Menunggu', // Start pickup flow
             ]);
 
-            if ($production->getIsFullyDeliveredAttribute()) {
-                $production->update([
-                    'status' => 'Selesai',
-                ]);
-            }
-
+            // Don't mark as Selesai yet - wait for pickup
             Notification::make()
-                ->title('Anda telah menyelesaikan pengiriman makanan ini.')
+                ->title('Pengantaran selesai! Silakan jemput alat makan nanti.')
                 ->success()
                 ->send();
 

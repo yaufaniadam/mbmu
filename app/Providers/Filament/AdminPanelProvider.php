@@ -31,7 +31,10 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(\App\Filament\Pages\Auth\CustomLogin::class)
+            ->brandLogo(asset('logombm-small.png'))
+            ->darkModeBrandLogo(asset('logombm-w.png'))
+            ->brandLogoHeight('3rem')
             ->plugins([
                 FilamentShieldPlugin::make(),
             ])

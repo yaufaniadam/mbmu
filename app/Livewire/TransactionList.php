@@ -94,7 +94,7 @@ class TransactionList extends TableWidget
                             'REJECTED' => 'danger',
                             default => 'gray',
                         })
-                        ->icon(fn(string $state): string => match ($state) {
+                        ->icon(fn(string $state): ?string => match ($state) {
                             'WAITING_VERIFICATION' => 'heroicon-m-arrow-path',
                             'PAID' => 'heroicon-m-check',
                             'REJECTED' => 'heroicon-m-x-mark',

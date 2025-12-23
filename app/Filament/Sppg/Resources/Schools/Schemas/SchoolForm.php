@@ -15,7 +15,7 @@ class SchoolForm
         return $schema
             ->components([
                 TextInput::make('nama_sekolah')
-                    ->label('Nama Sekolah')
+                    ->label('Nama Penerima')
                     ->required(),
                 \Filament\Schemas\Components\Grid::make(2)
                     ->schema([

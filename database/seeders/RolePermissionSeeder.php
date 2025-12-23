@@ -44,7 +44,15 @@ class RolePermissionSeeder extends Seeder
             'view-national-reports',
             'view-sppg-reports',
             'manage-sppg-finance',
+            'manage-sppg-profile',
             'confirm-kornas-deposit', // Khusus Staf Kornas
+
+            // Policy-based permissions for Production Schedule
+            'ViewAny:ProductionSchedule',
+            'View:ProductionSchedule',
+            'Create:ProductionSchedule',
+            'Update:ProductionSchedule',
+            'Delete:ProductionSchedule'
         ];
 
         foreach ($permissions as $permission) {
@@ -98,23 +106,61 @@ class RolePermissionSeeder extends Seeder
             'manage-sppg-relawan',
             'manage-jadwal-produksi',
             'view-sppg-reports',
-            'manage-sppg-finance'
+            'manage-sppg-finance',
+            'manage-sppg-profile',
+            // Production Schedule
+            'ViewAny:ProductionSchedule',
+            'View:ProductionSchedule',
+            'Create:ProductionSchedule',
+            'Update:ProductionSchedule',
+            'Delete:ProductionSchedule'
         ]);
 
         // PJ Pelaksana
-        $roleModels['PJ Pelaksana']->syncPermissions(['view-sppg-dashboard', 'view-sppg-reports']);
+        $roleModels['PJ Pelaksana']->syncPermissions([
+            'view-sppg-dashboard',
+            'view-sppg-reports',
+            // Production Schedule
+            'ViewAny:ProductionSchedule',
+            'View:ProductionSchedule',
+            'Create:ProductionSchedule',
+            'Update:ProductionSchedule',
+            'Delete:ProductionSchedule'
+        ]);
 
         // Penerima Kuasa
         $roleModels['Penerima Kuasa']->syncPermissions(['view-sppg-dashboard', 'view-sppg-reports']);
 
         // Staf Administrator SPPG
-        $roleModels['Staf Administrator SPPG']->syncPermissions(['view-sppg-dashboard', 'manage-jadwal-produksi']);
+        $roleModels['Staf Administrator SPPG']->syncPermissions([
+            'view-sppg-dashboard', 
+            'manage-jadwal-produksi',
+            'manage-sppg-profile',
+            // Production Schedule
+            'ViewAny:ProductionSchedule',
+            'View:ProductionSchedule',
+            'Create:ProductionSchedule',
+            'Update:ProductionSchedule'
+        ]);
 
         // Staf Gizi
-        $roleModels['Staf Gizi']->syncPermissions(['perform-verifikasi-pangan', 'view-sppg-dashboard']);
+        $roleModels['Staf Gizi']->syncPermissions([
+            'perform-verifikasi-pangan',
+            'view-sppg-dashboard',
+            // Production Schedule (view only)
+            'ViewAny:ProductionSchedule',
+            'View:ProductionSchedule',
+        ]);
 
         // Staf Akuntan
-        $roleModels['Staf Akuntan']->syncPermissions(['view-sppg-reports', 'manage-sppg-finance', 'view-sppg-dashboard']);
+        $roleModels['Staf Akuntan']->syncPermissions([
+            'view-sppg-reports',
+            'manage-sppg-finance',
+            'view-sppg-dashboard',
+            // Production Schedule (view only)
+            'ViewAny:ProductionSchedule',
+            'View:ProductionSchedule',
+        ]);
 
         // Staf Akuntan Kornas (NEW)
         $roleModels['Staf Akuntan Kornas']->syncPermissions([
@@ -153,28 +199,5 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Staf Akuntan Kornas MBM', 'password' => Hash::make('p4$$w0rd')]
         );
         $stafAkuntanKornas->assignRole($roleModels['Staf Akuntan Kornas']);
-
-
-        // User Level SPPG (terikat pada SPPG pertama yang ada di database)
-        $firstSppg = Sppg::first();
-        if ($firstSppg) {
-            $sppgUsers = [
-                ['email' => 'kepala.sppg.pcmbaki@mbm.com', 'name' => 'Kepala SPPG PCM BAKI', 'role' => 'Kepala SPPG'],
-                ['email' => 'admin.sppg.pcmbaki@mbm.com', 'name' => 'Admin SPPG PCM BAKI', 'role' => 'Staf Administrator SPPG'],
-                ['email' => 'gizi.sppg.pcmbaki@mbm.com', 'name' => 'Gizi SPPG PCM BAKI', 'role' => 'Staf Gizi'],
-                ['email' => 'kurir.sppg.pcmbaki@mbm.com', 'name' => 'Kurir SPPG PCM BAKI', 'role' => 'Staf Pengantaran'],
-                ['email' => 'akuntan.sppg.pcmbaki@mbm.com', 'name' => 'Akuntan SPPG PCM BAKI', 'role' => 'Staf Akuntan'],
-                ['email' => 'pj.sppg.pcmbaki@mbm.com', 'name' => 'PJ Pelaksana SPPG PCM BAKI', 'role' => 'PJ Pelaksana'],
-                ['email' => 'kuasa.sppg.pcmbaki@mbm.com', 'name' => 'Penerima Kuasa SPPG PCM BAKI', 'role' => 'Penerima Kuasa'],
-            ];
-
-            foreach ($sppgUsers as $userData) {
-                $user = User::firstOrCreate(
-                    ['email' => $userData['email']],
-                    ['name' => $userData['name'], 'password' => Hash::make('p4$$w0rd')]
-                );
-                $user->assignRole($userData['role'], $firstSppg->id);
-            }
-        }
     }
 }

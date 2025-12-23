@@ -30,20 +30,9 @@ class ManageFinance extends Page implements HasForms
             return false;
         }
 
-        // 1. Explicitly HIDE from Superadmin (or whatever your admin role slug is)
-        // if ($user->hasRole('Superadmin')) {
-        //     return false;
-        // }
-
-        // 2. Only show to users who actually have tabs to view
-        // (This mirrors the logic you used in canViewTab)
-        // return $user->hasAnyRole([
-        //     'Pimpinan Lembaga Pengusul',
-        //     'Kepala SPPG',
-        //     'PJ Pelaksana',
-        //     'Staf Kornas',
-        //     'Direktur Kornas'
-        // ]);
+        if ($user->hasRole('Pimpinan Lembaga Pengusul')) {
+            return false;
+        }
 
         return Gate::allows('View:ManageFinance');
     }
@@ -62,20 +51,25 @@ class ManageFinance extends Page implements HasForms
         Gate::authorize('View:ManageFinance');
         $user = auth()->user();
 
-        // 1. ROLE-BASED DEFAULT TAB
-        // If the user is Kornas and they haven't clicked a specific tab link (query string is empty),
-        // Force the default to be 'verify'.
+        // Default tab based on role
         if ($user->hasAnyRole(['Staf Kornas', 'Direktur Kornas'])) {
             if (request()->query('activeTab') === null) {
-                $this->activeTab = 'verify';
+                // Kornas defaults to their own Buku Kas Pusat
+                $this->activeTab = 'buku_kas_pusat';
+            }
+        } elseif ($user->hasRole('Pimpinan Lembaga Pengusul')) {
+             if (request()->query('activeTab') === null) {
+                $this->activeTab = 'verify_rent';
+            }
+        } elseif ($user->hasAnyRole(['Kepala SPPG', 'Staf Akuntan', 'PJ Pelaksana'])) {
+             if (request()->query('activeTab') === null) {
+                $this->activeTab = 'buku_kas';
             }
         }
 
-        // 2. PERMISSION FALLBACK (Safety Net)
-        // If the current tab (either 'pay' or 'verify') is still forbidden for this user,
-        // find the first tab they ARE allowed to see.
+        // Fallback
         if (! $this->canViewTab($this->activeTab)) {
-            foreach (['dashboard', 'pay', 'transaction', 'verify', 'incoming_payment', 'operating_expenses', 'incoming_funds'] as $tab) {
+            foreach (['dashboard', 'buku_kas_pusat', 'audit_sppg', 'buku_kas', 'pay_rent', 'verify_rent', 'pay_royalty', 'verify_royalty', 'transactions'] as $tab) {
                 if ($this->canViewTab($tab)) {
                     $this->activeTab = $tab;
                     break;
@@ -94,12 +88,17 @@ class ManageFinance extends Page implements HasForms
 
         return match ($tab) {
             'dashboard' => $user->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
-            'pay' => $user->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']),
-            'transaction' => $user->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']),
-            'verify' => $user->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
-            'incoming_payment' => $user->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
-            'operating_expenses' => $user->hasAnyRole(['Superadmin', 'Kepala SPPG', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
-            'incoming_funds' => $user->hasAnyRole(['Superadmin', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
+            
+            // 1. Buku Kas Pusat (Kornas Only)
+            'buku_kas_pusat' => $user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
+            'audit_sppg' => $user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
+            'buku_kas' => $user->hasAnyRole(['Superadmin', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']),
+            
+            'pay_rent' => $user->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']),
+            'verify_rent' => $user->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul']),
+            'pay_royalty' => $user->hasAnyRole(['Pimpinan Lembaga Pengusul']),
+            'verify_royalty' => $user->hasAnyRole(['Staf Kornas', 'Direktur Kornas']),
+            'transactions' => false,
             default => false,
         };
     }

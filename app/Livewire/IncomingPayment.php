@@ -27,16 +27,20 @@ use Illuminate\Support\HtmlString;
 
 class IncomingPayment extends TableWidget
 {
+    public ?string $type = null;
     protected static ?string $heading = 'Pembayaran Masuk';
 
     public function table(Table $table): Table
     {
         return $table
             ->query(function (): Builder {
-
                 $query = Invoice::query();
 
-                if (Auth::user()->hasRole('Pimpinan Lembaga Pengusul')) {
+                if ($this->type) {
+                    $query->where('type', $this->type);
+                }
+
+                if (Auth::user()->hasRole('Pimpinan Lembaga Pengusul') && $this->type !== 'LP_ROYALTY') {
                     $allowedSppgIds = Auth::user()
                         ->lembagaDipimpin
                         ->sppgs
@@ -44,8 +48,11 @@ class IncomingPayment extends TableWidget
                         ->toArray();
 
                     // Incoming Rent from SPPGs
-                    $query->whereIn('sppg_id', $allowedSppgIds)
-                          ->where('type', 'SPPG_SEWA');
+                    $query->whereIn('sppg_id', $allowedSppgIds);
+                    
+                    if (!$this->type) {
+                        $query->where('type', 'SPPG_SEWA');
+                    }
                 }
 
                 // Kornas sees everything (no restriction needed)

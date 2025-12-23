@@ -16,6 +16,13 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\BulkActionGroup;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Actions;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Forms\Components\Textarea;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use App\Models\SppgIncomingFund;
 use BackedEnum;
 use UnitEnum;
 
@@ -141,67 +148,123 @@ class InvoiceResource extends Resource
                     ]),
             ])
             ->recordActions([ // Filament V4 Syntax
-                EditAction::make(),
-                
-                // 1. Verifikasi Pembayaran SPPG (Visible to Admin, Kornas, LP)
-                Action::make('verify')
-                    ->label('Verifikasi Lunas')
-                    ->icon('heroicon-o-check-circle')
+                // EditAction::make()
+                //     ->hidden(fn (Invoice $record) => 
+                //         auth()->user()->hasRole('Pimpinan Lembaga Pengusul') && 
+                //         $record->type === 'SPPG_SEWA'
+                //     ),
+
+                // Verifikasi Pembayaran (Specific for LP)
+                Action::make('verify_payment')
+                    ->label('Verifikasi Pembayaran')
+                    ->icon('heroicon-o-shield-check')
                     ->color('success')
-                    ->requiresConfirmation()
-                    // Visible for SPPG_SEWA only. 
-                    // LP verifies SPPG payment. Admin/Kornas can too.
-                    ->visible(fn (Invoice $record) => in_array($record->status, ['UNPAID', 'WAITING_VERIFICATION']) && $record->type === 'SPPG_SEWA')
-                    ->action(function (Invoice $record) {
-                        $record->update([
-                            'status' => 'PAID',
-                            'verified_at' => now(),
-                        ]);
+                    ->modalHeading('Verifikasi Pembayaran SPPG')
+                    ->modalWidth('5xl')
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(false)
+                    ->visible(fn (Invoice $record) => 
+                        $record->status === 'WAITING_VERIFICATION' && (
+                            ($record->type === 'SPPG_SEWA' && auth()->user()->hasRole('Pimpinan Lembaga Pengusul')) ||
+                            ($record->type === 'LP_ROYALTY' && auth()->user()->hasAnyRole(['Staf Akuntan Kornas', 'Superadmin']))
+                        )
+                    )
+                    ->schema(fn (Invoice $record) => [
+                        Section::make('Detail Tagihan')
+                            ->columns(3)
+                            ->schema([
+                                TextEntry::make('invoice_number')->label('No. Invoice')->weight('bold'),
+                                TextEntry::make('amount')->label('Jumlah Tagihan')->money('IDR'),
+                                TextEntry::make('status')->label('Status')->badge()->color('warning'),
+                            ]),
 
-                        $royaltyAmount = $record->amount * 0.10; // 10%
-                            
-                        \App\Models\Invoice::create([
-                            'invoice_number' => 'ROY-' . $record->invoice_number,
-                            'sppg_id' => $record->sppg_id, 
-                            'type' => 'LP_ROYALTY',
-                            'amount' => $royaltyAmount,
-                            'status' => 'UNPAID',
-                            'start_date' => $record->start_date,
-                            'end_date' => $record->end_date,
-                            'due_date' => \Carbon\Carbon::now()->addDays(3),
-                        ]);
-                            
-                        Notification::make()
-                            ->title('Pembayaran Terverifikasi')
-                            ->body('Tagihan Royalty (10%) otomatis diterbitkan untuk Lembaga Pengusul.')
-                            ->success()
-                            ->send();
-                    }),
+                        Section::make('Data Pengirim')
+                            ->columns(2)
+                            ->schema([
+                                TextEntry::make('source_bank')->label('Bank Sumber'),
+                                TextEntry::make('transfer_date')->label('Tanggal Transfer')->date(),
+                            ]),
 
-                // 2. Verifikasi Pembayaran Royalty (Visible to Admin, Kornas ONLY)
-                Action::make('verify_royalty')
-                    ->label('Verifikasi Royalty')
-                    ->icon('heroicon-o-check-badge')
-                    ->color('primary')
-                    ->requiresConfirmation()
-                    // Hidden from Pimpinan Lembaga Pengusul (Self-verification prevention)
-                    ->visible(fn (Invoice $record) => in_array($record->status, ['UNPAID', 'WAITING_VERIFICATION']) 
-                        && $record->type === 'LP_ROYALTY'
-                        && !auth()->user()->hasRole('Pimpinan Lembaga Pengusul'))
-                    ->action(function (Invoice $record) {
-                        $record->update([
-                            'status' => 'PAID',
-                            'verified_at' => now(),
-                        ]);
-                        
-                        Notification::make()
-                            ->title('Royalty Diterima')
-                            ->body('Pembayaran Royalty ke Kornas terverifikasi.')
-                            ->success()
-                            ->send();
-                    }),
+                        Section::make('Bukti Pembayaran')
+                            ->schema([
+                                ImageEntry::make('proof_of_payment')
+                                    ->label('')
+                                    ->imageHeight(300)
+                                    ->columnSpanFull(),
+                            ]),
 
-                 // 3. Bayar Royalty (Upload Bukti) - Visible to LP
+                        Actions::make([
+                            Action::make('approve')
+                                ->label('Setujui Pembayaran')
+                                ->color('success')
+                                ->icon('heroicon-o-check')
+                                ->requiresConfirmation()
+                                ->cancelParentActions()
+                                ->action(function (Invoice $record) {
+                                    try {
+                                        DB::transaction(function () use ($record) {
+                                            $record->update([
+                                                'status' => 'PAID',
+                                                'verified_at' => now(),
+                                            ]);
+
+                                            // 2. Record Income (Central Scope) - ONLY for Royalty
+                                            if ($record->type === 'LP_ROYALTY') {
+                                                SppgIncomingFund::create([
+                                                    'sppg_id' => null, // null means Central/Kornas scope
+                                                    'user_id' => Auth::id(),
+                                                    'amount' => $record->amount,
+                                                    'category_id' => 4, // Setoran Lembaga Pengusul
+                                                    'received_at' => $record->transfer_date ?? now(),
+                                                    'source' => 'Penerimaan Royalti',
+                                                    'notes' => "Otomatis dari verifikasi invoice #{$record->invoice_number} ({$record->sppg->nama_sppg})",
+                                                    'attachment' => $record->proof_of_payment,
+                                                ]);
+                                            }
+
+                                            // 3. Generate Royalty ONLY for SPPG_SEWA
+                                            if ($record->type === 'SPPG_SEWA') {
+                                                $royaltyAmount = $record->amount * 0.10;
+                                                Invoice::create([
+                                                    'invoice_number' => 'ROY-' . $record->invoice_number,
+                                                    'sppg_id' => $record->sppg_id,
+                                                    'type' => 'LP_ROYALTY',
+                                                    'amount' => $royaltyAmount,
+                                                    'status' => 'UNPAID',
+                                                    'start_date' => $record->start_date,
+                                                    'end_date' => $record->end_date,
+                                                    'due_date' => now()->addDays(3),
+                                                ]);
+                                            }
+                                        });
+
+                                        $typeLabel = $record->type === 'SPPG_SEWA' ? 'Sewa' : 'Royalty';
+                                        Notification::make()->title("Pembayaran {$typeLabel} Disetujui")->success()->send();
+                                    } catch (\Exception $e) {
+                                        Notification::make()->title('Gagal')->body($e->getMessage())->danger()->send();
+                                    }
+                                }),
+
+                            Action::make('reject')
+                                ->label('Tolak Pembayaran')
+                                ->color('danger')
+                                ->icon('heroicon-o-x-mark')
+                                ->requiresConfirmation()
+                                ->cancelParentActions()
+                                ->form([
+                                    Textarea::make('rejection_reason')
+                                        ->label('Alasan Penolakan')
+                                        ->required(),
+                                ])
+                                ->action(function (Invoice $record, array $data) {
+                                    $record->update([
+                                        'status' => 'REJECTED',
+                                        'rejection_reason' => $data['rejection_reason'],
+                                    ]);
+                                    Notification::make()->title('Pembayaran Ditolak')->danger()->send();
+                                }),
+                        ])->fullWidth(),
+                    ]),
                  Action::make('pay_royalty')
                     ->label(fn(Invoice $record) => $record->status === 'WAITING_VERIFICATION' ? 'Sedang Diverifikasi' : 'Bayar Royalty')
                     ->icon('heroicon-o-credit-card')
@@ -219,6 +282,7 @@ class InvoiceResource extends Resource
                                     ->label('Bukti Transfer')
                                     ->image()
                                     ->directory('invoice-proofs')
+                                    ->disk('public')
                                     ->required(),
                             ])->columns(2)
                     ])
@@ -238,9 +302,19 @@ class InvoiceResource extends Resource
                 Action::make('view_proof')
                     ->label('Lihat Bukti')
                     ->icon('heroicon-o-eye')
-                    ->url(fn (Invoice $record) => $record->proof_of_payment ? \Illuminate\Support\Facades\Storage::url($record->proof_of_payment) : null)
-                    ->openUrlInNewTab()
-                    ->visible(fn (Invoice $record) => $record->proof_of_payment),
+                    ->color('info')
+                    ->visible(fn (Invoice $record) => $record->proof_of_payment)
+                    ->modalHeading('Bukti Pembayaran')
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(false)
+                    ->modalContent(function (Invoice $record) {
+                        $url = \Illuminate\Support\Facades\Storage::url($record->proof_of_payment);
+                        return new \Illuminate\Support\HtmlString("
+                            <div class='flex justify-center'>
+                                <img src='{$url}' class='max-w-full h-auto rounded-lg shadow-lg' />
+                            </div>
+                        ");
+                    }),
             ])
             ->toolbarActions([ // Filament V4 Syntax
                 BulkActionGroup::make([
@@ -280,8 +354,8 @@ class InvoiceResource extends Resource
     {
         return [
             'index' => Pages\ListInvoices::route('/'),
-            'create' => Pages\CreateInvoice::route('/create'),
-            'edit' => Pages\EditInvoice::route('/{record}/edit'),
+            // 'create' => Pages\CreateInvoice::route('/create'),
+            // 'edit' => Pages\EditInvoice::route('/{record}/edit'),
         ];
     }
 }

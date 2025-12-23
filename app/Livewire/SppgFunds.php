@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Auth;
 
 class SppgFunds extends StatsOverviewWidget
 {
+    protected int | array | null $columns = 1;
+
+    public ?string $scope = null;
+
     public static function canView(): bool
     {
         return Auth::user()->hasAnyRole([
@@ -24,35 +28,47 @@ class SppgFunds extends StatsOverviewWidget
     protected function getStats(): array
     {
         $user = Auth::user();
-        $isNational = \Filament\Facades\Filament::getCurrentPanel()->getId() === 'admin';
+        $panelId = \Filament\Facades\Filament::getCurrentPanel()->getId();
+        $formatIdr = fn (int|float $value) => 'Rp '.number_format($value, 0, ',', '.');
         
-        $balance = 0;
-        $label = 'Dana SPPG';
-        $desc = 'Saldo Dana SPPG';
+        // 1. Explicit Scope Handling (Priority)
+        if ($this->scope === 'central') {
+            $incomeKornas = \App\Models\SppgIncomingFund::whereNull('sppg_id')->sum('amount');
+            $expenseKornas = \App\Models\OperatingExpense::whereNull('sppg_id')->sum('amount');
+            $balanceKornas = $incomeKornas - $expenseKornas;
 
-        if ($isNational) {
-            // Calculate National Balance (Always Kornas Kas)
-            $income = \App\Models\SppgIncomingFund::whereNull('sppg_id')->sum('amount');
-            $expense = \App\Models\OperatingExpense::whereNull('sppg_id')->sum('amount');
-            $balance = $income - $expense;
-            
-            $label = 'Dana Kas Kornas';
-            $desc = 'Saldo Kas Koordinator Nasional';
-        } else {
-            // SPPG Panel Logic: Always show specific SPPG balance
-            $sppg = $user->hasRole('Kepala SPPG')
-                ? $user->sppgDikepalai
-                : $user->unitTugas->first();
-            $balance = $sppg?->balance ?? 0;
+            return [
+                Stat::make('Dana Kas Kornas', $formatIdr($balanceKornas))
+                    ->description('Saldo Kas Koordinator Nasional')
+                    ->icon('heroicon-o-building-office-2')
+                    ->color('primary'),
+            ];
         }
 
-        $formatIdr = fn (int|float $value) => 'Rp '.number_format($value, 0, ',', '.');
+        if ($this->scope === 'unit') {
+            $totalSppgBalance = \App\Models\Sppg::sum('balance');
 
-        return [
-            Stat::make($label, $formatIdr($balance))
-                ->description($desc)
-                ->icon('heroicon-o-currency-dollar', IconPosition::Before)
-                ->color('success'),
-        ];
+            return [
+                Stat::make('Total Kas SPPG', $formatIdr($totalSppgBalance))
+                    ->description('Akumulasi Saldo Seluruh Unit SPPG')
+                    ->icon('heroicon-o-adjustments-horizontal')
+                    ->color('info'),
+            ];
+        }
+
+        // 2. Legacy/SPPG Panel Logic (Fallback)
+        if ($panelId === 'sppg') {
+            $sppg = $user->hasRole('Kepala SPPG') ? $user->sppgDikepalai : $user->unitTugas->first();
+            $balance = $sppg?->balance ?? 0;
+
+            return [
+                Stat::make('Dana SPPG', $formatIdr($balance))
+                    ->description('Saldo Dana SPPG')
+                    ->icon('heroicon-o-currency-dollar', IconPosition::Before)
+                    ->color('success'),
+            ];
+        }
+
+        return [];
     }
 }

@@ -17,8 +17,22 @@ Route::get('/', function () {
 //     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 // });
 
-// Route::get('/sppg', function () {
-//     return view('sppg.index');
-// })->middleware('auth')->name('sppg.index');
+// Public Pages
+Route::get('/profil', function () {
+    return view('public.profile');
+})->name('profile.public');
+
+Route::get('/kontak', function () {
+    return view('public.contact');
+})->name('contact.public');
+
+Route::get('/tim', function () {
+    return view('public.team');
+})->name('team.public');
+
+Route::get('/daftar-sppg', function () {
+    $sppgs = \App\Models\Sppg::where('is_active', true)->paginate(15);
+    return view('sppg.index', compact('sppgs'));
+})->name('sppg.public.index');
 
 // require __DIR__.'/auth.php';

@@ -31,4 +31,14 @@ class Volunteer extends Model
     {
         return $this->belongsTo(Sppg::class);
     }
+
+    public function attendances()
+    {
+        return $this->hasMany(VolunteerAttendance::class);
+    }
+
+    public function dailyAttendances()
+    {
+        return $this->hasMany(VolunteerDailyAttendance::class);
+    }
 }

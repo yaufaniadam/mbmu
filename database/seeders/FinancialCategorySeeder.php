@@ -13,35 +13,36 @@ class FinancialCategorySeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Kategori Dana Masuk (Incoming Funds)
+        // 1. Kategori Penerimaan Dana (Incoming Funds)
         $incomeCategories = [
             'Subsidi PP Muhammadiyah',
-            'Donasi / Infaq',
+            'Infaq / Donasi',
             'Dana Talangan',
             'Setoran Lembaga Pengusul',
-            'Bunga Bank / Jasa Giro',
-            'Refund',
-            'BGN',
-            'Lain-lain',
+            'Jasa Giro / Bunga Bank',
+            'Pengembalian Dana (Refund)',
+            'Bantuan Gizi Nasional (BGN)',
+            'Penerimaan Lain-lain',
         ];
 
         foreach ($incomeCategories as $category) {
             SppgIncomingFundCategory::firstOrCreate(['name' => $category]);
         }
 
-        // 2. Kategori Biaya Operasional (Operating Expenses)
+        // 2. Kategori Pengeluaran Operasional (Operating Expenses)
         $expenseCategories = [
-            'Gaji & Honorarium Staff',
+            'Gaji & Honorarium Staf',
             'Transportasi & Perjalanan Dinas',
-            'Konsumsi & Rapat',
-            'ATK & Perlengkapan Kantor',
-            'Listrik, Air, & Internet',
-            'Sewa & Operasional Gedung',
-            'Biaya Distribusi / Logistik',
-            'Pemeliharaan Aset & Kendaraan',
-            'Promosi & Sosialisasi',
-            'Administrasi Bank',
-            'Lain-lain',
+            'Konsumsi & Jamuan Rapat',
+            'Alat Tulis Kantor (ATK) & Fotokopi',
+            'Tagihan Listrik, Air, & Internet',
+            'Sewa & Pemeliharaan Gedung SPPG',
+            'Biaya Logistik & Distribusi',
+            'Servis & Pemeliharaan Kendaraan',
+            'Peralatan Masak & Kebersihan',
+            'Promosi, Cetak, & Sosialisasi',
+            'Biaya Administrasi Bank',
+            'Pengeluaran Lain-lain',
         ];
 
         foreach ($expenseCategories as $category) {

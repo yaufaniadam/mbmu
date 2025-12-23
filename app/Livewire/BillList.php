@@ -24,7 +24,12 @@ use Illuminate\Support\Facades\Storage;
 
 class BillList extends TableWidget
 {
-    protected static ?string $heading = 'Daftar Tagihan';
+    public ?string $type = null;
+
+    public function getHeading(): ?string
+    {
+        return $this->type === 'LP_ROYALTY' ? 'Daftar Tagihan Royalti' : 'Daftar Tagihan Sewa';
+    }
 
     public function table(Table $table): Table
     {
@@ -33,7 +38,35 @@ class BillList extends TableWidget
                 $user = Auth::user();
                 $query = Invoice::query();
                 
-                // Show ONLY SPPG Rent Invoices here
+                // 1. Explicit type provided (preferred)
+                if ($this->type) {
+                    $query->where('type', $this->type);
+                    
+                    if ($this->type === 'LP_ROYALTY' && $user->hasRole('Pimpinan Lembaga Pengusul')) {
+                        $allowedSppgIds = $user->lembagaDipimpin?->sppgs->pluck('id')->toArray() ?? [];
+                        return $query->whereIn('sppg_id', $allowedSppgIds);
+                    }
+                    
+                    // Fallback for types in SPPG role
+                    $sppg = $user->hasRole('Kepala SPPG') ? $user->sppgDikepalai : $user->unitTugas->first();
+                    if ($sppg) {
+                        return $query->where('sppg_id', $sppg->id);
+                    }
+                    
+                    return $query->whereRaw('1=0');
+                }
+
+                // 2. Role-based fallback (Legacy/Safety)
+                if ($user->hasRole('Pimpinan Lembaga Pengusul')) {
+                    // Lembaga Pengusul pays Royalty to Kornas
+                    $query->where('type', 'LP_ROYALTY');
+                    
+                    // Show only invoices belonging to their SPPGs
+                    $allowedSppgIds = $user->lembagaDipimpin?->sppgs->pluck('id')->toArray() ?? [];
+                    return $query->whereIn('sppg_id', $allowedSppgIds);
+                }
+
+                // Default: SPPG Rent Invoices
                 $query->where('type', 'SPPG_SEWA');
 
                 $sppg = null;

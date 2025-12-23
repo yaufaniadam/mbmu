@@ -46,27 +46,49 @@ class GenerateInvoices extends Command
         
         // Loop to generate multiple invoices if missed (e.g., cron didn't run for a month, or creating catch-up invoices)
         while (true) {
-            // End date is 9 days after start date (inclusive = 10 days)
-            $endDate = (clone $startDate)->addDays(9);
+            // Find the 10th production schedule after startDate
+            $schedules = \App\Models\ProductionSchedule::where('sppg_id', $sppg->id)
+                ->where('tanggal', '>=', $startDate)
+                ->whereIn('status', ['Selesai', 'Didistribusikan', 'Terverifikasi'])
+                ->orderBy('tanggal', 'asc')
+                ->limit(10)
+                ->get();
 
-            // If the 10-day period is not yet complete (endDate is in the future), stop.
-            // We only bill COMPLETED periods or periods ending TODAY.
-            if ($endDate->isFuture()) {
+            // If we don't have enough active days for a full period (10 days), stop and wait.
+            if ($schedules->count() < 10) {
                 break;
             }
+
+            // End date is the date of the 10th active distribution
+            $endDate = $schedules->last()->tanggal;
 
             // Generate Invoice
             $this->createInvoice($sppg, $startDate, $endDate);
             $count++;
 
-            // Move start date to next day for next iteration (catch-up logic)
-            $startDate = $endDate->addDay();
+            // Move start date to next day after the end of this period
+            $startDate = (clone $endDate)->addDay();
         }
     }
 
     private function createInvoice($sppg, $startDate, $endDate)
     {
-        $amount = 60000000; // Rp 60.000.000 fixed per 10 days
+        // Count active distribution days in this period
+        // Active days = production_schedules with status 'Selesai' or 'Didistribusikan'
+        $activeDays = \App\Models\ProductionSchedule::where('sppg_id', $sppg->id)
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->whereIn('status', ['Selesai', 'Didistribusikan', 'Terverifikasi'])
+            ->count();
+
+        // Calculate amount: Rp 6.000.000 per active day
+        $ratePerDay = 6000000;
+        $amount = $activeDays * $ratePerDay;
+
+        // Skip if no active days (no charge)
+        if ($activeDays === 0) {
+            $this->warn("Skipped invoice for {$sppg->nama_sppg}: No active distribution days in period.");
+            return;
+        }
 
         \App\Models\Invoice::create([
             'invoice_number' => 'INV-' . $sppg->kode_sppg . '-' . $endDate->format('ymd'),
@@ -79,6 +101,6 @@ class GenerateInvoices extends Command
             'due_date' => (clone $endDate)->addDays(3), // Due in 3 days
         ]);
         
-        $this->info("Created invoice for {$sppg->nama_sppg}: {$startDate->toDateString()} - {$endDate->toDateString()}");
+        $this->info("Created invoice for {$sppg->nama_sppg}: {$startDate->toDateString()} - {$endDate->toDateString()} ({$activeDays} active days = Rp " . number_format($amount, 0, ',', '.') . ")");
     }
 }

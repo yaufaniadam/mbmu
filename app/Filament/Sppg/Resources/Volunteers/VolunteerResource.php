@@ -32,6 +32,16 @@ class VolunteerResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getModelLabel(): string
+    {
+        return 'Relawan';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Relawan';
+    }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();

@@ -21,7 +21,7 @@ class AdminSchoolResource extends Resource
 
     protected static ?string $slug = 'admin-schools';
 
-    protected static ?string $navigationLabel = 'Sekolah Mitra';
+    protected static ?string $navigationLabel = 'Penerima MBM';
 
     protected static string|UnitEnum|null $navigationGroup = 'Kelembagaan';
 
@@ -29,7 +29,9 @@ class AdminSchoolResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
 
-    protected static ?string $pluralLabel = 'Sekolah Mitra';
+    protected static ?string $pluralLabel = 'Penerima MBM';
+
+    protected static ?string $modelLabel = 'Penerima MBM';
 
     public static function form(Schema $schema): Schema
     {

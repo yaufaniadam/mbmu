@@ -25,6 +25,10 @@ class UsersTable
                         if ($record->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas'])) {
                             return 'Koordinator Nasional (Kornas)';
                         }
+
+                        if ($record->hasRole('Pimpinan Lembaga Pengusul')) {
+                            return $record->lembagaDipimpin?->nama_lembaga ?? 'Lembaga Pengusul';
+                        }
                         
                         $sppgName = $record->sppgDiKepalai?->nama_sppg 
                             ?? $record->unitTugas->first()?->nama_sppg;

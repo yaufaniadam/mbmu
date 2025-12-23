@@ -17,7 +17,7 @@ class SchoolsTable
             ->columns([
                 TextColumn::make('id')->label('ID')->sortable(),
                 TextColumn::make('nama_sekolah')
-                    ->label('Nama Sekolah')
+                    ->label('Nama Penerima')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('sppg.nama_sppg')

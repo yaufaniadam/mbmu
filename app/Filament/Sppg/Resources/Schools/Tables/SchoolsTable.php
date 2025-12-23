@@ -15,7 +15,7 @@ class SchoolsTable
     {
         return $table
             ->columns([
-                TextColumn::make('nama_sekolah')->label('Nama Sekolah')->sortable()->searchable(),
+                TextColumn::make('nama_sekolah')->label('Nama Penerima')->sortable()->searchable(),
             ])
             ->filters([
                 //

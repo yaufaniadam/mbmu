@@ -24,7 +24,11 @@ class SchoolResource extends Resource
 {
     protected static ?string $model = School::class;
 
-    protected static ?string $navigationLabel = 'Daftar Sekolah Penerima SPPG';
+    protected static ?string $navigationLabel = 'Daftar Penerima MBM';
+
+    protected static ?string $pluralLabel = 'Daftar Penerima MBM';
+
+    protected static ?string $modelLabel = 'Penerima MBM';
 
     protected static string|UnitEnum|null $navigationGroup = 'Data Master';
 

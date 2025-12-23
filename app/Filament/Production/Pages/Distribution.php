@@ -25,6 +25,8 @@ class Distribution extends Page implements HasForms
 
     public ?ProductionSchedule $record = null;
 
+    public $pendingPickups = null; // Distributions waiting for utensil pickup
+
     protected bool $isEditable = true;
 
     protected ?FoodVerification $verificationNote = null;
@@ -50,29 +52,41 @@ class Distribution extends Page implements HasForms
         Gate::authorize('View:Distribution');
 
         $user = Auth::user();
-        $organizationId = $user->unitTugas()->first()->id;
+        $organizationId = $user->unitTugas()->first()?->id;
 
-        // dd($organizationId);
+        if (!$organizationId) {
+            Notification::make()
+                ->title('SPPG tidak ditemukan.')
+                ->danger()
+                ->send();
+            return;
+        }
 
+        // Get active production schedule for delivery
         $this->record = ProductionSchedule::where('sppg_id', $organizationId)
             ->whereNotIn('status', ['Direncanakan', 'Ditolak', 'Selesai', 'Menunggu ACC Kepala SPPG'])
             ->with('sppg', 'sppg.schools')
             ->latest()
             ->first();
 
-        if (! $this->record) {
-            Notification::make()
-                ->title('Data tidak ditemukan.')
-                ->danger()
-                ->send();
+        // Get distributions waiting for utensil pickup
+        $this->pendingPickups = \App\Models\Distribution::whereHas('productionSchedule', function ($q) use ($organizationId) {
+                $q->where('sppg_id', $organizationId);
+            })
+            ->where('status_pengantaran', 'Terkirim')
+            ->whereIn('pickup_status', ['Menunggu', 'Sedang Dijemput'])
+            ->with(['school', 'productionSchedule', 'courier'])
+            ->get();
 
+        if (!$this->record && $this->pendingPickups->isEmpty()) {
+            // No delivery or pickup pending
             return;
         }
 
-        $this->isEditable = $this->record->status === 'Terverifikasi';
-
-        // load previous verification note if exists
-        $this->verificationNote = FoodVerification::where('jadwal_produksi_id', $this->record->id)->latest()->first();
+        if ($this->record) {
+            $this->isEditable = $this->record->status === 'Terverifikasi';
+            $this->verificationNote = FoodVerification::where('jadwal_produksi_id', $this->record->id)->latest()->first();
+        }
     }
 
     // public function save(): void

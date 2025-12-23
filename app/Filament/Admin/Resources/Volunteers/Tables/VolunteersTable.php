@@ -20,20 +20,19 @@ class VolunteersTable
                     ->description(fn($record) => "NIK: " . ($record->nik ?? '-'))
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('category')
-                    ->label('Kategori')
+                TextColumn::make('posisi')
+                    ->label('Jabatan')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
-                        'Masak' => 'warning',
-                        'Asisten Dapur' => 'info',
-                        'Pengantaran' => 'success',
+                        'Masak', 'Koordinator Masak' => 'warning',
+                        'Asisten Dapur', 'Persiapan' => 'info',
+                        'Pengantaran', 'Kurir' => 'success',
                         'Kebersihan' => 'gray',
                         'Keamanan' => 'danger',
-                        'Administrasi' => 'primary',
+                        'Administrasi', 'Koordinator Bahan' => 'primary',
+                        'Asisten Lapangan' => 'success',
                         default => 'gray',
-                    }),
-                TextColumn::make('posisi')
-                    ->label('Posisi Spesifik')
+                    })
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('daily_rate')

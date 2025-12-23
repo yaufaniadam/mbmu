@@ -9,7 +9,10 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductionSchedulesTable
 {
@@ -59,7 +62,70 @@ class ProductionSchedulesTable
                 TextColumn::make('menu_hari_ini')->label('Menu')->sortable()->searchable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'Direncanakan' => 'Direncanakan',
+                        'Menunggu ACC Kepala SPPG' => 'Menunggu ACC Kepala SPPG',
+                        'Terverifikasi' => 'Terverifikasi',
+                        'Didistribusikan' => 'Didistribusikan',
+                        'Selesai' => 'Selesai',
+                    ])
+                    ->multiple()
+                    ->searchable(),
+                
+                SelectFilter::make('sppg_id')
+                    ->label('SPPG')
+                    ->relationship('sppg', 'nama_sppg')
+                    ->searchable()
+                    ->preload()
+                    ->multiple(),
+                
+                Filter::make('tanggal')
+                    ->form([
+                        \Filament\Forms\Components\DatePicker::make('tanggal_single')
+                            ->label('Tanggal'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['tanggal_single'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (!$data['tanggal_single']) {
+                            return null;
+                        }
+                        return 'Tanggal: ' . \Carbon\Carbon::parse($data['tanggal_single'])->format('d/m/Y');
+                    }),
+                
+                Filter::make('tanggal_range')
+                    ->form([
+                        \Filament\Forms\Components\DatePicker::make('dari_tanggal')
+                            ->label('Dari Tanggal'),
+                        \Filament\Forms\Components\DatePicker::make('sampai_tanggal')
+                            ->label('Sampai Tanggal'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['dari_tanggal'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '>=', $date),
+                            )
+                            ->when(
+                                $data['sampai_tanggal'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '<=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (!$data['dari_tanggal'] && !$data['sampai_tanggal']) {
+                            return null;
+                        }
+                        $from = $data['dari_tanggal'] ? \Carbon\Carbon::parse($data['dari_tanggal'])->format('d/m/Y') : '-';
+                        $to = $data['sampai_tanggal'] ? \Carbon\Carbon::parse($data['sampai_tanggal'])->format('d/m/Y') : '-';
+                        return "Rentang: {$from} - {$to}";
+                    }),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -79,15 +145,15 @@ class ProductionSchedulesTable
                             $label = $item['item_name'] ?? 'Kriteria';
                             $key = \Illuminate\Support\Str::slug($label); 
 
-                            $schema[] = \Filament\Forms\Components\Select::make("checklist_results.{$key}")
+                            $schema[] = \Filament\Forms\Components\Radio::make("checklist_results.{$key}")
                                 ->label($label)
                                 ->options([
-                                    'Sesuai' => 'Sesuai',
-                                    'Tidak Sesuai' => 'Tidak Sesuai',
-                                    'Perlu Perbaikan' => 'Perlu Perbaikan'
+                                    'Sesuai' => '✅ Sesuai',
+                                    'Tidak Sesuai' => '❌ Tidak Sesuai',
+                                    'Perlu Perbaikan' => '⚠️ Perlu Perbaikan'
                                 ])
                                 ->required()
-                                ->native(false);
+                                ->inline();
                         }
                         
                         $schema[] = \Filament\Forms\Components\Textarea::make('notes')
@@ -121,11 +187,25 @@ class ProductionSchedulesTable
                             'notes' => $data['notes'] ?? null,
                         ]);
 
-                        // Update status to indicate evaluation is done
-                        $record->update(['status' => 'Terverifikasi']);
+                        // Update status to indicate evaluation is done, waiting for Head of SPPG approval
+                        $record->update(['status' => 'Menunggu ACC Kepala SPPG']);
 
                         \Filament\Notifications\Notification::make()
                             ->title('Evaluasi Berhasil Disimpan')
+                            ->success()
+                            ->send();
+                    }),
+                \Filament\Actions\Action::make('approve')
+                    ->label('Setujui Rencana')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn(ProductionSchedule $record) => \Illuminate\Support\Facades\Auth::user()->hasRole('Kepala SPPG') && $record->status === 'Menunggu ACC Kepala SPPG')
+                    ->action(function (ProductionSchedule $record) {
+                        $record->update(['status' => 'Terverifikasi']);
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Rencana Distribusi Disetujui')
                             ->success()
                             ->send();
                     }),

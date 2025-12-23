@@ -34,31 +34,34 @@ class VolunteerForm
                             ->label('NIK / Identitas')
                             ->required(),
                         Select::make('gender')
+                            ->label('Jenis Kelamin')
                             ->options([
                                 'L' => 'Laki-laki',
                                 'P' => 'Perempuan',
-                            ])
-                            ->required(),
-                        Select::make('category')
-                            ->label('Kategori Relawan')
+                            ]),
+                        Select::make('posisi')
+                            ->label('Jabatan')
                             ->options([
-                                'Masak' => 'Juru Masak / Koki',
-                                'Asisten Dapur' => 'Asisten Dapur',
-                                'Pengantaran' => 'Staf Pengantaran / Kurir',
-                                'Kebersihan' => 'Tenaga Kebersihan',
-                                'Keamanan' => 'Tenaga Keamanan',
-                                'Administrasi' => 'Staf Administrasi',
-                                'Lainnya' => 'Lainnya',
+                                'Asisten Lapangan' => 'Asisten Lapangan',
+                                'Koordinator Bahan' => 'Koordinator Bahan',
+                                'Koordinator Masak' => 'Koordinator Masak',
+                                'Koordinator Pemorsian' => 'Koordinator Pemorsian',
+                                'Koordinator Pencucian' => 'Koordinator Pencucian',
+                                'Persiapan' => 'Persiapan',
+                                'Masak' => 'Masak',
+                                'Pemorsian' => 'Pemorsian',
+                                'Distribusi' => 'Distribusi',
+                                'Pencucian' => 'Pencucian',
+                                'Cleaning Service' => 'Cleaning Service',
                             ])
-                            ->required(),
-                        TextInput::make('posisi')
-                            ->label('Posisi Spesifik')
-                            ->placeholder('Contoh: Kepala Koki, Driver Motor, dll')
-                            ->required(),
+                            ->searchable()
+                            ->required()
+                            ->live()
+                            ->afterStateUpdated(fn ($state, callable $set) => $set('category', $state)),
+                        \Filament\Forms\Components\Hidden::make('category'),
                         TextInput::make('kontak')
                             ->label('Nomor WhatsApp/HP')
-                            ->tel()
-                            ->required(),
+                            ->tel(),
                         TextInput::make('daily_rate')
                             ->label('Upah per Hari (Rate)')
                             ->numeric()

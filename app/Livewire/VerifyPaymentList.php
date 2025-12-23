@@ -7,6 +7,7 @@ use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Invoice; // Changed from Remittance
+use App\Models\SppgIncomingFund;
 use App\Models\User;
 use Exception;
 use Filament\Actions\Action;
@@ -27,25 +28,33 @@ use Illuminate\Support\HtmlString;
 
 class VerifyPaymentList extends TableWidget
 {
+    public ?string $type = null;
+
     public function table(Table $table): Table
     {
         return $table
             ->query(function (): Builder {
-
                 $query = Invoice::query();
 
-                if (Auth::user()->hasRole('Pimpinan Lembaga Pengusul')) {
+                if ($this->type) {
+                    $query->where('type', $this->type);
+                }
+
+                if (Auth::user()->hasRole('Pimpinan Lembaga Pengusul') && $this->type !== 'LP_ROYALTY') {
                     $allowedSppgIds = Auth::user()
                         ->lembagaDipimpin
                         ->sppgs
                         ->pluck('id')
                         ->toArray();
 
-                    $query->whereIn('sppg_id', $allowedSppgIds)
-                          ->where('type', 'SPPG_SEWA');
+                    $query->whereIn('sppg_id', $allowedSppgIds);
+                    
+                    if (!$this->type) {
+                        $query->where('type', 'SPPG_SEWA');
+                    }
                 }
 
-                if (Auth::user()->hasAnyRole(['Staf Kornas', 'Direktur Kornas'])) {
+                if (Auth::user()->hasAnyRole(['Staf Kornas', 'Direktur Kornas']) && !$this->type) {
                     $query->where('type', 'LP_ROYALTY');
                 }
 
@@ -257,11 +266,65 @@ class VerifyPaymentList extends TableWidget
                                     ->modalDescription('Apakah Anda yakin ingin menyetujui dan memverifikasi pembayaran ini? Konfirmasi pembayaran tidak dapat dibatalkan.')
                                     ->action(function (Invoice $record) {
                                         try {
-                                            $record->update([
-                                                'status' => 'PAID',
-                                                'verified_at' => now(),
-                                            ]);
-                                            Notification::make()->title('Pembayaran Diverifikasi')->success()->send();
+                                            DB::transaction(function () use ($record) {
+                                                $record->update([
+                                                    'status' => 'PAID',
+                                                    'verified_at' => now(),
+                                                ]);
+
+                                                // 2. Record Income (Kornas Central Scope) - ONLY for Royalty
+                                                if ($record->type === 'LP_ROYALTY') {
+                                                    SppgIncomingFund::create([
+                                                        'sppg_id' => null, // null means Central/Kornas scope
+                                                        'user_id' => Auth::id(),
+                                                        'amount' => $record->amount,
+                                                        'category_id' => 4, // Setoran Lembaga Pengusul
+                                                        'received_at' => $record->transfer_date ?? now(),
+                                                        'source' => 'Penerimaan Royalti',
+                                                        'notes' => "Otomatis dari verifikasi invoice #{$record->invoice_number} ({$record->sppg->nama_sppg})",
+                                                        'attachment' => $record->proof_of_payment,
+                                                    ]);
+                                                }
+
+                                                // 3. SPPG_SEWA Logic
+                                                if ($record->type === 'SPPG_SEWA') {
+                                                    // A. Cek/Create Category "Biaya Sewa" if not exists
+                                                    $sewaCategory = \App\Models\OperatingExpenseCategory::firstOrCreate(
+                                                        ['name' => 'Biaya Sewa'],
+                                                        ['name' => 'Biaya Sewa']
+                                                    );
+
+                                                    // B. Record Expense automatically for SPPG Unit
+                                                    \App\Models\OperatingExpense::create([
+                                                        'sppg_id' => $record->sppg_id,
+                                                        'name' => "Pembayaran Sewa #{$record->invoice_number}",
+                                                        'amount' => $record->amount,
+                                                        'date' => $record->transfer_date ?? now(),
+                                                        'category_id' => $sewaCategory->id,
+                                                        'attachment' => $record->proof_of_payment,
+                                                    ]);
+
+                                                    // C. Generate Royalty Invoice (10%)
+                                                    $royaltyAmount = $record->amount * 0.10; // 10%
+
+                                                    Invoice::create([
+                                                        'invoice_number' => 'ROY-' . $record->invoice_number,
+                                                        'sppg_id' => $record->sppg_id,
+                                                        'type' => 'LP_ROYALTY',
+                                                        'amount' => $royaltyAmount,
+                                                        'status' => 'UNPAID',
+                                                        'start_date' => $record->start_date,
+                                                        'end_date' => $record->end_date,
+                                                        'due_date' => now()->addDays(3),
+                                                    ]);
+                                                }
+                                            });
+
+                                            $message = $record->type === 'SPPG_SEWA'
+                                                ? 'Pembayaran Diverifikasi, Pengeluaran SPPG Tercatat & Tagihan Royalty Diterbitkan.'
+                                                : 'Pembayaran Royalty Diverifikasi & Tercatat sebagai Pemasukan.';
+
+                                            Notification::make()->title($message)->success()->send();
                                         } catch (Exception $e) {
                                             Notification::make()->title('Gagal Verifikasi')->body('Error: ' . $e->getMessage())->danger()->send();
                                         }
