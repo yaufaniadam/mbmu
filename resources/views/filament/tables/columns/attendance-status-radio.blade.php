@@ -1,6 +1,6 @@
 <div class="flex items-center justify-center gap-2 p-2">
     @php
-        $status = $getRecord()->dailyAttendances->firstWhere('attendance_date', $this->selected_date)?->status;
+        $status = $record->dailyAttendances->firstWhere('attendance_date', $this->selected_date)?->status;
         $statuses = [
             'Hadir' => ['icon' => '✓', 'color' => 'success', 'bg' => 'bg-green-500', 'hover' => 'hover:bg-green-600'],
             'Izin' => ['icon' => '📝', 'color' => 'warning', 'bg' => 'bg-yellow-500', 'hover' => 'hover:bg-yellow-600'],
@@ -13,11 +13,12 @@
         @foreach($statuses as $key => $config)
             <button
                 type="button"
-                wire:click="updateStatus({{ $getRecord()->id }}, '{{ $key }}')"
+                wire:click="updateStatus({{ $record->id }}, '{{ $key }}')"
                 wire:loading.attr="disabled"
+                @if($status === $key) disabled @endif
                 class="flex items-center gap-2 px-3 py-1.5 rounded-md transition-all text-sm font-medium
                     {{ $status === $key
-                        ? $config['bg'] . ' text-white shadow-sm'
+                        ? $config['bg'] . ' text-white shadow-sm cursor-default opacity-100'
                         : 'bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
                     }}"
             >
