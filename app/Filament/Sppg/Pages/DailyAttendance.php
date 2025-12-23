@@ -27,7 +27,7 @@ class DailyAttendance extends Page implements HasTable
     
     protected ?string $heading = 'Input Presensi Harian (Bulk)';
     
-    protected static string $view = 'filament.sppg.pages.daily-attendance';
+    protected string $view = 'filament.sppg.pages.daily-attendance';
 
     public ?string $selected_date = null;
 
