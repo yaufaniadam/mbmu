@@ -16,6 +16,8 @@ class SppgsTable
         return $table
             ->columns([
                 TextColumn::make('nama_sppg')->label('Nama')->sortable()->searchable(),
+                TextColumn::make('lembagaPengusul.nama_lembaga')->label('Lembaga Pengusul')->sortable()->searchable(),
+                TextColumn::make('grade')->label('Akreditasi')->sortable(),
                 TextColumn::make('kepalaSppg.name')->label('Kepala SPPG')->searchable(),
             ])
             ->filters([

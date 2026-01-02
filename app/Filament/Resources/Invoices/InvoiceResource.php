@@ -54,8 +54,8 @@ class InvoiceResource extends Resource
                             ->disabled(fn (string $operation) => $operation === 'edit'),
                         Forms\Components\Select::make('type')
                             ->options([
-                                'SPPG_SEWA' => 'Sewa SPPG',
-                                'LP_ROYALTY' => 'Royalty Kornas',
+                                'SPPG_SEWA' => 'Insentif SPPG',
+                                'LP_ROYALTY' => 'Kontribusi Kornas',
                             ])
                             ->label('Tipe Tagihan')
                             ->required()
@@ -143,8 +143,8 @@ class InvoiceResource extends Resource
                     ]),
                 Tables\Filters\SelectFilter::make('type')
                     ->options([
-                        'SPPG_SEWA' => 'Sewa SPPG',
-                        'LP_ROYALTY' => 'Royalty Kornas',
+                        'SPPG_SEWA' => 'Insentif SPPG',
+                        'LP_ROYALTY' => 'Kontribusi Kornas',
                     ]),
             ])
             ->recordActions([ // Filament V4 Syntax
@@ -216,7 +216,7 @@ class InvoiceResource extends Resource
                                                     'amount' => $record->amount,
                                                     'category_id' => 4, // Setoran Lembaga Pengusul
                                                     'received_at' => $record->transfer_date ?? now(),
-                                                    'source' => 'Penerimaan Royalti',
+                                                    'source' => 'Penerimaan Kontribusi Kornas',
                                                     'notes' => "Otomatis dari verifikasi invoice #{$record->invoice_number} ({$record->sppg->nama_sppg})",
                                                     'attachment' => $record->proof_of_payment,
                                                 ]);
@@ -238,7 +238,7 @@ class InvoiceResource extends Resource
                                             }
                                         });
 
-                                        $typeLabel = $record->type === 'SPPG_SEWA' ? 'Sewa' : 'Royalty';
+                                        $typeLabel = $record->type === 'SPPG_SEWA' ? 'Insentif' : 'Kontribusi';
                                         Notification::make()->title("Pembayaran {$typeLabel} Disetujui")->success()->send();
                                     } catch (\Exception $e) {
                                         Notification::make()->title('Gagal')->body($e->getMessage())->danger()->send();
@@ -266,14 +266,14 @@ class InvoiceResource extends Resource
                         ])->fullWidth(),
                     ]),
                  Action::make('pay_royalty')
-                    ->label(fn(Invoice $record) => $record->status === 'WAITING_VERIFICATION' ? 'Sedang Diverifikasi' : 'Bayar Royalty')
+                    ->label(fn(Invoice $record) => $record->status === 'WAITING_VERIFICATION' ? 'Sedang Diverifikasi' : 'Bayar Kontribusi')
                     ->icon('heroicon-o-credit-card')
                     ->color('warning')
                     ->visible(fn (Invoice $record) => in_array($record->status, ['UNPAID', 'REJECTED']) 
                         && $record->type === 'LP_ROYALTY'
                         && auth()->user()->hasRole('Pimpinan Lembaga Pengusul'))
                     ->form([
-                        Section::make('Konfirmasi Transfer Royalty')
+                        Section::make('Konfirmasi Transfer Kontribusi Kornas')
                             ->schema([
                                 Forms\Components\TextInput::make('source_bank')->label('Bank Sumber')->required(),
                                 Forms\Components\TextInput::make('destination_bank')->label('Bank Tujuan (Kornas)')->required(),

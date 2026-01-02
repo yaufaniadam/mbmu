@@ -42,7 +42,7 @@ class SppgForm
                             ->label('Nomor VA')
                             ->required(),
                         DatePicker::make('tanggal_mulai_sewa')
-                            ->label('Tanggal SPPG Mulai Beroperasi')
+                            ->label('Tanggal Mulai Insentif')
                             ->helperText('Bisa diisikan tanggal sppg akan mulai ditagih, jika sppg sudah beroperasi sebelum aplikasi ini dibuat.')
                             ->required(),
                         Textarea::make('alamat')

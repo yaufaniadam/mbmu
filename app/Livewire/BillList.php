@@ -28,7 +28,7 @@ class BillList extends TableWidget
 
     public function getHeading(): ?string
     {
-        return $this->type === 'LP_ROYALTY' ? 'Daftar Tagihan Royalti' : 'Daftar Tagihan Sewa';
+        return $this->type === 'LP_ROYALTY' ? 'Daftar Tagihan Kontribusi Kornas' : 'Daftar Tagihan Insentif';
     }
 
     public function table(Table $table): Table

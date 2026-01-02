@@ -49,13 +49,13 @@ class GenerateInvoices extends Command
             // Find the 10th production schedule after startDate
             $schedules = \App\Models\ProductionSchedule::where('sppg_id', $sppg->id)
                 ->where('tanggal', '>=', $startDate)
-                ->whereIn('status', ['Selesai', 'Didistribusikan', 'Terverifikasi'])
+                ->whereIn('status', ['Selesai', 'Didistribusikan', 'Terverifikasi', 'Direncanakan'])
                 ->orderBy('tanggal', 'asc')
                 ->limit(10)
                 ->get();
 
             // If we don't have enough active days for a full period (10 days), stop and wait.
-            if ($schedules->count() < 10) {
+            if ($schedules->count() < 1) {
                 break;
             }
 
@@ -77,11 +77,16 @@ class GenerateInvoices extends Command
         // Active days = production_schedules with status 'Selesai' or 'Didistribusikan'
         $activeDays = \App\Models\ProductionSchedule::where('sppg_id', $sppg->id)
             ->whereBetween('tanggal', [$startDate, $endDate])
-            ->whereIn('status', ['Selesai', 'Didistribusikan', 'Terverifikasi'])
+            ->whereIn('status', ['Selesai', 'Didistribusikan', 'Terverifikasi', 'Direncanakan'])
             ->count();
 
-        // Calculate amount: Rp 6.000.000 per active day
-        $ratePerDay = 6000000;
+        // Calculate amount based on SPPG Grade
+        $ratePerDay = match ($sppg->grade) {
+            'A' => 6000000,
+            'B' => 4500000,
+            'C' => 3000000,
+            default => 3000000, // Default for 'C' or null
+        };
         $amount = $activeDays * $ratePerDay;
 
         // Skip if no active days (no charge)
