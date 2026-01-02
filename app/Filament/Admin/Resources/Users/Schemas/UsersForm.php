@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources\Users\Schemas;
 
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -32,6 +34,20 @@ class UsersForm
                         TextInput::make('nik')
                             ->label('NIK')
                             ->required(),
+                        Select::make('gender')
+                            ->label('Jenis Kelamin')
+                            ->options([
+                                'L' => 'Laki-laki',
+                                'P' => 'Perempuan',
+                            ]),
+                        DatePicker::make('birth_date')
+                            ->label('Tanggal Lahir'),
+                        FileUpload::make('photo_path')
+                            ->label('Foto Profil')
+                            ->image()
+                            ->avatar()
+                            ->directory('user-photos')
+                            ->columnSpanFull(),
                         Select::make('roles') // Relation usually requires relationship name as field logic or load
                             ->label('Role')
                             ->relationship('roles', 'name')

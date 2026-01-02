@@ -21,6 +21,7 @@ class School extends Model
         'longitude',
         'default_porsi_besar',
         'default_porsi_kecil',
+        'photo_path',
     ];
 
     public function sppg()

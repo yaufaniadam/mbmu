@@ -49,6 +49,15 @@ class Sppg extends Model
         'village_code',
         'latitude',
         'longitude',
+        'photo_path',
+        'grade',
+        'izin_operasional_path',
+        'sertifikat_halal_path',
+        'slhs_path',
+        'lhaccp_path',
+        'iso_path',
+        'sertifikat_lahan_path',
+        'dokumen_lain_path',
     ];
 
     /**

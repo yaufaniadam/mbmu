@@ -55,6 +55,7 @@ class User extends Authenticatable implements FilamentUser
         'alamat',
         'nik',
         'gender',
+        'birth_date',
         'photo_path',
         // Tambahkan 'sppg_id' jika Anda menggunakannya sebagai SPPG "utama" atau "asal" user.
         // Ini opsional, karena peran utama ditentukan oleh relasi.

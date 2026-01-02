@@ -76,6 +76,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->spa(hasPrefetching: true)
             ->renderHook(
+                'panels::head.start',
+                fn(): string => '<meta http-equiv="Content-Security-Policy" content="script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' https://unpkg.com https://tile.openstreetmap.org; style-src \'self\' \'unsafe-inline\' https://unpkg.com;">'
+            )
+            ->renderHook(
                 'panels::head.end',
                 fn(): string => '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />'
             )

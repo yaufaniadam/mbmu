@@ -20,6 +20,8 @@ class Volunteer extends Model
         'kontak',
         'address',
         'daily_rate',
+        'birth_date',
+        'photo_path',
     ];
 
     public function user()

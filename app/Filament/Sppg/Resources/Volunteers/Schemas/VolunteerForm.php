@@ -2,6 +2,8 @@
 
 namespace App\Filament\Sppg\Resources\Volunteers\Schemas;
 
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -102,6 +104,14 @@ class VolunteerForm
                                         'P' => 'Perempuan',
                                     ])
                                     ->required(),
+                                \Filament\Forms\Components\DatePicker::make('birth_date')
+                                    ->label('Tanggal Lahir'),
+                                \Filament\Forms\Components\FileUpload::make('photo_path')
+                                    ->label('Foto Relawan')
+                                    ->image()
+                                    ->avatar()
+                                    ->directory('volunteer-photos')
+                                    ->columnSpanFull(),
                                 \Filament\Forms\Components\Select::make('posisi')
                                     ->label('Jabatan')
                                     ->options([
