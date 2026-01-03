@@ -205,7 +205,7 @@ class ProductionSchedulesTable
                         $record->update(['status' => 'Terverifikasi']);
 
                         \Filament\Notifications\Notification::make()
-                            ->title('Rencana Distribusi Disetujui')
+                            ->title('Aktifitas Disetujui')
                             ->success()
                             ->send();
                     }),

@@ -33,7 +33,7 @@ class ProductionScheduleResource extends Resource
 {
     protected static ?string $model = ProductionSchedule::class;
 
-    protected static ?string $navigationLabel = 'Rencana Distribusi';
+    protected static ?string $navigationLabel = 'Aktifitas';
 
     protected static string|UnitEnum|null $navigationGroup = 'Operasional';
 
@@ -43,12 +43,12 @@ class ProductionScheduleResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return 'Rencana Distribusi';
+        return 'Aktifitas';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Rencana Distribusi';
+        return 'Aktifitas';
     }
 
     public static function getNavigationBadge(): ?string
