@@ -43,6 +43,7 @@ class SppgPanelProvider extends PanelProvider
                 ProductionScheduleResource::class,
                 \App\Filament\Resources\SppgFinancialReportResource::class,
                 \App\Filament\Resources\PostResource::class,
+                \App\Filament\Resources\ComplaintResource::class,
             ])
             ->discoverResources(in: app_path('Filament/Sppg/Resources'), for: 'App\Filament\Sppg\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

@@ -39,13 +39,23 @@ class ComplaintResource extends Resource
                     ->schema([
                          Select::make('subject')
                             ->label('Subjek Pengaduan')
-                            ->options([
-                                'Pencairan' => 'Pencairan',
-                                'Kepala' => 'Kepala',
-                                'Akuntan' => 'Akuntan',
-                                'Ahli Gizi' => 'Ahli Gizi',
-                                'Virtual Account' => 'Virtual Account',
-                            ])
+                            ->options(function () {
+                                $baseOptions = [
+                                    'Pencairan' => 'Pencairan',
+                                    'Akuntan' => 'Akuntan',
+                                    'Ahli Gizi' => 'Ahli Gizi',
+                                    'Virtual Account' => 'Virtual Account',
+                                ];
+                                
+                                // LP can report about Kepala, SPPG can report about Lembaga Pengusul
+                                if (Auth::user()->hasRole('Kepala SPPG')) {
+                                    $baseOptions['Lembaga Pengusul'] = 'Lembaga Pengusul';
+                                } else {
+                                    $baseOptions['Kepala'] = 'Kepala';
+                                }
+                                
+                                return $baseOptions;
+                            })
                             ->required()
                             ->disabled(fn ($record) => $record && $record->status !== 'Open'),
                         Textarea::make('content')
@@ -116,40 +126,9 @@ class ComplaintResource extends Resource
                 //
             ])
             ->actions([
-                \Filament\Actions\ViewAction::make(),
-                Action::make('respond')
-                    ->label('Tanggapi')
-                    ->icon('heroicon-o-chat-bubble-left-ellipsis')
-                    ->color('success')
-                    ->visible(fn (Complaint $record) => 
-                        Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']) && 
-                        $record->status !== 'Closed'
-                    )
-                    ->form([
-                        Textarea::make('feedback')
-                            ->label('Isi Tanggapan')
-                            ->required()
-                            ->default(fn ($record) => $record->feedback),
-                    ])
-                    ->action(function (Complaint $record, array $data) {
-                        $record->update([
-                            'feedback' => $data['feedback'],
-                            'status' => 'Responded',
-                            'feedback_by' => Auth::id(),
-                            'feedback_at' => now(),
-                        ]);
-                        Notification::make()->title('Tanggapan Terkirim')->success()->send();
-                    }),
-                Action::make('close')
-                    ->label('Selesai')
-                    ->icon('heroicon-o-check-circle')
-                    ->color('gray')
-                    ->requiresConfirmation()
-                    ->visible(fn (Complaint $record) => 
-                        $record->status !== 'Closed' &&
-                        (Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']) || $record->user_id === Auth::id())
-                    )
-                    ->action(fn ($record) => $record->update(['status' => 'Closed'])),
+                \Filament\Actions\ViewAction::make()
+                    ->label('Lihat')
+                    ->icon('heroicon-o-eye'),
             ])
             ->bulkActions([
                 //
@@ -161,16 +140,25 @@ class ComplaintResource extends Resource
         $query = parent::getEloquentQuery();
         $user = Auth::user();
 
+        // LP only sees their own LP complaints
         if ($user->hasRole('Pimpinan Lembaga Pengusul')) {
-            return $query->where('user_id', $user->id);
+            return $query->where('user_id', $user->id)
+                         ->where('source_type', 'lembaga_pengusul');
         }
 
+        // Kepala SPPG only sees their own SPPG complaints
+        if ($user->hasRole('Kepala SPPG')) {
+            return $query->where('user_id', $user->id)
+                         ->where('source_type', 'sppg');
+        }
+
+        // Kornas/admin sees all
         return $query;
     }
 
     public static function canCreate(): bool
     {
-        return Auth::user()->hasRole('Pimpinan Lembaga Pengusul');
+        return Auth::user()->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG']);
     }
 
     public static function getPages(): array
@@ -178,6 +166,7 @@ class ComplaintResource extends Resource
         return [
             'index' => Pages\ListComplaints::route('/'),
             'create' => Pages\CreateComplaint::route('/create'),
+            'view' => Pages\ViewComplaint::route('/{record}'),
             'edit' => Pages\EditComplaint::route('/{record}/edit'),
         ];
     }

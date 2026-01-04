@@ -12,6 +12,7 @@ class Complaint extends Model
 
     protected $fillable = [
         'user_id',
+        'source_type',
         'subject',
         'content',
         'status',
@@ -32,5 +33,10 @@ class Complaint extends Model
     public function responder(): BelongsTo
     {
         return $this->belongsTo(User::class, 'feedback_by');
+    }
+
+    public function messages(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ComplaintMessage::class)->orderBy('created_at', 'asc');
     }
 }
