@@ -275,13 +275,13 @@ class ProductionScheduleResource extends Resource
     {
         $panelId = \Filament\Facades\Filament::getCurrentPanel()?->getId();
         
-        // SPPG panel: Auto-generated only, no manual creation
-        if ($panelId === 'sppg') {
+        // Admin panel: Read-only, no manual creation
+        if ($panelId === 'admin') {
             return false;
         }
         
-        // Admin panel: Also read-only
-        return $panelId !== 'admin';
+        // SPPG panel: Allow creation
+        return true;
     }
 
     public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool

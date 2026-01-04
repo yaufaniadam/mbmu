@@ -27,14 +27,14 @@
                 Buku Kas
             </x-filament::tabs.item>
             <x-filament::tabs.item :active="$activeTab === 'pay_rent'" wire:click="$set('activeTab', 'pay_rent')" icon="heroicon-o-credit-card">
-                Bayar Sewa
+                Bayar Insentif
             </x-filament::tabs.item>
         @endif
 
         {{-- Tab 3: Penerimaan Sewa (LP Only) --}}
         @if (auth()->user()->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul']))
             <x-filament::tabs.item :active="$activeTab === 'verify_rent'" wire:click="$set('activeTab', 'verify_rent')" icon="heroicon-o-arrow-path-rounded-square">
-                Penerimaan Sewa
+                Penerimaan Insentif
             </x-filament::tabs.item>
         @endif
 

@@ -171,7 +171,12 @@ class VerifyPaymentList extends TableWidget
                         ->copyable(),
                     TextEntry::make('type')
                         ->label('Tipe Pembayaran')
-                        ->badge(),
+                        ->badge()
+                        ->formatStateUsing(fn (string $state): string => match ($state) {
+                            'SPPG_SEWA' => 'Insentif',
+                            'LP_ROYALTY' => 'Kontribusi Kornas',
+                            default => $state,
+                        }),
                 ]),
 
             // Section 3: Payment Data

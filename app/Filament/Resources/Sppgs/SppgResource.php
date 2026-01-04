@@ -81,23 +81,23 @@ class SppgResource extends Resource
                                         TextEntry::make('tanggal_operasional_pertama')->label('Operasional Pertama')->date()->color('gray'),
                                         TextEntry::make('alamat')->columnSpanFull()->color('gray'),
 
-                                        TextEntry::make('ba_verval_path')
-                                            ->label('BA Verval')
-                                            ->formatStateUsing(fn () => '')
-                                            ->icon('heroicon-m-arrow-down-tray')
-                                            ->color('primary')
-                                            ->url(fn ($state) => $state)
-                                            ->openUrlInNewTab()
-                                            ->visible(fn ($state) => filled($state)),
+                                        // TextEntry::make('ba_verval_path')
+                                        //     ->label('BA Verval')
+                                        //     ->formatStateUsing(fn () => '')
+                                        //     ->icon('heroicon-m-arrow-down-tray')
+                                        //     ->color('primary')
+                                        //     ->url(fn ($state) => $state)
+                                        //     ->openUrlInNewTab()
+                                        //     ->visible(fn ($state) => filled($state)),
 
-                                        TextEntry::make('permohonan_pengusul_path')
-                                            ->label('Surat Permohonan')
-                                            ->formatStateUsing(fn () => '')
-                                            ->icon('heroicon-m-arrow-down-tray')
-                                            ->color('primary')
-                                            ->url(fn ($state) => $state)
-                                            ->openUrlInNewTab()
-                                            ->visible(fn ($state) => filled($state)),
+                                        // TextEntry::make('permohonan_pengusul_path')
+                                        //     ->label('Surat Permohonan')
+                                        //     ->formatStateUsing(fn () => '')
+                                        //     ->icon('heroicon-m-arrow-down-tray')
+                                        //     ->color('primary')
+                                        //     ->url(fn ($state) => $state)
+                                        //     ->openUrlInNewTab()
+                                        //     ->visible(fn ($state) => filled($state)),
                                     ]),
                             ]),
 
@@ -123,7 +123,7 @@ class SppgResource extends Resource
                                     ->columns(2)
                                     ->schema([
                                         TextEntry::make('izin_operasional_path')
-                                            ->label('Izin Operasional')
+                                            ->label('Dokumen Verval')
                                             ->formatStateUsing(fn ($state) => $state ? 'Download' : 'Belum ada')
                                             ->icon(fn ($state) => $state ? 'heroicon-m-arrow-down-tray' : null)
                                             ->color(fn ($state) => $state ? 'primary' : 'gray')

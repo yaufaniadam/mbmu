@@ -42,7 +42,7 @@ class SppgForm
                             ->label('Nomor VA')
                             ->required(),
                         DatePicker::make('tanggal_mulai_sewa')
-                            ->label('Tanggal Mulai Insentif')
+                            ->label('Tanggal Mulai Operasional')
                             ->helperText('Bisa diisikan tanggal sppg akan mulai ditagih, jika sppg sudah beroperasi sebelum aplikasi ini dibuat.')
                             ->required(),
                         Textarea::make('alamat')
@@ -218,7 +218,7 @@ class SppgForm
                     ->collapsed()
                     ->schema([
                         \Filament\Forms\Components\FileUpload::make('izin_operasional_path')
-                            ->label('Izin Operasional')
+                            ->label('Dokumen Verval')
                             ->directory('sppg-docs')
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('sertifikat_halal_path')

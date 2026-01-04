@@ -121,12 +121,12 @@ class IncomingFunds extends TableWidget
                     ->modalSubmitAction(false)
                     ->modalCancelAction(false)
                     ->modalContent(function (SppgIncomingFund $record) {
-                        if (! Storage::disk('local')->exists($record->attachment)) {
+                        if (! Storage::disk('public')->exists($record->attachment)) {
                             return new HtmlString('<p class="text-danger-500">File tidak ditemukan.</p>');
                         }
 
-                        $content = Storage::disk('local')->get($record->attachment);
-                        $mime = Storage::disk('local')->mimeType($record->attachment);
+                        $content = Storage::disk('public')->get($record->attachment);
+                        $mime = Storage::disk('public')->mimeType($record->attachment);
                         $base64 = base64_encode($content);
 
                         return new HtmlString(
@@ -140,7 +140,7 @@ class IncomingFunds extends TableWidget
                     ->icon('heroicon-m-arrow-down-tray')
                     ->color('gray')
                     ->visible(fn (SppgIncomingFund $record) => $record->attachment && ! $this->isImage($record->attachment))
-                    ->action(fn (SppgIncomingFund $record) => Storage::disk('local')->download($record->attachment)),
+                    ->action(fn (SppgIncomingFund $record) => Storage::disk('public')->download($record->attachment)),
 
                 // 3. AUDIT EDIT ACTION (Replaces Standard Edit)
                 EditAction::make()
@@ -282,6 +282,7 @@ class IncomingFunds extends TableWidget
                 ->directory('incoming-funds-proof')
                 ->maxSize(5120)
                 ->required()
+                ->imagePreviewHeight('200')
                 ->columnSpanFull(),
         ];
     }

@@ -19,7 +19,6 @@ class ManageFinance extends Page implements HasForms
     protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationLabel = 'Keuangan';
-    protected static bool $shouldRegisterNavigation = false;
 
     public $activeTab = 'dashboard';
 

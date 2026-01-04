@@ -121,12 +121,12 @@ class OperatingExpenses extends TableWidget
                     ->modalCancelAction(false)
                     ->modalContent(function (OperatingExpense $record) {
                         // Render Base64 image because file is 'private' and cannot be accessed via URL
-                        if (! Storage::disk('local')->exists($record->attachment)) {
+                        if (! Storage::disk('public')->exists($record->attachment)) {
                             return new HtmlString('<p class="text-danger-500">File tidak ditemukan.</p>');
                         }
 
-                        $content = Storage::disk('local')->get($record->attachment);
-                        $mime = Storage::disk('local')->mimeType($record->attachment);
+                        $content = Storage::disk('public')->get($record->attachment);
+                        $mime = Storage::disk('public')->mimeType($record->attachment);
                         $base64 = base64_encode($content);
 
                         return new HtmlString(
@@ -140,7 +140,7 @@ class OperatingExpenses extends TableWidget
                     ->icon('heroicon-m-arrow-down-tray')
                     ->color('gray')
                     ->visible(fn (OperatingExpense $record) => $record->attachment && ! $this->isImage($record->attachment))
-                    ->action(fn (OperatingExpense $record) => Storage::disk('local')->download($record->attachment)),
+                    ->action(fn (OperatingExpense $record) => Storage::disk('public')->download($record->attachment)),
 
                 // 3. AUDIT EDIT ACTION (Replaces Standard Edit)
                 EditAction::make()
@@ -258,6 +258,7 @@ class OperatingExpenses extends TableWidget
                 ->directory('operating-expenses-proof')
                 ->maxSize(5120)
                 ->required()
+                ->imagePreviewHeight('200')
                 ->columnSpanFull(),
         ];
     }

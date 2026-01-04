@@ -277,7 +277,7 @@ class SppgProfile extends Page implements HasForms
             Fieldset::make('Dokumen SPPG')
                 ->schema([
                     \Filament\Forms\Components\FileUpload::make('izin_operasional_path')
-                        ->label('Izin Operasional')
+                        ->label('Dokumen Verval')
                         ->directory('sppg-docs')
                         ->acceptedFileTypes(['application/pdf', 'image/*']),
                     \Filament\Forms\Components\FileUpload::make('sertifikat_halal_path')

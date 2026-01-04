@@ -169,7 +169,7 @@ class IncomingPayment extends TableWidget
             Section::make('Pelaku Pembayaran')
                 ->heading('Informasi Pengirim Pembayaran')
                 ->icon('heroicon-m-user-group')
-                ->columns(3)
+                ->columns(2)
                 ->schema([
                     TextEntry::make('sppg.nama_sppg')
                         ->label('SPPG / Unit')
@@ -177,7 +177,12 @@ class IncomingPayment extends TableWidget
                         ->copyable(),
                     TextEntry::make('type')
                         ->label('Tipe Pembayaran')
-                        ->badge(),
+                        ->badge()
+                        ->formatStateUsing(fn (string $state): string => match ($state) {
+                            'SPPG_SEWA' => 'Insentif',
+                            'LP_ROYALTY' => 'Kontribusi Kornas',
+                            default => $state,
+                        }),
                 ]),
 
             // Section 3: Payment Data

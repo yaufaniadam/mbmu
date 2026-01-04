@@ -112,9 +112,15 @@ class InvoiceResource extends Resource
                 Tables\Columns\TextColumn::make('type')
                     ->label('Tipe')
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'SPPG_SEWA' => 'Insentif',
+                        'LP_ROYALTY' => 'Kontribusi Kornas',
+                        default => $state,
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'SPPG_SEWA' => 'info',
                         'LP_ROYALTY' => 'warning',
+                        default => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('amount')
                     ->label('Jumlah')
