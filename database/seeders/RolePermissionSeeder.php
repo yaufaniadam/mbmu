@@ -177,26 +177,26 @@ class RolePermissionSeeder extends Seeder
         // 5. Buat Users Bawaan
         // User Level Nasional (tidak terikat SPPG)
         $superAdmin = User::firstOrCreate(
-            ['email' => 'superadmin@mbm.com'],
-            ['name' => 'Super Admin', 'password' => Hash::make('p4$$w0rd')]
+            ['email' => 'superadmin@mbmu.id'],
+            ['name' => 'Super Admin', 'password' => Hash::make('mBm@2025')]
         );
         $superAdmin->assignRole($roleModels['Superadmin']);
 
         $direktur = User::firstOrCreate(
-            ['email' => 'direktur.kornas@mbm.com'],
-            ['name' => 'Direktur Kornas MBM', 'password' => Hash::make('p4$$w0rd')]
+            ['email' => 'direktur.kornas@mbmu.id'],
+            ['name' => 'Direktur Kornas MBM', 'password' => Hash::make('direkturKornas')]
         );
         $direktur->assignRole($roleModels['Direktur Kornas']);
 
         $stafKornas = User::firstOrCreate(
-            ['email' => 'staf.kornas@mbm.com'],
-            ['name' => 'Staf Kornas MBM', 'password' => Hash::make('p4$$w0rd')]
+            ['email' => 'staf.kornas@mbmu.id'],
+            ['name' => 'Staf Kornas MBM', 'password' => Hash::make('stafKornas')]
         );
         $stafKornas->assignRole($roleModels['Staf Kornas']);
 
         $stafAkuntanKornas = User::firstOrCreate(
-            ['email' => 'akuntan.kornas@mbm.com'],
-            ['name' => 'Staf Akuntan Kornas MBM', 'password' => Hash::make('p4$$w0rd')]
+            ['email' => 'akuntan.kornas@mbmu.id'],
+            ['name' => 'Staf Akuntan Kornas MBM', 'password' => Hash::make('akuntanKornas')]
         );
         $stafAkuntanKornas->assignRole($roleModels['Staf Akuntan Kornas']);
     }

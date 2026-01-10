@@ -79,7 +79,11 @@
         </nav>
 
         <main>
-            @yield('content')
+            @hasSection('content')
+                @yield('content')
+            @else
+                {{ $slot ?? '' }}
+            @endif
         </main>
 
         <!-- Footer -->
@@ -97,6 +101,10 @@
                     <div class="flex flex-wrap justify-center gap-4 text-sm font-medium">
                         <a href="{{ route('filament.admin.auth.login') }}" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300 hover:text-white transition">
                             Login Kornas
+                        </a>
+                        <div class="hidden md:block w-px bg-gray-700 h-8 self-center"></div>
+                        <a href="{{ route('filament.admin.auth.login', ['role' => 'pengusul']) }}" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300 hover:text-white transition">
+                            Login Lembaga Pengusul
                         </a>
                         <div class="hidden md:block w-px bg-gray-700 h-8 self-center"></div>
                         <a href="{{ route('filament.sppg.auth.login') }}" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300 hover:text-white transition">

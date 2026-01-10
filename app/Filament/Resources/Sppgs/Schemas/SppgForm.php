@@ -246,6 +246,24 @@ class SppgForm
                             ->directory('sppg-docs')
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                     ])->columns(2),
+
+                \Filament\Schemas\Components\Section::make('Sosial Media')
+                    ->columnSpanFull()
+                    ->collapsed()
+                    ->schema([
+                        TextInput::make('facebook')
+                            ->label('Facebook')
+                            ->placeholder('https://facebook.com/...'),
+                        TextInput::make('instagram')
+                            ->label('Instagram')
+                            ->placeholder('https://instagram.com/...'),
+                        TextInput::make('youtube')
+                            ->label('YouTube')
+                            ->placeholder('https://youtube.com/...'),
+                        TextInput::make('tiktok')
+                            ->label('TikTok')
+                            ->placeholder('https://tiktok.com/@...'),
+                    ])->columns(2),
             ]);
 
         // return $schema

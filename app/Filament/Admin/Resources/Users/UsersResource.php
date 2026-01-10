@@ -19,11 +19,15 @@ class UsersResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationLabel = 'Manajemen User';
+    protected static ?string $modelLabel = 'Pengguna';
+    
+    protected static ?string $pluralModelLabel = 'Pengguna';
 
-    protected static string|UnitEnum|null $navigationGroup = 'SDM & Pengguna';
+    protected static ?string $navigationLabel = 'Manajemen Pengguna';
 
-    protected static ?int $navigationSort = 2;
+    protected static string|UnitEnum|null $navigationGroup = null;
+
+    protected static ?int $navigationSort = 8;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
 

@@ -23,9 +23,9 @@ class AdminSchoolResource extends Resource
 
     protected static ?string $navigationLabel = 'Penerima MBM';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Kelembagaan';
+    protected static string|UnitEnum|null $navigationGroup = null;
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 6;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
 

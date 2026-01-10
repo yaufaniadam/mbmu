@@ -29,7 +29,8 @@ class ComplaintResource extends Resource
     protected static ?string $navigationLabel = 'Pengaduan';
     protected static ?string $pluralModelLabel = 'Pengaduan';
     protected static ?string $modelLabel = 'Pengaduan';
-    protected static string|UnitEnum|null $navigationGroup = 'Bantuan & Layanan';
+    protected static string|UnitEnum|null $navigationGroup = null;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
     {

@@ -26,9 +26,9 @@ class LembagaPengusulResource extends Resource
 
     protected static ?string $navigationLabel = 'Lembaga Pengusul';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Kelembagaan';
+    protected static string|UnitEnum|null $navigationGroup = null;
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 7;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-briefcase';
 

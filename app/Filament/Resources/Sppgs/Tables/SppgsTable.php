@@ -15,10 +15,36 @@ class SppgsTable
     {
         return $table
             ->columns([
-                TextColumn::make('nama_sppg')->label('Nama')->sortable()->searchable(),
-                TextColumn::make('lembagaPengusul.nama_lembaga')->label('Lembaga Pengusul')->sortable()->searchable(),
+                TextColumn::make('kode_sppg')
+                    ->label('ID SPPG')
+                    ->searchable()
+                    ->sortable()
+                    ->placeholder('-'),
+                TextColumn::make('nama_sppg')
+                    ->label('Nama')
+                    ->sortable()
+                    ->searchable()
+                    ->wrap(),
+                TextColumn::make('lembagaPengusul.nama_lembaga')
+                    ->label('Lembaga Pengusul')
+                    ->sortable()
+                    ->searchable()
+                    ->wrap(),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn (?string $state): string => match ($state) {
+                        'Operasional / Siap Berjalan' => 'success',
+                        'Proses Persiapan' => 'warning',
+                        'Verifikasi dan Validasi' => 'info',
+                        default => 'gray',
+                    })
+                    ->sortable(),
                 TextColumn::make('grade')->label('Akreditasi')->sortable(),
-                TextColumn::make('kepalaSppg.name')->label('Kepala SPPG')->searchable(),
+                TextColumn::make('kepalaSppg.name')
+                    ->label('Kepala SPPG')
+                    ->searchable()
+                    ->wrap(),
             ])
             ->filters([
                 //

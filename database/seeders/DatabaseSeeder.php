@@ -26,8 +26,9 @@ class DatabaseSeeder extends Seeder
             DistrictsSeeder::class,
             VillagesSeeder::class,
             RolePermissionSeeder::class,
-            SppgLegacyImportSeeder::class,
-            PenerimaMbmSeeder::class,
+            // SppgLegacyImportSeeder::class, // Disabled - replaced by SppgExcelSeeder
+            SppgExcelSeeder::class,
+            // PenerimaMbmSeeder::class, // Disabled
             FinancialCategorySeeder::class,
             ProductionVerificationSettingSeeder::class,
          ]);

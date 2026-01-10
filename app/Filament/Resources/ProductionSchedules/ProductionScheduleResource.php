@@ -35,9 +35,9 @@ class ProductionScheduleResource extends Resource
 
     protected static ?string $navigationLabel = 'Aktifitas';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Operasional';
+    protected static string|UnitEnum|null $navigationGroup = null;
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
 

@@ -49,7 +49,7 @@ class UsersForm
                             ->directory('user-photos')
                             ->columnSpanFull(),
                         Select::make('roles') // Relation usually requires relationship name as field logic or load
-                            ->label('Role')
+                            ->label('Jabatan')
                             ->relationship('roles', 'name')
                             ->multiple()
                             ->preload()

@@ -22,7 +22,27 @@
             Sistem manajemen terintegrasi untuk pengelolaan Program Makan Bergizi Muhammadiyah (MBM). Transparan, Akuntabel, dan Berkelanjutan.
         </p>
 
-        <!-- Login button removed as requested -->
+        <!-- Login Links -->
+        <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+            <a href="/admin/login" class="px-8 py-3 bg-blue-600 text-white font-bold rounded-full hover:bg-blue-700 transition shadow-lg flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Masuk sebagai Kornas
+            </a>
+            <a href="/sppg/login" class="px-8 py-3 bg-pink-500 text-white font-bold rounded-full hover:bg-pink-600 transition shadow-lg flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                Masuk sebagai SPPG
+            </a>
+            <a href="/production/login" class="px-8 py-3 bg-emerald-600 text-white font-bold rounded-full hover:bg-emerald-700 transition shadow-lg flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+                Masuk Tim Produksi
+            </a>
+        </div>
     </div>
 </div>
 

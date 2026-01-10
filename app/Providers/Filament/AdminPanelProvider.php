@@ -36,7 +36,8 @@ class AdminPanelProvider extends PanelProvider
             ->darkModeBrandLogo(asset('logombm-w.png'))
             ->brandLogoHeight('3rem')
             ->plugins([
-                FilamentShieldPlugin::make(),
+                FilamentShieldPlugin::make()
+                    ->navigationGroup('Pengaturan'),
             ])
             ->colors([
                 'primary' => Color::Amber,
@@ -58,6 +59,13 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
                 // OsmMapWidget::class, // Moved to Dashboard
                 // FilamentInfoWidget::class,
+            ])
+            ->navigationGroups([
+                'Operasional',
+                'Kelembagaan',
+                'SDM & Pengguna',
+                'Keuangan',
+                'Pengaturan',
             ])
             ->middleware([
                 EncryptCookies::class,

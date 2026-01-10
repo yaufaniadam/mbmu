@@ -40,8 +40,10 @@ class Sppg extends Model
         'balance',
         'alamat',
         'is_active',
+        'status',
         'tanggal_mulai_sewa',
         'kepala_sppg_id',
+        'pj_id',
         'lembaga_pengusul_id',
         'province_code',
         'city_code',
@@ -58,6 +60,10 @@ class Sppg extends Model
         'iso_path',
         'sertifikat_lahan_path',
         'dokumen_lain_path',
+        'facebook',
+        'instagram',
+        'youtube',
+        'tiktok',
     ];
 
     /**
@@ -67,6 +73,14 @@ class Sppg extends Model
     public function kepalaSppg(): BelongsTo
     {
         return $this->belongsTo(User::class, 'kepala_sppg_id');
+    }
+
+    /**
+     * Mendapatkan data User yang menjadi PJ (Penanggung Jawab) SPPG.
+     */
+    public function pjSppg(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'pj_id');
     }
 
     /**

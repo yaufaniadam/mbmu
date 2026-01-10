@@ -16,7 +16,7 @@ class UsersTable
             ->columns([
                 TextColumn::make('name')->label('Nama')->sortable()->searchable(),
                 TextColumn::make('roles.name')
-                    ->label('Role')
+                    ->label('Jabatan')
                     ->badge()
                     ->searchable(),
                 TextColumn::make('unit')
@@ -40,7 +40,7 @@ class UsersTable
             ])
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('roles')
-                    ->label('Filter Role')
+                    ->label('Filter Jabatan')
                     ->relationship('roles', 'name')
                     ->preload()
                     ->searchable(),

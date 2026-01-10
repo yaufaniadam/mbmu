@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Livewire\SelfRegistration;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -35,4 +36,9 @@ Route::get('/daftar-sppg', function () {
     return view('sppg.index', compact('sppgs'));
 })->name('sppg.public.index');
 
+// Self Registration Routes
+Route::get('/daftar', SelfRegistration::class)->name('register.self');
+Route::get('/daftar/{role}/{token}', SelfRegistration::class)->name('register.self.token');
+
 // require __DIR__.'/auth.php';
+

@@ -29,9 +29,9 @@ class SppgResource extends Resource
 
     protected static ?string $navigationLabel = 'Unit SPPG';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Kelembagaan';
+    protected static string|UnitEnum|null $navigationGroup = null;
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 5;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';
 

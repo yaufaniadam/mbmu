@@ -23,9 +23,9 @@ class RelawanResource extends Resource
 
     protected static ?string $navigationLabel = 'Relawan SPPG';
 
-    protected static string|UnitEnum|null $navigationGroup = 'SDM & Pengguna';
+    protected static string|UnitEnum|null $navigationGroup = null;
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 9;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 

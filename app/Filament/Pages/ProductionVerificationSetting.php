@@ -23,7 +23,7 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
 
     protected string $view = 'filament.pages.production-verification-setting';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Sistem';
+    protected static string|UnitEnum|null $navigationGroup = 'Pengaturan';
 
     protected static ?int $navigationSort = 1;
 
