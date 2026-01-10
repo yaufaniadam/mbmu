@@ -10,8 +10,9 @@ use App\Services\WablasService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use OpenSpout\Common\Entity\Row;
-use OpenSpout\Reader\XLSX\Reader;
+use Laravolt\Indonesia\Models\City;
+use Laravolt\Indonesia\Models\District;
+use Laravolt\Indonesia\Models\Province;
 use Spatie\Permission\Models\Role;
 
 class SppgExcelSeeder extends Seeder
@@ -66,10 +67,20 @@ class SppgExcelSeeder extends Seeder
                     continue;
                 }
 
+                // Normalize Phone in Data Source (for PJ creation)
+                if (isset($data['wa_pj']) && str_starts_with(trim($data['wa_pj']), '8')) {
+                    $data['wa_pj'] = '0' . trim($data['wa_pj']);
+                }
+
                 // Find or create Lembaga Pengusul
                 $lembagaPengusul = $this->findOrCreateLembagaPengusul($data);
 
-                // Create SPPG
+                // 1. Map Location Names to Codes
+                $province = $this->findLocation(Province::class, $data['provinsi'] ?? '');
+                $city = $this->findLocation(City::class, $data['kab_kota'] ?? '', $province?->code);
+                $district = $this->findLocation(District::class, $data['kecamatan'] ?? '', $city?->code);
+
+                // Create Address String
                 $alamat = trim(implode(', ', array_filter([
                     $data['kecamatan'] ?? '',
                     $data['kab_kota'] ?? '',
@@ -82,6 +93,7 @@ class SppgExcelSeeder extends Seeder
                     $pjUser = $this->findOrCreatePjUser($data);
                 }
 
+                // Create SPPG
                 $sppg = Sppg::create([
                     'nama_sppg' => trim($data['nama_sppg']),
                     'kode_sppg' => strtoupper(trim($data['kode_sppg'])),
@@ -90,6 +102,9 @@ class SppgExcelSeeder extends Seeder
                     'lembaga_pengusul_id' => $lembagaPengusul?->id,
                     'pj_id' => $pjUser?->id,
                     'alamat' => $alamat ?: 'Alamat belum diisi',
+                    'province_code' => $province?->code,
+                    'city_code' => $city?->code,
+                    'district_code' => $district?->code,
                 ]);
 
                 // Create registration token for Kepala SPPG
@@ -119,6 +134,24 @@ class SppgExcelSeeder extends Seeder
         }
 
         fclose($handle);
+    }
+
+    protected function findLocation($modelClass, $name, $parentCode = null)
+    {
+        if (empty($name)) return null;
+        $name = trim($name);
+        
+        $query = $modelClass::where('name', 'LIKE', "%{$name}%");
+        
+        if ($parentCode) {
+            if ($modelClass === City::class) {
+                $query->where('province_code', $parentCode);
+            } elseif ($modelClass === District::class) {
+                $query->where('city_code', $parentCode);
+            }
+        }
+        
+        return $query->first();
     }
 
     protected function findOrCreateLembagaPengusul(array $data): ?LembagaPengusul
@@ -167,21 +200,6 @@ class SppgExcelSeeder extends Seeder
         if ($pjRole) {
             $user->assignRole($pjRole);
         }
-
-        // // Send WA notification with credentials
-        // try {
-        //     $wablas = new WablasService();
-        //     $message = "Selamat! Akun Anda sebagai PJ SPPG telah dibuat.\n\n"
-        //         . "📱 Login: {$waPj}\n"
-        //         . "🔐 Password: {$password}\n\n"
-        //         . "Silakan login di panel SPPG untuk mengawasi operasional SPPG Anda.\n\n"
-        //         . "Terima kasih!";
-            
-        //     $wablas->sendMessage($waPj, $message);
-        // } catch (\Exception $e) {
-        //     // Log error but don't fail seeder
-        //     $this->command->warn("Failed to send WA to {$namaPj}: " . $e->getMessage());
-        // }
 
         return $user;
     }

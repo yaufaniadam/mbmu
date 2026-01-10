@@ -31,6 +31,7 @@ class UsersTable
                         }
                         
                         $sppgName = $record->sppgDiKepalai?->nama_sppg 
+                            ?? $record->sppgDiPj?->nama_sppg
                             ?? $record->unitTugas->first()?->nama_sppg;
 
                         return $sppgName ?? '-';

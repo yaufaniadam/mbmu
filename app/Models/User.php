@@ -95,6 +95,15 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Mendefinisikan relasi bahwa seorang User bisa menjadi PJ (Penanggung Jawab) dari SATU SPPG.
+     * Ini terhubung dengan kolom `pj_id` di tabel `sppg`.
+     */
+    public function sppgDiPj(): HasOne
+    {
+        return $this->hasOne(Sppg::class, 'pj_id');
+    }
+
+    /**
      * Mendefinisikan relasi BANYAK-KE-BANYAK antara User dan SPPG melalui pivot table.
      * Ini untuk mengetahui di SPPG mana saja seorang user bertugas (sebagai PJ, Akuntan, dll).
      */
