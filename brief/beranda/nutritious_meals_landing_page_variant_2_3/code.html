@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nutrition Initiative</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;700;900&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f49d25",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221a10",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+<body>
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden font-display">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e6e1db] px-4 py-3 lg:px-10 bg-white dark:bg-[#1a150d] dark:border-[#3a3a3a] sticky top-0 z-50">
+<div class="flex items-center gap-4 text-[#181511] dark:text-white">
+<div class="size-8 text-primary flex items-center justify-center rounded-lg bg-primary/10">
+<span class="material-symbols-outlined" style="font-size: 24px;">nutrition</span>
+</div>
+<h2 class="text-[#181511] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Nutrition Initiative</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="hidden md:flex items-center gap-9">
+<a class="text-[#181511] dark:text-gray-200 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">About</a>
+<a class="text-[#181511] dark:text-gray-200 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Program</a>
+<a class="text-[#181511] dark:text-gray-200 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Impact</a>
+<a class="text-[#181511] dark:text-gray-200 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Blog</a>
+</div>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors shadow-md">
+<span class="truncate">Support Us</span>
+</button>
+</div>
+</header>
+<div class="layout-container flex h-full grow flex-col">
+<div class="flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1 w-full px-4 md:px-8">
+<div class="flex flex-col gap-6 mb-12">
+<div class="flex justify-between items-end px-4">
+<div>
+<h1 class="text-[#181511] dark:text-white text-3xl md:text-5xl font-black leading-tight tracking-[-0.033em] mb-2">
+                                    Fueling the Future
+                                </h1>
+<p class="text-[#5c6f7f] dark:text-gray-400 text-base md:text-lg font-normal max-w-[600px]">
+                                    Ensuring every child has the nutrition they need to succeed in the classroom and beyond.
+                                </p>
+</div>
+<div class="hidden md:flex gap-2">
+<button class="size-10 rounded-full border border-[#e6e1db] bg-white flex items-center justify-center hover:bg-gray-50 dark:bg-transparent dark:border-gray-600 dark:text-white">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<button class="size-10 rounded-full border border-[#e6e1db] bg-white flex items-center justify-center hover:bg-gray-50 dark:bg-transparent dark:border-gray-600 dark:text-white">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="flex overflow-x-auto pb-6 [-ms-scrollbar-style:none] [scrollbar-width:none] [&amp;::-webkit-scrollbar]:hidden snap-x snap-mandatory">
+<div class="flex items-stretch gap-6 px-4 w-full">
+<div class="flex h-[400px] md:h-[500px] w-full min-w-[85vw] md:min-w-[800px] flex-col justify-end rounded-2xl bg-cover bg-center shadow-lg relative overflow-hidden group snap-center" data-alt="Happy students eating a healthy lunch in a bright school cafeteria" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBSqcpVuZNiQrMv3ToaJSBnWKqXcbIpFKh-WNAUJEiFKId2JnYs3essBtDI32Ispjau479edB9qAxZicwkeNyV-XGFd9Q-NZ10MTWnS5Mlv_FuY3tTNACkBh7445CSckqSemkc1DPqWUaKZD1Y8Pg_i4d1eCfzN2apUwhnK6fJsgd3miFsMGMJhoMMkFl3JXely6CBjzqV4GfMx3k1xNZCzFR-tFCQHHM30VT07Yw4sSDZwRoRhd3Hl3RkLYsBpZbXov0YpeivtFUZl");'>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="relative z-10 p-8 flex flex-col items-start gap-4">
+<div class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Our Mission</div>
+<h3 class="text-white text-3xl font-bold leading-tight max-w-lg">Healthy Bodies, Healthy Minds</h3>
+<p class="text-gray-200 text-base max-w-lg mb-2">We provide over 10,000 free nutritious meals daily to students across the district.</p>
+<button class="flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-bold shadow-md hover:bg-primary/90 transition-transform hover:scale-105">
+                                            Learn About the Program
+                                        </button>
+</div>
+</div>
+<div class="flex h-[400px] md:h-[500px] w-full min-w-[85vw] md:min-w-[800px] flex-col justify-end rounded-2xl bg-cover bg-center shadow-lg relative overflow-hidden group snap-center" data-alt="Teacher helping a young student with an apple and a book" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC24PlILdqmaN2mrlEObgam26RNXtlHLQgzPdZHNeMAxvXy8k938TR6_nPdghzhj_9_DPuC8ca_VIlGwyozhDlxVA5VQLSy6jQtbWLpk_fAMlkTbXCNCB1wGWK4EKk8TNqRBOJkYyVbvs_Qf21DohYsBdPKL8XHI8bUaRe3Xc_QUEPWzOTm1Zxn8qa0CceLEwmZeCjVTXOf0_NyTLml_s3WoFp5LnILyEwBYNc13lRAhA_fQn63DTureWQFNEg7DaLOZOU-yxcET2Sj");'>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="relative z-10 p-8 flex flex-col items-start gap-4">
+<div class="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Community Impact</div>
+<h3 class="text-white text-3xl font-bold leading-tight max-w-lg">More Than Just a Meal</h3>
+<p class="text-gray-200 text-base max-w-lg mb-2">Supporting families and building a stronger community through food security.</p>
+<button class="flex items-center justify-center rounded-lg h-10 px-6 bg-white text-[#181511] text-sm font-bold shadow-md hover:bg-gray-100 transition-transform hover:scale-105">
+                                            See Our Impact
+                                        </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-10 px-4 py-10 mb-8 rounded-2xl bg-white dark:bg-[#1a150d] shadow-sm border border-[#e6e1db] dark:border-[#333]">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<div class="flex flex-col gap-2">
+<h2 class="text-[#181511] dark:text-white text-3xl font-bold leading-tight">Program Impact</h2>
+<p class="text-[#5c6f7f] dark:text-gray-400 text-base font-normal max-w-[720px]">How we are making a measurable difference in student lives.</p>
+</div>
+<a class="text-primary font-bold text-sm flex items-center gap-1 hover:underline" href="#">
+                                View Full Report <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="flex flex-1 gap-5 rounded-xl border border-blue-100 bg-blue-50/50 p-6 flex-col hover:shadow-md transition-shadow dark:bg-blue-900/10 dark:border-blue-800">
+<div class="size-12 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 28px;">psychology</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="text-[#181511] dark:text-white text-lg font-bold leading-tight">Cognitive Growth</h3>
+<p class="text-[#5c6f7f] dark:text-gray-400 text-sm font-normal leading-relaxed">Balanced meals improve focus and memory retention during lessons, leading to higher test scores and better engagement.</p>
+</div>
+</div>
+<div class="flex flex-1 gap-5 rounded-xl border border-green-100 bg-green-50/50 p-6 flex-col hover:shadow-md transition-shadow dark:bg-green-900/10 dark:border-green-800">
+<div class="size-12 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 28px;">favorite</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="text-[#181511] dark:text-white text-lg font-bold leading-tight">Physical Health</h3>
+<p class="text-[#5c6f7f] dark:text-gray-400 text-sm font-normal leading-relaxed">Meeting daily dietary requirements for growing bodies with fresh, locally sourced ingredients rich in vitamins.</p>
+</div>
+</div>
+<div class="flex flex-1 gap-5 rounded-xl border border-orange-100 bg-orange-50/50 p-6 flex-col hover:shadow-md transition-shadow dark:bg-orange-900/10 dark:border-orange-800">
+<div class="size-12 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 28px;">diversity_3</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="text-[#181511] dark:text-white text-lg font-bold leading-tight">Community Support</h3>
+<p class="text-[#5c6f7f] dark:text-gray-400 text-sm font-normal leading-relaxed">Relieving financial burdens for over 2,500 families in our district, allowing parents to focus on other essential needs.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-8 mb-16">
+<div class="flex flex-col md:flex-row justify-between items-end gap-4 px-4">
+<div class="flex flex-col gap-2">
+<h2 class="text-[#181511] dark:text-white text-3xl font-bold leading-tight">Community Voices</h2>
+<p class="text-[#5c6f7f] dark:text-gray-400 text-base font-normal max-w-[600px]">
+                                    Hear from the teachers, parents, and principals who see the difference every day.
+                                </p>
+</div>
+<div class="hidden md:block">
+<a class="text-sm font-bold text-primary hover:underline" href="#">Read All Stories</a>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 px-4">
+<div class="flex flex-col p-6 rounded-2xl bg-white dark:bg-[#1a150d] border border-[#e6e1db] dark:border-[#333] shadow-sm hover:shadow-md transition-all gap-4 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="flex items-center gap-4 pb-4 border-b border-[#f0f0f0] dark:border-[#333]">
+<div class="size-14 rounded-full overflow-hidden shrink-0 border-2 border-blue-100 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCpTW5pQ5znPklamdQ-VmSdD_vueGrMuEL9MlkEjbCmWOCNpes-LmM_8XN-lW9vqTpHAYLUOVlo5FJ7kH5NXUIxR1vdYbTHznn2PyhD_R_jRDU0a-YnA1i2-WbBkMDQjuaPAfBhN_QoXk4cPQnhp_GYQrS0DKgx1lJEslKoKi82zH4pF6k1zawP47f_5diS1vKvPXgLVOVe711doD7jgwhe78BUmzUGkX-yDxqCrBSw5nEF35YyJdcMOcZ9YLHqbIttzr_Nefa-z1pO");'>
+</div>
+<div>
+<h3 class="text-[#181511] dark:text-white font-bold text-lg">Maria Garcia</h3>
+<p class="text-blue-600 dark:text-blue-400 text-sm font-bold uppercase tracking-wide">3rd Grade Teacher</p>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex text-primary">
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+</div>
+<p class="text-[#5c6f7f] dark:text-gray-300 text-sm leading-relaxed italic">
+                                        "The difference in my classroom is incredible. Since the meal program started, my students are <span class="text-[#181511] dark:text-white font-medium">more energetic and focused</span> during afternoon lessons."
+                                    </p>
+</div>
+</div>
+<div class="flex flex-col p-6 rounded-2xl bg-white dark:bg-[#1a150d] border border-[#e6e1db] dark:border-[#333] shadow-sm hover:shadow-md transition-all gap-4 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-green-500"></div>
+<div class="flex items-center gap-4 pb-4 border-b border-[#f0f0f0] dark:border-[#333]">
+<div class="size-14 rounded-full overflow-hidden shrink-0 border-2 border-green-100 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDg5tsTA6tp3hxefXx60Ghi6n_HQOuUHMo5Vu8oHg5jCPxU6yqVVpXYpGFRnzPVB0PUAaluEcSFWfVj31QaUX5HSUj0ocYP5K_t6lyvIelR6wN8Chhet1KZ61JUfiYCA9BJ9xRVqP6XEZ5SrBApOYX0FLxVqaaICieQM4DpwQyKJgzFIjeh_ysPD_AEplVx5AXMz-hskB_4f31pkG1vcFUpHrSYhS6IPHazFUkOjsLoJgn7x7NgSFEHTP7R033R7vhMw4llr9GojCB0");'>
+</div>
+<div>
+<h3 class="text-[#181511] dark:text-white font-bold text-lg">David Miller</h3>
+<p class="text-green-600 dark:text-green-400 text-sm font-bold uppercase tracking-wide">Parent</p>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex text-primary">
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+</div>
+<p class="text-[#5c6f7f] dark:text-gray-300 text-sm leading-relaxed italic">
+                                        "Knowing my children get healthy, hot meals at school is a huge relief. Their <span class="text-[#181511] dark:text-white font-medium">attendance has improved</span> and they come home happy and ready to learn."
+                                    </p>
+</div>
+</div>
+<div class="flex flex-col p-6 rounded-2xl bg-white dark:bg-[#1a150d] border border-[#e6e1db] dark:border-[#333] shadow-sm hover:shadow-md transition-all gap-4 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
+<div class="flex items-center gap-4 pb-4 border-b border-[#f0f0f0] dark:border-[#333]">
+<div class="size-14 rounded-full overflow-hidden shrink-0 border-2 border-primary/20 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB1vf7yRu75mez-D8jUWjVAEljI5tKp-aKh_jDCF5al3SYBAbWpRJkv74Rpe_i_fR-_bC36Pfke-gRPY2TgwKgn1mALGFAo9r8gprEUbz-vn_5sI7UYps3OpEKU2vPAoG-K0b4ZP0tQtujjqF8hj-okr1xWazhQE0UvIKTDeWaQvm3JodHRKnQP8jOcejfJYf5GrHcgWBXgd9zEcN1UJFuDP12sfmv5LZtLxZ_q5tYi2lS1BmliQinZF_2FEQW05O8TutsFuUZGPtlr");'>
+</div>
+<div>
+<h3 class="text-[#181511] dark:text-white font-bold text-lg">Sarah Jenkins</h3>
+<p class="text-primary text-sm font-bold uppercase tracking-wide">Principal</p>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex text-primary">
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+</div>
+<p class="text-[#5c6f7f] dark:text-gray-300 text-sm leading-relaxed italic">
+                                        "We've seen a <span class="text-[#181511] dark:text-white font-medium">15% increase in attendance</span>. The cafeteria has become a vibrant community hub where students bond over nutritious food."
+                                    </p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-6 mb-16">
+<div class="flex items-center justify-between px-4">
+<h2 class="text-[#181511] dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">Latest News &amp; Updates</h2>
+<a class="text-sm font-medium text-primary hover:underline" href="#">View All News</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
+<div class="flex flex-col gap-3 group cursor-pointer">
+<div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-all" data-alt="Construction of new cafeteria wing" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAsPh8nN3se-1sOZyezthQ3VdNBbvcKMXmzf4RhFs-assTzoC__5huIVwgwvuAP2B-eeo0tJ7t1PEkYNGyHhFImBxrN3RCYcbNhqClKjbxMJZzlpSqT3KiAj0xmJUhmWsVyA3aR0GY-j3wLdJvmWp7NiUkXmLg-6cOB6IIIt_YlZvkCd1sD4eDlL0pn_Y384y0jhbqI098ga2etZCv5iCkyqhy6NFywwec8uLxDmL_Q55hsnZkcSxx7NlC9rxkz6H_58P75-OpTwZqO");'>
+<div class="w-full h-full bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wide">Expansion</p>
+<p class="text-[#181511] dark:text-white text-base font-bold leading-tight group-hover:text-primary transition-colors">Expansion to 5 New Schools</p>
+<p class="text-[#8a7960] dark:text-gray-400 text-sm font-normal">October 24, 2023</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 group cursor-pointer">
+<div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-all" data-alt="Professional nutritionist explaining food pyramid to kids" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAXpteZXDbPvMiw-J4_s9Yc_FvJXRrOYIbgeo5HX_AosEDev-ho_vIa6Exy0sm25R8xalphkzRIW9JwGrwadchZUdpCg-yvvtSap5pMPweK2UU8a7NEooMOMxdHq1M6G9d5MeBLwBYvfhydwkGOqU2leJ0Xvld_akvHFZN6KWwqCi1IFOu8XArA_y0nI7saB9Z1nhHlBwr50N5RcWl35zkmczQ6hjbThzPKCHHXf8UEzVyU0tphbQkehxrE1m_pP2Zm8482ScyWPWrv");'>
+<div class="w-full h-full bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-green-600 dark:text-green-400 text-xs font-bold uppercase tracking-wide">Team</p>
+<p class="text-[#181511] dark:text-white text-base font-bold leading-tight group-hover:text-primary transition-colors">Meet Our Nutritionists</p>
+<p class="text-[#8a7960] dark:text-gray-400 text-sm font-normal">October 15, 2023</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 group cursor-pointer">
+<div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-all" data-alt="Fresh vegetables and fruits arranged on a table" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCsscVRvK--UMyIP-9kBnob4efPixNcqEi4FnbNeLATztZWA-dVm6TdPiTftSUPW4Xs2lIB28SIlmAQsGZa5QTiKXsiX8Mq-SNEJzsCWIXIg-eV32v3iTOk6sI0NG7ZyVhvZzezLwpwA08kwuNrB4v9vzTterr_8t5mibcSum_OliCXqZu3hk_joOyCyW_cFFGCqEv6F5UjYTKz26gDCzNG1YRiIsXQu6j5mBNDJknEGBPi76Z1bqDKUsA5kIyIl1PBZSswacm3xqSF");'>
+<div class="w-full h-full bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-orange-600 dark:text-orange-400 text-xs font-bold uppercase tracking-wide">Menu</p>
+<p class="text-[#181511] dark:text-white text-base font-bold leading-tight group-hover:text-primary transition-colors">Fall Menu Released</p>
+<p class="text-[#8a7960] dark:text-gray-400 text-sm font-normal">October 01, 2023</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 group cursor-pointer">
+<div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-all" data-alt="Community meeting in a school hall" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB6mAE3EHnmk8EF1UOkP4n5zWBf6niVWsWH618OHBQA-JaL7B9ib4-2q6yF4R4jwVeuCiajOFDl9d_MHaqut4Nf1DAB5XebqxKlg9xbBEkkWZzcPX7reinoMmWxg8Zhgh7y9ITs-UclpqsYn9OvgaE8OlMcqJoYg2Hd-y2NdQTpidyL4VUANpjXGHC4ghOlDZqo_C2SB9HtmOv0pk-7LhRb0ZDMIrmmObUgmk7S28FVcDrz8JqezVINQ83NDuGCCW7tNajeJHhXyvbi");'>
+<div class="w-full h-full bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-purple-600 dark:text-purple-400 text-xs font-bold uppercase tracking-wide">Events</p>
+<p class="text-[#181511] dark:text-white text-base font-bold leading-tight group-hover:text-primary transition-colors">Community Feedback Session</p>
+<p class="text-[#8a7960] dark:text-gray-400 text-sm font-normal">September 20, 2023</p>
+</div>
+</div>
+</div>
+</div>
+<footer class="bg-white dark:bg-[#1a150d] border-t border-[#e6e1db] dark:border-[#333] pt-12 pb-8 px-4 rounded-t-2xl">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-2 mb-4">
+<div class="size-6 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">nutrition</span>
+</div>
+<h2 class="text-[#181511] dark:text-white text-lg font-bold">Nutrition Initiative</h2>
+</div>
+<p class="text-sm text-[#5c6f7f] dark:text-gray-400 mb-4">
+                                    Dedicated to providing free, healthy meals to every student in our district.
+                                </p>
+</div>
+<div>
+<h3 class="font-bold text-[#181511] dark:text-white mb-4">Initiative</h3>
+<ul class="space-y-2">
+<li><a class="text-sm text-[#5c6f7f] dark:text-gray-400 hover:text-primary" href="#">About Us</a></li>
+<li><a class="text-sm text-[#5c6f7f] dark:text-gray-400 hover:text-primary" href="#">Our Mission</a></li>
+<li><a class="text-sm text-[#5c6f7f] dark:text-gray-400 hover:text-primary" href="#">Leadership</a></li>
+<li><a class="text-sm text-[#5c6f7f] dark:text-gray-400 hover:text-primary" href="#">Careers</a></li>
+</ul>
+</div>
+<div>
+<h3 class="font-bold text-[#181511] dark:text-white mb-4">Resources</h3>
+<ul class="space-y-2">
+<li><a class="text-sm text-[#5c6f7f] dark:text-gray-400 hover:text-primary" href="#">School Menus</a></li>
+<li><a class="text-sm text-[#5c6f7f] dark:text-gray-400 hover:text-primary" href="#">Nutrition Facts</a></li>
+<li><a class="text-sm text-[#5c6f7f] dark:text-gray-400 hover:text-primary" href="#">Parent Portal</a></li>
+<li><a class="text-sm text-[#5c6f7f] dark:text-gray-400 hover:text-primary" href="#">FAQ</a></li>
+</ul>
+</div>
+<div>
+<h3 class="font-bold text-[#181511] dark:text-white mb-4">Contact</h3>
+<ul class="space-y-2">
+<li class="flex items-center gap-2 text-sm text-[#5c6f7f] dark:text-gray-400">
+<span class="material-symbols-outlined text-sm">mail</span> contact@nutrition.gov
+                                    </li>
+<li class="flex items-center gap-2 text-sm text-[#5c6f7f] dark:text-gray-400">
+<span class="material-symbols-outlined text-sm">call</span> +1 (555) 123-4567
+                                    </li>
+<li class="flex items-center gap-2 text-sm text-[#5c6f7f] dark:text-gray-400">
+<span class="material-symbols-outlined text-sm">location_on</span> 123 Education Blvd, State Capital
+                                    </li>
+</ul>
+</div>
+</div>
+<div class="border-t border-[#f5f3f0] dark:border-[#333] pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-xs text-[#8a7960] dark:text-gray-500">© 2023 Nutrition Initiative. All rights reserved.</p>
+<div class="flex gap-4">
+<a class="text-[#8a7960] dark:text-gray-500 hover:text-primary" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="text-[#8a7960] dark:text-gray-500 hover:text-primary" href="#"><span class="material-symbols-outlined">share</span></a>
+</div>
+</div>
+</footer>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>

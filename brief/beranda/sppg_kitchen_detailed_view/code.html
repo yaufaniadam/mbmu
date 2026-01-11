@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SPPG Kitchen Detailed View</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f49d25",
+                        "primary-dark": "#d68315", 
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#1a1612", // Slightly adjusted for better contrast
+                        "card-light": "#ffffff",
+                        "card-dark": "#221a10",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        /* Custom scrollbar for gallery if needed */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col transition-colors duration-200">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 w-full bg-card-light dark:bg-card-dark border-b border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16 gap-4">
+<!-- Logo & Brand -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-3xl">nutrition</span>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold tracking-tight hidden sm:block">SPPG Tracker</h2>
+</div>
+</div>
+<!-- Desktop Nav -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#">Dashboard</a>
+<a class="text-primary font-bold text-sm leading-normal" href="#">Kitchens</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#">Logistics</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#">Reports</a>
+</nav>
+<!-- Search & Profile -->
+<div class="flex items-center gap-4 flex-1 justify-end md:flex-none">
+<div class="relative hidden sm:block w-full max-w-xs group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2 border-none rounded-lg bg-background-light dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50 sm:text-sm" placeholder="Search facilities..." type="text"/>
+</div>
+<button class="bg-center bg-no-repeat bg-cover rounded-full size-9 ring-2 ring-slate-100 dark:ring-slate-700" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBIUveRs06lZikPHBABy-kpspl5bWGcwQZxICgF_ntYW33SdVQo_oHFVV1E5EYjLp1wX29m4NYaJxeI3mq5Wcm3YzALZ7-IE-AE_SWzD3rBD6JaEf93gmRjJKRmWyCs3asDoKy8qx_z_SD-lWmszbvqzzLjGdO56kpmfSY-a-1EGIW8DwM6R2513etD-PVOTSaEX-vOZanEWc3aCCPvhDbR3GjN-_jk7sNbusAuNsAYoUFw_1WYMf_S9TltYDQTwBqwXZRR-yN6BWwn");'></button>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+<!-- Breadcrumbs -->
+<nav aria-label="Breadcrumb" class="flex">
+<ol class="flex items-center space-x-2">
+<li>
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary" href="#">Home</a>
+</li>
+<li><span class="text-slate-400">/</span></li>
+<li>
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary" href="#">Kitchen Units</a>
+</li>
+<li><span class="text-slate-400">/</span></li>
+<li>
+<span aria-current="page" class="text-slate-900 dark:text-white font-medium">SPPG Cibinong Central</span>
+</li>
+</ol>
+</nav>
+<!-- Hero Section -->
+<div class="relative w-full rounded-2xl overflow-hidden shadow-md group">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10"></div>
+<div class="h-64 sm:h-80 md:h-96 w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Modern industrial kitchen facility wide shot" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDw4vpMOupvk-105x4TP-eU7uSMwm6KYsbhUJ3kNzrrV45qTqs71Zz1eK_GPddtRghHsT9Qf8J2N6FSeelPAzZxgiqiGl3unwiq9wrJvxKouRC40LBqnnPUguVFTI-OEFU_1sNGywlLFII_r8aOjwiG4WtZfdixkMo13mfw5OWIqWQzaj53Hrw7Jxuxr2DMgt3FAv4_TKQswQJOK7wQHgCYFZkYi4_fqfRmsCoiSl28y1VWfstg_-aX0hWZjJOcv2hxqrFC-VdjO6PH');">
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-6 sm:p-8 z-20 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<span class="inline-flex items-center gap-1 rounded-full bg-green-500/20 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-green-100 border border-green-500/30">
+<span class="material-symbols-outlined text-[16px] text-green-400">check_circle</span>
+                            Operational
+                        </span>
+<span class="inline-flex items-center gap-1 rounded-full bg-white/10 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-white border border-white/20">
+                            ID: KITCH-JKT-04
+                        </span>
+</div>
+<h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight">SPPG Cibinong Central</h1>
+<p class="text-slate-200 mt-2 max-w-2xl text-sm sm:text-base font-light">
+                        Primary fulfillment center for Region 4 school meal programs. Specialized in Halal certified meal prep.
+                    </p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-lg text-sm font-medium transition-all border border-white/30">
+<span class="material-symbols-outlined text-[20px]">share</span>
+                        Share
+                    </button>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-5 py-2 rounded-lg text-sm font-medium shadow-lg shadow-orange-500/20 transition-all">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+                        Edit Details
+                    </button>
+</div>
+</div>
+</div>
+<!-- Key Metrics Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+<!-- Capacity -->
+<div class="bg-card-light dark:bg-card-dark rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col justify-between group hover:border-primary/50 transition-all">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-orange-50 dark:bg-orange-900/20 rounded-lg text-primary">
+<span class="material-symbols-outlined text-2xl">soup_kitchen</span>
+</div>
+<span class="text-xs font-medium text-green-600 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded">+12% vs last week</span>
+</div>
+<div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Daily Capacity</p>
+<h3 class="text-slate-900 dark:text-white text-2xl font-bold mt-1">1,500 Meals</h3>
+</div>
+</div>
+<!-- Staff -->
+<div class="bg-card-light dark:bg-card-dark rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col justify-between group hover:border-primary/50 transition-all">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-blue-500">
+<span class="material-symbols-outlined text-2xl">groups</span>
+</div>
+</div>
+<div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Active Staff</p>
+<h3 class="text-slate-900 dark:text-white text-2xl font-bold mt-1">24 Personnel</h3>
+</div>
+</div>
+<!-- ISO -->
+<div class="bg-card-light dark:bg-card-dark rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col justify-between group hover:border-primary/50 transition-all">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg text-purple-500">
+<span class="material-symbols-outlined text-2xl">verified</span>
+</div>
+<span class="text-xs font-medium text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">Exp. 2025</span>
+</div>
+<div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Certification</p>
+<h3 class="text-slate-900 dark:text-white text-2xl font-bold mt-1">ISO 22000</h3>
+</div>
+</div>
+<!-- Menu Status -->
+<div class="bg-card-light dark:bg-card-dark rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col justify-between group hover:border-primary/50 transition-all">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-rose-50 dark:bg-rose-900/20 rounded-lg text-rose-500">
+<span class="material-symbols-outlined text-2xl">restaurant_menu</span>
+</div>
+</div>
+<div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Current Menu</p>
+<h3 class="text-slate-900 dark:text-white text-2xl font-bold mt-1">Cycle B - Week 2</h3>
+</div>
+</div>
+</div>
+<!-- Main Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+<!-- Left Column: Gallery & Details (Span 2) -->
+<div class="lg:col-span-2 space-y-8">
+<!-- Gallery Section -->
+<div class="bg-card-light dark:bg-card-dark rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Facility Visuals</h3>
+<a class="text-sm text-primary font-medium hover:underline" href="#">View All Photos</a>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Main Preview -->
+<div class="w-full aspect-video rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
+<img alt="Chef cooking in large commercial kitchen" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" data-alt="Chef cooking in large commercial kitchen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjp7tqdtHVnIS4GcR_t_QuCjoq4r7YR8H0AqUP_gxUnfoiY0xlvQaSQZJT7bDtzKe03E5ccCjqCYlSvzrVzAjy5HcCqtOMX8OBW5gQ1fKt23yj_-jZMIHFSut3Ksz0nbCj82i8pAH6fSOn6OlDfpmsgsz4OatL977xsZxmStan6PolM410ppekcwS5R2yj4LH_B9JGrrecZ0jn4A_LU7KUiEp1pwaEF52UwMRuc9DWouY4nDPTngUrHSdC2-U77AaK9W-G4nLWUvs6"/>
+</div>
+<!-- Thumbnails -->
+<div class="grid grid-cols-3 gap-4">
+<div class="aspect-[4/3] rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 cursor-pointer ring-2 ring-transparent hover:ring-primary transition-all">
+<img alt="Food packaging line workers" class="w-full h-full object-cover" data-alt="Food packaging line workers" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBclDfzQPjAhMiH96bHPY3Tvb89jyMb1QLIa231uMW29mK8tD8uIoiDAnGpC59vT7J9v1jSLwzPLt-pKEV5H8OG1MGWf0iXvfhBDtuZDfC76UTPA7z_ROert1P5gCg51uG98s4PxCXedmgvgbUwvWl-05ie9KOMI458q6ttj0pQXLcTuquNZxi5UTr2VDnHxgqGCTZLcZPoqzurzfjxjtwxQBWDhK9Xy6Zd6WkXv72wgToCzMJdPYq-5sUN0txv-M_MexMnfjjmRMMW"/>
+</div>
+<div class="aspect-[4/3] rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 cursor-pointer ring-2 ring-transparent hover:ring-primary transition-all">
+<img alt="Storage room shelves with supplies" class="w-full h-full object-cover" data-alt="Storage room shelves with supplies" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwzw1vSst32Egk2btjjqTTaEPasyclHkFEvlu_o690BQLiuGWpMA0Zp7VfGNDUpAHcZYn8U25QnlsIWE1S7rYiKUVv6st8kjX-99XBxOjQJU5W8OfMoLKpeQt92GOw2ejqjHymQUtidG0h6AXllQGT9vxpFSf687dKhfSu-uPwmZiGtFh6uyvGRCX_MJ-Ik3zFotAujw0FSz8RUSNzxD4oBCqq1oDoAvonOlrmDYkW6vviqIBPxjErrqag7_zbKRql_n9EGEHZs5Vr"/>
+</div>
+<div class="aspect-[4/3] rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 cursor-pointer ring-2 ring-transparent hover:ring-primary transition-all relative">
+<img alt="Clean kitchen countertops and equipment" class="w-full h-full object-cover opacity-60" data-alt="Clean kitchen countertops and equipment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMWYZUp_4hO1EBWNn-c8gxo2s5e8KQro9NXrYa60mde28DJrIV3DtHLFL83eeIQ7cssaG2E5PR9HeMVaIC-dAvouWGJgpvylm2pJNqCVop3sJum3ffFw7mJd7l2w9uJV7x_-_hRkphDPOGXotyk0Q9ED2_An8gK28WXhZYHsWWmdE6VZzDXKiVgumFkXDyp7HZrVFkBIZLEHBvRUly2r632TAfQru3GYq18F29Q0oAlDabwwrodazrxkeWziz5ie9NZTLzObJysxu-"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-slate-900 font-bold bg-white/80 px-3 py-1 rounded-full text-sm backdrop-blur-sm">+8 more</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Delivery History Table -->
+<div class="bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+<div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between flex-wrap gap-4">
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Recent Delivery History</h3>
+<div class="flex gap-2">
+<button class="flex items-center gap-1 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 text-sm font-medium px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                                Filter
+                            </button>
+<button class="flex items-center gap-1 text-primary bg-primary/10 hover:bg-primary/20 text-sm font-medium px-3 py-1.5 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                                Export
+                            </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left">
+<thead class="text-xs text-slate-500 uppercase bg-background-light dark:bg-slate-800/50 dark:text-slate-400">
+<tr>
+<th class="px-6 py-4 font-medium" scope="col">Date</th>
+<th class="px-6 py-4 font-medium" scope="col">Menu Item</th>
+<th class="px-6 py-4 font-medium text-center" scope="col">Quantity</th>
+<th class="px-6 py-4 font-medium" scope="col">Recipient</th>
+<th class="px-6 py-4 font-medium" scope="col">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="bg-card-light dark:bg-card-dark hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">Oct 24, 2023</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Chicken Rice Set A</td>
+<td class="px-6 py-4 text-center font-bold text-slate-700 dark:text-slate-300">450</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">SD 01 Pagi</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="h-2 w-2 rounded-full bg-green-500"></div>
+<span class="text-green-600 dark:text-green-400 font-medium">Delivered</span>
+</div>
+</td>
+</tr>
+<tr class="bg-card-light dark:bg-card-dark hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">Oct 24, 2023</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Veggie Stir Fry</td>
+<td class="px-6 py-4 text-center font-bold text-slate-700 dark:text-slate-300">320</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">SMP 05 Selatan</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="h-2 w-2 rounded-full bg-green-500"></div>
+<span class="text-green-600 dark:text-green-400 font-medium">Delivered</span>
+</div>
+</td>
+</tr>
+<tr class="bg-card-light dark:bg-card-dark hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">Oct 24, 2023</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Fruit Packs (Banana)</td>
+<td class="px-6 py-4 text-center font-bold text-slate-700 dark:text-slate-300">770</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Distribution Hub A</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="h-2 w-2 rounded-full bg-yellow-500 animate-pulse"></div>
+<span class="text-yellow-600 dark:text-yellow-400 font-medium">In Transit</span>
+</div>
+</td>
+</tr>
+<tr class="bg-card-light dark:bg-card-dark hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">Oct 23, 2023</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Beef Stew Set</td>
+<td class="px-6 py-4 text-center font-bold text-slate-700 dark:text-slate-300">500</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">SD 03 Pagi</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="h-2 w-2 rounded-full bg-green-500"></div>
+<span class="text-green-600 dark:text-green-400 font-medium">Delivered</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-slate-100 dark:border-slate-800 text-center">
+<button class="text-primary text-sm font-medium hover:text-primary-dark hover:underline">View Full History</button>
+</div>
+</div>
+</div>
+<!-- Right Column: Sidebar (Span 1) -->
+<div class="space-y-6">
+<!-- Contact Person Card -->
+<div class="bg-card-light dark:bg-card-dark rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Contact Person</h3>
+<div class="flex items-center gap-4 mb-6">
+<img alt="Manager Budi Santoso portrait" class="size-16 rounded-full object-cover border-2 border-slate-100 dark:border-slate-700" data-alt="Manager Budi Santoso portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCu0fywTeK0fHvU3dVpcdG5mcFrmkjxpoB-4PRGBQx8KuCSjGvkknnQC4xY_GtBtXzzhZbIWEcWU4p5uxshf7R6irlo92NNjdXYwygT_TxP2nirHP5uyjdvrxNerk7yIDcnxmdxu2ZeIXgHVN47ffrRC_48Jr1wg8XH1M8unSluiS3u62cD3P1g9JG29fsnCUFQEd0eLkSMZaNvcnAkernvlXgZkXY6hRvfaCUZz0IdV9KxITK4qhYG3fSg72-HXlYKQFxGKOyzlcTi"/>
+<div>
+<p class="text-slate-900 dark:text-white font-bold text-lg leading-tight">Budi Santoso</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Head Kitchen Manager</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex justify-center items-center gap-2 bg-primary hover:bg-primary-dark text-white py-2.5 px-4 rounded-lg text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[18px]">call</span>
+                            Call
+                        </button>
+<button class="flex justify-center items-center gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+                            Email
+                        </button>
+</div>
+</div>
+<!-- Location Map Card -->
+<div class="bg-card-light dark:bg-card-dark rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Location</h3>
+<a class="text-primary text-xs font-medium hover:underline flex items-center gap-1" href="#">
+                            Open Maps
+                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</div>
+<div class="aspect-square w-full rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-700 mb-4 relative group">
+<!-- Static Map Placeholder -->
+<div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="Map view of Cibinong, Indonesia" data-location="Cibinong, Indonesia" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDvrR500iY72cnJhKHXo4ZaB3oH1xqyVIkUd89kI_ptdtMkjiVSvAiJefwcPPcZ5jDFf2ZAmo13y0bCMRe77ZX1YrUTtwKc2ewSJYDIrkjbkHrowDw75xM-wrgrvBCxeMW1MmHs-lx4xUZEP3is7ZK_utA6LcjTfqO68K38WKnCT0dt-VHUtjVCpuSEMzwMU_jp_P4ONogewka9s7zco50WTUETYOBDhk_dX8CgbCsYdPZxaE9CNSjlvsvKbuvZBrU-lu67XnPSL-pQ');">
+</div>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<span class="material-symbols-outlined text-4xl text-primary drop-shadow-md">location_on</span>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-slate-400 mt-1">pin_drop</span>
+<div>
+<p class="text-slate-900 dark:text-white font-medium text-sm">SPPG Cibinong Central</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-0.5 leading-relaxed">
+                                Jl. Raya Jakarta-Bogor No.45<br/>
+                                Cibinong, Jawa Barat 16914<br/>
+                                Indonesia
+                            </p>
+</div>
+</div>
+</div>
+<!-- Quick Actions / Download Report -->
+<div class="bg-primary/5 dark:bg-primary/10 rounded-xl p-6 border border-primary/20">
+<h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">Monthly Report Ready</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 mb-4">The performance report for September is now available for download.</p>
+<button class="w-full flex justify-center items-center gap-2 bg-white dark:bg-card-dark hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white py-2.5 rounded-lg text-sm font-medium border border-slate-200 dark:border-slate-700 shadow-sm transition-all">
+<span class="material-symbols-outlined text-[20px] text-primary">description</span>
+                        Download PDF
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Simple Footer -->
+<footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-card-light dark:bg-card-dark py-8">
+<div class="max-w-7xl mx-auto px-4 text-center">
+<p class="text-slate-400 dark:text-slate-600 text-sm">© 2023 SPPG Tracker System. All rights reserved.</p>
+</div>
+</footer>
+</body></html>

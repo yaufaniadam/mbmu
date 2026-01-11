@@ -40,6 +40,7 @@ Route::controller(\App\Http\Controllers\PublicSppgController::class)->group(func
     Route::get('/daftar-sppg/{sppg:kode_sppg}', 'show')->name('sppg.public.show');
 });
 
+Route::get('/artikel', [\App\Http\Controllers\PublicBlogController::class, 'index'])->name('blog.public.index');
 Route::get('/artikel/{post:slug}', [\App\Http\Controllers\PublicBlogController::class, 'show'])->name('blog.public.show');
 
 // Self Registration Routes

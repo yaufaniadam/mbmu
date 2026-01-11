@@ -1,2 +1,40 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @source "../../node_modules/flowbite";
+@plugin "flowbite/plugin";
+
+@theme {
+    --font-display: 'Lexend', sans-serif;
+    --font-body: 'Noto Sans', sans-serif;
+
+    /* Corporate Blue (Primary) */
+    --color-primary: #004696;
+    --color-primary-dark: #003066;
+
+    /* Muhammadiyah Green (Secondary) */
+    --color-secondary-green: #007F3E;
+    --color-secondary-yellow: #ffeb3b;
+
+    /* Light/Clean Backgrounds */
+    --color-background-light: #f9fafb;
+    /* gray-50 */
+    --color-background-dark: #111827;
+    /* gray-900 */
+
+    --color-surface-light: #ffffff;
+    --color-surface-dark: #1f2937;
+    /* gray-800 */
+
+    /* Neutral Text */
+    --color-text-main: #111827;
+    /* gray-900 */
+    --color-text-secondary: #4b5563;
+    /* gray-600 */
+
+    /* Borders */
+    --color-border-light: #e5e7eb;
+    /* gray-200 */
+    --color-border-dark: #374151;
+    /* gray-700 */
+}
+
+@custom-variant dark (&:where(.dark, .dark *));

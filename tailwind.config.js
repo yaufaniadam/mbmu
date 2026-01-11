@@ -12,9 +12,23 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Inter', 'sans-serif'],
+                display: ['Lexend', 'sans-serif'],
+                body: ['Noto Sans', 'sans-serif'],
             },
             colors: {
-                primary: { "50": "#eff6ff", "100": "#dbeafe", "200": "#bfdbfe", "300": "#93c5fd", "400": "#60a5fa", "500": "#3b82f6", "600": "#2563eb", "700": "#1d4ed8", "800": "#1e40af", "900": "#1e3a8a", "950": "#172554" }
+                primary: "#f49d25", // Overriding object with string as per new design spec
+                "primary-dark": "#d68315",
+                "secondary-green": "#8bc34a",
+                "secondary-yellow": "#ffeb3b",
+                "background-light": "#f8f7f5",
+                "background-dark": "#221a10",
+                "surface-light": "#ffffff",
+                "surface-dark": "#2a2218",
+                "text-main": "#181511",
+                "text-secondary": "#8a7960",
+                // Keeping original primary shades as 'brand' just in case, or we accept the overwrite. 
+                // Since flowbite uses primary-..., we might lose those. 
+                // For now, I will strictly follow the provided config for the new design.
             }
         },
     },

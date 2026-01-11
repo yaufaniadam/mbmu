@@ -1,117 +1,249 @@
 @extends('layouts.public')
 
 @section('content')
-<!-- Hero Section -->
-<section class="bg-center bg-no-repeat bg-cover bg-gray-700 bg-blend-multiply" style="background-image: url('{{ asset('hero-children-wide.png') }}');">
-    <div class="px-4 mx-auto max-w-screen-xl text-center py-24 lg:py-56">
-        <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">
-            <span class="text-blue-400">Makan Bergizi Muhammadiyah</span><br>
-            Untuk Generasi Masa Depan
-        </h1>
-        <p class="mb-8 text-lg font-normal text-gray-300 lg:text-xl sm:px-16 lg:px-48">
-            Sistem manajemen terintegrasi untuk pengelolaan Program Makan Bergizi Muhammadiyah (MBM). Transparan, Akuntabel, dan Berkelanjutan.
-        </p>
-        <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
-            <a href="/admin/login" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                <svg class="w-3.5 h-3.5 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                Masuk sebagai Kornas
-            </a>
-            <a href="/sppg/login" class="inline-flex justify-center items-center py-3 px-5 sm:ms-4 text-base font-medium text-center text-white rounded-lg bg-pink-600 hover:bg-pink-700 focus:ring-4 focus:ring-pink-300 dark:focus:ring-pink-900">
-                <svg class="w-3.5 h-3.5 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-                Masuk sebagai SPPG
-            </a>  
-            <a href="/production/login" class="inline-flex justify-center items-center py-3 px-5 sm:ms-4 text-base font-medium text-center text-white rounded-lg bg-emerald-600 hover:bg-emerald-700 focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-900">
-                <svg class="w-3.5 h-3.5 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                     <path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                </svg>
-                Masuk Tim Produksi
-            </a>
+<section class="w-full relative group" x-data="{
+    activeSlide: 0,
+    slides: [0, 1],
+    interval: null,
+    init() {
+        this.startInterval();
+    },
+    startInterval() {
+        this.interval = setInterval(() => {
+            this.next();
+        }, 5000);
+    },
+    stopInterval() {
+        clearInterval(this.interval);
+    },
+    prev() {
+        this.activeSlide = (this.activeSlide - 1 + this.slides.length) % this.slides.length;
+        this.scrollTo(this.activeSlide);
+    },
+    next() {
+        this.activeSlide = (this.activeSlide + 1) % this.slides.length;
+        this.scrollTo(this.activeSlide);
+    },
+    scrollTo(index) {
+        this.activeSlide = index;
+        this.$refs.slider.scrollTo({
+            left: this.$refs.slider.offsetWidth * index,
+            behavior: 'smooth'
+        });
+    }
+}" @mouseenter="stopInterval" @mouseleave="startInterval">
+    <!-- Left Arrow -->
+    <button @click="prev()" class="absolute z-10 left-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white p-3 rounded-full backdrop-blur-sm transition-all hidden md:flex items-center justify-center group-hover:opacity-100 opacity-0 duration-300">
+        <span class="material-symbols-outlined text-3xl">chevron_left</span>
+    </button>
+    
+    <!-- Right Arrow -->
+    <button @click="next()" class="absolute z-10 right-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white p-3 rounded-full backdrop-blur-sm transition-all hidden md:flex items-center justify-center group-hover:opacity-100 opacity-0 duration-300">
+        <span class="material-symbols-outlined text-3xl">chevron_right</span>
+    </button>
+    <div x-ref="slider" class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar h-[500px] md:h-[600px] w-full scroll-smooth">
+        <div class="min-w-full snap-center relative h-full bg-gray-200">
+            <div class="absolute inset-0 bg-cover bg-center" data-alt="Happy elementary school children eating healthy lunch in cafeteria" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAqNcGi6nstHfmr4509VCCm_wzMhCO-0LvbTCuEazZgIaUjjRNI2Q7alBUWqYzqxhFPjdtW7gsZShvVNGWbLbYN7wVzYax1iho8B9eZlD2k1SjwNkeFnjJordfvpD10PHhP522hEuuOmqwSOj0niU0-h0DKEwSGOFJZ0cifZwAztXx-jWsuWAFUOBralUF8quKLgLJkC1stS6VA3mqGnuwyyeqOz87rsfFG0Rc7Qe8qKv8B6cwQUJW9IacCctxD_ddvtLaQ7XlOQYEU');">
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/10 flex items-center">
+                <div class="px-4 md:px-40 w-full max-w-[1280px] mx-auto">
+                    <div class="max-w-[720px] flex flex-col gap-6">
+                        <span class="inline-block px-3 py-1 bg-secondary-green text-white text-xs font-bold uppercase tracking-wider rounded w-fit">Now Serving</span>
+                        <h1 class="text-white text-4xl md:text-6xl font-black leading-tight tracking-tight">
+                            Fueling Future Leaders,<br/><span class="text-primary">One Meal at a Time.</span>
+                        </h1>
+                        <p class="text-white/90 text-lg md:text-xl font-normal leading-relaxed max-w-[600px]">
+                            We ensure every child has access to fresh, nutritious food every school day, empowering them to learn and grow.
+                        </p>
+                        <div class="flex gap-4 pt-4">
+                            <button class="h-12 px-8 bg-primary hover:bg-primary-dark text-[#181511] text-base font-bold rounded-lg transition-colors shadow-lg">
+                                Our Programs
+                            </button>
+                            <button class="h-12 px-8 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border-2 border-white/30 text-base font-bold rounded-lg transition-colors">
+                                Learn More
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="min-w-full snap-center relative h-full bg-gray-200">
+            <div class="absolute inset-0 bg-cover bg-center" data-alt="Teacher smiling with diverse group of students holding fresh fruits" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD8YgTWyvvAXOJJrbItQ7Y-JFHnBm77-1grTF0alGxBHorve83kopMYFHOLT1RH-9QZ5lcRQo6hALroH6AEmjLFtgKuYfqZIs09jntItn0tHryo3efVYtso0wcWc4F2ZwgcOR3vp3dkTiCUT2Ari0EgHQcRF1TaVYBpD8NqC_iefpJ4IpkQq9z-k5vJ1qO9eOSXGOsQsb7yJhXGLvosnn3Wa8l_y0pmaez5UO_NWMylgD-h9HFIsAJIqkm67S4U1DngaznvXy418sly');">
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/70 to-transparent flex items-center">
+                <div class="px-4 md:px-40 w-full max-w-[1280px] mx-auto">
+                    <div class="max-w-[720px] flex flex-col gap-6">
+                        <span class="inline-block px-3 py-1 bg-secondary-yellow text-[#181511] text-xs font-bold uppercase tracking-wider rounded w-fit">Community Impact</span>
+                        <h1 class="text-white text-4xl md:text-6xl font-black leading-tight tracking-tight">
+                            Healthy Habits Start<br/>In The Classroom
+                        </h1>
+                        <p class="text-white/90 text-lg md:text-xl font-normal leading-relaxed max-w-[600px]">
+                            Education and nutrition go hand in hand. See how we are integrating food literacy into daily learning.
+                        </p>
+                        <div class="flex gap-4 pt-4">
+                            <button class="h-12 px-8 bg-primary hover:bg-primary-dark text-[#181511] text-base font-bold rounded-lg transition-colors shadow-lg">
+                                Join the Cause
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-6 left-0 right-0 flex justify-center gap-2">
+        <template x-for="(slide, index) in slides" :key="index">
+            <button @click="scrollTo(index)"
+                class="w-3 h-3 rounded-full transition-colors shadow-sm focus:outline-none"
+                :class="activeSlide === index ? 'bg-primary' : 'bg-white/50 hover:bg-white'">
+            </button>
+        </template>
+    </div>
+</section>
+
+<section class="py-16 px-4 md:px-10 bg-surface-light dark:bg-surface-dark w-full">
+    <div class="max-w-[960px] mx-auto flex flex-col gap-12">
+        <div class="text-center flex flex-col gap-4 items-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-text-main dark:text-white leading-tight">Our Core Values</h2>
+            <p class="text-text-secondary text-lg max-w-2xl">
+                We are committed to rigorous standards and community support to provide the best for our children.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="flex flex-col items-center text-center gap-4 rounded-xl border border-[#e6e1db] dark:border-gray-800 bg-white dark:bg-surface-dark p-8 shadow-sm hover:shadow-md transition-shadow">
+                <div class="size-16 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 flex items-center justify-center mb-2">
+                    <span class="material-symbols-outlined text-3xl">nutrition</span>
+                </div>
+                <h3 class="text-xl font-bold text-text-main dark:text-white">Balanced Nutrition</h3>
+                <p class="text-text-secondary dark:text-gray-400">Menus crafted by pediatric nutritionists to ensure optimal growth and energy.</p>
+            </div>
+            <div class="flex flex-col items-center text-center gap-4 rounded-xl border border-[#e6e1db] dark:border-gray-800 bg-white dark:bg-surface-dark p-8 shadow-sm hover:shadow-md transition-shadow">
+                <div class="size-16 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-2">
+                    <span class="material-symbols-outlined text-3xl">agriculture</span>
+                </div>
+                <h3 class="text-xl font-bold text-text-main dark:text-white">Local Sourcing</h3>
+                <p class="text-text-secondary dark:text-gray-400">Fresh ingredients sourced directly from farmers within the local community.</p>
+            </div>
+            <div class="flex flex-col items-center text-center gap-4 rounded-xl border border-[#e6e1db] dark:border-gray-800 bg-white dark:bg-surface-dark p-8 shadow-sm hover:shadow-md transition-shadow">
+                <div class="size-16 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 flex items-center justify-center mb-2">
+                    <span class="material-symbols-outlined text-3xl">local_shipping</span>
+                </div>
+                <h3 class="text-xl font-bold text-text-main dark:text-white">Daily Delivery</h3>
+                <p class="text-text-secondary dark:text-gray-400">Hot, prepared meals arriving at schools before the first lunch bell rings.</p>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Stats/Features Grid -->
-<div id="about" class="py-16 bg-white dark:bg-gray-900">
-    <div class="max-w-screen-xl mx-auto px-4 lg:px-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Card 1 -->
-            <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-300">
-                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mb-4 dark:bg-blue-900 dark:text-blue-300">
-                     <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                </div>
-                <a href="#">
-                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Manajemen Relawan</h5>
-                </a>
-                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Pengelolaan data relawan yang terstruktur mulai dari tingkat pusat hingga unit pelayanan.</p>
+<section class="py-16 px-4 md:px-10 bg-[#fbfbf9] dark:bg-background-dark w-full">
+    <div class="max-w-[1280px] mx-auto flex flex-col gap-10">
+        <div class="flex flex-col md:flex-row justify-between items-end gap-4 border-b border-[#e6e1db] dark:border-gray-800 pb-6">
+            <div>
+                <h2 class="text-[#181511] dark:text-white text-3xl font-bold leading-tight tracking-[-0.015em] mb-2">Latest News &amp; Nutrition Tips</h2>
+                <p class="text-[#8a7960] text-base">Stay updated with our latest initiatives and health advice.</p>
             </div>
-
-            <!-- Card 2 -->
-            <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-300">
-                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center mb-4 dark:bg-emerald-900 dark:text-emerald-300">
-                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <a href="#">
-                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Transparansi Dana</h5>
-                </a>
-                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Pencatatan dan pelaporan arus dana yang akuntabel dan dapat dipertanggungjawabkan.</p>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-300">
-                <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center mb-4 dark:bg-purple-900 dark:text-purple-300">
-                     <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                    </svg>
-                </div>
-                <a href="#">
-                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Pelaporan Real-time</h5>
-                </a>
-                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Monitor distribusi makanan dan kegiatan operasional secara langsung melalui dashboard.</p>
-            </div>
+            <a class="text-primary font-bold hover:underline flex items-center gap-1" href="{{ url('/artikel') }}">
+                View All Posts <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </a>
         </div>
-    </div>
-</div>
-<!-- Blog Section -->
-<section class="bg-gray-900 py-16">
-    <div class="max-w-screen-xl mx-auto px-4 lg:px-6">
-        <h2 class="mb-8 text-3xl font-extrabold tracking-tight text-white">Artikel Terkait</h2>
-        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            @forelse($posts as $post)
-                <article class="flex flex-col h-full bg-gray-900 border-none">
-                    <a href="{{ route('blog.public.show', $post->slug) }}">
-                         @if($post->featured_image)
-                            <img class="rounded-lg mb-5 object-cover w-full h-48 hover:opacity-90 transition" src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}">
-                        @else
-                            <div class="rounded-lg mb-5 w-full h-48 bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition">
-                                <svg class="w-12 h-12 text-gray-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path></svg>
-                            </div>
-                        @endif
-                    </a>
-                    <h2 class="mb-2 text-xl font-bold tracking-tight text-white hover:underline">
-                        <a href="{{ route('blog.public.show', $post->slug) }}">{{ $post->title }}</a>
-                    </h2>
-                    <p class="mb-4 font-light text-gray-400 text-sm flex-grow line-clamp-3">
-                        {{ $post->excerpt ?? Str::limit(strip_tags($post->content), 100) }}
-                    </p>
-                    <a href="{{ route('blog.public.show', $post->slug) }}" class="inline-flex items-center font-medium text-blue-500 hover:underline text-sm">
-                        Baca selengkapnya
-                    </a>
-                </article>
-            @empty
-                <div class="col-span-full text-center text-gray-400 py-10">
-                    Belum ada artikel terbaru.
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        @forelse($posts as $post)
+            <article class="flex flex-col rounded-lg overflow-hidden bg-white dark:bg-surface-dark shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-transform duration-300">
+                <div class="w-full aspect-video bg-cover bg-center" data-alt="{{ $post->title }}" style="background-image: url('{{ $post->featured_image ? Storage::url($post->featured_image) : 'https://placehold.co/600x400?text=No+Image' }}');">
                 </div>
-            @endforelse
+                <div class="p-5 flex flex-col flex-1 gap-3">
+                    <span class="text-xs font-bold text-secondary-green uppercase tracking-wide">News</span>
+                    <h3 class="text-lg font-bold text-text-main dark:text-white leading-snug">{{ $post->title }}</h3>
+                    <p class="text-sm text-text-secondary line-clamp-3">{{ $post->excerpt }}</p>
+                    <div class="mt-auto pt-2">
+                        <a class="text-sm font-bold text-primary hover:text-primary-dark" href="{{ route('blog.public.show', $post->slug) }}">Read Article</a>
+                    </div>
+                </div>
+            </article>
+        @empty
+            <div class="col-span-1 sm:col-span-2 lg:col-span-4 text-center py-10">
+                <p class="text-text-secondary">No updates available at the moment.</p>
+            </div>
+        @endforelse
         </div>
     </div>
 </section>
+
+<section class="py-20 px-4 md:px-10 bg-orange-50 dark:bg-background-dark w-full border-t border-orange-100 dark:border-gray-800">
+    <div class="max-w-[1280px] mx-auto flex flex-col gap-12">
+        <div class="text-center max-w-3xl mx-auto flex flex-col gap-4">
+            <span class="text-primary font-bold uppercase tracking-wider text-sm">Community Voices</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-text-main dark:text-white leading-tight">Stories from Our School Family</h2>
+            <p class="text-text-secondary text-lg">
+                Hear directly from the parents and teachers witnessing the daily transformation in our children's lives.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white dark:bg-surface-dark p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-orange-100 dark:border-gray-800 flex flex-col gap-6">
+                <div class="text-primary flex gap-1">
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                </div>
+                <blockquote class="text-text-main dark:text-white text-lg font-medium leading-relaxed flex-1 italic">
+                    "Since the free meal program started, my son is much more active and focuses better in class. It's a huge relief knowing he gets a healthy, balanced lunch every single day."
+                </blockquote>
+                <div class="flex items-center gap-4 mt-auto">
+                    <div class="h-12 w-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl border-2 border-white shadow-sm">
+                        SA
+                    </div>
+                    <div>
+                        <div class="font-bold text-text-main dark:text-white">Siti Aminah</div>
+                        <div class="text-sm text-text-secondary font-medium">Orang Tua Siswa</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-surface-dark p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-orange-100 dark:border-gray-800 flex flex-col gap-6">
+                <div class="text-primary flex gap-1">
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                </div>
+                <blockquote class="text-text-main dark:text-white text-lg font-medium leading-relaxed flex-1 italic">
+                    "Attendance has improved significantly. Students are no longer lethargic in the afternoon sessions. The difference in their energy levels and participation is night and day."
+                </blockquote>
+                <div class="flex items-center gap-4 mt-auto">
+                    <div class="h-12 w-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold text-xl border-2 border-white shadow-sm">
+                        BS
+                    </div>
+                    <div>
+                        <div class="font-bold text-text-main dark:text-white">Budi Santoso</div>
+                        <div class="text-sm text-text-secondary font-medium">Guru Wali Kelas</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-surface-dark p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-orange-100 dark:border-gray-800 flex flex-col gap-6">
+                <div class="text-primary flex gap-1">
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
+                </div>
+                <blockquote class="text-text-main dark:text-white text-lg font-medium leading-relaxed flex-1 italic">
+                    "This initiative is a blessing. The menu is varied and nutritious. My daughter has started eating vegetables she used to refuse at home! Thank you for caring for our kids."
+                </blockquote>
+                <div class="flex items-center gap-4 mt-auto">
+                    <div class="h-12 w-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xl border-2 border-white shadow-sm">
+                        RW
+                    </div>
+                    <div>
+                        <div class="font-bold text-text-main dark:text-white">Rina Wijaya</div>
+                        <div class="text-sm text-text-secondary font-medium">Orang Tua Siswa</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 
 @endsection

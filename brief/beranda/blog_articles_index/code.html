@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Blog Articles Index</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f49d25",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221a10",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"],
+                        "sans": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#181511] dark:text-white font-display overflow-x-hidden">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root">
+<!-- Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e6e1db] dark:border-b-[#3a3025] px-4 md:px-10 py-3 bg-white dark:bg-[#1a150d] sticky top-0 z-50">
+<div class="flex items-center gap-4 text-[#181511] dark:text-white">
+<div class="size-8 text-primary">
+<svg fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path>
+</svg>
+</div>
+<h2 class="text-[#181511] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">NutriMeals</h2>
+</div>
+<div class="hidden md:flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-[#181511] dark:text-[#e0dcd5] text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Home</a>
+<a class="text-[#181511] dark:text-[#e0dcd5] text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">About</a>
+<a class="text-[#181511] dark:text-[#e0dcd5] text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Get Meals</a>
+<a class="text-[#181511] dark:text-[#e0dcd5] text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Donate</a>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#181511] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+<span class="truncate">Donate Now</span>
+</button>
+</div>
+<div class="md:hidden">
+<span class="material-symbols-outlined text-[#181511] dark:text-white cursor-pointer">menu</span>
+</div>
+</header>
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-4 md:px-10 lg:px-40 flex flex-1 justify-center py-8">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1 gap-8">
+<!-- Page Heading -->
+<div class="flex flex-col gap-3">
+<p class="text-[#181511] dark:text-white text-5xl font-black leading-tight tracking-[-0.033em]">News &amp; Updates</p>
+<p class="text-[#8a7960] dark:text-[#b0a695] text-xl font-normal leading-normal">Nourishing our community one meal at a time.</p>
+</div>
+<!-- Featured Post -->
+<div class="w-full">
+<div class="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-[#1a150d] border border-[#e6e1db] dark:border-[#3a3025]">
+<div class="grid grid-cols-1 lg:grid-cols-2">
+<div class="w-full h-64 lg:h-auto bg-center bg-no-repeat bg-cover" data-alt="Community volunteers serving food at a table" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBRM6Ley9GsG3lL8YU-bGEu0CTWYeWbeg9xzAYu8d2Qas2h-T4Vzl3s71jayhlLaIv8XR50j35-4rDudm6AxozDOaRmoO05mEkI2s71Wtq_e51s7k50ds3djSFx5R1m7vBuOGWMpF5vT6dnVjmp5IpH26FAEEJsLhqqkpbO1ZXohy-VhqrhVxeX5Z6KizMDN2-h1daDN7Ep1rlACIMXMZmrN_tduGAbsByWpjRc8tHBwSGwoW8FqQ3-A_V1bosCZJpx-stv6GYovu78");'></div>
+<div class="flex flex-col justify-center p-8 lg:p-12 gap-6">
+<div class="flex items-center gap-3">
+<span class="bg-primary/20 text-[#9c5f0f] dark:text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Featured</span>
+<span class="text-[#8a7960] dark:text-[#b0a695] text-sm">Oct 24, 2023</span>
+</div>
+<h2 class="text-[#181511] dark:text-white text-3xl lg:text-4xl font-bold leading-tight">New Kitchen Opening in Downtown: Serving 500 More Meals Daily</h2>
+<p class="text-[#595045] dark:text-[#ccc3b8] text-lg leading-relaxed">
+                                        We are thrilled to announce the opening of our second location. This expansion allows us to reach underserved neighborhoods and provide nutritional support to hundreds more families in need.
+                                    </p>
+<div class="pt-2">
+<a class="inline-flex items-center gap-2 text-primary font-bold hover:underline decoration-2 underline-offset-4" href="#">
+                                            Read Full Story
+                                            <span class="material-symbols-outlined text-[1.2em]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Content Grid + Sidebar -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mt-8">
+<!-- Blog Articles Grid (Left) -->
+<div class="lg:col-span-8 flex flex-col gap-10">
+<!-- Article Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-10">
+<!-- Article Card 1 -->
+<article class="flex flex-col gap-4 group cursor-pointer">
+<div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-200">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Fresh vegetables on a wooden table" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCXnhm_2cGZjpiAxZddG8JNXZCELjgy8tS7d9l5Zo2T4WsVXuxaY8CizH1lG1F-Ec914WKodU-dCjkOTz8k6Bb_31xVJsrZxqJr7DExxUAHQ5FKGua5CNVamW4VnNvbjE0QEv7fp6ehzcbm7lUS_-2xcntWkcF34j8n1Q91E7eynMbv3ULL6LXEeE7NT0VSPvOUTcXt_vl0PDgVFTKnKcZqxCmEgKr2fIBR9LobCMv7KvwxZtaXaW_qBjN7gxjyeoLJt3rvN0HgYqB-");'></div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-primary">
+<span>Health Tips</span>
+</div>
+<h3 class="text-xl font-bold text-[#181511] dark:text-white leading-tight group-hover:text-primary transition-colors">5 Heart-Healthy Ingredients We Use Daily</h3>
+<p class="text-[#595045] dark:text-[#9e968c] line-clamp-2">Discover the nutritional powerhouses behind our most popular meals and why they matter for your health.</p>
+<div class="flex items-center gap-2 mt-2 text-xs text-[#8a7960] dark:text-[#80766a]">
+<div class="size-6 rounded-full bg-gray-300 bg-cover" data-alt="Author profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB9sIE5pdhVh6FJHxSfd_VmTTTk1EEzL1rkow7U3FkzbvgQtm2Sn29nIJz3jsoRI6R8oFEEbbcNqBEoKWpqVbqUdBEKDBGQutPM54wYCGWYLl45ZSMUm6RIEeYMBV5VuKSM6Vvr6CunSK1E-LNi3RiQlWEIHqFaIsiqWDs9q7zZAnc7bsXudKKXlzGfmVETYiFyWd5S7dgNK77-F_evRaVDKU0iChAbdW-r5ZTSeLY4QLS9idt37wVxyxcwcnUYmZ5j2viY_myM4ofh");'></div>
+<span class="font-medium">Sarah Jenkins</span> • <span>Oct 20, 2023</span>
+</div>
+</div>
+</article>
+<!-- Article Card 2 -->
+<article class="flex flex-col gap-4 group cursor-pointer">
+<div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-200">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Volunteer handing a box to a person" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDIkc2oUkwl3xj7uWeSJ7Ch-7vBl7zAdnJxewdFMA6UK86InKmHB3snnNofv9PHWFau0IJaFccgT-rSZLrAhs_KYKtYCaJQs5_IptZM1jXMd3VQXgBEBjv155VXDMZZxXkDBEsNMs4xzCrjb9QZy2GIo8NevsHggIkHOIfVHXiPvNTrV1yUMR4ouJZEEowJwhwzITVSqOtJP1QL_DqHbTrnNiNuakiUDfmcUrLFuaL9CiT6xWGJFNbagzbgcMQQaQmYktdGrAiddjFi");'></div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-primary">
+<span>Volunteer Stories</span>
+</div>
+<h3 class="text-xl font-bold text-[#181511] dark:text-white leading-tight group-hover:text-primary transition-colors">Meet Mike: The Volunteer Behind the Van</h3>
+<p class="text-[#595045] dark:text-[#9e968c] line-clamp-2">Mike has driven over 5,000 miles delivering meals to seniors. Here is his inspiring story.</p>
+<div class="flex items-center gap-2 mt-2 text-xs text-[#8a7960] dark:text-[#80766a]">
+<div class="size-6 rounded-full bg-gray-300 bg-cover" data-alt="Author profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBLwhhfKj2kPmtKiev7eni-jmYFkRXDNZtoS2yl80zYy_-FwOxlz2_sJN70tbISPJwTNqKc6AZQrxaLy4dT58iJHyjigEOs4p5m0vyCHrCfl-nqLSraAw0p45vCkgMgjXYzhoeY3c9AV1h67wL_KtjCNo3hkTpJZSzO47oLrANQJcLlXss5-uCseomynfklUcrVJyJuS8B6mPq0gX_ihRCQIbZr_1l68tZcpV2qCg7ye7EJaUzo8dXjbMg5huUr2D2FmcoJMgFx20tp");'></div>
+<span class="font-medium">David Chen</span> • <span>Oct 18, 2023</span>
+</div>
+</div>
+</article>
+<!-- Article Card 3 -->
+<article class="flex flex-col gap-4 group cursor-pointer">
+<div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-200">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Chef cooking in a large kitchen" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAeFAX0GzYYtGriTuFN5s3rv8l1_m75z8KbGPlixVZ2CRTCkhR_8FhVw5YfRGAE2kP3FnIKjdqfO8ql1tmsxsFu8lRJ2scPLDhjVSYW_tTthlOHNne1NOkTF8CDIqsXU9KmM5oXzZ3h2uVy27FdfyI2DCwYPj6WnMxL2-w6VzE818bIWkK_hu56tMeTr-EPU5aMZKl6YSQrVTlBRUSSDiIrwiP_y3ru6ZxhFFbeJE5M5FimdW1jshm8dhWdKIUh-dhs6iwyOKErD_UG");'></div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-primary">
+<span>Program News</span>
+</div>
+<h3 class="text-xl font-bold text-[#181511] dark:text-white leading-tight group-hover:text-primary transition-colors">Winter Menu Updates &amp; Seasonal Specials</h3>
+<p class="text-[#595045] dark:text-[#9e968c] line-clamp-2">As the weather cools, we're introducing hearty soups and stews to keep everyone warm.</p>
+<div class="flex items-center gap-2 mt-2 text-xs text-[#8a7960] dark:text-[#80766a]">
+<div class="size-6 rounded-full bg-gray-300 bg-cover" data-alt="Author profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDzbkesdm2BNHgLiCRA138UrUYmPafO93-W-zDc_xZUl8PiL4237yrcLiCSzvBtpaNUyVRxIK3BNXOSjMwsHmPwP_SjXeDlWDEB8lAfWtyKMbxioIs86-X3N6SSlco8iFpkYu5JGMU39s7iBWh7f9Ehol14WmiP5DDgDRJ-PEc_qNEM3o7-g9kZquOkXc2ILcrW6ErUMOXCpCeo5wbbB6Epg5B4YedtbhfrOAarVQmd5CEIiv-gQAPk7SZfC66BzaZ90X0FhRl4ZQbC");'></div>
+<span class="font-medium">Maria Rodriguez</span> • <span>Oct 15, 2023</span>
+</div>
+</div>
+</article>
+<!-- Article Card 4 -->
+<article class="flex flex-col gap-4 group cursor-pointer">
+<div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-200">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Group of people eating together at a long table" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAFiNwGSFbTmbUkT9LdlLoVE-jmr-nAxrkosni-B5hfre9dwl8TBCR6MmvT7SVw3T_9CxrtfgLsDPJGvWqdF5ggMQgQIDFeBQ6qj4jdHD_EyDVu2pmeKDOfYW7Zqe7BrLMew68hGlNotE0jSA6nZyyJJuocTNoL6ZjYtfHXXCdaAauhDeS2x8gS7t7hZTsbW9BJ8CxWRQysGU3JQMQZsKn2Yv2X2_oFEgGbV9q5umZDZm8VmJA_0sg8pAQ2PhcS9wHD7gIACiKu0Uid");'></div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-primary">
+<span>Community</span>
+</div>
+<h3 class="text-xl font-bold text-[#181511] dark:text-white leading-tight group-hover:text-primary transition-colors">Annual Thanksgiving Drive: How to Help</h3>
+<p class="text-[#595045] dark:text-[#9e968c] line-clamp-2">Join us in ensuring every family in our district has a full table this holiday season.</p>
+<div class="flex items-center gap-2 mt-2 text-xs text-[#8a7960] dark:text-[#80766a]">
+<div class="size-6 rounded-full bg-gray-300 bg-cover" data-alt="Author profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBGPkfPEIVri95JUv_4FCEaQ5CTcn6duxYYWUjL3Q62V5u-J8lt1MgzB_A4eeQnXoWrBM1aNIljTTIyGpwxYETrvBo3sT85MrCu4e0lzlFyiU4GjRaONM15KFDmzUtA_u2m8_g_A5tIVPfkfVB-9F7bp0MLzC7iAxkZfwJYHJQo7BbpE1v3MZNngqpHLDaUwbsJbrq-tfEcdQ-gRSM9tIF2GPtUaDF1Qmst1elo7XYyQ4ZMKO830y09k4iiNPSYvWP_MxKaCqUzPMIE");'></div>
+<span class="font-medium">James Wilson</span> • <span>Oct 10, 2023</span>
+</div>
+</div>
+</article>
+</div>
+<!-- Pagination -->
+<div class="flex items-center justify-center gap-2 mt-8 pt-8 border-t border-[#e6e1db] dark:border-[#3a3025]">
+<button class="flex items-center justify-center size-10 rounded-lg border border-[#e6e1db] dark:border-[#3a3025] hover:bg-white dark:hover:bg-[#2a241d] text-[#181511] dark:text-white disabled:opacity-50">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+</button>
+<button class="flex items-center justify-center size-10 rounded-lg bg-primary text-[#181511] font-bold">1</button>
+<button class="flex items-center justify-center size-10 rounded-lg border border-[#e6e1db] dark:border-[#3a3025] hover:bg-white dark:hover:bg-[#2a241d] text-[#181511] dark:text-white transition-colors">2</button>
+<button class="flex items-center justify-center size-10 rounded-lg border border-[#e6e1db] dark:border-[#3a3025] hover:bg-white dark:hover:bg-[#2a241d] text-[#181511] dark:text-white transition-colors">3</button>
+<span class="text-[#8a7960]">...</span>
+<button class="flex items-center justify-center size-10 rounded-lg border border-[#e6e1db] dark:border-[#3a3025] hover:bg-white dark:hover:bg-[#2a241d] text-[#181511] dark:text-white transition-colors">8</button>
+<button class="flex items-center justify-center size-10 rounded-lg border border-[#e6e1db] dark:border-[#3a3025] hover:bg-white dark:hover:bg-[#2a241d] text-[#181511] dark:text-white">
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Sidebar (Right) -->
+<aside class="lg:col-span-4 flex flex-col gap-8">
+<!-- Search Widget -->
+<div class="bg-white dark:bg-[#1a150d] p-6 rounded-xl border border-[#e6e1db] dark:border-[#3a3025] shadow-sm">
+<h4 class="text-lg font-bold mb-4 text-[#181511] dark:text-white">Search</h4>
+<label class="flex flex-col w-full">
+<div class="flex w-full items-stretch rounded-lg h-10 border border-[#e6e1db] dark:border-[#3a3025] overflow-hidden focus-within:ring-2 focus-within:ring-primary/50">
+<div class="text-[#8a7960] flex bg-[#f8f7f5] dark:bg-[#2a241d] items-center justify-center pl-3 pr-2">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="flex w-full min-w-0 flex-1 resize-none bg-[#f8f7f5] dark:bg-[#2a241d] text-[#181511] dark:text-white focus:outline-0 border-none h-full placeholder:text-[#8a7960] px-2 text-sm font-normal leading-normal" placeholder="Search articles..."/>
+</div>
+</label>
+</div>
+<!-- Categories Widget -->
+<div class="bg-white dark:bg-[#1a150d] p-6 rounded-xl border border-[#e6e1db] dark:border-[#3a3025] shadow-sm">
+<h4 class="text-lg font-bold mb-4 text-[#181511] dark:text-white">Categories</h4>
+<div class="flex flex-col gap-2">
+<a class="flex items-center justify-between p-2 rounded hover:bg-[#f8f7f5] dark:hover:bg-[#2a241d] group transition-colors" href="#">
+<span class="text-[#595045] dark:text-[#ccc3b8] group-hover:text-primary font-medium">Health Tips</span>
+<span class="text-xs bg-[#f8f7f5] dark:bg-[#2a241d] text-[#8a7960] px-2 py-1 rounded-full group-hover:bg-white dark:group-hover:bg-[#3a3025]">12</span>
+</a>
+<a class="flex items-center justify-between p-2 rounded hover:bg-[#f8f7f5] dark:hover:bg-[#2a241d] group transition-colors" href="#">
+<span class="text-[#595045] dark:text-[#ccc3b8] group-hover:text-primary font-medium">Program News</span>
+<span class="text-xs bg-[#f8f7f5] dark:bg-[#2a241d] text-[#8a7960] px-2 py-1 rounded-full group-hover:bg-white dark:group-hover:bg-[#3a3025]">8</span>
+</a>
+<a class="flex items-center justify-between p-2 rounded hover:bg-[#f8f7f5] dark:hover:bg-[#2a241d] group transition-colors" href="#">
+<span class="text-[#595045] dark:text-[#ccc3b8] group-hover:text-primary font-medium">Volunteer Stories</span>
+<span class="text-xs bg-[#f8f7f5] dark:bg-[#2a241d] text-[#8a7960] px-2 py-1 rounded-full group-hover:bg-white dark:group-hover:bg-[#3a3025]">5</span>
+</a>
+<a class="flex items-center justify-between p-2 rounded hover:bg-[#f8f7f5] dark:hover:bg-[#2a241d] group transition-colors" href="#">
+<span class="text-[#595045] dark:text-[#ccc3b8] group-hover:text-primary font-medium">Recipes</span>
+<span class="text-xs bg-[#f8f7f5] dark:bg-[#2a241d] text-[#8a7960] px-2 py-1 rounded-full group-hover:bg-white dark:group-hover:bg-[#3a3025]">24</span>
+</a>
+<a class="flex items-center justify-between p-2 rounded hover:bg-[#f8f7f5] dark:hover:bg-[#2a241d] group transition-colors" href="#">
+<span class="text-[#595045] dark:text-[#ccc3b8] group-hover:text-primary font-medium">Community Events</span>
+<span class="text-xs bg-[#f8f7f5] dark:bg-[#2a241d] text-[#8a7960] px-2 py-1 rounded-full group-hover:bg-white dark:group-hover:bg-[#3a3025]">3</span>
+</a>
+</div>
+</div>
+<!-- Recent Posts Widget -->
+<div class="bg-white dark:bg-[#1a150d] p-6 rounded-xl border border-[#e6e1db] dark:border-[#3a3025] shadow-sm">
+<h4 class="text-lg font-bold mb-4 text-[#181511] dark:text-white">Recent Posts</h4>
+<div class="flex flex-col gap-4">
+<a class="flex gap-3 group" href="#">
+<div class="size-16 rounded bg-cover bg-center shrink-0" data-alt="Small thumbnail of vegetables" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuApjzTuetPW53e_82SFkQUOfhgBAk9AKeBgNMHqEiTJ3w-bQMyNnnbCGfp7UTwRqw0_B6_ks_aYqoSh-GXNp57F7VfhfgbxIS3x9Fl-hJu7kk6fdtfP4RRIVEdZO4dC4pFiQi2Y6zWowYVXbj7MQWZ_2bmrN0CJNpRQ0MX29nj5DsBNTfAermCfHGRGSj0Sv-uP3tvhHuOQ7LJROhCHWXO3Kh6wtAHBhFLdG7D5vHLafw101E24T2up5cZn3bCsvJ6KzSIDSMMfEA39");'></div>
+<div class="flex flex-col gap-1">
+<h5 class="text-sm font-bold text-[#181511] dark:text-white leading-tight group-hover:text-primary transition-colors">5 Heart-Healthy Ingredients</h5>
+<span class="text-xs text-[#8a7960]">Oct 20, 2023</span>
+</div>
+</a>
+<a class="flex gap-3 group" href="#">
+<div class="size-16 rounded bg-cover bg-center shrink-0" data-alt="Small thumbnail of a volunteer" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBK_llKpDQcpmuvBhaXBMxFOtpYttmS7kzCmPU9mI1lF35frVBDnAU-xxFPHtDoHQC1uN2oP0EkbQq6nIunImOPhU4Em4TXFyCnKutnRK4K6KTCqpmGfPDdpQFuwPLmqXBHUjfwy5i3emJuVYPHM2D7zy7ArQ_Ofwy2-GG6l1G_pYeVrkzTVEaC4n-ZCMhwaGjTKZpf4cCMIA0rwuWqY_1hVAEQWXw4X6LQJIvvKty7aR6qMe6fjnlDmfmQFs6El509ZbVEaJcrBG1R");'></div>
+<div class="flex flex-col gap-1">
+<h5 class="text-sm font-bold text-[#181511] dark:text-white leading-tight group-hover:text-primary transition-colors">Meet Mike: The Volunteer</h5>
+<span class="text-xs text-[#8a7960]">Oct 18, 2023</span>
+</div>
+</a>
+<a class="flex gap-3 group" href="#">
+<div class="size-16 rounded bg-cover bg-center shrink-0" data-alt="Small thumbnail of a kitchen" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAF8TrEJKhjXbEtOa54FOE_TIJf5-1YGdACvO7yTADJrtbO0VlcgH9qZlBcOBaRLRJuQtYSAVz-8djr_u-QnFxItq53be5UxqVApgFny3rC_SES4ga_i3oi_O8Ry1IO_tJJYpu2AAxf1f4MHMA2TvNNEiwWe4RgfHq6snU3Oo9V6PALgW0LZpAjtd1FIWQkNnHAufEsNU7C4xwG-EGrUf2daZ1yLGzDxQLPmyqrc5JrSp046Zrw9aFClMc5Drdkgl4Zf0Re6mZ5lhFG");'></div>
+<div class="flex flex-col gap-1">
+<h5 class="text-sm font-bold text-[#181511] dark:text-white leading-tight group-hover:text-primary transition-colors">Winter Menu Updates</h5>
+<span class="text-xs text-[#8a7960]">Oct 15, 2023</span>
+</div>
+</a>
+</div>
+</div>
+<!-- Newsletter Widget -->
+<div class="bg-primary/10 p-6 rounded-xl border border-primary/20">
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-2 text-primary mb-1">
+<span class="material-symbols-outlined">mail</span>
+<span class="text-xs font-bold uppercase tracking-wider">Newsletter</span>
+</div>
+<h4 class="text-xl font-bold text-[#181511] dark:text-white">Stay in the loop</h4>
+<p class="text-sm text-[#595045] dark:text-[#9e968c]">Get the latest updates, recipes, and volunteer opportunities delivered to your inbox.</p>
+<div class="mt-2 flex gap-2">
+<input class="w-full rounded bg-white dark:bg-[#1a150d] border-none text-sm px-3 py-2 focus:ring-1 focus:ring-primary placeholder:text-[#8a7960]" placeholder="Your email" type="email"/>
+<button class="bg-primary hover:bg-primary/90 text-[#181511] font-bold rounded px-4 py-2 text-sm transition-colors">Join</button>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="bg-white dark:bg-[#1a150d] border-t border-[#e6e1db] dark:border-[#3a3025] py-12 px-4 md:px-10 lg:px-40">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between gap-10">
+<div class="flex flex-col gap-4 max-w-sm">
+<div class="flex items-center gap-2 text-[#181511] dark:text-white">
+<div class="size-6 text-primary">
+<svg fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path>
+</svg>
+</div>
+<h3 class="text-xl font-bold">NutriMeals</h3>
+</div>
+<p class="text-[#595045] dark:text-[#9e968c] text-sm leading-relaxed">Dedicated to ensuring no one in our community goes to bed hungry. We provide nutritious meals and education to foster a healthier future.</p>
+</div>
+<div class="flex gap-12 flex-wrap">
+<div class="flex flex-col gap-3">
+<h5 class="font-bold text-[#181511] dark:text-white">Links</h5>
+<a class="text-[#595045] dark:text-[#9e968c] hover:text-primary text-sm" href="#">About Us</a>
+<a class="text-[#595045] dark:text-[#9e968c] hover:text-primary text-sm" href="#">Get Meals</a>
+<a class="text-[#595045] dark:text-[#9e968c] hover:text-primary text-sm" href="#">Donate</a>
+<a class="text-[#595045] dark:text-[#9e968c] hover:text-primary text-sm" href="#">Volunteer</a>
+</div>
+<div class="flex flex-col gap-3">
+<h5 class="font-bold text-[#181511] dark:text-white">Legal</h5>
+<a class="text-[#595045] dark:text-[#9e968c] hover:text-primary text-sm" href="#">Privacy Policy</a>
+<a class="text-[#595045] dark:text-[#9e968c] hover:text-primary text-sm" href="#">Terms of Service</a>
+<a class="text-[#595045] dark:text-[#9e968c] hover:text-primary text-sm" href="#">Cookie Policy</a>
+</div>
+<div class="flex flex-col gap-3">
+<h5 class="font-bold text-[#181511] dark:text-white">Connect</h5>
+<div class="flex gap-3 text-[#595045] dark:text-[#9e968c]">
+<a class="hover:text-primary" href="#"><span class="material-symbols-outlined">public</span></a>
+<!-- Using 'public' as placeholder for social icons since material icons doesn't have brands usually -->
+<a class="hover:text-primary" href="#"><span class="material-symbols-outlined">share</span></a>
+<a class="hover:text-primary" href="#"><span class="material-symbols-outlined">mail</span></a>
+</div>
+</div>
+</div>
+</div>
+<div class="max-w-[1200px] mx-auto mt-12 pt-6 border-t border-[#e6e1db] dark:border-[#3a3025] flex justify-between items-center text-xs text-[#8a7960]">
+<p>© 2023 NutriMeals Program. All rights reserved.</p>
+</div>
+</footer>
+</div>
+</body></html>

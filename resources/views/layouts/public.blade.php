@@ -1,84 +1,76 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ config('app.name', 'MBM App') }}</title>
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="antialiased bg-gray-50 text-slate-800 font-[Inter]">
-        
-        <!-- Navbar -->
-        <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 h-20 shadow-sm transition-all duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
-                <div class="flex justify-between items-center h-full">
-                    <!-- Left: Logos -->
-                    <div class="flex-shrink-0 flex items-center gap-4">
-                        <a href="{{ url('/') }}" class="flex items-center gap-3">
-                            <img src="{{ asset('logokornas.png') }}" alt="Logo Kornas" class="h-10 w-auto">
-                            <div class="h-8 w-px bg-gray-200"></div>
-                            <img src="{{ asset('logobgn.png') }}" alt="Logo BGN" class="h-10 w-auto">
+<html class="light" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ config('app.name', 'NutriMeals') }}</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script>
+        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    @stack('styles')
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-display overflow-x-hidden w-full transition-colors duration-300">
+    <div class="relative flex flex-col min-h-screen w-full">
+        <!-- Header -->
+        <header class="sticky top-0 z-50 w-full bg-surface-light dark:bg-surface-dark border-b border-[#f5f3f0] dark:border-gray-800 shadow-sm transition-colors duration-300">
+            <div class="px-4 md:px-10 py-3 max-w-[1280px] mx-auto w-full">
+                <div class="flex items-center justify-between whitespace-nowrap">
+                    <!-- Logos -->
+                    <div class="flex items-center gap-4">
+                        <a href="{{ url('/') }}" class="block">
+                            <img src="{{ asset('logokornas.png') }}" alt="Kornas Logo" class="h-10 md:h-12 w-auto object-contain dark:brightness-0 dark:invert transition-all">
+                        </a>
+                        <a href="{{ url('/') }}" class="block">
+                             <img src="{{ asset('logobgn.png') }}" alt="Badan Gizi Nasional Logo" class="h-10 md:h-12 w-auto object-contain dark:brightness-0 dark:invert transition-all">
                         </a>
                     </div>
-                    
-                    <!-- Right: Menu & Actions -->
-                    <div class="hidden md:flex items-center gap-8">
+
+                    <div class="hidden md:flex flex-1 justify-end items-center gap-8">
                         <div class="flex items-center gap-6">
-                            <a href="{{ route('profile.public') }}" class="text-gray-600 hover:text-blue-600 font-medium text-sm lg:text-base transition">Profil</a>
-                            <a href="{{ route('team.public') }}" class="text-gray-600 hover:text-blue-600 font-medium text-sm lg:text-base transition">Tim</a>
-                            <a href="{{ route('sppg.public.index') }}" class="text-gray-600 hover:text-blue-600 font-medium text-sm lg:text-base transition">SPPG</a>
-                            <a href="{{ route('contact.public') }}" class="text-gray-600 hover:text-blue-600 font-medium text-sm lg:text-base transition">Kontak</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('team.public') }}">About</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('sppg.public.index') }}">Programs</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('blog.public.index') }}">Blog</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('contact.public') }}">Contact</a>
                         </div>
-
-                        <!-- Login Button (kept for functionality, can be removed if strictly text only desired) -->
-                        <!-- Login Button hidden as requested to move to footer -->
-                        <!-- 
-                        <div>
-                            @if (Route::has('login'))
-                                @auth
-                                    <a href="{{ url('/admin') }}" class="inline-flex items-center px-5 py-2 border border-transparent text-sm font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 transition shadow-sm">
-                                        Dashboard
-                                    </a>
-                                @else
-                                    <a href="{{ route('filament.admin.auth.login') }}" class="inline-flex items-center px-5 py-2 border border-blue-600 text-sm font-medium rounded-full text-blue-600 hover:bg-blue-50 transition">
-                                        Masuk
-                                    </a>
-                                @endauth
-                            @endif
-                        </div>
-                        -->
-                    </div>
-
-                    <!-- Mobile Menu Button (Hamburger) -->
-                    <div class="md:hidden flex items-center">
-                        <button type="button" class="text-gray-500 hover:text-gray-900 focus:outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
+                        
+                        <!-- Dark Mode Toggle -->
+                        <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-3 transition-colors">
+                            <span id="theme-toggle-dark-icon" class="hidden material-symbols-outlined text-xl">dark_mode</span>
+                            <span id="theme-toggle-light-icon" class="hidden material-symbols-outlined text-xl">light_mode</span>
                         </button>
                     </div>
+                    <div class="md:hidden text-text-main dark:text-white">
+                        <span class="material-symbols-outlined cursor-pointer">menu</span>
+                    </div>
                 </div>
             </div>
+        </header>
 
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
-                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                    <a href="{{ route('profile.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Profil</a>
-                    <a href="{{ route('team.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Tim</a>
-                    <a href="{{ route('sppg.public.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">SPPG</a>
-                    <a href="{{ route('contact.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Kontak</a>
-                    @auth
-                        <a href="{{ url('/admin') }}" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-blue-600 hover:bg-blue-700 mt-4 text-center">Dashboard</a>
-                    @else
-                        <a href="{{ route('filament.admin.auth.login') }}" class="block px-3 py-2 rounded-md text-base font-medium text-blue-600 border border-blue-600 hover:bg-blue-50 mt-4 text-center">Masuk</a>
-                    @endauth
-                </div>
-            </div>
-        </nav>
-
-        <main>
+        <main class="flex-grow">
             @hasSection('content')
                 @yield('content')
             @else
@@ -87,38 +79,103 @@
         </main>
 
         <!-- Footer -->
-        <footer id="footer" class="bg-gray-900 text-white py-12 border-t border-gray-800">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-                    <!-- Brand & Info -->
-                    <div class="text-center md:text-left">
-                        <span class="text-xl font-bold tracking-wider">MBM App</span>
-                        <p class="text-gray-400 text-sm mt-2">© {{ date('Y') }} Muhammadiyah. All rights reserved.</p>
-                        <p class="text-gray-500 text-xs mt-1">Gedung PP Muhammadiyah, Jl. K.H. Ahmad Dahlan, Yogyakarta</p>
+        <footer class="bg-surface-light dark:bg-surface-dark border-t border-[#e6e1db] dark:border-gray-800 pt-16 pb-8">
+            <div class="px-4 md:px-10 max-w-[1280px] mx-auto flex flex-col gap-12">
+                <div class="flex flex-col md:flex-row justify-between gap-10">
+                    <div class="flex flex-col gap-4 max-w-xs">
+                        <a href="{{ url('/') }}" class="block">
+                            <img src="{{ asset('logokornas.png') }}" alt="Kornas Logo" class="h-10 w-auto object-contain dark:brightness-0 dark:invert transition-all">
+                        </a>
+                        <p class="text-text-secondary text-sm leading-relaxed">
+                            Dedicated to ending child hunger and promoting health education in our schools. A non-profit initiative.
+                        </p>
                     </div>
+                    <div class="flex flex-wrap gap-12 md:gap-24">
+                        <div class="flex flex-col gap-4">
+                            <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Organization</h4>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('team.public') }}">About Us</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('team.public') }}">Our Team</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="#">Careers</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="#">Partners</a>
+                        </div>
+                        <div class="flex flex-col gap-4">
+                            <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Support</h4>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="#">Donate</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="#">Volunteer</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('sppg.public.index') }}">School Programs</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('contact.public') }}">Contact</a>
+                        </div>
+                        <div class="flex flex-col gap-4">
+                            <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Login Area</h4>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.admin.auth.login') }}">Login Kornas</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.admin.auth.login', ['role' => 'pengusul']) }}">Login Lembaga Pengusul</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.sppg.auth.login') }}">Login SPPG</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.production.auth.login') }}">Login Distribusi</a>
+                        </div>
+                    </div>
+                </div>
+                
 
-                    <!-- Login Links -->
-                    <div class="flex flex-wrap justify-center gap-4 text-sm font-medium">
-                        <a href="{{ route('filament.admin.auth.login') }}" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300 hover:text-white transition">
-                            Login Kornas
+
+                <div class="border-t border-[#e6e1db] dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p class="text-xs text-text-secondary">© {{ date('Y') }} NutriMeals Initiative. All rights reserved.</p>
+                    <div class="flex gap-4">
+                        <a class="text-text-secondary hover:text-primary" href="#"><span class="sr-only">Facebook</span>
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"></path></svg>
                         </a>
-                        <div class="hidden md:block w-px bg-gray-700 h-8 self-center"></div>
-                        <a href="{{ route('filament.admin.auth.login', ['role' => 'pengusul']) }}" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300 hover:text-white transition">
-                            Login Lembaga Pengusul
+                        <a class="text-text-secondary hover:text-primary" href="#"><span class="sr-only">Twitter</span>
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg>
                         </a>
-                        <div class="hidden md:block w-px bg-gray-700 h-8 self-center"></div>
-                        <a href="{{ route('filament.sppg.auth.login') }}" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300 hover:text-white transition">
-                            Login SPPG
-                        </a>
-                        <div class="hidden md:block w-px bg-gray-700 h-8 self-center"></div>
-                        <!-- Assumption: 'Distribusi' maps to 'Production' panel based on available routes, or arguably could be Admin too. 
-                             Given 'production' route exists, likely related to distribution/production flow. -->
-                        <a href="{{ route('filament.production.auth.login') }}" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300 hover:text-white transition">
-                            Login Distribusi
+                        <a class="text-text-secondary hover:text-primary" href="#"><span class="sr-only">Instagram</span>
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772 4.902 4.902 0 011.772-1.153c.636-.247 1.363-.416 2.427-.465 1.067-.047 1.407-.06 3.808-.06h.63zm1.51 1.565c-2.645 0-2.964.01-4.015.058-.988.045-1.52.2-1.884.341a3.368 3.368 0 00-1.229.801 3.364 3.364 0 00-.801 1.228c-.14.364-.295.896-.34 1.885-.049 1.05-.058 1.37-.058 4.041v.08c0 2.646.009 2.965.059 4.015.044.989.199 1.52.339 1.885.2.525.47.962.802 1.228.326.332.763.602 1.229.802.364.14.896.295 1.884.34 1.05.049 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.2 1.85-.34a3.366 3.366 0 001.228-.802 3.361 3.361 0 00.802-1.228c.14-.365.295-.897.34-1.885.048-1.05.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.046-.976-.2-1.505-.34-1.85a3.364 3.364 0 00-.802-1.228 3.368 3.368 0 00-1.228-.801c-.365-.14-.897-.295-1.885-.34-.94-.045-1.246-.056-3.834-.056h-.85c-.3 0-.6.01-.89.028zm-4.004 3.94a4.345 4.345 0 110 8.69 4.345 4.345 0 010-8.69zm0 1.54a2.805 2.805 0 100 5.61 2.805 2.805 0 000-5.61zm5.955-3.033a1.033 1.033 0 110 2.066 1.033 1.033 0 010-2.066z" fill-rule="evenodd"></path></svg>
                         </a>
                     </div>
                 </div>
             </div>
         </footer>
-    </body>
+    </div>
+    <script>
+        var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        // Change the icons inside the button based on previous settings
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            themeToggleLightIcon.classList.remove('hidden');
+        } else {
+            themeToggleDarkIcon.classList.remove('hidden');
+        }
+
+        var themeToggleBtn = document.getElementById('theme-toggle');
+
+        themeToggleBtn.addEventListener('click', function() {
+
+            // toggle icons inside button
+            themeToggleDarkIcon.classList.toggle('hidden');
+            themeToggleLightIcon.classList.toggle('hidden');
+
+            // if set via local storage previously
+            if (localStorage.getItem('color-theme')) {
+                if (localStorage.getItem('color-theme') === 'light') {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                }
+
+            // if NOT set via local storage previously
+            } else {
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                }
+            }
+            
+        });
+    </script>
+    @stack('scripts')
+</body>
 </html>

@@ -1,0 +1,151 @@
+@extends('layouts.public')
+
+@section('content')
+<!-- Header (already in layout, but template has specific sub-header style, we'll align with layout) -->
+
+<!-- Main Content -->
+<div class="px-4 md:px-10 lg:px-40 flex flex-1 justify-center py-8">
+    <div class="layout-content-container flex flex-col max-w-[1200px] flex-1 gap-8">
+        <!-- Page Heading -->
+        <div class="flex flex-col gap-3">
+            <h1 class="text-[#181511] dark:text-white text-5xl font-black leading-tight tracking-[-0.033em]">News & Updates</h1>
+            <p class="text-[#8a7960] dark:text-[#b0a695] text-xl font-normal leading-normal">Nourishing our community one meal at a time.</p>
+        </div>
+
+        @if($posts->count() > 0)
+            @php
+                // Logic to separate featured post (first item) from others
+                // If on page 1, show first as featured. If page > 1, maybe just grid?
+                // For simplicity, always show first of the current page as featured or grid.
+                // Design has a specific featured block. Let's use the first item for it.
+                $featured = $posts->first();
+                $gridPosts = $posts->slice(1);
+            @endphp
+
+            <!-- Featured Post -->
+            <div class="w-full">
+                <div class="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-[#1a150d] border border-[#e6e1db] dark:border-[#3a3025] group">
+                    <div class="grid grid-cols-1 lg:grid-cols-2">
+                        <div class="w-full h-64 lg:h-auto bg-center bg-no-repeat bg-cover group-hover:scale-105 transition-transform duration-700" 
+                             style="background-image: url('{{ $featured->featured_image ? Storage::url($featured->featured_image) : 'https://lh3.googleusercontent.com/aida-public/AB6AXuBRM6Ley9GsG3lL8YU-bGEu0CTWYeWbeg9xzAYu8d2Qas2h-T4Vzl3s71jayhlLaIv8XR50j35-4rDudm6AxozDOaRmoO05mEkI2s71Wtq_e51s7k50ds3djSFx5R1m7vBuOGWMpF5vT6dnVjmp5IpH26FAEEJsLhqqkpbO1ZXohy-VhqrhVxeX5Z6KizMDN2-h1daDN7Ep1rlACIMXMZmrN_tduGAbsByWpjRc8tHBwSGwoW8FqQ3-A_V1bosCZJpx-stv6GYovu78' }}');">
+                        </div>
+                        <div class="flex flex-col justify-center p-8 lg:p-12 gap-6 bg-white dark:bg-[#1a150d] relative z-10">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-primary/20 text-[#9c5f0f] dark:text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Featured</span>
+                                <span class="text-[#8a7960] dark:text-[#b0a695] text-sm">{{ $featured->published_at->format('M d, Y') }}</span>
+                            </div>
+                            <h2 class="text-[#181511] dark:text-white text-3xl lg:text-4xl font-bold leading-tight">
+                                <a href="{{ route('blog.public.show', $featured->slug) }}" class="hover:text-primary transition-colors">{{ $featured->title }}</a>
+                            </h2>
+                            <p class="text-[#595045] dark:text-[#ccc3b8] text-lg leading-relaxed line-clamp-3">
+                                {{ $featured->excerpt }}
+                            </p>
+                            <div class="pt-2">
+                                <a class="inline-flex items-center gap-2 text-primary font-bold hover:underline decoration-2 underline-offset-4" href="{{ route('blog.public.show', $featured->slug) }}">
+                                    Read Full Story
+                                    <span class="material-symbols-outlined text-[1.2em]">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <!-- Main Content Grid + Sidebar -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mt-8">
+            <!-- Blog Articles Grid (Left) -->
+            <div class="lg:col-span-8 flex flex-col gap-10">
+                @if(isset($gridPosts) && $gridPosts->count() > 0)
+                    <!-- Article Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-10">
+                        @foreach($gridPosts as $post)
+                        <article class="flex flex-col gap-4 group cursor-pointer">
+                            <a href="{{ route('blog.public.show', $post->slug) }}" class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-200">
+                                <div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
+                                     style="background-image: url('{{ $post->featured_image ? Storage::url($post->featured_image) : 'https://lh3.googleusercontent.com/aida-public/AB6AXuCXnhm_2cGZjpiAxZddG8JNXZCELjgy8tS7d9l5Zo2T4WsVXuxaY8CizH1lG1F-Ec914WKodU-dCjkOTz8k6Bb_31xVJsrZxqJr7DExxUAHQ5FKGua5CNVamW4VnNvbjE0QEv7fp6ehzcbm7lUS_-2xcntWkcF34j8n1Q91E7eynMbv3ULL6LXEeE7NT0VSPvOUTcXt_vl0PDgVFTKnKcZqxCmEgKr2fIBR9LobCMv7KvwxZtaXaW_qBjN7gxjyeoLJt3rvN0HgYqB-' }}');">
+                                </div>
+                            </a>
+                            <div class="flex flex-col gap-2">
+                                <div class="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-primary">
+                                    <span>Article</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-[#181511] dark:text-white leading-tight group-hover:text-primary transition-colors">
+                                    <a href="{{ route('blog.public.show', $post->slug) }}">{{ $post->title }}</a>
+                                </h3>
+                                <p class="text-[#595045] dark:text-[#9e968c] line-clamp-2">
+                                    {{ $post->excerpt }}
+                                </p>
+                                <div class="flex items-center gap-2 mt-2 text-xs text-[#8a7960] dark:text-[#80766a]">
+                                    <div class="size-6 rounded-full bg-gray-300 bg-cover" 
+                                         style="background-image: url('{{ $post->author && $post->author->photo_path ? Storage::url($post->author->photo_path) : 'https://ui-avatars.com/api/?name='.urlencode($post->author->name ?? 'Admin') }}');">
+                                    </div>
+                                    <span class="font-medium">{{ $post->author->name ?? 'Unknown Author' }}</span> • <span>{{ $post->published_at->format('M d, Y') }}</span>
+                                </div>
+                            </div>
+                        </article>
+                        @endforeach
+                    </div>
+                @elseif(!isset($featured) || $posts->count() == 0)
+                    <div class="text-center py-20">
+                        <p class="text-xl text-gray-500">No articles found.</p>
+                    </div>
+                @endif
+
+                <!-- Pagination -->
+                <div class="mt-8 pt-8 border-t border-[#e6e1db] dark:border-[#3a3025]">
+                    {{ $posts->links() }}
+                </div>
+            </div>
+
+            <!-- Sidebar (Right) -->
+            <aside class="lg:col-span-4 flex flex-col gap-8">
+                <!-- Search Widget -->
+                <div class="bg-white dark:bg-[#1a150d] p-6 rounded-xl border border-[#e6e1db] dark:border-[#3a3025] shadow-sm">
+                    <h4 class="text-lg font-bold mb-4 text-[#181511] dark:text-white">Search</h4>
+                    <label class="flex flex-col w-full">
+                        <div class="flex w-full items-stretch rounded-lg h-10 border border-[#e6e1db] dark:border-[#3a3025] overflow-hidden focus-within:ring-2 focus-within:ring-primary/50">
+                            <div class="text-[#8a7960] flex bg-[#f8f7f5] dark:bg-[#2a241d] items-center justify-center pl-3 pr-2">
+                                <span class="material-symbols-outlined text-[20px]">search</span>
+                            </div>
+                            <input class="flex w-full min-w-0 flex-1 resize-none bg-[#f8f7f5] dark:bg-[#2a241d] text-[#181511] dark:text-white focus:outline-0 border-none h-full placeholder:text-[#8a7960] px-2 text-sm font-normal leading-normal" placeholder="Search articles..."/>
+                        </div>
+                    </label>
+                </div>
+                
+                <!-- Categories Widget (Static for now) -->
+                <div class="bg-white dark:bg-[#1a150d] p-6 rounded-xl border border-[#e6e1db] dark:border-[#3a3025] shadow-sm">
+                    <h4 class="text-lg font-bold mb-4 text-[#181511] dark:text-white">Categories</h4>
+                    <div class="flex flex-col gap-2">
+                        <a class="flex items-center justify-between p-2 rounded hover:bg-[#f8f7f5] dark:hover:bg-[#2a241d] group transition-colors" href="#">
+                            <span class="text-[#595045] dark:text-[#ccc3b8] group-hover:text-primary font-medium">Health Tips</span>
+                        </a>
+                        <a class="flex items-center justify-between p-2 rounded hover:bg-[#f8f7f5] dark:hover:bg-[#2a241d] group transition-colors" href="#">
+                            <span class="text-[#595045] dark:text-[#ccc3b8] group-hover:text-primary font-medium">Program News</span>
+                        </a>
+                        <a class="flex items-center justify-between p-2 rounded hover:bg-[#f8f7f5] dark:hover:bg-[#2a241d] group transition-colors" href="#">
+                            <span class="text-[#595045] dark:text-[#ccc3b8] group-hover:text-primary font-medium">Volunteer Stories</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Newsletter Widget -->
+                <div class="bg-primary/10 p-6 rounded-xl border border-primary/20">
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center gap-2 text-primary mb-1">
+                            <span class="material-symbols-outlined">mail</span>
+                            <span class="text-xs font-bold uppercase tracking-wider">Newsletter</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-[#181511] dark:text-white">Stay in the loop</h4>
+                        <p class="text-sm text-[#595045] dark:text-[#9e968c]">Get the latest updates, recipes, and volunteer opportunities delivered to your inbox.</p>
+                        <div class="mt-2 flex gap-2">
+                            <input class="w-full rounded bg-white dark:bg-[#1a150d] border-none text-sm px-3 py-2 focus:ring-1 focus:ring-primary placeholder:text-[#8a7960]" placeholder="Your email" type="email"/>
+                            <button class="bg-primary hover:bg-primary/90 text-[#181511] font-bold rounded px-4 py-2 text-sm transition-colors">Join</button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
+@endsection

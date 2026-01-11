@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Healthy Eating on a Budget - NutriMeals Blog</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f49d25",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221a10",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
+            border-radius: 20px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#181511] dark:text-gray-100 flex flex-col min-h-screen transition-colors duration-200">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 w-full bg-white dark:bg-[#1a1612] border-b border-[#f5f3f0] dark:border-[#3a3530]">
+<div class="flex items-center justify-between px-6 py-3 max-w-[1280px] mx-auto w-full">
+<div class="flex items-center gap-8">
+<a class="flex items-center gap-3 text-[#181511] dark:text-white group" href="#">
+<div class="size-8 text-primary">
+<svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M39.5563 34.1455V13.8546C39.5563 15.708 36.8773 17.3437 32.7927 18.3189C30.2914 18.916 27.263 19.2655 24 19.2655C20.737 19.2655 17.7086 18.916 15.2073 18.3189C11.1227 17.3437 8.44365 15.708 8.44365 13.8546V34.1455C8.44365 35.9988 11.1227 37.6346 15.2073 38.6098C17.7086 39.2069 20.737 39.5564 24 39.5564C27.263 39.5564 30.2914 39.2069 32.7927 38.6098C36.8773 37.6346 39.5563 35.9988 39.5563 34.1455Z" fill="currentColor"></path>
+<path clip-rule="evenodd" d="M10.4485 13.8519C10.4749 13.9271 10.6203 14.246 11.379 14.7361C12.298 15.3298 13.7492 15.9145 15.6717 16.3735C18.0007 16.9296 20.8712 17.2655 24 17.2655C27.1288 17.2655 29.9993 16.9296 32.3283 16.3735C34.2508 15.9145 35.702 15.3298 36.621 14.7361C37.3796 14.246 37.5251 13.9271 37.5515 13.8519C37.5287 13.7876 37.4333 13.5973 37.0635 13.2931C36.5266 12.8516 35.6288 12.3647 34.343 11.9175C31.79 11.0295 28.1333 10.4437 24 10.4437C19.8667 10.4437 16.2099 11.0295 13.657 11.9175C12.3712 12.3647 11.4734 12.8516 10.9365 13.2931C10.5667 13.5973 10.4713 13.7876 10.4485 13.8519ZM37.5563 18.7877C36.3176 19.3925 34.8502 19.8839 33.2571 20.2642C30.5836 20.9025 27.3973 21.2655 24 21.2655C20.6027 21.2655 17.4164 20.9025 14.7429 20.2642C13.1498 19.8839 11.6824 19.3925 10.4436 18.7877V34.1275C10.4515 34.1545 10.5427 34.4867 11.379 35.027C12.298 35.6207 13.7492 36.2054 15.6717 36.6644C18.0007 37.2205 20.8712 37.5564 24 37.5564C27.1288 37.5564 29.9993 37.2205 32.3283 36.6644C34.2508 36.2054 35.702 35.6207 36.621 35.027C37.4573 34.4867 37.5485 34.1546 37.5563 34.1275V18.7877ZM41.5563 13.8546V34.1455C41.5563 36.1078 40.158 37.5042 38.7915 38.3869C37.3498 39.3182 35.4192 40.0389 33.2571 40.5551C30.5836 41.1934 27.3973 41.5564 24 41.5564C20.6027 41.5564 17.4164 41.1934 14.7429 40.5551C12.5808 40.0389 10.6502 39.3182 9.20848 38.3869C7.84205 37.5042 6.44365 36.1078 6.44365 34.1455L6.44365 13.8546C6.44365 12.2684 7.37223 11.0454 8.39581 10.2036C9.43325 9.3505 10.8137 8.67141 12.343 8.13948C15.4203 7.06909 19.5418 6.44366 24 6.44366C28.4582 6.44366 32.5797 7.06909 35.657 8.13948C37.1863 8.67141 38.5667 9.3505 39.6042 10.2036C40.6278 11.0454 41.5563 12.2684 41.5563 13.8546Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-xl font-bold tracking-tight">NutriMeals</h2>
+</a>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Home</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Programs</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Get Meals</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Volunteer</a>
+<a class="text-sm font-medium text-primary font-bold" href="#">Blog</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex w-full max-w-xs items-center rounded-lg bg-[#f5f3f0] dark:bg-[#2c2620] px-3 h-10">
+<span class="material-symbols-outlined text-[#8a7960] text-[20px]">search</span>
+<input class="w-full bg-transparent border-none text-sm px-2 text-[#181511] dark:text-white placeholder:text-[#8a7960] focus:ring-0" placeholder="Search..."/>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-[#181511] text-sm font-bold h-10 px-6 rounded-lg transition-colors">
+                    Donate
+                </button>
+</div>
+</div>
+</header>
+<main class="flex-grow w-full max-w-[1280px] mx-auto px-6 py-8">
+<!-- Breadcrumbs -->
+<div class="flex items-center gap-2 mb-6 text-sm">
+<a class="text-[#8a7960] dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">Home</a>
+<span class="text-[#8a7960] dark:text-gray-400">/</span>
+<a class="text-[#8a7960] dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">Blog</a>
+<span class="text-[#8a7960] dark:text-gray-400">/</span>
+<span class="font-medium text-[#181511] dark:text-gray-200">Healthy Eating</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+<!-- Main Content Area -->
+<article class="lg:col-span-8 flex flex-col gap-8">
+<!-- Header Section -->
+<header class="flex flex-col gap-6">
+<div class="flex flex-col gap-3">
+<span class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold w-fit uppercase tracking-wider">Nutrition Tips</span>
+<h1 class="text-[#181511] dark:text-white text-3xl md:text-5xl font-black leading-tight tracking-[-0.02em]">
+                            Healthy Eating on a Budget: Top 5 Tips for Families
+                        </h1>
+<p class="text-lg md:text-xl text-[#8a7960] dark:text-gray-400 leading-relaxed max-w-3xl">
+                            Discover how to plan nutritious meals without breaking the bank. Good food shouldn't cost a fortune.
+                        </p>
+</div>
+<!-- Author Meta -->
+<div class="flex items-center gap-4 py-4 border-y border-[#f5f3f0] dark:border-[#3a3530]">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-12 w-12 ring-2 ring-primary/20" data-alt="Portrait of Sarah Jenkins smiling warmly" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBbcf4fw04PtHOg_HvzOpLJ0EmqKqJ1css6ScK85Finl9X0NIW9lVrNRW9FExKY6wCJoa0l_fhvqLGY5FMM4RC8onri5a-3-svl0qzMKAGF5nAhKd4l5nOyHKXeMCVGEMbhbFxtyPohHBgn39MVxPXL_19SZkumZhi6Goyx8av8ptKyUYWmqcY4ZFvV9dqxC8FTb5CS9HDONVe-noU8x5tbUJJ4DAUSz62vxqeZyi0l1lbpUI3nWaS705yzIP-za3wEKrqfZi-_yZqR");'>
+</div>
+<div class="flex flex-col">
+<span class="text-[#181511] dark:text-white text-sm font-bold">Sarah Jenkins</span>
+<div class="flex items-center gap-2 text-xs text-[#8a7960] dark:text-gray-400">
+<span>Community Dietitian</span>
+<span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+<span>Oct 24, 2023</span>
+<span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+<span>6 min read</span>
+</div>
+</div>
+<div class="flex-grow"></div>
+<div class="hidden sm:flex gap-2">
+<button class="p-2 text-gray-400 hover:text-primary transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+<span class="material-symbols-outlined text-[20px]">bookmark</span>
+</button>
+<button class="p-2 text-gray-400 hover:text-primary transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Hero Image -->
+<div class="w-full h-auto aspect-video rounded-xl overflow-hidden shadow-sm">
+<div class="w-full h-full bg-center bg-no-repeat bg-cover transform hover:scale-105 transition-transform duration-700" data-alt="Various fresh vegetables and fruits on a wooden table prepared for cooking" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBGINvWsIcuXjgfEXj83Tx7wTiUI_sJPE7e549iw1TqvhX34GRT68OLjW8Lo7W_MBZwRSXgSv3f0yb41zXIVScK0OH6tPAQbR7909lL5nVQr7G7pA4hedXc7IVKWjXop9VWS620lZS-nKCch5qWLTK0O5qWxavuvDCpygYrL7GpNCJvuB9LL-tDSZt1ad0a0iyhsM4elXAYnOWvQvXiRHsEbJZnnJQ7c_jJOUt7qTLnmi9mtaJIza1a98mzc7Ap-8TECvCv9O3M4Uha");'>
+</div>
+</div>
+<!-- Article Body + Sticky Share -->
+<div class="relative flex gap-8">
+<!-- Sticky Share Sidebar (Desktop) -->
+<aside class="hidden xl:flex flex-col gap-4 sticky top-24 h-fit w-12 items-center">
+<span class="text-xs font-bold text-gray-400 uppercase rotate-180" style="writing-mode: vertical-rl;">Share</span>
+<a class="w-10 h-10 rounded-full bg-white dark:bg-[#2c2620] border border-gray-100 dark:border-gray-700 flex items-center justify-center text-gray-500 hover:text-[#1877F2] hover:border-[#1877F2] transition-colors shadow-sm" href="#">
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.791-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
+</a>
+<a class="w-10 h-10 rounded-full bg-white dark:bg-[#2c2620] border border-gray-100 dark:border-gray-700 flex items-center justify-center text-gray-500 hover:text-[#1DA1F2] hover:border-[#1DA1F2] transition-colors shadow-sm" href="#">
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"></path></svg>
+</a>
+<a class="w-10 h-10 rounded-full bg-white dark:bg-[#2c2620] border border-gray-100 dark:border-gray-700 flex items-center justify-center text-gray-500 hover:text-green-600 hover:border-green-600 transition-colors shadow-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+</a>
+</aside>
+<!-- Text Content -->
+<div class="flex flex-col gap-6 text-[#181511] dark:text-gray-200 text-lg leading-8 flex-1">
+<p class="font-medium text-xl text-gray-800 dark:text-gray-100">
+                            Eating healthy often feels like a luxury reserved for those with a high grocery budget. However, with a little planning and creativity, you can enjoy nutritious meals every day without overspending.
+                        </p>
+<p>
+                            Many of us struggle to balance the checkbook with the desire to feed our families wholesome food. The good news is that many of the healthiest foods—beans, whole grains, vegetables—are actually the most affordable items in the supermarket.
+                        </p>
+<h2 class="text-2xl md:text-3xl font-bold mt-8 mb-2 text-[#181511] dark:text-white">1. Plan Your Meals Around Sales</h2>
+<p>
+                            Before you head to the store, check what's on sale. If chicken thighs are discounted, plan a stir-fry or a stew. Being flexible with your ingredients is the key to saving money.
+                        </p>
+<ul class="list-disc pl-6 space-y-2 marker:text-primary">
+<li>Check weekly flyers or apps.</li>
+<li>Buy generic brands when possible.</li>
+<li>Look for "manager's specials" on meats and breads.</li>
+</ul>
+<blockquote class="border-l-4 border-primary pl-6 my-8 italic text-xl text-gray-600 dark:text-gray-400 bg-[#f5f3f0] dark:bg-[#2c2620] py-4 pr-4 rounded-r-lg">
+                            "The most expensive ingredient in your kitchen is the one you throw away. Planning prevents waste and saves money."
+                        </blockquote>
+<h2 class="text-2xl md:text-3xl font-bold mt-4 mb-2 text-[#181511] dark:text-white">2. Embrace Plant-Based Proteins</h2>
+<p>
+                            Meat is often the most expensive part of a meal. Swapping meat for lentils, beans, or tofu a few times a week can drastically cut your grocery bill while providing excellent fiber and protein.
+                        </p>
+<div class="my-6 rounded-lg overflow-hidden shadow-sm">
+<div class="w-full h-80 bg-center bg-no-repeat bg-cover" data-alt="Close up of various beans, lentils, and legumes in bowls" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCpxolmY4PhTZp2skEIJvvAxJQfVNH0fSthKUepEZMtXMnZKc4FMji6usd_yU6cmvJBs-KH7Kvm9XyuaJ6nodFYrLPvR7iau5ZFSswykWe190ximhaSJnbistOsjFeTcYxgRLzS_iB7DsT92d8WjazPL7BgjLcnZ-c0Jq5i0XlAhhV63BJcoYlLHDDYCHVuARUy7CAPI4jDVvnaXJiWQBo1Wa--oplN2lDgGgtyD04ru5sEa9chkzc_8RGtHkAS-19AHOzlmrVts0HY");'>
+</div>
+<p class="text-sm text-center text-gray-500 mt-2 italic">Legumes are a cost-effective powerhouse of nutrition.</p>
+</div>
+<h2 class="text-2xl md:text-3xl font-bold mt-4 mb-2 text-[#181511] dark:text-white">3. Cook in Bulk</h2>
+<p>
+                            Cooking a large batch of soup or chili on Sunday ensures you have lunches for the week. This stops the temptation of buying expensive takeout when you're busy or tired.
+                        </p>
+<div class="mt-8 pt-8 border-t border-[#f5f3f0] dark:border-[#3a3530]">
+<p class="font-bold text-lg mb-4">Tags:</p>
+<div class="flex flex-wrap gap-2">
+<a class="px-4 py-2 bg-gray-100 dark:bg-[#2c2620] rounded-lg text-sm font-medium hover:bg-primary/20 hover:text-primary transition-colors" href="#">Budget Tips</a>
+<a class="px-4 py-2 bg-gray-100 dark:bg-[#2c2620] rounded-lg text-sm font-medium hover:bg-primary/20 hover:text-primary transition-colors" href="#">Healthy Living</a>
+<a class="px-4 py-2 bg-gray-100 dark:bg-[#2c2620] rounded-lg text-sm font-medium hover:bg-primary/20 hover:text-primary transition-colors" href="#">Family Meals</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Comments Section -->
+<section class="mt-12">
+<h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                        Comments <span class="text-base font-normal text-gray-500">(2)</span>
+</h3>
+<!-- Comment Form -->
+<div class="bg-[#f9f9f9] dark:bg-[#1f1b17] p-6 rounded-xl mb-10">
+<textarea class="w-full bg-white dark:bg-[#2c2620] border border-gray-200 dark:border-gray-700 rounded-lg p-4 min-h-[120px] focus:ring-2 focus:ring-primary focus:border-transparent resize-none mb-4 dark:text-white" placeholder="Share your thoughts..."></textarea>
+<div class="flex justify-end">
+<button class="bg-primary text-[#181511] font-bold px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                                Post Comment
+                            </button>
+</div>
+</div>
+<!-- Comment List -->
+<div class="flex flex-col gap-8">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0 bg-center bg-cover" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD67EQzEOPMjTNGHB3EW82_pj8UA_iJMm93D-zz2k-aDJtCAiz_fwp1HiWsnNSNu0Wv-rqon8C9ySWrJePBLng-PVUlCSAmqt71Tt91fym_D6vDS2vgVsjJZUYM-Df9feMPQ17jpc3kxupSeHAxBdQWHMfRRip3hAgxODRtDkO1ztmhhUlfxR15nP83g8bjltzkFkCTvdCCMMbyts-JZNhA1yDgZQEGx9HzbU6WgYi9eY13V_kkRx6eeAhyzIglKI02q5o2q5mxa7X6");'></div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="font-bold text-[#181511] dark:text-white">Michael R.</span>
+<span class="text-xs text-gray-500">2 days ago</span>
+</div>
+<p class="text-gray-700 dark:text-gray-300">Great tips! I've started buying dried beans instead of canned, and it saves so much money in the long run.</p>
+<button class="text-primary text-sm font-medium mt-2 hover:underline">Reply</button>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0 bg-center bg-cover" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB0EE2q-TDCgPq5TcSe9TR44niOeZwusAObjnqHuerIMm0mi2ptkjd_TBEcqfQetu2ckdCnkepXtH6yq47TfbiDCNfzekqszyLIyTCLcislMEsFUAi11diO2nsTKdvsuScGfSXcxx8wjm7rhkUhpXII7OiZykTxRsRb8RjSmP6sHS6UdZMJboVVnSgo2yx4UZkDA_H6kTa1ClifKqAgdk31mchTlJNyIBpfYq80oHuYraVAjuZ3kvqQLY92jjqwExPUt-YlmCIaUt4B");'></div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="font-bold text-[#181511] dark:text-white">Anita K.</span>
+<span class="text-xs text-gray-500">5 hours ago</span>
+</div>
+<p class="text-gray-700 dark:text-gray-300">Does anyone have a good recipe for lentil soup that kids will actually eat?</p>
+<button class="text-primary text-sm font-medium mt-2 hover:underline">Reply</button>
+</div>
+</div>
+</div>
+</section>
+</article>
+<!-- Sidebar -->
+<aside class="lg:col-span-4 space-y-8">
+<!-- CTA Card -->
+<div class="bg-primary rounded-xl p-6 text-[#181511] relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 blur-2xl group-hover:bg-white/20 transition-all"></div>
+<h3 class="text-xl font-bold mb-2 relative z-10">Need a meal today?</h3>
+<p class="text-sm font-medium mb-6 opacity-90 relative z-10">Find a distribution center near you. No questions asked.</p>
+<button class="w-full bg-[#181511] text-white font-bold py-3 rounded-lg hover:bg-black transition-all relative z-10 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+                        Find Location
+                    </button>
+</div>
+<!-- Upcoming Events -->
+<div class="bg-white dark:bg-[#1a1612] border border-[#f5f3f0] dark:border-[#3a3530] rounded-xl p-6">
+<h3 class="text-lg font-bold mb-4 text-[#181511] dark:text-white">Upcoming Events</h3>
+<div class="flex flex-col gap-4">
+<a class="flex gap-4 group" href="#">
+<div class="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex flex-col items-center justify-center text-primary">
+<span class="text-xs font-bold">OCT</span>
+<span class="text-lg font-bold leading-none">28</span>
+</div>
+<div>
+<h4 class="font-bold text-sm text-[#181511] dark:text-white group-hover:text-primary transition-colors">Community Food Drive</h4>
+<p class="text-xs text-gray-500 mt-1">Central Park, 9:00 AM</p>
+</div>
+</a>
+<a class="flex gap-4 group" href="#">
+<div class="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex flex-col items-center justify-center text-primary">
+<span class="text-xs font-bold">NOV</span>
+<span class="text-lg font-bold leading-none">02</span>
+</div>
+<div>
+<h4 class="font-bold text-sm text-[#181511] dark:text-white group-hover:text-primary transition-colors">Free Nutrition Workshop</h4>
+<p class="text-xs text-gray-500 mt-1">Online Event, 6:00 PM</p>
+</div>
+</a>
+</div>
+<button class="w-full mt-4 text-center text-primary text-sm font-bold hover:underline">View All Events</button>
+</div>
+<!-- Newsletter -->
+<div class="bg-[#f8f7f5] dark:bg-[#2c2620] rounded-xl p-6">
+<div class="size-10 bg-white dark:bg-[#1a1612] rounded-full flex items-center justify-center mb-4 text-primary shadow-sm">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<h3 class="text-lg font-bold mb-2 text-[#181511] dark:text-white">Get health tips weekly</h3>
+<p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Join 10,000+ subscribers for recipes and updates.</p>
+<form class="flex flex-col gap-3">
+<input class="w-full rounded-lg border-none focus:ring-2 focus:ring-primary px-4 py-2 text-sm dark:bg-[#1a1612] dark:text-white" placeholder="Your email address" type="email"/>
+<button class="w-full bg-primary text-[#181511] font-bold py-2 rounded-lg hover:bg-primary/90 transition-colors">Subscribe</button>
+</form>
+</div>
+<!-- Featured Sidebar Image -->
+<div class="relative rounded-xl overflow-hidden aspect-[4/5] group">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+<div class="w-full h-full bg-cover bg-center group-hover:scale-110 transition-transform duration-700" data-alt="Volunteer serving food at a community event" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA3ytE5XLiTA--u5Ot7KNBu57-OrecwJvLqQDOssNTdnm9Tk7VRbCD9K83Fvvz7IHRN9bfCRJ0-OdTj4X6iL_Od1Gmvub9El7N9Y4bkHeYjmXieX1TYSKTuchfvfv_9v-7U7LN8vnhEcUi8KXprRhpvNXeHUxLcIpQVGrHMaaOyo1wbt_o4ekLTpPRQWnwQV4HbI6Fk36ljLyspmff1Yb4E3NSyZISF_X0Zfjh67uQC9MJ7AqhO-_OnHuMNhuOr2YfglCXd2Y3rXH3x");'>
+</div>
+<div class="absolute bottom-0 left-0 p-6 z-20">
+<span class="bg-primary text-[#181511] text-xs font-bold px-2 py-1 rounded mb-2 inline-block">Volunteer</span>
+<h3 class="text-white font-bold text-lg leading-tight">Make a difference in your community today.</h3>
+</div>
+</div>
+</aside>
+</div>
+<!-- Related Posts Section -->
+<section class="mt-20 pt-10 border-t border-[#f5f3f0] dark:border-[#3a3530]">
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-2xl font-bold text-[#181511] dark:text-white">Related Posts</h2>
+<a class="text-primary font-bold text-sm hover:underline flex items-center gap-1" href="#">
+                    View Blog <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<a class="group flex flex-col gap-3" href="#">
+<div class="aspect-[16/10] overflow-hidden rounded-lg bg-gray-100 dark:bg-[#2c2620]">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="Bowl of pumpkin soup" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDWY5RnXCZUy-DEKRWf-FHZLhBMrgS4zhODiZwOO2r2I4F6JQ6TsAKZwe1-ENfIbYwErYvDWRnpZ4U9Yy22RA1wetAD3pgJO6ARlK2nPsRUxtEZcKAkKdTLvsQYGXtlypbyxW7AWPQWHJbdoqQKQZflwLBVkjuuw8SjR-tia_MLj7mwoa407aKMk9Z5ytBU4KdE9ZVKmGczfsn7vglwYBqih_E2tZP8Jo2ArM8kxA3ZM9EqObGoL0uCLholJTr5vieLefbrBxtsA_zn");'>
+</div>
+</div>
+<div>
+<span class="text-xs font-bold text-primary mb-2 block">RECIPES</span>
+<h3 class="text-lg font-bold text-[#181511] dark:text-white leading-tight group-hover:text-primary transition-colors">
+                            5 Hearty Fall Soups Under $10
+                        </h3>
+<p class="text-sm text-gray-500 mt-2 line-clamp-2">
+                            Warm up this season with these delicious, budget-friendly soup recipes that feed the whole family.
+                        </p>
+</div>
+</a>
+<!-- Card 2 -->
+<a class="group flex flex-col gap-3" href="#">
+<div class="aspect-[16/10] overflow-hidden rounded-lg bg-gray-100 dark:bg-[#2c2620]">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="Smiling volunteer handing out bag of food" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAbI_fOaDQgHs93xX4weDUMSi5dx7RVxZs3gSesc0I6CdBcmPXijonH_GehPoTOOejpxkje3t-QPi6uGoOr-T2jHEQgaBg7yQ-7C-szaGkCLPy41elg783pbeJ8jPH8QMKG1TTo60LfbE8LAHuw4uIT6Rke9QAAdbM_bLoHgJGgUi2zRWx8wMFd5FtaAN01yNNXGVZIP-48q_po2EnjlgmxILx18AoyBtjl99BIOZAwdIIUl1ytN-ioIwqwoHJHcwkdJG68qz7LN1kl");'>
+</div>
+</div>
+<div>
+<span class="text-xs font-bold text-primary mb-2 block">COMMUNITY</span>
+<h3 class="text-lg font-bold text-[#181511] dark:text-white leading-tight group-hover:text-primary transition-colors">
+                            Volunteer Spotlight: Meet John
+                        </h3>
+<p class="text-sm text-gray-500 mt-2 line-clamp-2">
+                            John has been delivering meals to seniors for over 5 years. Read his inspiring story.
+                        </p>
+</div>
+</a>
+<!-- Card 3 -->
+<a class="group flex flex-col gap-3" href="#">
+<div class="aspect-[16/10] overflow-hidden rounded-lg bg-gray-100 dark:bg-[#2c2620]">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="Boxes of fresh produce stacked" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCArAEG2B2N9PIJyjIN0ZYElGbx4kO0o1SNXRoxYhm72j_8B4aSyLGQKnd3bJQZfUkEXRQVNTHCh26BDqJlO43UZYRLFKV7ACGo3TVq8TiAB3UZOyYISVwi--N12zzl5Qhf6q3zS80YnVnA39c6p3xHduOp2fbMgaSNtMrgQ8Cv6hBlF9dHnzRfkcSqObGEdfiMJUc7wtJo73RkdmGICnjoe0Mfdd-vn4-m4u1i1OtMZsOWto6yRCJKJWuSjS1T2Er6SIU0UmiSLC55");'>
+</div>
+</div>
+<div>
+<span class="text-xs font-bold text-primary mb-2 block">IMPACT</span>
+<h3 class="text-lg font-bold text-[#181511] dark:text-white leading-tight group-hover:text-primary transition-colors">
+                            September Food Drive Results
+                        </h3>
+<p class="text-sm text-gray-500 mt-2 line-clamp-2">
+                            Thanks to your generosity, we collected over 5,000 lbs of food last month!
+                        </p>
+</div>
+</a>
+</div>
+</section>
+</main>
+<!-- Simple Footer -->
+<footer class="bg-white dark:bg-[#1a1612] border-t border-[#f5f3f0] dark:border-[#3a3530] mt-12 py-12">
+<div class="w-full max-w-[1280px] mx-auto px-6 text-center">
+<p class="text-[#181511] dark:text-white font-bold text-lg mb-4">NutriMeals</p>
+<div class="flex justify-center gap-6 mb-8">
+<a class="text-gray-500 hover:text-primary transition-colors" href="#">About</a>
+<a class="text-gray-500 hover:text-primary transition-colors" href="#">Contact</a>
+<a class="text-gray-500 hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-gray-500 hover:text-primary transition-colors" href="#">Terms</a>
+</div>
+<p class="text-sm text-gray-400">© 2023 NutriMeals Program. All rights reserved.</p>
+</div>
+</footer>
+</body></html>

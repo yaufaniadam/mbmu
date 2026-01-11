@@ -183,4 +183,14 @@ class Sppg extends Model
     {
         return $this->hasMany(VolunteerAttendance::class);
     }
+
+    public function province()
+    {
+        return $this->belongsTo(\Laravolt\Indonesia\Models\Province::class, 'province_code', 'code');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(\Laravolt\Indonesia\Models\City::class, 'city_code', 'code');
+    }
 }

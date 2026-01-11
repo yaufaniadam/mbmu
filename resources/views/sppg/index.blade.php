@@ -1,67 +1,135 @@
 @extends('layouts.public')
 
 @section('content')
-<div class="py-24 bg-gray-50 min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Daftar SPPG MBM</h1>
-            <p class="mt-4 text-xl text-gray-500">Satuan Pelayanan Program Bergizi Muhammadiyah</p>
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e6e2de] dark:border-b-neutral-700 bg-surface-light dark:bg-surface-dark px-10 py-3 sticky top-0 z-50">
+    <div class="flex items-center gap-4 text-text-main dark:text-white">
+        <div class="size-8 flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined text-3xl">nutrition</span>
         </div>
-
-        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Nama SPPG
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Kode
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Alamat
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($sppgs as $sppg)
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">
-                                        <a href="{{ route('sppg.public.show', $sppg->kode_sppg) }}" class="text-blue-600 hover:text-blue-900 hover:underline">
+        <h2 class="text-text-main dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">SPPG Directory</h2>
+    </div>
+    <!-- Removed user profile/actions as this is public view -->
+</header>
+<!-- Main Layout -->
+<div class="flex flex-1 justify-center py-5 px-4 md:px-10 lg:px-40">
+    <div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
+        <!-- Breadcrumbs -->
+        <nav aria-label="Breadcrumb" class="flex flex-wrap gap-2 px-4 py-2">
+            <a class="text-text-secondary dark:text-gray-400 text-sm font-medium leading-normal hover:text-primary transition-colors" href="{{ url('/') }}">Home</a>
+            <span class="text-text-secondary dark:text-gray-400 text-sm font-medium leading-normal">/</span>
+            <span class="text-text-main dark:text-white text-sm font-medium leading-normal">Kitchen Directory</span>
+        </nav>
+        <!-- Page Heading -->
+        <div class="flex flex-wrap justify-between items-end gap-4 p-4">
+            <div class="flex min-w-72 flex-col gap-2">
+                <h1 class="text-text-main dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Daftar Dapur SPPG</h1>
+                <p class="text-text-secondary dark:text-gray-400 text-base font-normal leading-normal max-w-2xl">
+                    Directory of nutritional service units (Satuan Pelayanan Pemenuhan Gizi) and their operational status across regions.
+                </p>
+            </div>
+            <!-- Removed 'Add Kitchen' button as this is public view -->
+        </div>
+        <!-- Filters & Search -->
+        <form method="GET" action="{{ route('sppg.public.index') }}" class="flex flex-col gap-4 px-4 py-2">
+            <!-- Search Bar -->
+            <div class="w-full">
+                <label class="flex flex-col h-12 w-full">
+                    <div class="flex w-full flex-1 items-stretch rounded-xl h-full shadow-sm bg-surface-light dark:bg-surface-dark border border-[#e6e2de] dark:border-neutral-700 overflow-hidden group focus-within:ring-2 focus-within:ring-primary/50 transition-all">
+                        <div class="text-text-secondary flex items-center justify-center pl-4 pr-2">
+                            <span class="material-symbols-outlined">search</span>
+                        </div>
+                        <input name="search" value="{{ request('search') }}" class="flex w-full min-w-0 flex-1 resize-none bg-transparent text-text-main dark:text-white focus:outline-0 border-none h-full placeholder:text-text-secondary px-2 text-base font-normal leading-normal" placeholder="Search kitchen by name, ID, or region..."/>
+                    </div>
+                </label>
+            </div>
+            <!-- Filter Chips -->
+            <div class="flex gap-3 flex-wrap items-center">
+                <span class="text-sm font-medium text-text-secondary dark:text-gray-400 mr-2">Filters:</span>
+                <div class="relative">
+                    <select name="province" onchange="this.form.submit()" class="appearance-none flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg border border-[#e6e2de] dark:border-neutral-600 bg-surface-light dark:bg-surface-dark pl-3 pr-8 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors cursor-pointer text-text-main dark:text-white text-sm font-medium focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none">
+                        <option value="">Region: All</option>
+                        @foreach($provinces as $code => $name)
+                            <option value="{{ $code }}" {{ request('province') == $code ? 'selected' : '' }}>{{ $name }}</option>
+                        @endforeach
+                    </select>
+                    <span class="material-symbols-outlined text-text-secondary text-[20px] absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">expand_more</span>
+                </div>
+                
+                @if(request('search') || request('province'))
+                <div class="ml-auto">
+                    <a href="{{ route('sppg.public.index') }}" class="text-sm text-primary font-medium hover:underline">Clear all</a>
+                </div>
+                @endif
+            </div>
+        </form>
+        <!-- Data Table -->
+        <div class="p-4">
+            <div class="w-full overflow-hidden rounded-xl border border-[#e6e2de] dark:border-neutral-700 bg-surface-light dark:bg-surface-dark shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-[#f5f3f0] dark:bg-[#362e26] border-b border-[#e6e2de] dark:border-neutral-700">
+                                <th class="p-4 text-sm font-semibold text-text-secondary uppercase tracking-wider min-w-[200px]">Kitchen Name</th>
+                                <th class="p-4 text-sm font-semibold text-text-secondary uppercase tracking-wider min-w-[150px]">Location</th>
+                                <th class="p-4 text-sm font-semibold text-text-secondary uppercase tracking-wider text-right">Capacity <span class="text-xs normal-case font-normal">(meals/day)</span></th>
+                                <th class="p-4 text-sm font-semibold text-text-secondary uppercase tracking-wider">Status</th>
+                                <th class="p-4 text-sm font-semibold text-text-secondary uppercase tracking-wider text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#e6e2de] dark:divide-neutral-700">
+                            @forelse($sppgs as $sppg)
+                            <tr class="group hover:bg-[#fcfbf9] dark:hover:bg-[#362e26] transition-colors">
+                                <td class="p-4">
+                                    <div class="flex flex-col">
+                                        <a href="{{ route('sppg.public.show', $sppg->kode_sppg) }}" class="text-text-main dark:text-white font-bold text-base hover:text-primary transition-colors">
                                             {{ $sppg->nama_sppg }}
                                         </a>
+                                        <span class="text-xs text-text-secondary">ID: {{ $sppg->kode_sppg ?? '-' }}</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500">{{ $sppg->kode_sppg ?? '-' }}</div>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-2 text-text-main dark:text-gray-300 text-sm">
+                                        <span class="material-symbols-outlined text-text-secondary text-[18px]">location_on</span>
+                                        <span class="truncate max-w-xs">{{ $sppg->alamat ?? '-' }}</span>
+                                    </div>
                                 </td>
-                                <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-500 truncate max-w-xs">{{ $sppg->alamat ?? '-' }}</div>
+                                <td class="p-4 text-right">
+                                    <span class="text-text-main dark:text-white font-mono font-medium">{{ $sppg->kapasitas ?? '-' }}</span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $sppg->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                        {{ $sppg->is_active ? 'Aktif' : 'Non-Aktif' }}
+                                <td class="p-4">
+                                    @if($sppg->is_active)
+                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 dark:bg-primary/20 px-2.5 py-1 text-xs font-bold text-primary dark:text-orange-400">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
+                                        Active
                                     </span>
+                                    @else
+                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 dark:bg-neutral-700 px-2.5 py-1 text-xs font-bold text-gray-600 dark:text-gray-300">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-gray-400"></span>
+                                        Inactive
+                                    </span>
+                                    @endif
+                                </td>
+                                <td class="p-4 text-right">
+                                    <a href="{{ route('sppg.public.show', $sppg->kode_sppg) }}" class="text-text-secondary hover:text-text-main dark:hover:text-white p-1 rounded hover:bg-gray-100 dark:hover:bg-neutral-700 inline-block">
+                                        <span class="material-symbols-outlined">visibility</span>
+                                    </a>
                                 </td>
                             </tr>
-                        @empty
+                            @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
-                                    Belum ada data SPPG.
+                                <td colspan="5" class="p-8 text-center text-text-secondary">
+                                    No SPPG units found.
                                 </td>
                             </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            
-            <div class="px-6 py-4">
-                {{ $sppgs->links() }}
+            <!-- Pagination -->
+            <div class="mt-4">
+                 {{ $sppgs->links() }}
             </div>
         </div>
     </div>

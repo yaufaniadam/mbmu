@@ -193,16 +193,27 @@ class SppgForm
                             ->zoom(13)
                             ->height('300px')
                             ->latitudeField('latitude')
-                            ->longitudeField('longitude'),
+                            ->longitudeField('longitude')
+                            ->afterStateHydrated(function ($state, $component, $record) {
+                                if ($record && $record->latitude && $record->longitude) {
+                                    $component->state([
+                                        'lat' => (float) $record->latitude,
+                                        'lng' => (float) $record->longitude,
+                                    ]);
+                                }
+                            }),
                         TextInput::make('latitude')
                             ->label('Latitude')
-                            ->disabled(),
+                            ->disabled()
+                            ->dehydrated(),
                         TextInput::make('longitude')
                             ->label('Longitude')
-                            ->disabled(),
+                            ->disabled()
+                            ->dehydrated(),
                         \Filament\Forms\Components\FileUpload::make('photo_path')
                             ->label('Foto SPPG')
                             ->image()
+                            ->disk('public')
                             ->directory('sppg-photos')
                             ->columnSpanFull(),
                         Select::make('grade')
@@ -219,30 +230,37 @@ class SppgForm
                     ->schema([
                         \Filament\Forms\Components\FileUpload::make('izin_operasional_path')
                             ->label('Dokumen Verval')
+                            ->disk('public')
                             ->directory('sppg-docs')
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('sertifikat_halal_path')
                             ->label('Sertifikat Halal')
+                            ->disk('public')
                             ->directory('sppg-docs')
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('slhs_path')
                             ->label('SLHS')
+                            ->disk('public')
                             ->directory('sppg-docs')
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('lhaccp_path')
                             ->label('LHACCP')
+                            ->disk('public')
                             ->directory('sppg-docs')
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('iso_path')
                             ->label('ISO')
+                            ->disk('public')
                             ->directory('sppg-docs')
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('sertifikat_lahan_path')
                             ->label('Sertifikat Lahan')
+                            ->disk('public')
                             ->directory('sppg-docs')
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('dokumen_lain_path')
                             ->label('Dokumen Lain-lain')
+                            ->disk('public')
                             ->directory('sppg-docs')
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                     ])->columns(2),
