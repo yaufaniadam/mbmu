@@ -45,7 +45,11 @@ class SppgStatsOverview extends StatsOverviewWidget
             // Actually, querying the pivot table from Sppg model context is safer if we want "Staff at SPPGs".
             // But for simplicity/performance in this widget:
             $totalStaf = DB::table('sppg_user_roles')->distinct('user_id')->count(); 
-            $totalRelawan = \App\Models\Volunteer::count();
+            
+            $relawanQuery = \App\Models\Volunteer::query();
+            $totalRelawan = $relawanQuery->count();
+            $totalL = $relawanQuery->clone()->where('gender', 'L')->count();
+            $totalP = $relawanQuery->clone()->where('gender', 'P')->count();
 
             return [
                 Stat::make('Total SPPG', number_format($totalSppg, 0, ',', '.'))
@@ -58,12 +62,16 @@ class SppgStatsOverview extends StatsOverviewWidget
                     ->color('success'),
                 Stat::make('Total Relawan', number_format($totalRelawan, 0, ',', '.'))
                     ->icon('heroicon-o-user-group', IconPosition::Before)
-                    ->description('Total relawan aktif')
+                    ->description("Total relawan (L: $totalL, P: $totalP)")
                     ->color('warning'),
             ];
         } else if ($sppg) {
             $totalStaf = $sppg->staff()->count();
-            $totalRelawan = $sppg->volunteers()->count();
+            
+            $relawanQuery = $sppg->volunteers();
+            $totalRelawan = $relawanQuery->count();
+            $totalL = $sppg->volunteers()->where('gender', 'L')->count();
+            $totalP = $sppg->volunteers()->where('gender', 'P')->count();
 
             return [
                 Stat::make('Total SPPG', '1')
@@ -76,7 +84,7 @@ class SppgStatsOverview extends StatsOverviewWidget
                     ->color('success'),
                 Stat::make('Total Relawan', number_format($totalRelawan, 0, ',', '.'))
                     ->icon('heroicon-o-user-group', IconPosition::Before)
-                    ->description('Relawan unit ini')
+                    ->description("Relawan (L: $totalL, P: $totalP)")
                     ->color('warning'),
             ];
         }
