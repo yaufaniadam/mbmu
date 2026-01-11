@@ -36,7 +36,7 @@
 <body class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-display overflow-x-hidden w-full transition-colors duration-300">
     <div class="relative flex flex-col min-h-screen w-full">
         <!-- Header -->
-        <header class="sticky top-0 z-50 w-full bg-surface-light dark:bg-surface-dark border-b border-[#f5f3f0] dark:border-gray-800 shadow-sm transition-colors duration-300">
+        <header class="sticky top-0 z-50 w-full bg-surface-light dark:bg-surface-dark border-b border-[#f5f3f0] dark:border-gray-800 shadow-sm transition-colors duration-300 relative">
             <div class="px-4 md:px-10 py-3 max-w-[1280px] mx-auto w-full">
                 <div class="flex items-center justify-between whitespace-nowrap">
                     <!-- Logos -->
@@ -63,9 +63,27 @@
                             <span id="theme-toggle-light-icon" class="hidden material-symbols-outlined text-xl">light_mode</span>
                         </button>
                     </div>
-                    <div class="md:hidden text-text-main dark:text-white">
-                        <span class="material-symbols-outlined cursor-pointer">menu</span>
-                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="md:hidden text-text-main dark:text-white p-2 focus:outline-none">
+                        <span class="material-symbols-outlined text-2xl">menu</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu (Hidden by default, Absolute Overlay) -->
+            <div id="mobile-menu" class="absolute top-full left-0 w-full bg-surface-light dark:bg-surface-dark hidden md:hidden border-b border-gray-100 dark:border-gray-800 shadow-md animate-fade-in-down z-40">
+                <div class="flex flex-col gap-4 p-4">
+                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('team.public') }}">About</a>
+                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('sppg.public.index') }}">Programs</a>
+                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('blog.public.index') }}">Blog</a>
+                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('contact.public') }}">Contact</a>
+                    
+                    <!-- Mobile Dark Mode Toggle -->
+                    <button id="mobile-theme-toggle" class="flex items-center gap-2 text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2 text-left">
+                        <span class="material-symbols-outlined text-xl">dark_mode</span>
+                        <span>Toggle Theme</span>
+                    </button>
                 </div>
             </div>
         </header>
@@ -175,6 +193,25 @@
             }
             
         });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                 mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // Mobile Theme Toggle (Reusing existing button logic)
+        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+        if (mobileThemeToggle) {
+            mobileThemeToggle.addEventListener('click', () => {
+                var themeToggleBtn = document.getElementById('theme-toggle');
+                themeToggleBtn.click();
+            });
+        }
     </script>
     @stack('scripts')
 </body>
