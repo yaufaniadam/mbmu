@@ -64,6 +64,7 @@ class SppgPanelProvider extends PanelProvider
             ->navigationGroups([
                 'Operasional',
                 'Data Master',
+                'Pengaturan Situs',
                 'Pengaturan',
             ])
             ->middleware([

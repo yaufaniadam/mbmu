@@ -125,7 +125,7 @@ class PostResource extends Resource
             ->bulkActions([
                 //
             ])
-            ->defaultSort('created_at', 'desc');
+            ->defaultSort('id', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

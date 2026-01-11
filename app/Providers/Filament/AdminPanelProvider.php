@@ -65,6 +65,7 @@ class AdminPanelProvider extends PanelProvider
                 'Kelembagaan',
                 'SDM & Pengguna',
                 'Keuangan',
+                'Pengaturan Situs',
                 'Pengaturan',
             ])
             ->middleware([
@@ -85,7 +86,7 @@ class AdminPanelProvider extends PanelProvider
             ->spa(hasPrefetching: true)
             ->renderHook(
                 'panels::head.start',
-                fn(): string => '<meta http-equiv="Content-Security-Policy" content="script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' https://unpkg.com https://tile.openstreetmap.org; style-src \'self\' \'unsafe-inline\' https://unpkg.com;">'
+                fn(): string => '<meta http-equiv="Content-Security-Policy" content="script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' https://unpkg.com https://tile.openstreetmap.org blob:; worker-src \'self\' blob:; img-src \'self\' data: blob: https:; style-src \'self\' \'unsafe-inline\' https://unpkg.com;">'
             )
             ->renderHook(
                 'panels::head.end',

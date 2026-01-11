@@ -47,7 +47,25 @@ class SppgsTable
                     ->wrap(),
             ])
             ->filters([
-                //
+                \Filament\Tables\Filters\SelectFilter::make('province_code')
+                    ->label('Provinsi')
+                    ->relationship('province', 'name')
+                    ->searchable()
+                    ->preload(),
+                \Filament\Tables\Filters\SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'Operasional / Siap Berjalan' => 'Operasional / Siap Berjalan',
+                        'Proses Persiapan' => 'Proses Persiapan',
+                        'Verifikasi dan Validasi' => 'Verifikasi dan Validasi',
+                    ]),
+                \Filament\Tables\Filters\SelectFilter::make('grade')
+                    ->label('Akreditasi')
+                    ->options([
+                        'A' => 'A',
+                        'B' => 'B',
+                        'C' => 'C',
+                    ]),
             ])
             ->recordActions([
                 ViewAction::make(),

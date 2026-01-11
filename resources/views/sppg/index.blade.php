@@ -1,16 +1,6 @@
 @extends('layouts.public')
 
 @section('content')
-<!-- Header -->
-<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e6e2de] dark:border-b-neutral-700 bg-surface-light dark:bg-surface-dark px-10 py-3 sticky top-0 z-50">
-    <div class="flex items-center gap-4 text-text-main dark:text-white">
-        <div class="size-8 flex items-center justify-center text-primary">
-            <span class="material-symbols-outlined text-3xl">nutrition</span>
-        </div>
-        <h2 class="text-text-main dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">SPPG Directory</h2>
-    </div>
-    <!-- Removed user profile/actions as this is public view -->
-</header>
 <!-- Main Layout -->
 <div class="flex flex-1 justify-center py-5 px-4 md:px-10 lg:px-40">
     <div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
@@ -18,14 +8,14 @@
         <nav aria-label="Breadcrumb" class="flex flex-wrap gap-2 px-4 py-2">
             <a class="text-text-secondary dark:text-gray-400 text-sm font-medium leading-normal hover:text-primary transition-colors" href="{{ url('/') }}">Home</a>
             <span class="text-text-secondary dark:text-gray-400 text-sm font-medium leading-normal">/</span>
-            <span class="text-text-main dark:text-white text-sm font-medium leading-normal">Kitchen Directory</span>
+            <span class="text-text-main dark:text-white text-sm font-medium leading-normal">Direktori SPPG</span>
         </nav>
         <!-- Page Heading -->
         <div class="flex flex-wrap justify-between items-end gap-4 p-4">
             <div class="flex min-w-72 flex-col gap-2">
                 <h1 class="text-text-main dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Daftar Dapur SPPG</h1>
                 <p class="text-text-secondary dark:text-gray-400 text-base font-normal leading-normal max-w-2xl">
-                    Directory of nutritional service units (Satuan Pelayanan Pemenuhan Gizi) and their operational status across regions.
+                    Dapur SPPG yang terdaftar di Kornas Makan Bergizi Muhammadiyah.
                 </p>
             </div>
             <!-- Removed 'Add Kitchen' button as this is public view -->
@@ -39,7 +29,7 @@
                         <div class="text-text-secondary flex items-center justify-center pl-4 pr-2">
                             <span class="material-symbols-outlined">search</span>
                         </div>
-                        <input name="search" value="{{ request('search') }}" class="flex w-full min-w-0 flex-1 resize-none bg-transparent text-text-main dark:text-white focus:outline-0 border-none h-full placeholder:text-text-secondary px-2 text-base font-normal leading-normal" placeholder="Search kitchen by name, ID, or region..."/>
+                        <input name="search" value="{{ request('search') }}" class="flex w-full min-w-0 flex-1 resize-none bg-transparent text-text-main dark:text-white focus:outline-0 border-none h-full placeholder:text-text-secondary px-2 text-base font-normal leading-normal" placeholder="Cari dapur SPPG berdasarkan nama, ID, atau daerah..."/>
                     </div>
                 </label>
             </div>
@@ -48,7 +38,7 @@
                 <span class="text-sm font-medium text-text-secondary dark:text-gray-400 mr-2">Filters:</span>
                 <div class="relative">
                     <select name="province" onchange="this.form.submit()" class="appearance-none flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg border border-[#e6e2de] dark:border-neutral-600 bg-surface-light dark:bg-surface-dark pl-3 pr-8 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors cursor-pointer text-text-main dark:text-white text-sm font-medium focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none">
-                        <option value="">Region: All</option>
+                        <option value="">Propinsi: Semua</option>
                         @foreach($provinces as $code => $name)
                             <option value="{{ $code }}" {{ request('province') == $code ? 'selected' : '' }}>{{ $name }}</option>
                         @endforeach
@@ -58,7 +48,7 @@
                 
                 @if(request('search') || request('province'))
                 <div class="ml-auto">
-                    <a href="{{ route('sppg.public.index') }}" class="text-sm text-primary font-medium hover:underline">Clear all</a>
+                    <a href="{{ route('sppg.public.index') }}" class="text-sm text-primary font-medium hover:underline">Bersihkan</a>
                 </div>
                 @endif
             </div>
@@ -70,11 +60,11 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-[#f5f3f0] dark:bg-[#362e26] border-b border-[#e6e2de] dark:border-neutral-700">
-                                <th class="p-4 text-sm font-semibold text-text-secondary uppercase tracking-wider min-w-[200px]">Kitchen Name</th>
-                                <th class="p-4 text-sm font-semibold text-text-secondary uppercase tracking-wider min-w-[150px]">Location</th>
-                                <th class="p-4 text-sm font-semibold text-text-secondary uppercase tracking-wider text-right">Capacity <span class="text-xs normal-case font-normal">(meals/day)</span></th>
+                                <th class="p-4 text-sm font-semibold text-text-secondary uppercase tracking-wider min-w-[200px]">Nama SPPG</th>
+                                <th class="p-4 text-sm font-semibold text-text-secondary uppercase tracking-wider min-w-[150px]">Lokasi</th>
+                                <th class="p-4 text-sm font-semibold text-text-secondary uppercase tracking-wider text-right">Kapasitas <span class="text-xs normal-case font-normal">(makanan/hari)</span></th>
                                 <th class="p-4 text-sm font-semibold text-text-secondary uppercase tracking-wider">Status</th>
-                                <th class="p-4 text-sm font-semibold text-text-secondary uppercase tracking-wider text-right">Actions</th>
+                                <th class="p-4 text-sm font-semibold text-text-secondary uppercase tracking-wider text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-[#e6e2de] dark:divide-neutral-700">
@@ -95,7 +85,7 @@
                                     </div>
                                 </td>
                                 <td class="p-4 text-right">
-                                    <span class="text-text-main dark:text-white font-mono font-medium">{{ $sppg->kapasitas ?? '-' }}</span>
+                                    <span class="text-text-main dark:text-white font-mono font-medium">{{ number_format($sppg->porsi_besar + $sppg->porsi_kecil) }}</span>
                                 </td>
                                 <td class="p-4">
                                     @if($sppg->is_active)

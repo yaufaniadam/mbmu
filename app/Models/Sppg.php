@@ -24,6 +24,7 @@ class Sppg extends Model
         'city_code' => 'string',
         'district_code' => 'string',
         'village_code' => 'string',
+        'gallery_photos' => 'array',
     ];
 
     /**
@@ -64,6 +65,9 @@ class Sppg extends Model
         'instagram',
         'youtube',
         'tiktok',
+        'porsi_besar',
+        'porsi_kecil',
+        'gallery_photos',
     ];
 
     /**

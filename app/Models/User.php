@@ -57,9 +57,7 @@ class User extends Authenticatable implements FilamentUser
         'gender',
         'birth_date',
         'photo_path',
-        // Tambahkan 'sppg_id' jika Anda menggunakannya sebagai SPPG "utama" atau "asal" user.
-        // Ini opsional, karena peran utama ditentukan oleh relasi.
-        // 'sppg_id',
+        'sppg_id',
     ];
 
     /**
@@ -112,6 +110,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsToMany(Sppg::class, 'sppg_user_roles')
             ->withPivot('role_id') // Ambil juga role_id dari pivot table
             ->limit(1);
+    }
+
+    public function sppg()
+    {
+        return $this->belongsTo(Sppg::class, 'sppg_id');
     }
 
     public function lembagaDipimpin(): HasOne

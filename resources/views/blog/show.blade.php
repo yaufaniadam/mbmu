@@ -6,10 +6,10 @@
 <div class="flex-grow w-full max-w-[1280px] mx-auto px-6 py-8">
     <!-- Breadcrumbs -->
     <nav class="flex items-center gap-2 mb-6 text-sm">
-        <a class="text-[#8a7960] dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="{{ url('/') }}">Home</a>
-        <span class="text-[#8a7960] dark:text-gray-400">/</span>
-        <a class="text-[#8a7960] dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="{{ route('blog.public.index') }}">Blog</a>
-        <span class="text-[#8a7960] dark:text-gray-400">/</span>
+        <a class="text-[#686868] dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="{{ url('/') }}">Home</a>
+        <span class="text-[#686868] dark:text-gray-400">/</span>
+        <a class="text-[#686868] dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="{{ route('blog.public.index') }}">Blog</a>
+        <span class="text-[#686868] dark:text-gray-400">/</span>
         <span class="font-medium text-[#181511] dark:text-gray-200 truncate max-w-[200px]">{{ $post->title }}</span>
     </nav>
 
@@ -24,7 +24,7 @@
                         {{ $post->title }}
                     </h1>
                     @if($post->excerpt)
-                    <p class="text-lg md:text-xl text-[#8a7960] dark:text-gray-400 leading-relaxed max-w-3xl">
+                    <p class="text-lg md:text-xl text-[#686868] dark:text-gray-400 leading-relaxed max-w-3xl">
                         {{ $post->excerpt }}
                     </p>
                     @endif
@@ -36,7 +36,7 @@
                     </div>
                     <div class="flex flex-col">
                         <span class="text-[#181511] dark:text-white text-sm font-bold">{{ $post->author->name ?? 'Admin' }}</span>
-                        <div class="flex items-center gap-2 text-xs text-[#8a7960] dark:text-gray-400">
+                        <div class="flex items-center gap-2 text-xs text-[#686868] dark:text-gray-400">
                             <span>Author</span>
                             <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
                             <span>{{ $post->published_at->format('M d, Y') }}</span>
@@ -83,31 +83,11 @@
                     {!! $post->content !!}
                 </div>
             </div>
-
-            <!-- Comments Section (Placeholder) -->
-            <section class="mt-12">
-                <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">Comments (0)</h3>
-                <div class="bg-[#f9f9f9] dark:bg-[#1f1b17] p-6 rounded-xl mb-10">
-                    <p class="text-gray-500 text-sm">Comments are closed for this post.</p>
-                </div>
-            </section>
         </article>
 
         <!-- Sidebar -->
         <aside class="lg:col-span-4 space-y-8">
-            <!-- Newsletter -->
-            <div class="bg-[#f8f7f5] dark:bg-[#2c2620] rounded-xl p-6">
-                <div class="size-10 bg-white dark:bg-[#1a1612] rounded-full flex items-center justify-center mb-4 text-primary shadow-sm">
-                    <span class="material-symbols-outlined">mail</span>
-                </div>
-                <h3 class="text-lg font-bold mb-2 text-[#181511] dark:text-white">Get health tips weekly</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Join 10,000+ subscribers for recipes and updates.</p>
-                <form class="flex flex-col gap-3">
-                    <input class="w-full rounded-lg border-none focus:ring-2 focus:ring-primary px-4 py-2 text-sm dark:bg-[#1a1612] dark:text-white" placeholder="Your email address" type="email"/>
-                    <button class="w-full bg-primary text-[#181511] font-bold py-2 rounded-lg hover:bg-primary/90 transition-colors">Subscribe</button>
-                </form>
-            </div>
-            
+
             <!-- Latest/Related Posts -->
             <div class="bg-white dark:bg-[#1a1612] border border-[#f5f3f0] dark:border-[#3a3530] rounded-xl p-6">
                 <h3 class="text-lg font-bold mb-4 text-[#181511] dark:text-white">Related Posts</h3>

@@ -7,11 +7,21 @@ use Illuminate\Http\Request;
 
 class PublicBlogController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::where('status', 'published')
-            ->latest('published_at')
-            ->paginate(9);
+        $query = Post::where('status', 'published');
+        
+        // Search functionality
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('excerpt', 'like', "%{$search}%")
+                  ->orWhere('content', 'like', "%{$search}%");
+            });
+        }
+        
+        $posts = $query->orderBy('id', 'desc')->paginate(9);
 
         return view('blog.index', compact('posts'));
     }

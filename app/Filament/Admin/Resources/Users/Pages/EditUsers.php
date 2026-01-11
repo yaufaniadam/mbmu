@@ -16,4 +16,12 @@ class EditUsers extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // Ensure sppg relationship is loaded
+        $this->record->load('sppg');
+        
+        return $data;
+    }
 }

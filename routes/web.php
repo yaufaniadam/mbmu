@@ -6,10 +6,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $posts = \App\Models\Post::where('status', 'published')
-        ->latest('published_at')
+        ->orderBy('id', 'desc')
         ->take(4)
         ->get();
-    return view('welcome', compact('posts'));
+    
+    $sliders = \App\Models\HomeSlider::where('is_active', true)
+        ->orderBy('order')
+        ->get();
+    
+    $features = \App\Models\HomeFeature::where('is_active', true)
+        ->orderBy('order')
+        ->get();
+    
+    return view('welcome', compact('posts', 'sliders', 'features'));
 });
 
 // Route::get('/dashboard', function () {
@@ -32,7 +41,11 @@ Route::get('/kontak', function () {
 })->name('contact.public');
 
 Route::get('/tim', function () {
-    return view('public.team');
+    $teamMembers = \App\Models\TeamMember::where('is_active', true)
+        ->orderBy('order')
+        ->get();
+    
+    return view('public.team', compact('teamMembers'));
 })->name('team.public');
 
 Route::controller(\App\Http\Controllers\PublicSppgController::class)->group(function () {

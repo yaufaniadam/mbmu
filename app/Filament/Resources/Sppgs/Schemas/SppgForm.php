@@ -223,6 +223,27 @@ class SppgForm
                                 'B' => 'B',
                                 'C' => 'C',
                             ]),
+                        TextInput::make('porsi_besar')
+                            ->label('Kapasitas Porsi Besar')
+                            ->numeric()
+                            ->default(0),
+                        TextInput::make('porsi_kecil')
+                            ->label('Kapasitas Porsi Kecil')
+                            ->numeric()
+                            ->default(0),
+                        \Filament\Forms\Components\FileUpload::make('gallery_photos')
+                            ->label('Galeri Foto')
+                            ->multiple()
+                            ->reorderable()
+                            ->image()
+                            ->disk('public')
+                            ->directory('sppg-gallery')
+                            ->visibility('public')
+                            ->downloadable()
+                            ->openable()
+                            ->imagePreviewHeight('250')
+                            ->panelLayout('grid')
+                            ->columnSpanFull(),
                     ]),
                 \Filament\Schemas\Components\Section::make('Dokumen SPPG')
                     ->columnSpanFull()

@@ -9,7 +9,7 @@
              <div class="flex items-center gap-4">
                 <a href="{{ route('sppg.public.index') }}" class="flex items-center gap-2 text-primary font-bold">
                     <span class="material-symbols-outlined">arrow_back</span>
-                    Back to Directory
+                    Kembali ke Direktori
                 </a>
              </div>
         </div>
@@ -63,12 +63,6 @@
                     {{ $sppg->alamat ?? 'Lokasi tidak tersedia.' }}
                 </p>
             </div>
-            <div class="flex gap-3">
-                <button class="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-lg text-sm font-medium transition-all border border-white/30">
-                    <span class="material-symbols-outlined text-[20px]">share</span>
-                    Share
-                </button>
-            </div>
         </div>
     </div>
 
@@ -83,7 +77,12 @@
             </div>
             <div>
                 <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Daily Capacity</p>
-                <h3 class="text-slate-900 dark:text-white text-2xl font-bold mt-1">{{ $sppg->kapasitas ? number_format($sppg->kapasitas) . ' Meals' : '-' }}</h3>
+                <h3 class="text-slate-900 dark:text-white text-2xl font-bold mt-1">
+                    {{ number_format($sppg->porsi_besar + $sppg->porsi_kecil) }} Meals
+                </h3>
+                <p class="text-xs text-slate-500 mt-1">
+                    (L: {{ number_format($sppg->porsi_besar) }}, S: {{ number_format($sppg->porsi_kecil) }})
+                </p>
             </div>
         </div>
         <!-- Staff -->
@@ -95,7 +94,8 @@
             </div>
             <div>
                 <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Active Staff</p>
-                <h3 class="text-slate-900 dark:text-white text-2xl font-bold mt-1">-</h3>
+                <h3 class="text-slate-900 dark:text-white text-2xl font-bold mt-1">{{ number_format($sppg->volunteers()->count()) }}</h3>
+                <p class="text-xs text-slate-500 mt-1">Volunteers</p>
             </div>
         </div>
         <!-- Status -->
@@ -144,6 +144,17 @@
                             </div>
                         @endif
                     </div>
+                    
+                    <!-- Gallery Grid -->
+                    @if($sppg->gallery_photos && count($sppg->gallery_photos) > 0)
+                    <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-4">
+                        @foreach($sppg->gallery_photos as $photo)
+                        <div class="aspect-square rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 cursor-pointer hover:opacity-80 transition-opacity">
+                             <img src="{{ Storage::disk('public')->url($photo) }}" alt="Gallery Image" class="w-full h-full object-cover" onclick="window.open(this.src, '_blank')">
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

@@ -37,6 +37,8 @@ class PublicSppgController extends Controller
             abort(404);
         }
 
+        $sppg->load(['province', 'city', 'pjSppg']);
+
         return view('sppg.show', compact('sppg'));
     }
 }

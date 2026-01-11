@@ -55,6 +55,12 @@ class UsersForm
                             ->preload()
                             ->searchable()
                             ->required(),
+                        Select::make('sppg_id')
+                            ->label('SPPG')
+                            ->relationship('sppg', 'nama_sppg')
+                            ->searchable()
+                            ->preload()
+                            ->helperText('Pilih SPPG yang akan dikelola oleh user ini'),
                     ])->columns(2),
 
                 \Filament\Schemas\Components\Section::make('Keamanan')
