@@ -17,7 +17,7 @@ class ProductionScheduleList extends TableWidget
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?string $heading = 'Jadwal Produksi'; // Optional: Add a heading
+    protected static ?string $heading = 'Aktifitas Harian'; // Optional: Add a heading
 
     protected static bool $isLazy = false;
 

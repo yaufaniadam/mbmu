@@ -14,7 +14,7 @@ class ProductionChart extends ChartWidget
 {
     use InteractsWithPageFilters;
 
-    protected ?string $heading = 'Production Chart';
+    protected ?string $heading = 'Aktifitas Harian';
 
     protected function getData(): array
     {
