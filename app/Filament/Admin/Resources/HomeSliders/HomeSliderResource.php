@@ -18,6 +18,11 @@ class HomeSliderResource extends Resource
 {
     protected static ?string $model = HomeSlider::class;
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasAnyRole(['Superadmin', 'Staf Kornas']) ?? false;
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'title';

@@ -30,8 +30,11 @@ class ManageFinance extends Page implements HasForms
             return false;
         }
 
+        // Pimpinan Lembaga Pengusul needs access for:
+        // - verify_rent: Menerima pembayaran insentif dari SPPG
+        // - pay_royalty: Bayar kontribusi ke Kornas
         if ($user->hasRole('Pimpinan Lembaga Pengusul')) {
-            return false;
+            return true;
         }
 
         return Gate::allows('View:ManageFinance');
@@ -44,6 +47,16 @@ class ManageFinance extends Page implements HasForms
     public static function getNavigationIcon(): ?string
     {
         return 'heroicon-o-banknotes';
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        // Hide for SPPG roles because they now have "PayIncentive" page
+        if (auth()->user()?->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan'])) {
+            return false;
+        }
+
+        return true;
     }
 
     public function mount(): void

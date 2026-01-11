@@ -18,6 +18,11 @@ class TeamMemberResource extends Resource
 {
     protected static ?string $model = TeamMember::class;
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasAnyRole(['Superadmin', 'Staf Kornas']) ?? false;
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
     protected static ?string $recordTitleAttribute = 'name';

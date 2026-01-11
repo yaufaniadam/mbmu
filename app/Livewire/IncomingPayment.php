@@ -41,14 +41,16 @@ class IncomingPayment extends TableWidget
                 }
 
                 if (Auth::user()->hasRole('Pimpinan Lembaga Pengusul') && $this->type !== 'LP_ROYALTY') {
-                    $allowedSppgIds = Auth::user()
-                        ->lembagaDipimpin
-                        ->sppgs
-                        ->pluck('id')
-                        ->toArray();
-
-                    // Incoming Rent from SPPGs
-                    $query->whereIn('sppg_id', $allowedSppgIds);
+                    $lembaga = Auth::user()->lembagaDipimpin;
+                    
+                    if ($lembaga) {
+                        $allowedSppgIds = $lembaga->sppgs->pluck('id')->toArray();
+                        // Incoming Rent from SPPGs
+                        $query->whereIn('sppg_id', $allowedSppgIds);
+                    } else {
+                        // User belum di-assign ke lembaga, return empty result
+                        $query->whereRaw('1 = 0');
+                    }
                     
                     if (!$this->type) {
                         $query->where('type', 'SPPG_SEWA');

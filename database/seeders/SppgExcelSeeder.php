@@ -74,6 +74,13 @@ class SppgExcelSeeder extends Seeder
 
                 // Find or create Lembaga Pengusul
                 $lembagaPengusul = $this->findOrCreateLembagaPengusul($data);
+                
+                // IMPORTANT: Skip SPPG creation if Lembaga Pengusul is not found to prevent orphan data
+                if (!$lembagaPengusul) {
+                    $this->command->warn("SPPG '{$data['nama_sppg']}' skipped: Kolom 'pengusul' kosong atau tidak valid.");
+                    $skipped++;
+                    continue;
+                }
 
                 // 1. Map Location Names to Codes
                 $province = $this->findLocation(Province::class, $data['provinsi'] ?? '');
@@ -99,7 +106,7 @@ class SppgExcelSeeder extends Seeder
                     'kode_sppg' => strtoupper(trim($data['kode_sppg'])),
                     'is_active' => filter_var($data['is_active'], FILTER_VALIDATE_BOOLEAN),
                     'status' => trim($data['status'] ?? '') ?: null,
-                    'lembaga_pengusul_id' => $lembagaPengusul?->id,
+                    'lembaga_pengusul_id' => $lembagaPengusul->id,
                     'pj_id' => $pjUser?->id,
                     'alamat' => $alamat ?: 'Alamat belum diisi',
                     'province_code' => $province?->code,
@@ -158,9 +165,12 @@ class SppgExcelSeeder extends Seeder
 
     protected function findOrCreateLembagaPengusul(array $data): ?LembagaPengusul
     {
-       
-        // Create a unique name based on pengusul + location
-        $namaPengusul = $data['pengusul'];        
+        // Validate pengusul field is not empty
+        $namaPengusul = trim($data['pengusul'] ?? '');
+        
+        if (empty($namaPengusul)) {
+            return null;
+        }
 
         // Find existing or create new
         return LembagaPengusul::firstOrCreate(

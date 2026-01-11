@@ -18,6 +18,11 @@ class HomeFeatureResource extends Resource
 {
     protected static ?string $model = HomeFeature::class;
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasAnyRole(['Superadmin', 'Staf Kornas']) ?? false;
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSparkles;
 
     protected static ?string $recordTitleAttribute = 'title';
