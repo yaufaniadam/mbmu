@@ -4,6 +4,8 @@
 
 This document outlines the strict coding standards and security protocols for this Laravel Enterprise-Grade project. All contributions must adhere to these rules.
 
+TECH : Laravel 12 Filament 4
+
 ## 1. ARSITEKTUR & STRUKTUR (The "Skinny Controller" Mandate)
 * **Controller:** HARUS "Skinny". Controller dilarang mengandung *business logic*. Tugas controller hanya: Validasi Request -> Panggil Service/Action -> Return Response (JSON/View).
 * **Service/Action Layer:** Pindahkan semua logika bisnis kompleks ke dalam `App\Services` atau `App\Actions`.

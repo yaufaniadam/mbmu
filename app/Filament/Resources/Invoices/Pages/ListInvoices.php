@@ -14,6 +14,10 @@ class ListInvoices extends ListRecords
     {
         return [
             // Actions\CreateAction::make(),
+            Actions\Action::make('manual_generate')
+                ->label('Manual Generate Tool')
+                ->icon('heroicon-o-cog-6-tooth')
+                ->url(InvoiceResource::getUrl('generate-tool')),
         ];
     }
 }

@@ -119,6 +119,7 @@
                         <div class="flex flex-col gap-4">
                             <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Support</h4>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="#">Donate</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('guide.public') }}">Panduan Aplikasi</a>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="#">Volunteer</a>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('sppg.public.index') }}">School Programs</a>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('contact.public') }}">Contact</a>

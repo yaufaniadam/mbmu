@@ -28,47 +28,22 @@
             
             <!-- Left Column: Contact Form -->
             <div class="flex flex-col gap-8">
-                <div>
-                    <h2 class="text-text-main dark:text-white text-3xl font-bold mb-2">Kirim Pesan</h2>
-                    <p class="text-text-main/70 dark:text-gray-400">Isi formulir di bawah ini dan tim kami akan segera menghubungi Anda.</p>
+
+
+                <!-- OpenStreetMap Frame -->
+                <div class="w-full h-[500px] rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 relative z-0">
+                    <iframe 
+                        width="100%" 
+                        height="100%" 
+                        frameborder="0" 
+                        scrolling="no" 
+                        marginheight="0" 
+                        marginwidth="0" 
+                        {{-- Centered around Gedung PP Muhammadiyah Yogyakarta approx -7.8012, 110.3603 --}}
+                        src="https://www.openstreetmap.org/export/embed.html?bbox=110.3553%2C-7.8062%2C110.3653%2C-7.7962&amp;layer=mapnik&amp;marker=-7.8012%2C110.3603" 
+                        style="border: 0">
+                    </iframe>
                 </div>
-
-                <form class="flex flex-col gap-5">
-                    <!-- Name Input -->
-                    <div class="flex flex-col w-full gap-2">
-                        <label class="text-text-main dark:text-white font-medium">Nama Lengkap</label>
-                        <input type="text" class="w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1a1612] text-gray-900 dark:text-white focus:ring-primary focus:border-primary px-4 py-3 shadow-sm transition-colors" placeholder="Nama Anda">
-                    </div>
-
-                    <!-- Email Input -->
-                    <div class="flex flex-col w-full gap-2">
-                        <label class="text-text-main dark:text-white font-medium">Email Address</label>
-                        <input type="email" class="w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1a1612] text-gray-900 dark:text-white focus:ring-primary focus:border-primary px-4 py-3 shadow-sm transition-colors" placeholder="email@contoh.com">
-                    </div>
-
-                    <!-- Subject Input -->
-                    <div class="flex flex-col w-full gap-2">
-                        <label class="text-text-main dark:text-white font-medium">Subjek</label>
-                        <select class="w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1a1612] text-gray-900 dark:text-white focus:ring-primary focus:border-primary px-4 py-3 shadow-sm transition-colors">
-                            <option>Pertanyaan Umum</option>
-                            <option>Kemitraan Sekolah</option>
-                            <option>Donasi</option>
-                            <option>Relawan</option>
-                        </select>
-                    </div>
-
-                    <!-- Message Textarea -->
-                    <div class="flex flex-col w-full gap-2">
-                        <label class="text-text-main dark:text-white font-medium">Pesan</label>
-                        <textarea class="w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1a1612] text-gray-900 dark:text-white focus:ring-primary focus:border-primary px-4 py-3 min-h-[150px] shadow-sm transition-colors" placeholder="Tulis pesan Anda di sini..."></textarea>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit" class="mt-2 w-full md:w-auto self-start bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all transform active:scale-95 flex items-center justify-center gap-2">
-                        <span>Kirim Pesan</span>
-                        <span class="material-symbols-outlined text-[20px]">send</span>
-                    </button>
-                </form>
             </div>
 
             <!-- Right Column: Contact Info & Map -->
@@ -116,33 +91,9 @@
                     </div>
                 </div>
 
-                <!-- Embedded Map Block -->
-                <div class="w-full h-80 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 relative group">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.9698973792074!2d110.36034131477793!3d-7.801194994378129!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a5788d4001d71%3A0x6c6670860533100c!2sGedung%20Pimpinan%20Pusat%20Muhammadiyah!5e0!3m2!1sen!2sid!4v1672345678901!5m2!1sen!2sid" 
-                        width="100%" 
-                        height="100%" 
-                        style="border:0;" 
-                        allowfullscreen="" 
-                        loading="lazy" 
-                        class="grayscale group-hover:grayscale-0 transition-all duration-700"
-                        referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
-                </div>
 
-                <!-- FAQ Link Block -->
-                <div class="bg-primary/5 border border-primary/20 p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="flex items-center gap-4">
-                        <span class="material-symbols-outlined text-primary text-4xl">help</span>
-                        <div>
-                            <h3 class="text-gray-900 dark:text-white font-bold text-lg">Punya pertanyaan singkat?</h3>
-                            <p class="text-gray-500 text-sm">Cek FAQ kami untuk jawaban instan.</p>
-                        </div>
-                    </div>
-                    <button class="bg-white dark:bg-[#1a1612] text-gray-900 dark:text-white font-medium py-2 px-5 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all">
-                        Lihat FAQ
-                    </button>
-                </div>
+
+
             </div>
         </div>
     </div>

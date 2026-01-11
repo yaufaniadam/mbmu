@@ -40,6 +40,10 @@ Route::get('/kontak', function () {
     return view('public.contact');
 })->name('contact.public');
 
+Route::get('/panduan', function () {
+    return view('public.guide');
+})->name('guide.public');
+
 Route::get('/tim', function () {
     $teamMembers = \App\Models\TeamMember::where('is_active', true)
         ->orderBy('order')

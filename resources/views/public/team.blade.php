@@ -115,24 +115,7 @@
         </div>
 
         <!-- Join The Team CTA -->
-        <div class="mt-16 rounded-2xl bg-gradient-to-r from-[#221a10] to-[#3a3025] dark:from-[#3a3025] dark:to-[#4e4033] p-8 md:p-12 relative overflow-hidden">
-            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                <div class="flex-1 text-center md:text-left">
-                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-3">Want to make a difference?</h3>
-                    <p class="text-gray-300 text-lg">We are always looking for passionate individuals to join our kitchen, logistics, and admin teams.</p>
-                </div>
-                <div class="flex gap-4">
-                    <button class="whitespace-nowrap rounded-lg bg-primary text-[#181511] px-6 py-3 font-bold text-sm md:text-base hover:bg-orange-400 transition-colors shadow-lg shadow-orange-500/20">
-                        View Open Positions
-                    </button>
-                    <button class="whitespace-nowrap rounded-lg bg-transparent border border-white/20 text-white px-6 py-3 font-bold text-sm md:text-base hover:bg-white/10 transition-colors">
-                        Become a Volunteer
-                    </button>
-                </div>
-            </div>
-            <!-- Decorative bg element -->
-            <div class="absolute right-0 top-0 h-full w-1/3 bg-primary opacity-10 blur-3xl -mr-20 transform skew-x-12"></div>
-        </div>
+
     </div>
 </div>
 @endsection

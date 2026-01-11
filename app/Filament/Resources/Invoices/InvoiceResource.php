@@ -362,6 +362,7 @@ class InvoiceResource extends Resource
             'index' => Pages\ListInvoices::route('/'),
             // 'create' => Pages\CreateInvoice::route('/create'),
             // 'edit' => Pages\EditInvoice::route('/{record}/edit'),
+            'generate-tool' => Pages\GenerateInvoices::route('/generate-tool'),
         ];
     }
 }

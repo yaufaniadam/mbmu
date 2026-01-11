@@ -47,6 +47,7 @@ class SppgPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Sppg/Resources'), for: 'App\Filament\Sppg\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
+            ->discoverPages(in: app_path('Filament/Sppg/Pages'), for: 'App\Filament\Sppg\Pages')
             ->pages([
                 Dashboard::class,
                 DailyAttendance::class,

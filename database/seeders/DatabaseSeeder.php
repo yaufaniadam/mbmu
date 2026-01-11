@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             // PenerimaMbmSeeder::class, // Disabled
             FinancialCategorySeeder::class,
             ProductionVerificationSettingSeeder::class,
+            PublicContentSeeder::class,
          ]);
     }
 }
