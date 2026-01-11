@@ -9,6 +9,7 @@ use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SppgStatsOverview extends StatsOverviewWidget
 {
@@ -37,43 +38,49 @@ class SppgStatsOverview extends StatsOverviewWidget
         }
 
         if ($isNationalView) {
-            $distributions = \App\Models\Distribution::where('status_pengantaran', 'Terkirim')->count();
-            $productions = \App\Models\ProductionSchedule::where('status', 'Selesai')->count();
-            $sppgCount = Sppg::count();
-            // Hanya hitung yang sudah terkirim tapi belum dijemput
-            $pendingPickups = \App\Models\Distribution::where('status_pengantaran', 'Terkirim')
-                ->where(function($query) {
-                    $query->where('pickup_status', '!=', 'Dijemput')
-                          ->orWhereNull('pickup_status');
-                })
-                ->count();
+            $totalSppg = Sppg::count();
+            // Count staff (Users attached to SPPGs via pivoting or specific roles if needed, but simplest is all users with staff roles? 
+            // Better to count distinct users in sppg_user_roles pivot if possible, or just users who have any staff role?)
+            // Let's assume for now we count all users who have roles associated with SPPG operations.
+            // Actually, querying the pivot table from Sppg model context is safer if we want "Staff at SPPGs".
+            // But for simplicity/performance in this widget:
+            $totalStaf = DB::table('sppg_user_roles')->distinct('user_id')->count(); 
+            $totalRelawan = \App\Models\Volunteer::count();
+
+            return [
+                Stat::make('Total SPPG', number_format($totalSppg, 0, ',', '.'))
+                    ->icon('heroicon-o-building-storefront', IconPosition::Before)
+                    ->description('Total unit SPPG nasional')
+                    ->color('primary'),
+                Stat::make('Total Staf', number_format($totalStaf, 0, ',', '.'))
+                    ->icon('heroicon-o-users', IconPosition::Before)
+                    ->description('Total staf terdaftar')
+                    ->color('success'),
+                Stat::make('Total Relawan', number_format($totalRelawan, 0, ',', '.'))
+                    ->icon('heroicon-o-user-group', IconPosition::Before)
+                    ->description('Total relawan aktif')
+                    ->color('warning'),
+            ];
         } else if ($sppg) {
-            // Hanya hitung untuk SPPG bersangkutan dengan status selesai
-            $distributions = $sppg->distributions()->where('status_pengantaran', 'Terkirim')->count();
-            $productions = $sppg->productionSchedules()->where('status', 'Selesai')->count();
-            // Hanya hitung yang sudah terkirim tapi belum dijemput
-            $pendingPickups = $sppg->distributions()
-                ->where('status_pengantaran', 'Terkirim')
-                ->where(function($query) {
-                    $query->where('pickup_status', '!=', 'Dijemput')
-                          ->orWhereNull('pickup_status');
-                })
-                ->count();
+            $totalStaf = $sppg->staff()->count();
+            $totalRelawan = $sppg->volunteers()->count();
+
+            return [
+                Stat::make('Total SPPG', '1')
+                    ->icon('heroicon-o-building-storefront', IconPosition::Before)
+                    ->description('Unit Operasional')
+                    ->color('primary'),
+                Stat::make('Total Staf', number_format($totalStaf, 0, ',', '.'))
+                    ->icon('heroicon-o-users', IconPosition::Before)
+                    ->description('Staf unit ini')
+                    ->color('success'),
+                Stat::make('Total Relawan', number_format($totalRelawan, 0, ',', '.'))
+                    ->icon('heroicon-o-user-group', IconPosition::Before)
+                    ->description('Relawan unit ini')
+                    ->color('warning'),
+            ];
         }
 
-        return [
-            Stat::make('Pengantaran', $distributions ?? 0)
-                ->icon('heroicon-o-truck', IconPosition::Before)
-                ->description($isNationalView ? 'Total pengantaran nasional' : 'pengantaran selesai')
-                ->color('secondary'),
-            Stat::make('Produksi', $productions ?? 0)
-                ->icon('heroicon-o-home-modern', IconPosition::Before)
-                ->description($isNationalView ? 'Total produksi nasional' : 'produksi selesai')
-                ->color('secondary'),
-            Stat::make('Penjemputan Alat', $pendingPickups ?? 0)
-                ->icon('heroicon-o-arrow-path', IconPosition::Before)
-                ->description('Peralatan belum dijemput')
-                ->color(($pendingPickups ?? 0) > 0 ? 'warning' : 'success'),
-        ];
+        return [];
     }
 }
