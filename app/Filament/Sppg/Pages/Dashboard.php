@@ -53,7 +53,6 @@ class Dashboard extends BaseDashboard
         return [
             SppgTopStatsWidget::class,
             SppgStatsOverview::class,
-            FinanceStatsOverview::class,
             ProductionChart::class,
             ProductionScheduleList::class,
             ProductionDistributionList::class,
