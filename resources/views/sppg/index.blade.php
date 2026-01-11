@@ -31,7 +31,11 @@
                         @forelse($sppgs as $sppg)
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">{{ $sppg->nama_sppg }}</div>
+                                    <div class="text-sm font-medium text-gray-900">
+                                        <a href="{{ route('sppg.public.show', $sppg->kode_sppg) }}" class="text-blue-600 hover:text-blue-900 hover:underline">
+                                            {{ $sppg->nama_sppg }}
+                                        </a>
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-500">{{ $sppg->kode_sppg ?? '-' }}</div>

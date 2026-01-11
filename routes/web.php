@@ -5,7 +5,11 @@ use App\Livewire\SelfRegistration;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    $posts = \App\Models\Post::where('status', 'published')
+        ->latest('published_at')
+        ->take(4)
+        ->get();
+    return view('welcome', compact('posts'));
 });
 
 // Route::get('/dashboard', function () {
@@ -31,10 +35,12 @@ Route::get('/tim', function () {
     return view('public.team');
 })->name('team.public');
 
-Route::get('/daftar-sppg', function () {
-    $sppgs = \App\Models\Sppg::where('is_active', true)->paginate(15);
-    return view('sppg.index', compact('sppgs'));
-})->name('sppg.public.index');
+Route::controller(\App\Http\Controllers\PublicSppgController::class)->group(function () {
+    Route::get('/daftar-sppg', 'index')->name('sppg.public.index');
+    Route::get('/daftar-sppg/{sppg:kode_sppg}', 'show')->name('sppg.public.show');
+});
+
+Route::get('/artikel/{post:slug}', [\App\Http\Controllers\PublicBlogController::class, 'show'])->name('blog.public.show');
 
 // Self Registration Routes
 Route::get('/daftar', SelfRegistration::class)->name('register.self');

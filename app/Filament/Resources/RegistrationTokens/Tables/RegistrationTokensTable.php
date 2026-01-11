@@ -57,8 +57,6 @@ class RegistrationTokensTable
                 TextColumn::make('registration_url')
                     ->label('Link Registrasi')
                     ->state(fn (RegistrationToken $record): string => $record->getRegistrationUrl())
-                    ->copyable()
-                    ->copyMessage('Link disalin!')
                     ->limit(30)
                     ->tooltip(fn (RegistrationToken $record): string => $record->getRegistrationUrl()),
                 
@@ -103,15 +101,20 @@ class RegistrationTokensTable
                             ->label('Nomor Tujuan')
                             ->default(fn (RegistrationToken $record) => $record->recipient_phone)
                             ->required(),
+                        \Filament\Forms\Components\Textarea::make('message_template')
+                            ->label('Pesan')
+                            ->default(fn (RegistrationToken $record) => "Assalamualaikum {$record->recipient_name},\n\n"
+                                . "Silakan login ke MBMu App lalu buat akun.\n\n"
+                                . "👉 Link: {$record->getRegistrationUrl()}\n"
+                                . "🔑 Token: {$record->token}\n\n"
+                                . "Gunakan link dan token di atas untuk mendaftar sebagai {$record->role_label} di {$record->sppg->nama_sppg}.\n\n"
+                                . "Terima Kasih.")
+                            ->rows(6)
+                            ->required(),
                     ])
                     ->action(function (RegistrationToken $record, array $data) {
                         $wablas = new \App\Services\WablasService();
-                        $message = "Halo {$record->recipient_name},\n\n"
-                            . "Berikut adalah link registrasi akun MBM Anda:\n"
-                            . "👉 {$record->getRegistrationUrl()}\n\n"
-                            . "Kode Token: *{$record->token}*\n\n"
-                            . "Silakan klik link di atas untuk mendaftar sebagai *{$record->role_label}* di *{$record->sppg->nama_sppg}*.\n\n"
-                            . "Terima Kasih.";
+                        $message = $data['message_template'];
                         
                         if ($wablas->sendMessage($data['phone'], $message)) {
                             \Filament\Notifications\Notification::make()
@@ -125,18 +128,7 @@ class RegistrationTokensTable
                                 ->send();
                         }
                     })
-                    ->visible(fn (RegistrationToken $record) => !empty($record->recipient_phone)),
-
-                Action::make('copy_link')
-                    ->label('Salin')
-                    ->icon('heroicon-o-clipboard')
-                    ->action(function (RegistrationToken $record) {
-                        // Client-side copy handled by Alpine
-                    })
-                    ->extraAttributes(fn (RegistrationToken $record) => [
-                        'x-data' => '{}',
-                        'x-on:click' => "navigator.clipboard.writeText('" . $record->getRegistrationUrl() . "'); \$notify('Link disalin!')",
-                    ]),
+                    ->visible(true),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -146,18 +138,30 @@ class RegistrationTokensTable
                         ->icon('heroicon-o-chat-bubble-left-right')
                         ->color('success')
                         ->requiresConfirmation()
-                        ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
+                        ->form([
+                            \Filament\Forms\Components\Textarea::make('message_template')
+                                ->label('Template Pesan')
+                                ->helperText('Gunakan {name}, {link}, {token}, {role}, {sppg} sebagai placeholder.')
+                                ->default("Assalamualaikum {name},\n\n"
+                                    . "Silakan login ke MBMu App lalu buat akun.\n\n"
+                                    . "👉 Link: {link}\n"
+                                    . "🔑 Token: {token}\n\n"
+                                    . "Gunakan link dan token di atas untuk mendaftar sebagai {role} di {sppg}.\n\n"
+                                    . "Terima Kasih.")
+                                ->rows(6)
+                                ->required(),
+                        ])
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records, array $data) {
                             $wablas = new \App\Services\WablasService();
                             $sent = 0;
                             foreach ($records as $record) {
                                 if (empty($record->recipient_phone)) continue;
                                 
-                                $message = "Halo {$record->recipient_name},\n\n"
-                                    . "Berikut adalah link registrasi akun MBM Anda:\n"
-                                    . "👉 {$record->getRegistrationUrl()}\n\n"
-                                    . "Kode Token: *{$record->token}*\n\n"
-                                    . "Silakan klik link di atas untuk mendaftar sebagai *{$record->role_label}* di *{$record->sppg->nama_sppg}*.\n\n"
-                                    . "Terima Kasih.";
+                                $message = str_replace(
+                                    ['{name}', '{link}', '{token}', '{role}', '{sppg}'],
+                                    [$record->recipient_name, $record->getRegistrationUrl(), $record->token, $record->role_label, $record->sppg->nama_sppg],
+                                    $data['message_template']
+                                );
 
                                 if ($wablas->sendMessage($record->recipient_phone, $message)) {
                                     $sent++;

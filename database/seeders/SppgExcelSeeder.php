@@ -97,7 +97,7 @@ class SppgExcelSeeder extends Seeder
                 $sppg = Sppg::create([
                     'nama_sppg' => trim($data['nama_sppg']),
                     'kode_sppg' => strtoupper(trim($data['kode_sppg'])),
-                    'is_active' => $data['is_active'] === 'True' || $data['is_active'] === '1',
+                    'is_active' => filter_var($data['is_active'], FILTER_VALIDATE_BOOLEAN),
                     'status' => trim($data['status'] ?? '') ?: null,
                     'lembaga_pengusul_id' => $lembagaPengusul?->id,
                     'pj_id' => $pjUser?->id,
@@ -114,6 +114,8 @@ class SppgExcelSeeder extends Seeder
                     'role' => 'kepala_sppg',
                     'max_uses' => 1,
                     'is_active' => true,
+                    'recipient_name' => $pjUser?->name ?? $data['nama_pj'] ?? null,
+                    'recipient_phone' => $pjUser?->telepon ?? isset($data['wa_pj']) ? ('0' . ltrim($data['wa_pj'], '0')) : null,
                 ]);
 
                 $imported++;
