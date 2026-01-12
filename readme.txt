@@ -13,6 +13,7 @@ Tambahkan ke crontab server (`crontab -e`):
 - `distribution:generate-daily` - Generate rencana distribusi (00:01)
 - `invoice:generate` - Generate invoice SPPG_SEWA (00:05)
 - `app:generate-bills` - Generate bills (setiap 10 detik)
+- `mbm:generate-test-data` - Generate test data 
 
 
 ## Artisan Commands Penting

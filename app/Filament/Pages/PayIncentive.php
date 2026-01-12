@@ -29,4 +29,25 @@ class PayIncentive extends Page
 
         return $user->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']);
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $user = auth()->user();
+        if (!$user) return null;
+
+        // Get count of unpaid invoices for the user's SPPG
+        $sppg = $user->sppgDiKepalai ?? $user->sppg;
+        if (!$sppg) return null;
+
+        $count = \App\Models\Invoice::where('sppg_id', $sppg->id)
+            ->where('status', 'UNPAID')
+            ->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'danger';
+    }
 }

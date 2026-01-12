@@ -130,6 +130,7 @@ class GenerateTestSppgData extends Command
                     'city_code' => $cityCode,
                     'district_code' => $districtCode,
                     'village_code' => $village->code,
+                    'grade' => ['A', 'B', 'C'][rand(0, 2)],
                 ]
             );
 

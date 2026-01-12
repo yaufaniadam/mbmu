@@ -95,6 +95,7 @@ class SppgPanelProvider extends PanelProvider
             ->renderHook(
                 'panels::body.end',
                 fn(): string => '<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>'
-            );
+            )
+            ->databaseNotifications();
     }
 }

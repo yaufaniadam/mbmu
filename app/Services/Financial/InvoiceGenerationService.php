@@ -95,22 +95,32 @@ class InvoiceGenerationService
             // Prepare Invoice Data
             $invoiceData = $this->prepareInvoiceData($sppg, $startDate, $endDate);
             
-            if (!$dryRun && $invoiceData['amount'] > 0) {
-                 Invoice::create([
-                    'invoice_number' => 'INV-' . $sppg->kode_sppg . '-' . $endDate->format('ymd'),
-                    'sppg_id' => $sppg->id,
-                    'type' => 'SPPG_SEWA',
-                    'amount' => $invoiceData['amount'],
-                    'status' => 'UNPAID',
-                    'start_date' => $startDate,
-                    'end_date' => $endDate,
-                    'due_date' => (clone $endDate)->addDays(3),
-                ]);
-            }
+                if (!$dryRun && $invoiceData['amount'] > 0) {
+                     $invoice = Invoice::create([
+                        'invoice_number' => 'INV-' . $sppg->kode_sppg . '-' . $endDate->format('ymd'),
+                        'sppg_id' => $sppg->id,
+                        'type' => 'SPPG_SEWA',
+                        'amount' => $invoiceData['amount'],
+                        'status' => 'UNPAID',
+                        'start_date' => $startDate,
+                        'end_date' => $endDate,
+                        'due_date' => (clone $endDate)->addDays(3),
+                    ]);
 
-            if ($invoiceData['amount'] > 0) {
-                $results[] = array_merge($invoiceData, ['sppg_name' => $sppg->nama_sppg]);
-            }
+                    // Send WhatsApp Notification to Kepala SPPG
+                    $kepalaSppg = $sppg->kepalaSppg;
+                    if ($kepalaSppg) {
+                        try {
+                            $kepalaSppg->notify(new \App\Notifications\InvoiceGenerated($invoice));
+                        } catch (\Exception $e) {
+                            \Illuminate\Support\Facades\Log::error("Failed to send invoice notification: " . $e->getMessage());
+                        }
+                    }
+                }
+
+                if ($invoiceData['amount'] > 0) {
+                    $results[] = array_merge($invoiceData, ['sppg_name' => $sppg->nama_sppg]);
+                }
 
             // Move start date to next day after the end of this period
             $startDate = (clone $endDate)->addDay();

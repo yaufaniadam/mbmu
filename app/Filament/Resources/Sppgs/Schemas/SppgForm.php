@@ -40,6 +40,22 @@ class SppgForm
                         TextInput::make('kode_sppg')
                             ->label('Kode SPPG')
                             ->required(),
+                        Select::make('grade')
+                            ->label('Grade Akreditasi')
+                            ->options([
+                                'A' => 'A',
+                                'B' => 'B',
+                                'C' => 'C',
+                            ])
+                            ->required(),
+                        Select::make('status')
+                            ->label('Status')
+                            ->options([
+                                'Aktif' => 'Aktif',
+                                'Tidak Aktif' => 'Tidak Aktif',
+                            ])
+                            ->required()
+                            ->default('Aktif'),
                         TextInput::make('nama_bank')
                             ->label('Nama Bank')
                             ->required(),

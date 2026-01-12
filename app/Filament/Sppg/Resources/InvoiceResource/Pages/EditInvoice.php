@@ -26,6 +26,26 @@ class EditInvoice extends EditRecord
         
         return $data;
     }
+
+    protected function afterSave(): void
+    {
+        $invoice = $this->getRecord();
+        
+        // Only notify if status just changed to WAITING_VERIFICATION
+        if ($invoice->status === 'WAITING_VERIFICATION') {
+            $sppg = $invoice->sppg;
+            $lembaga = $sppg?->lembagaPengusul;
+            $pimpinan = $lembaga?->pimpinan;
+
+            if ($pimpinan) {
+                try {
+                    $pimpinan->notify(new \App\Notifications\PaymentPendingVerification($invoice));
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error("Failed to notify Pimpinan Lembaga: " . $e->getMessage());
+                }
+            }
+        }
+    }
     
     protected function getRedirectUrl(): string
     {

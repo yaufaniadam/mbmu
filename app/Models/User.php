@@ -121,4 +121,15 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasOne(LembagaPengusul::class, 'pimpinan_id');
     }
+
+    /**
+     * Route notifications for the WhatsApp channel.
+     *
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @return string
+     */
+    public function routeNotificationForWhatsApp($notification)
+    {
+        return $this->telepon;
+    }
 }
