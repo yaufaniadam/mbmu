@@ -7,6 +7,7 @@ use Filament\Pages\Dashboard as BaseDashboard;
 class Dashboard extends BaseDashboard
 {
     protected static ?int $navigationSort = -2;
+    protected static string $layout = 'layouts.mobile-navigation';
 
     public static function shouldRegisterNavigation(): bool
     {

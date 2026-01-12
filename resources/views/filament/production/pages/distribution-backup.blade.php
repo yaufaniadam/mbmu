@@ -1,44 +1,11 @@
-<x-filament-panels::page>
-    {{-- Pending Pickups Section --}}
-    @if ($pendingPickups && $pendingPickups->isNotEmpty())
-        <div class="mb-6">
-            <div class="mb-2 bg-amber-900 p-4 rounded-lg border border-amber-600">
-                <p class="text-lg font-semibold text-amber-200">
-                    🥄 Alat Makan Siap Dijemput ({{ $pendingPickups->count() }})
-                </p>
-            </div>
-            <ul>
-                @foreach ($pendingPickups as $item)
-                    <li class="bg-amber-950 border border-amber-700 rounded-lg p-4 mb-2">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="font-semibold text-amber-200">{{ $item->school->nama_sekolah }}</p>
-                                <p class="text-sm text-amber-300">{{ $item->school->alamat }}</p>
-                                <div class="flex gap-2 mt-2">
-                                    <x-filament::badge color="success">
-                                        Terkirim {{ $item->delivered_at?->format('H:i') }}
-                                    </x-filament::badge>
-                                    <x-filament::badge color="warning">
-                                        {{ $item->pickup_status }}
-                                    </x-filament::badge>
-                                </div>
-                            </div>
-                            <div>
-                                <x-filament::button tag="a"
-                                    href="{{ Delivery::getUrl(['distribution' => $item->id]) }}" 
-                                    size="sm"
-                                    color="warning">
-                                    Jemput
-                                </x-filament::button>
-                            </div>
-                        </div>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+@php
+    // 1. Tambahkan ini di bagian atas file blade Anda
+    use App\Filament\Production\Pages\Delivery;
+@endphp
 
+<x-filament-panels::page>
     {{-- Page content --}}
+
     @if ($record)
         <div class="flex justify-center">
             <p class="text-2xl font-semibold">
@@ -79,12 +46,12 @@
 
                 <span class="col-span-3">Jumlah Porsi Besar :</span>
                 <span class="col-span-4">
-                    {{ $record->total_porsi_besar }} Porsi
+                    {{ $record->getTotalPorsiBesarAttribute() }} Porsi
                 </span>
 
                 <span class="col-span-3">Jumlah Porsi Kecil :</span>
                 <span class="col-span-4">
-                    {{ $record->total_porsi_kecil }} Porsi
+                    {{ $record->getTotalPorsiKecilAttribute() }} Porsi
                 </span>
 
             </div>
@@ -92,7 +59,7 @@
         <div>
             <div class="mb-2 bg-slate-800 p-4 rounded-lg">
                 <p class="text-lg">
-                Daftar penerima MBM :
+                    Daftar sekolah penerima :
                 </p>
             </div>
             <ul>
@@ -161,7 +128,7 @@
                 @endforeach
             </ul>
         </div>
-    @elseif (!$pendingPickups || $pendingPickups->isEmpty())
+    @else
         <x-filament::empty-state icon="heroicon-o-truck">
             <x-slot name="heading">
                 Belum ada makanan yang siap distribusikan.

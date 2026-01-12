@@ -23,7 +23,7 @@
     </style>
 
     {{-- HEADER / NAVBAR --}}
-    <header class="flex items-center justify-between p-4 bg-primary-600 text-white">
+    <header class="flex items-center justify-between p-4 bg-primary-600 text-amber-600 dark:text-slate-400">
         <h1 class="text-lg font-semibold">
             {{ filament()->getCurrentPanel()->getBrandName() ?? config('app.name') }}
         </h1>
@@ -43,7 +43,7 @@
                 @foreach ($group->getItems() as $item)
                     <a href="{{ $item->getUrl() }}" @class([
                         'relative flex flex-col items-center justify-center flex-1 h-full gap-1 transition-colors px-2',
-                        'text-orange-600 dark:text-orange-400' => $item->isActive(),
+                        'text-amber-600 dark:text-amber-600' => $item->isActive(),
                         'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100' => !$item->isActive(),
                     ]) wire:navigate>
                         {{-- Icon --}}
@@ -68,5 +68,4 @@
             @endforeach
         </div>
     </nav>
-
 </x-filament-panels::layout>
