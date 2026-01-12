@@ -56,11 +56,6 @@ class ManageFinance extends Page implements HasForms
             return false;
         }
 
-        // Hide for Superadmin as requested (redundant)
-        if (auth()->user()?->hasRole('Superadmin')) {
-            return false;
-        }
-
         return true;
     }
 

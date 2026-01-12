@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
 class RegistrationToken extends Model
 {
+    use Notifiable;
+
     protected $fillable = [
         'token',
         'sppg_id',
@@ -56,6 +59,17 @@ class RegistrationToken extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Route notifications for the WhatsApp channel.
+     *
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @return string
+     */
+    public function routeNotificationForWhatsApp($notification)
+    {
+        return $this->recipient_phone;
     }
 
     /**

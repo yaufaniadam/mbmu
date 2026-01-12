@@ -128,6 +128,16 @@ class SppgFinancialReportResource extends Resource
         return $query;
     }
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        // Hide for Superadmin as requested
+        if (Auth::user()?->hasRole('Superadmin')) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static function getPages(): array
     {
         return [

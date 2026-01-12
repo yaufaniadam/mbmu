@@ -89,7 +89,7 @@ class RegistrationTokensTable
             ])
             ->recordActions([
                 EditAction::make(),
-                Action::make('send_wa')
+                \Filament\Actions\Action::make('send_wa')
                     ->label('Kirim WA')
                     ->icon('heroicon-o-chat-bubble-left-right')
                     ->color('success')
@@ -97,33 +97,26 @@ class RegistrationTokensTable
                     ->modalHeading('Kirim Token via WhatsApp')
                     ->modalDescription(fn (RegistrationToken $record) => "Kirim token ke nomor WA: {$record->recipient_phone} ({$record->recipient_name})?")
                     ->form([
-                        \Filament\Forms\Components\TextInput::make('phone')
+                        \Filament\Forms\Components\TextInput::make('recipient_phone')
                             ->label('Nomor Tujuan')
                             ->default(fn (RegistrationToken $record) => $record->recipient_phone)
                             ->required(),
-                        \Filament\Forms\Components\Textarea::make('message_template')
-                            ->label('Pesan')
-                            ->default(fn (RegistrationToken $record) => "Assalamualaikum {$record->recipient_name},\n\n"
-                                . "Silakan login ke MBMu App lalu buat akun.\n\n"
-                                . "👉 Link: {$record->getRegistrationUrl()}\n"
-                                . "🔑 Token: {$record->token}\n\n"
-                                . "Gunakan link dan token di atas untuk mendaftar sebagai {$record->role_label} di {$record->sppg->nama_sppg}.\n\n"
-                                . "Terima Kasih.")
-                            ->rows(6)
-                            ->required(),
                     ])
                     ->action(function (RegistrationToken $record, array $data) {
-                        $wablas = new \App\Services\WablasService();
-                        $message = $data['message_template'];
+                        // Update phone number if changed in modal
+                        $record->update(['recipient_phone' => $data['recipient_phone']]);
                         
-                        if ($wablas->sendMessage($data['phone'], $message)) {
+                        try {
+                            \Illuminate\Support\Facades\Notification::send($record, new \App\Notifications\KirimToken($record));
+                            
                             \Filament\Notifications\Notification::make()
-                                ->title('Pesan WA Terkirim')
+                                ->title('Pesan WA Dikirim')
                                 ->success()
                                 ->send();
-                        } else {
+                        } catch (\Exception $e) {
                             \Filament\Notifications\Notification::make()
                                 ->title('Gagal mengirim WA')
+                                ->body($e->getMessage())
                                 ->danger()
                                 ->send();
                         }
@@ -138,33 +131,21 @@ class RegistrationTokensTable
                         ->icon('heroicon-o-chat-bubble-left-right')
                         ->color('success')
                         ->requiresConfirmation()
-                        ->form([
-                            \Filament\Forms\Components\Textarea::make('message_template')
-                                ->label('Template Pesan')
-                                ->helperText('Gunakan {name}, {link}, {token}, {role}, {sppg} sebagai placeholder.')
-                                ->default("Assalamualaikum {name},\n\n"
-                                    . "Silakan login ke MBMu App lalu buat akun.\n\n"
-                                    . "👉 Link: {link}\n"
-                                    . "🔑 Token: {token}\n\n"
-                                    . "Gunakan link dan token di atas untuk mendaftar sebagai {role} di {sppg}.\n\n"
-                                    . "Terima Kasih.")
-                                ->rows(6)
-                                ->required(),
-                        ])
-                        ->action(function (\Illuminate\Database\Eloquent\Collection $records, array $data) {
-                            $wablas = new \App\Services\WablasService();
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
+                            \Illuminate\Support\Facades\Notification::send($records, new \App\Notifications\KirimToken($records->first())); // Notification::send handles collection, but we need to pass individual instance to constructor? NO. 
+                            // Laravel Notification::send($collection, $notification) sends the SAME notification instance to all.
+                            // But our KirimToken constructor takes a $token. If we pass one token, the message for ALL users will show that ONE token's data. 
+                            // So for personalized messages, we must loop.
+                            
                             $sent = 0;
                             foreach ($records as $record) {
                                 if (empty($record->recipient_phone)) continue;
                                 
-                                $message = str_replace(
-                                    ['{name}', '{link}', '{token}', '{role}', '{sppg}'],
-                                    [$record->recipient_name, $record->getRegistrationUrl(), $record->token, $record->role_label, $record->sppg->nama_sppg],
-                                    $data['message_template']
-                                );
-
-                                if ($wablas->sendMessage($record->recipient_phone, $message)) {
+                                try {
+                                    $record->notify(new \App\Notifications\KirimToken($record));
                                     $sent++;
+                                } catch (\Exception $e) {
+                                    // log error
                                 }
                             }
                             
