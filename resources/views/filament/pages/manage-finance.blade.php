@@ -15,9 +15,7 @@
             <x-filament::tabs.item :active="$activeTab === 'buku_kas_pusat'" wire:click="$set('activeTab', 'buku_kas_pusat')" icon="heroicon-o-building-library">
                 Buku Kas Pusat
             </x-filament::tabs.item>
-            <x-filament::tabs.item :active="$activeTab === 'audit_sppg'" wire:click="$set('activeTab', 'audit_sppg')" icon="heroicon-o-magnifying-glass-circle">
-                Monitoring SPPG
-            </x-filament::tabs.item>
+
         @endif
 
 
@@ -48,7 +46,7 @@
         {{-- Tab 5: Penerimaan Royalti (Kornas Only) --}}
         @if (auth()->user()->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
             <x-filament::tabs.item :active="$activeTab === 'verify_royalty'" wire:click="$set('activeTab', 'verify_royalty')" icon="heroicon-o-check-badge">
-                Penerimaan Royalti
+                Penerimaan Kontribusi
             </x-filament::tabs.item>
         @endif
 
@@ -88,16 +86,7 @@
             </div>
         @endif
 
-        @if ($activeTab === 'audit_sppg')
-            <div style="display: flex; flex-direction: column; gap: 2rem;">
-                <x-filament::section>
-                    <x-slot name="heading">Monitoring Keuangan Unit SPPG</x-slot>
-                    <p class="text-sm text-gray-500 mb-4">Pilih unit SPPG untuk memantau detail pemasukan dan pengeluaran harian mereka.</p>
-                </x-filament::section>
-                @livewire(\App\Livewire\OperatingExpenses::class, ['scope' => 'unit'])
-                @livewire(\App\Livewire\IncomingFunds::class, ['scope' => 'unit'])
-            </div>
-        @endif
+
 
 
         @if ($activeTab === 'buku_kas')

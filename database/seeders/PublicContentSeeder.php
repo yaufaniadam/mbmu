@@ -72,13 +72,6 @@ class PublicContentSeeder extends Seeder
                 'order' => 3,
                 'is_active' => true,
             ],
-            [
-                'title' => 'Terjangkau',
-                'description' => 'Program subsidi silang memastikan semua anak mendapatkan hak makannya.',
-                'icon' => 'savings',
-                'order' => 4,
-                'is_active' => true,
-            ],
         ];
 
         foreach ($features as $feature) {

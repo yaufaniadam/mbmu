@@ -21,11 +21,11 @@
     <nav aria-label="Breadcrumb" class="flex md:hidden">
         <ol class="flex items-center space-x-2">
             <li>
-                <a class="text-slate-500 dark:text-slate-400 hover:text-primary" href="{{ url('/') }}">Home</a>
+                <a class="text-slate-500 dark:text-slate-400 hover:text-primary" href="{{ url('/') }}">Beranda</a>
             </li>
             <li><span class="text-slate-400">/</span></li>
             <li>
-                <a class="text-slate-500 dark:text-slate-400 hover:text-primary" href="{{ route('sppg.public.index') }}">Kitchen Units</a>
+                <a class="text-slate-500 dark:text-slate-400 hover:text-primary" href="{{ route('sppg.public.index') }}">Daftar Dapur SPPG</a>
             </li>
             <li><span class="text-slate-400">/</span></li>
             <li>
@@ -43,15 +43,25 @@
         <div class="absolute bottom-0 left-0 right-0 p-6 sm:p-8 z-20 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
                 <div class="flex items-center gap-3 mb-2">
-                    @if($sppg->is_active)
+                    @if($sppg->status === 'Operasional / Siap Berjalan')
                     <span class="inline-flex items-center gap-1 rounded-full bg-green-500/20 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-green-100 border border-green-500/30">
                         <span class="material-symbols-outlined text-[16px] text-green-400">check_circle</span>
-                        Operational
+                        Operasional
+                    </span>
+                    @elseif($sppg->status === 'Proses Persiapan')
+                    <span class="inline-flex items-center gap-1 rounded-full bg-yellow-500/20 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-yellow-100 border border-yellow-500/30">
+                        <span class="material-symbols-outlined text-[16px] text-yellow-400">pending</span>
+                        Proses Persiapan
+                    </span>
+                    @elseif($sppg->status === 'Verifikasi dan Validasi')
+                    <span class="inline-flex items-center gap-1 rounded-full bg-blue-500/20 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-blue-100 border border-blue-500/30">
+                        <span class="material-symbols-outlined text-[16px] text-blue-400">verified</span>
+                        Verifikasi
                     </span>
                     @else
-                    <span class="inline-flex items-center gap-1 rounded-full bg-red-500/20 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-red-100 border border-red-500/30">
-                        <span class="material-symbols-outlined text-[16px] text-red-400">cancel</span>
-                        Inactive
+                    <span class="inline-flex items-center gap-1 rounded-full bg-gray-500/20 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-gray-100 border border-gray-500/30">
+                        <span class="material-symbols-outlined text-[16px] text-gray-400">info</span>
+                        {{ $sppg->status ?? '-' }}
                     </span>
                     @endif
                     <span class="inline-flex items-center gap-1 rounded-full bg-white/10 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-white border border-white/20">
@@ -76,12 +86,12 @@
                 </div>
             </div>
             <div>
-                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Daily Capacity</p>
+                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Kapasitas Harian</p>
                 <h3 class="text-slate-900 dark:text-white text-2xl font-bold mt-1">
-                    {{ number_format($sppg->porsi_besar + $sppg->porsi_kecil) }} Meals
+                    {{ number_format($sppg->porsi_besar + $sppg->porsi_kecil) }} Porsi
                 </h3>
                 <p class="text-xs text-slate-500 mt-1">
-                    (L: {{ number_format($sppg->porsi_besar) }}, S: {{ number_format($sppg->porsi_kecil) }})
+                    (Besar: {{ number_format($sppg->porsi_besar) }}, Kecil: {{ number_format($sppg->porsi_kecil) }})
                 </p>
             </div>
         </div>
@@ -93,9 +103,9 @@
                 </div>
             </div>
             <div>
-                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Active Staff</p>
+                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Staf Aktif</p>
                 <h3 class="text-slate-900 dark:text-white text-2xl font-bold mt-1">{{ number_format($sppg->volunteers()->count()) }}</h3>
-                <p class="text-xs text-slate-500 mt-1">Volunteers</p>
+                <p class="text-xs text-slate-500 mt-1">Relawan</p>
             </div>
         </div>
         <!-- Status -->
@@ -106,8 +116,8 @@
                 </div>
             </div>
             <div>
-                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Grade</p>
-                <h3 class="text-slate-900 dark:text-white text-2xl font-bold mt-1">{{ $sppg->grade ?? 'N/A' }}</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Akreditasi</p>
+                <h3 class="text-slate-900 dark:text-white text-2xl font-bold mt-1">{{ $sppg->grade ?? 'Belum Ada' }}</h3>
             </div>
         </div>
         <!-- Location -->
@@ -118,8 +128,8 @@
                 </div>
             </div>
             <div>
-                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Region</p>
-                <h3 class="text-slate-900 dark:text-white text-2xl font-bold mt-1">{{ $sppg->city?->name ?? 'Unknown' }}</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Wilayah</p>
+                <h3 class="text-slate-900 dark:text-white text-2xl font-bold mt-1">{{ ucwords(strtolower($sppg->city?->name ?? 'Tidak Diketahui')) }}</h3>
             </div>
         </div>
     </div>
@@ -131,7 +141,7 @@
             <!-- Gallery Section -->
             <div class="bg-card-light dark:bg-card-dark rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Facility Visuals</h3>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Galeri Fasilitas</h3>
                 </div>
                 <div class="flex flex-col gap-4">
                     <!-- Main Preview -->
@@ -163,8 +173,8 @@
         <div class="space-y-6">
             <!-- Contact Person Card -->
             <div class="bg-card-light dark:bg-card-dark rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Contact Person</h3>
-                <div class="flex items-center gap-4 mb-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Narahubung</h3>
+                <div class="flex items-center gap-4">
                     <div class="size-16 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center overflow-hidden border-2 border-slate-100 dark:border-slate-700">
                          <span class="material-symbols-outlined text-4xl text-slate-400">person</span>
                     </div>
@@ -173,25 +183,15 @@
                         <p class="text-slate-500 dark:text-slate-400 text-sm">Penanggung Jawab</p>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <button class="flex justify-center items-center gap-2 bg-primary hover:bg-primary-dark text-white py-2.5 px-4 rounded-lg text-sm font-medium transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">call</span>
-                        Call
-                    </button>
-                    <button class="flex justify-center items-center gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">mail</span>
-                        Email
-                    </button>
-                </div>
             </div>
             
             <!-- Location Map Card -->
             <div class="bg-card-light dark:bg-card-dark rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Location</h3>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Lokasi</h3>
                      @if($sppg->latitude && $sppg->longitude)
                     <a class="text-primary text-xs font-medium hover:underline flex items-center gap-1" href="https://www.google.com/maps/search/?api=1&query={{ $sppg->latitude }},{{ $sppg->longitude }}" target="_blank">
-                        Open Maps
+                        Buka Peta
                         <span class="material-symbols-outlined text-[14px]">open_in_new</span>
                     </a>
                     @endif

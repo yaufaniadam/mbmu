@@ -134,11 +134,13 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         @forelse($posts as $post)
             <article class="flex flex-col rounded-lg overflow-hidden bg-white dark:bg-surface-dark shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-transform duration-300">
-                <div class="w-full aspect-video bg-cover bg-center" data-alt="{{ $post->title }}" style="background-image: url('{{ $post->featured_image ? Storage::url($post->featured_image) : 'https://placehold.co/600x400?text=No+Image' }}');">
-                </div>
+                <a href="{{ route('blog.public.show', $post->slug) }}" class="w-full aspect-video bg-cover bg-center block" data-alt="{{ $post->title }}" style="background-image: url('{{ $post->featured_image ? Storage::url($post->featured_image) : 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80' }}');">
+                </a>
                 <div class="p-5 flex flex-col flex-1 gap-3">
                     <!-- <span class="text-xs font-bold text-secondary-green uppercase tracking-wide">News</span> -->
-                    <h3 class="text-lg font-bold text-text-main dark:text-white leading-snug">{{ $post->title }}</h3>
+                    <h3 class="text-lg font-bold text-text-main dark:text-white leading-snug">
+                        <a href="{{ route('blog.public.show', $post->slug) }}" class="hover:text-primary transition-colors">{{ $post->title }}</a>
+                    </h3>
                     <p class="text-sm text-text-secondary line-clamp-3">{{ $post->excerpt }}</p>
                     <div class="mt-auto pt-2">
                         <a class="text-sm font-bold text-primary hover:text-primary-dark" href="{{ route('blog.public.show', $post->slug) }}">Baca Selengkapnya</a>

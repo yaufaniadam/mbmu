@@ -51,10 +51,11 @@
 
                     <div class="hidden md:flex flex-1 justify-end items-center gap-8">
                         <div class="flex items-center gap-6">
-                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('team.public') }}">About</a>
-                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('sppg.public.index') }}">Programs</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ url('/') }}">Beranda</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('team.public') }}">Tentang</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('sppg.public.index') }}">Program</a>
                             <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('blog.public.index') }}">Blog</a>
-                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('contact.public') }}">Contact</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('contact.public') }}">Kontak</a>
                         </div>
                         
                         <!-- Dark Mode Toggle -->
@@ -74,10 +75,11 @@
             <!-- Mobile Menu (Hidden by default, Absolute Overlay) -->
             <div id="mobile-menu" class="absolute top-full left-0 w-full bg-surface-light dark:bg-surface-dark hidden md:hidden border-b border-gray-100 dark:border-gray-800 shadow-md animate-fade-in-down z-40">
                 <div class="flex flex-col gap-4 p-4">
-                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('team.public') }}">About</a>
-                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('sppg.public.index') }}">Programs</a>
+                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ url('/') }}">Beranda</a>
+                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('team.public') }}">Tentang</a>
+                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('sppg.public.index') }}">Program</a>
                     <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('blog.public.index') }}">Blog</a>
-                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('contact.public') }}">Contact</a>
+                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('contact.public') }}">Kontak</a>
                     
                     <!-- Mobile Dark Mode Toggle -->
                     <button id="mobile-theme-toggle" class="flex items-center gap-2 text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2 text-left">
@@ -105,27 +107,22 @@
                             <img src="{{ asset('logokornas.png') }}" alt="Kornas Logo" class="h-10 w-auto object-contain dark:brightness-0 dark:invert transition-all">
                         </a>
                         <p class="text-text-secondary text-sm leading-relaxed">
-                            Dedicated to ending child hunger and promoting health education in our schools. A non-profit initiative.
+                            Kornas Makan Bergizi Muhammadiyah hadir untuk memastikan pemenuhan gizi anak bangsa melalui program makan bergizi di sekolah-sekolah seluruh Indonesia.
                         </p>
                     </div>
                     <div class="flex flex-wrap gap-12 md:gap-24">
                         <div class="flex flex-col gap-4">
-                            <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Organization</h4>
-                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('team.public') }}">About Us</a>
-                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('team.public') }}">Our Team</a>
-                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="#">Careers</a>
-                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="#">Partners</a>
+                            <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Organisasi</h4>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('team.public') }}">Tentang Kami</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('team.public') }}">Tim Kami</a>
                         </div>
                         <div class="flex flex-col gap-4">
-                            <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Support</h4>
-                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="#">Donate</a>
+                            <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Bantuan</h4>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('guide.public') }}">Panduan Aplikasi</a>
-                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="#">Volunteer</a>
-                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('sppg.public.index') }}">School Programs</a>
-                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('contact.public') }}">Contact</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('contact.public') }}">Kontak</a>
                         </div>
                         <div class="flex flex-col gap-4">
-                            <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Login Area</h4>
+                            <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Area Login</h4>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.admin.auth.login') }}">Login Kornas</a>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.admin.auth.login', ['role' => 'pengusul']) }}">Login Lembaga Pengusul</a>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.sppg.auth.login') }}">Login SPPG</a>
@@ -137,7 +134,7 @@
 
 
                 <div class="border-t border-[#e6e1db] dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p class="text-xs text-text-secondary">© {{ date('Y') }} NutriMeals Initiative. All rights reserved.</p>
+                    <p class="text-xs text-text-secondary">© {{ date('Y') }} Kornas Makan Bergizi Muhammadiyah. Hak cipta dilindungi.</p>
                     <div class="flex gap-4">
                         <a class="text-text-secondary hover:text-primary" href="#"><span class="sr-only">Facebook</span>
                             <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"></path></svg>

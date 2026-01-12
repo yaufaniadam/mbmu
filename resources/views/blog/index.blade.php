@@ -26,9 +26,9 @@
             <div class="w-full">
                 <div class="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-[#152030] border border-[#e6e1db] dark:border-[#272c38] group">
                     <div class="grid grid-cols-1 lg:grid-cols-2">
-                        <div class="w-full h-64 lg:h-auto bg-center bg-no-repeat bg-cover group-hover:scale-105 transition-transform duration-700" 
-                             style="background-image: url('{{ $featured->featured_image ? Storage::url($featured->featured_image) : 'https://lh3.googleusercontent.com/aida-public/AB6AXuBRM6Ley9GsG3lL8YU-bGEu0CTWYeWbeg9xzAYu8d2Qas2h-T4Vzl3s71jayhlLaIv8XR50j35-4rDudm6AxozDOaRmoO05mEkI2s71Wtq_e51s7k50ds3djSFx5R1m7vBuOGWMpF5vT6dnVjmp5IpH26FAEEJsLhqqkpbO1ZXohy-VhqrhVxeX5Z6KizMDN2-h1daDN7Ep1rlACIMXMZmrN_tduGAbsByWpjRc8tHBwSGwoW8FqQ3-A_V1bosCZJpx-stv6GYovu78' }}');">
-                        </div>
+                        <a href="{{ route('blog.public.show', $featured->slug) }}" class="w-full h-64 lg:h-auto bg-center bg-no-repeat bg-cover group-hover:scale-105 transition-transform duration-700 block" 
+                             style="background-image: url('{{ $featured->featured_image ? Storage::url($featured->featured_image) : 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80' }}');">
+                        </a>
                         <div class="flex flex-col justify-center p-8 lg:p-12 gap-6 bg-white dark:bg-[#141e2b] relative z-10">
                             <div class="flex items-center gap-3">
                                 <span class="bg-primary/20 text-primary dark:text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Featured</span>
@@ -63,7 +63,7 @@
                         <article class="flex flex-col gap-4 group cursor-pointer">
                             <a href="{{ route('blog.public.show', $post->slug) }}" class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-200">
                                 <div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
-                                     style="background-image: url('{{ $post->featured_image ? Storage::url($post->featured_image) : 'https://lh3.googleusercontent.com/aida-public/AB6AXuCXnhm_2cGZjpiAxZddG8JNXZCELjgy8tS7d9l5Zo2T4WsVXuxaY8CizH1lG1F-Ec914WKodU-dCjkOTz8k6Bb_31xVJsrZxqJr7DExxUAHQ5FKGua5CNVamW4VnNvbjE0QEv7fp6ehzcbm7lUS_-2xcntWkcF34j8n1Q91E7eynMbv3ULL6LXEeE7NT0VSPvOUTcXt_vl0PDgVFTKnKcZqxCmEgKr2fIBR9LobCMv7KvwxZtaXaW_qBjN7gxjyeoLJt3rvN0HgYqB-' }}');">
+                                     style="background-image: url('{{ $post->featured_image ? Storage::url($post->featured_image) : 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80' }}');">
                                 </div>
                             </a>
                             <div class="flex flex-col gap-2">

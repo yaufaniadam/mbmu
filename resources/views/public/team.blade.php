@@ -32,8 +32,8 @@
         <div class="mb-16">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-[#e6e2de] dark:border-[#3a3025]">
                 <div>
-                    <h2 class="text-[#181511] dark:text-white text-3xl font-bold leading-tight tracking-tight">Leadership</h2>
-                    <p class="text-gray-500 dark:text-gray-400 mt-2">Guiding our vision for a hunger-free future.</p>
+                    <h2 class="text-[#181511] dark:text-white text-3xl font-bold leading-tight tracking-tight">Struktur Kepemimpinan</h2>
+                    <p class="text-gray-500 dark:text-gray-400 mt-2">Mengarahkan visi dan misi organisasi menuju generasi Indonesia yang sehat dan berdaya.</p>
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -41,8 +41,19 @@
                 <!-- Team Card -->
                 <div class="group bg-white dark:bg-neutral-dark rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-[#e6e2de] dark:border-[#3a3025]">
                     <div class="relative h-64 overflow-hidden">
-                        @if($member->photo_path)
-                        <img alt="{{ $member->name }}" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" src="{{ Storage::disk('public')->url($member->photo_path) }}"/>
+                        @php
+                            $imageUrl = null;
+                            if ($member->photo_path) {
+                                $imageUrl = Storage::disk('public')->url($member->photo_path);
+                            } elseif ($member->position === 'ketua') {
+                                $imageUrl = asset('ketua.png');
+                            } elseif ($member->position === 'sekretaris') {
+                                $imageUrl = asset('sekre.png');
+                            }
+                        @endphp
+                        
+                        @if($imageUrl)
+                        <img alt="{{ $member->name }}" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" src="{{ $imageUrl }}"/>
                         @else
                         <div class="w-full h-full bg-gradient-to-br from-primary/20 to-secondary-green/20 flex items-center justify-center">
                             <span class="text-6xl text-primary">{{ strtoupper(substr($member->name, 0, 1)) }}</span>
@@ -83,8 +94,8 @@
         <!-- Operations Staff Section -->
         <div>
             <div class="mb-8 pb-4 border-b border-[#e6e2de] dark:border-[#3a3025]">
-                <h2 class="text-[#181511] dark:text-white text-3xl font-bold leading-tight tracking-tight">Program Personnel</h2>
-                <p class="text-gray-500 dark:text-gray-400 mt-2">The boots on the ground making it happen every day.</p>
+                <h2 class="text-[#181511] dark:text-white text-3xl font-bold leading-tight tracking-tight">Tim Pelaksana</h2>
+                <p class="text-gray-500 dark:text-gray-400 mt-2">Garda terdepan yang berdedikasi mewujudkan aksi nyata di lapangan setiap harinya.</p>
             </div>
             <!-- Grid Layout for Personnel - More compact card style -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">

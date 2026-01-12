@@ -56,6 +56,11 @@ class ManageFinance extends Page implements HasForms
             return false;
         }
 
+        // Hide for Superadmin as requested (redundant)
+        if (auth()->user()?->hasRole('Superadmin')) {
+            return false;
+        }
+
         return true;
     }
 
@@ -82,7 +87,7 @@ class ManageFinance extends Page implements HasForms
 
         // Fallback
         if (! $this->canViewTab($this->activeTab)) {
-            foreach (['dashboard', 'buku_kas_pusat', 'audit_sppg', 'buku_kas', 'pay_rent', 'verify_rent', 'pay_royalty', 'verify_royalty', 'transactions'] as $tab) {
+            foreach (['dashboard', 'buku_kas_pusat', 'buku_kas', 'pay_rent', 'verify_rent', 'pay_royalty', 'verify_royalty', 'transactions'] as $tab) {
                 if ($this->canViewTab($tab)) {
                     $this->activeTab = $tab;
                     break;
@@ -104,7 +109,7 @@ class ManageFinance extends Page implements HasForms
             
             // 1. Buku Kas Pusat (Kornas Only)
             'buku_kas_pusat' => $user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
-            'audit_sppg' => $user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
+
             'buku_kas' => $user->hasAnyRole(['Superadmin', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']),
             
             'pay_rent' => $user->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']),
