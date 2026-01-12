@@ -24,11 +24,17 @@ class SchoolPolicy
 
     public function create(AuthUser $authUser): bool
     {
+        if ($authUser->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Administrator SPPG'])) {
+            return true;
+        }
         return $authUser->can('Create:School');
     }
 
     public function update(AuthUser $authUser, School $school): bool
     {
+        if ($authUser->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Administrator SPPG'])) {
+            return true;
+        }
         return $authUser->can('Update:School');
     }
 

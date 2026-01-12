@@ -21,11 +21,17 @@ class UserPolicy
 
     public function create(AuthUser $authUser): bool
     {
+        if ($authUser->hasAnyRole(['Kepala SPPG', 'Staf Administrator SPPG'])) {
+            return true;
+        }
         return $authUser->can('Create:User');
     }
 
     public function update(AuthUser $authUser): bool
     {
+        if ($authUser->hasAnyRole(['Kepala SPPG', 'Staf Administrator SPPG'])) {
+            return true;
+        }
         return $authUser->can('Update:User');
     }
 

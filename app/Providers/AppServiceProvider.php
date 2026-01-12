@@ -6,6 +6,8 @@ use App\Models\OperatingExpense;
 use App\Models\Remittance;
 use App\Models\SppgIncomingFund;
 use App\Observers\FinancialObserver;
+use App\Observers\SppgObserver;
+use App\Models\Sppg;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
@@ -37,5 +39,6 @@ class AppServiceProvider extends ServiceProvider
         SppgIncomingFund::observe(FinancialObserver::class);
         OperatingExpense::observe(FinancialObserver::class);
         Remittance::observe(FinancialObserver::class);
+        Sppg::observe(SppgObserver::class);
     }
 }

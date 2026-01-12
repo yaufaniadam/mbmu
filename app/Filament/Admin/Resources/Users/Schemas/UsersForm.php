@@ -48,19 +48,44 @@ class UsersForm
                             ->avatar()
                             ->directory('user-photos')
                             ->columnSpanFull(),
-                        Select::make('roles') // Relation usually requires relationship name as field logic or load
+                        Select::make('roles')
                             ->label('Jabatan')
                             ->relationship('roles', 'name')
                             ->multiple()
                             ->preload()
                             ->searchable()
-                            ->required(),
+                            ->required()
+                            ->live(),
                         Select::make('sppg_id')
                             ->label('SPPG')
                             ->relationship('sppg', 'nama_sppg')
                             ->searchable()
                             ->preload()
-                            ->helperText('Pilih SPPG yang akan dikelola oleh user ini'),
+                            ->helperText('Pilih SPPG yang akan dikelola oleh user ini')
+                            ->visible(function (callable $get): bool {
+                                $roles = $get('roles') ?? [];
+                                $sppgRoles = ['PJ Pelaksana', 'Kepala SPPG', 'Ahli Gizi', 'Staf Akuntan', 'Staf Administrator SPPG'];
+                                
+                                // Get role names from IDs
+                                $roleNames = \Spatie\Permission\Models\Role::whereIn('id', $roles)->pluck('name')->toArray();
+                                
+                                return count(array_intersect($roleNames, $sppgRoles)) > 0;
+                            }),
+                        Select::make('lembaga_pengusul_id')
+                            ->label('Lembaga Pengusul')
+                            ->options(\App\Models\LembagaPengusul::pluck('nama_lembaga', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->helperText('Pilih Lembaga Pengusul yang dipimpin oleh user ini')
+                            ->visible(function (callable $get): bool {
+                                $roles = $get('roles') ?? [];
+                                
+                                // Get role names from IDs
+                                $roleNames = \Spatie\Permission\Models\Role::whereIn('id', $roles)->pluck('name')->toArray();
+                                
+                                return in_array('Pimpinan Lembaga Pengusul', $roleNames);
+                            })
+                            ->dehydrated(false), // Don't save to users table, handle separately
                     ])->columns(2),
 
                 \Filament\Schemas\Components\Section::make('Keamanan')

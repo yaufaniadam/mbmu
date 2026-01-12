@@ -58,9 +58,20 @@ class InvoiceGenerationService
 
         // If no previous invoice, start from SPPG start date
         // If SPPG start date is null, default to today
-        $startDate = $lastInvoice
-            ? $lastInvoice->end_date->addDay()
-            : ($sppg->tanggal_mulai_sewa ? Carbon::parse($sppg->tanggal_mulai_sewa) : Carbon::today());
+        // If no previous invoice, start from the earliest ProductionSchedule date
+        // If no schedules exist, fallback to date now (which will result in no invoices anyway)
+        if ($lastInvoice) {
+            $startDate = $lastInvoice->end_date->addDay();
+        } else {
+            $earliestSchedule = ProductionSchedule::where('sppg_id', $sppg->id)
+                ->whereIn('status', ['Selesai', 'Didistribusikan', 'Terverifikasi', 'Direncanakan'])
+                ->orderBy('tanggal', 'asc')
+                ->first();
+
+            $startDate = $earliestSchedule 
+                ? $earliestSchedule->tanggal 
+                : Carbon::now();
+        }
 
         // 2. Loop to find ALL eligible 10-day periods from startDate until today
         while (true) {

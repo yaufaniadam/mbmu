@@ -22,6 +22,11 @@ class VolunteerAttendanceResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';
     
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     protected static ?string $navigationLabel = 'Payroll Relawan';
     
     protected static string|UnitEnum|null $navigationGroup = 'Keuangan';

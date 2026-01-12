@@ -21,6 +21,8 @@ class DailyAttendance extends Page implements HasTable
     
     protected static ?string $navigationLabel = 'Input Presensi (Bulk)';
     
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string|\UnitEnum|null $navigationGroup = 'Keuangan';
     
     protected static ?int $navigationSort = 2;

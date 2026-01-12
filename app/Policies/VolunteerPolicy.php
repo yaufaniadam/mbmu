@@ -24,11 +24,17 @@ class VolunteerPolicy
 
     public function create(AuthUser $authUser): bool
     {
+        if ($authUser->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Administrator SPPG'])) {
+            return true;
+        }
         return $authUser->can('Create:Volunteer');
     }
 
     public function update(AuthUser $authUser, Volunteer $volunteer): bool
     {
+        if ($authUser->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Administrator SPPG'])) {
+            return true;
+        }
         return $authUser->can('Update:Volunteer');
     }
 

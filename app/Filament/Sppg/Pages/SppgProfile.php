@@ -39,6 +39,11 @@ class SppgProfile extends Page implements HasForms
         return 'heroicon-o-cog-8-tooth';
     }
 
+    public function getMaxContentWidth(): ?string
+    {
+        return 'full';
+    }
+
     public static function shouldRegisterNavigation(): bool
     {
         // This checks the permission you just generated
@@ -86,6 +91,28 @@ class SppgProfile extends Page implements HasForms
                     ->required()
                     ->disabled() // Kode probably shouldn't be editable
                     ->unique(ignoreRecord: true), // Ignore this record when checking unique
+            ]),
+            \Filament\Schemas\Components\Section::make('Foto')->schema([
+                \Filament\Forms\Components\FileUpload::make('photo_path')
+                    ->label('Foto SPPG')
+                    ->image()
+                    ->disk('public')
+                    ->directory('sppg-photos')
+                    ->visibility('public')
+                    ->columnSpanFull(),
+                \Filament\Forms\Components\FileUpload::make('gallery_photos')
+                    ->label('Galeri Foto')
+                    ->multiple()
+                    ->reorderable()
+                    ->image()
+                    ->disk('public')
+                    ->directory('sppg-gallery')
+                    ->visibility('public')
+                    ->downloadable()
+                    ->openable()
+                    ->imagePreviewHeight('250')
+                    ->panelLayout('grid')
+                    ->columnSpanFull(),
             ]),
             Fieldset::make('Rekening Bank')->schema([
                 TextInput::make('nama_bank')

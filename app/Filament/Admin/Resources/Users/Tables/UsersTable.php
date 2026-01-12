@@ -19,25 +19,45 @@ class UsersTable
                     ->label('Jabatan')
                     ->badge()
                     ->searchable(),
-                TextColumn::make('unit')
-                    ->label('Unit / SPPG')
+                TextColumn::make('sppg_column')
+                    ->label('SPPG')
                     ->state(function (\App\Models\User $record): string {
                         if ($record->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas'])) {
-                            return 'Koordinator Nasional (Kornas)';
+                            return 'Kornas';
                         }
 
+                        // Pimpinan Lembaga Pengusul tidak terkait SPPG
                         if ($record->hasRole('Pimpinan Lembaga Pengusul')) {
-                            return $record->lembagaDipimpin?->nama_lembaga ?? 'Lembaga Pengusul';
+                            return '-';
                         }
-                        
+
                         $sppgName = $record->sppgDiKepalai?->nama_sppg 
                             ?? $record->sppgDiPj?->nama_sppg
-                            ?? $record->unitTugas->first()?->nama_sppg;
+                            ?? $record->unitTugas->first()?->nama_sppg
+                            ?? $record->sppg?->nama_sppg;
 
                         return $sppgName ?? '-';
                     })
                     ->badge()
-                    ->color(fn (string $state): string => $state === 'Koordinator Nasional (Kornas)' ? 'info' : 'success'),
+                    ->color(fn (string $state): string => $state === 'Kornas' ? 'info' : 'success'),
+                TextColumn::make('lembaga_pengusul_column')
+                    ->label('Lembaga Pengusul')
+                    ->state(function (\App\Models\User $record): string {
+                        // Kornas tidak ada Lembaga Pengusul
+                        if ($record->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas'])) {
+                            return '-';
+                        }
+
+                        // Hanya Pimpinan Lembaga Pengusul yang tampilkan Lembaga Pengusul
+                        if ($record->hasRole('Pimpinan Lembaga Pengusul')) {
+                            return $record->lembagaDipimpin?->nama_lembaga ?? '-';
+                        }
+
+                        // User terkait SPPG (PJ, Kepala, Staf) tidak tampilkan Lembaga Pengusul
+                        return '-';
+                    })
+                    ->badge()
+                    ->color('warning'),
             ])
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('roles')

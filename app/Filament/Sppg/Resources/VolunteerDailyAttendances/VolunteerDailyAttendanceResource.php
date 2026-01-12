@@ -18,6 +18,11 @@ class VolunteerDailyAttendanceResource extends Resource
 {
     protected static ?string $model = VolunteerDailyAttendance::class;
     
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     protected static ?string $navigationLabel = 'Data Presensi';
     
     protected static string|\UnitEnum|null $navigationGroup = 'Keuangan';

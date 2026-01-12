@@ -76,6 +76,7 @@ class SppgResource extends Resource
                                         TextEntry::make('nama_sppg')->label('Nama SPPG')->color('gray'),
                                         TextEntry::make('kode_sppg')->label('ID SPPG')->color('gray'),
                                         TextEntry::make('kepalaSppg.name')->label('Kepala SPPG')->color('gray'),
+                                        TextEntry::make('pj.name')->label('PJ Pelaksana')->color('gray'),
                                         TextEntry::make('nama_bank')->label('Bank')->color('gray'),
                                         TextEntry::make('nomor_va')->label('Nomor VA')->color('gray'),
                                         TextEntry::make('tanggal_operasional_pertama')->label('Operasional Pertama')->date()->color('gray'),

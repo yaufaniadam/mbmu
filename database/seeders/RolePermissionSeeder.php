@@ -52,7 +52,14 @@ class RolePermissionSeeder extends Seeder
             'View:ProductionSchedule',
             'Create:ProductionSchedule',
             'Update:ProductionSchedule',
-            'Delete:ProductionSchedule'
+            'Delete:ProductionSchedule',
+
+            // Complaint
+            'ViewAny:Complaint',
+            'View:Complaint',
+            'Create:Complaint',
+            'Update:Complaint',
+            'Delete:Complaint'
         ];
 
         foreach ($permissions as $permission) {
@@ -82,7 +89,13 @@ class RolePermissionSeeder extends Seeder
 
         // 4. Berikan Permissions ke Roles
         // Direktur Kornas
-        $roleModels['Direktur Kornas']->syncPermissions(['view-national-dashboard', 'view-national-reports']);
+        $roleModels['Direktur Kornas']->syncPermissions([
+            'view-national-dashboard',
+            'view-national-reports',
+            'ViewAny:Complaint',
+            'View:Complaint',
+            'Update:Complaint',
+        ]);
 
         // Staf Kornas
         $roleModels['Staf Kornas']->syncPermissions([
@@ -91,11 +104,21 @@ class RolePermissionSeeder extends Seeder
             'manage-sppg',
             'manage-all-users',
             'manage-lembaga-pengusul',
-            'confirm-kornas-deposit'
+            'confirm-kornas-deposit',
+            'ViewAny:Complaint',
+            'View:Complaint',
+            'Update:Complaint',
         ]);
 
         // Pimpinan Lembaga Pengusul
-        $roleModels['Pimpinan Lembaga Pengusul']->syncPermissions(['view-sppg-dashboard', 'view-sppg-reports']);
+        $roleModels['Pimpinan Lembaga Pengusul']->syncPermissions([
+            'view-sppg-dashboard',
+            'view-sppg-reports',
+            'ViewAny:Complaint',
+            'View:Complaint',
+            'Create:Complaint',
+            'Update:Complaint',
+        ]);
 
         // Kepala SPPG
         $roleModels['Kepala SPPG']->syncPermissions([
@@ -113,7 +136,12 @@ class RolePermissionSeeder extends Seeder
             'View:ProductionSchedule',
             'Create:ProductionSchedule',
             'Update:ProductionSchedule',
-            'Delete:ProductionSchedule'
+            'Delete:ProductionSchedule',
+            // Complaint
+            'ViewAny:Complaint',
+            'View:Complaint',
+            'Create:Complaint',
+            'Update:Complaint',
         ]);
 
         // PJ Pelaksana
@@ -168,6 +196,9 @@ class RolePermissionSeeder extends Seeder
             'view-national-reports',
             'manage-sppg-finance', // Reusing this for general finance management
             'confirm-kornas-deposit',
+            'ViewAny:Complaint',
+            'View:Complaint',
+            'Update:Complaint',
         ]);
 
         // Staf Pengantaran

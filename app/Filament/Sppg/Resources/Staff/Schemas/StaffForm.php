@@ -36,6 +36,16 @@ class StaffForm
                                 TextInput::make('name')
                                     ->label('Nama')
                                     ->required(),
+                                TextInput::make('telepon')
+                                    ->label('Telepon')
+                                    ->tel()
+                                    ->live()
+                                    ->rule('digits_between:11,14')
+                                    ->validationMessages([
+                                        'required' => 'Nomor telepon wajib diisi.',
+                                        'digits_between' => 'Nomor telepon harus terdiri dari 11 sampai 14 digit angka.',
+                                    ])
+                                    ->required(),
                                 TextInput::make('email')
                                     ->label('Email')
                                     ->email()
@@ -45,29 +55,6 @@ class StaffForm
                                         'required' => 'Email wajib diisi.',
                                         'email' => 'Format email tidak valid (harus mengandung @ dan domain).',
                                         'regex' => 'Format email tidak valid (kurang tanda titik pada domain, misal: .com atau .id).',
-                                    ])
-                                    ->required(),
-                                \Filament\Forms\Components\FileUpload::make('photo_path')
-                                    ->label('Foto')
-                                    ->avatar()
-                                    ->image()
-                                    ->directory('staff-photos')
-                                    ->columnSpanFull(),
-                                Radio::make('gender')
-                                    ->label('Jenis Kelamin')
-                                    ->options([
-                                        'Laki-laki' => 'Laki-laki',
-                                        'Perempuan' => 'Perempuan',
-                                    ])
-                                    ->required(),
-                                TextInput::make('telepon')
-                                    ->label('Telepon')
-                                    ->tel()
-                                    ->live()
-                                    ->rule('digits_between:11,14')
-                                    ->validationMessages([
-                                        'required' => 'Nomor telepon wajib diisi.',
-                                        'digits_between' => 'Nomor telepon harus terdiri dari 11 sampai 14 digit angka.',
                                     ])
                                     ->required(),
                                 TextInput::make('nik')
@@ -80,8 +67,18 @@ class StaffForm
                                         'digits' => 'NIK harus terdiri tepat 16 digit angka.',
                                     ])
                                     ->required(),
+                                \Filament\Forms\Components\DatePicker::make('birth_date')
+                                    ->label('Tanggal Lahir')
+                                    ->required(),
+                                Select::make('gender')
+                                    ->label('Jenis Kelamin')
+                                    ->options([
+                                        'Laki-laki' => 'Laki-laki',
+                                        'Perempuan' => 'Perempuan',
+                                    ])
+                                    ->required(),
                                 Select::make('roles')
-                                    ->label('Role')
+                                    ->label('Jabatan')
                                     ->relationship(
                                         name: 'roles',
                                         titleAttribute: 'name',
@@ -111,6 +108,12 @@ class StaffForm
                         Textarea::make('alamat')
                             ->label('Alamat')
                             ->rows(3)
+                            ->columnSpanFull(),
+                        \Filament\Forms\Components\FileUpload::make('photo_path')
+                            ->label('Foto')
+                            ->avatar()
+                            ->image()
+                            ->directory('staff-photos')
                             ->columnSpanFull(),
                     ])
                     ->columnSpanFull(),

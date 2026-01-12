@@ -13,6 +13,11 @@ class CreateSchool extends CreateRecord
 {
     protected static string $resource = SchoolResource::class;
 
+    public function getMaxContentWidth(): ?string
+    {
+        return 'full';
+    }
+
     public function mount(): void
     {
         parent::mount();

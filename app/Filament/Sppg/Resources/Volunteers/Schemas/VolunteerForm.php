@@ -19,6 +19,43 @@ class VolunteerForm
                     ->schema([
                         \Filament\Schemas\Components\Grid::make(2)
                             ->schema([
+                                TextInput::make('nama_relawan')
+                                    ->label('Nama Lengkap')
+                                    ->required(),
+                                TextInput::make('kontak')
+                                    ->label('Telepon')
+                                    ->tel(),
+                                TextInput::make('nik')
+                                    ->label('NIK / Identitas')
+                                    ->required(),
+                                \Filament\Forms\Components\DatePicker::make('birth_date')
+                                    ->label('Tanggal Lahir'),
+                                \Filament\Forms\Components\Select::make('gender')
+                                    ->label('Jenis Kelamin')
+                                    ->options([
+                                        'L' => 'Laki-laki',
+                                        'P' => 'Perempuan',
+                                    ])
+                                    ->required(),
+                                \Filament\Forms\Components\Select::make('posisi')
+                                    ->label('Jabatan')
+                                    ->options([
+                                        'Asisten Lapangan' => 'Asisten Lapangan',
+                                        'Koordinator Bahan' => 'Koordinator Bahan',
+                                        'Koordinator Masak' => 'Koordinator Masak',
+                                        'Koordinator Pemorsian' => 'Koordinator Pemorsian',
+                                        'Koordinator Pencucian' => 'Koordinator Pencucian',
+                                        'Persiapan' => 'Persiapan',
+                                        'Masak' => 'Masak',
+                                        'Pemorsian' => 'Pemorsian',
+                                        'Distribusi' => 'Distribusi',
+                                        'Pencucian' => 'Pencucian',
+                                        'Cleaning Service' => 'Cleaning Service',
+                                    ])
+                                    ->searchable()
+                                    ->required()
+                                    ->live()
+                                    ->afterStateUpdated(fn ($state, callable $set) => $set('category', $state)),
                                 \Filament\Forms\Components\Select::make('user_id')
                                     ->label('Akun Pengguna Sistem')
                                     ->helperText('Hubungkan jika relawan butuh akses aplikasi (misal: Kurir)')
@@ -91,58 +128,21 @@ class VolunteerForm
                                         
                                         return $user->id;
                                     }),
-                                TextInput::make('nama_relawan')
-                                    ->label('Nama Lengkap')
-                                    ->required(),
-                                TextInput::make('nik')
-                                    ->label('NIK / Identitas')
-                                    ->required(),
-                                \Filament\Forms\Components\Select::make('gender')
-                                    ->label('Jenis Kelamin')
-                                    ->options([
-                                        'L' => 'Laki-laki',
-                                        'P' => 'Perempuan',
-                                    ])
-                                    ->required(),
-                                \Filament\Forms\Components\DatePicker::make('birth_date')
-                                    ->label('Tanggal Lahir'),
-                                \Filament\Forms\Components\FileUpload::make('photo_path')
-                                    ->label('Foto Relawan')
-                                    ->image()
-                                    ->avatar()
-                                    ->directory('volunteer-photos')
-                                    ->columnSpanFull(),
-                                \Filament\Forms\Components\Select::make('posisi')
-                                    ->label('Jabatan')
-                                    ->options([
-                                        'Asisten Lapangan' => 'Asisten Lapangan',
-                                        'Koordinator Bahan' => 'Koordinator Bahan',
-                                        'Koordinator Masak' => 'Koordinator Masak',
-                                        'Koordinator Pemorsian' => 'Koordinator Pemorsian',
-                                        'Koordinator Pencucian' => 'Koordinator Pencucian',
-                                        'Persiapan' => 'Persiapan',
-                                        'Masak' => 'Masak',
-                                        'Pemorsian' => 'Pemorsian',
-                                        'Distribusi' => 'Distribusi',
-                                        'Pencucian' => 'Pencucian',
-                                        'Cleaning Service' => 'Cleaning Service',
-                                    ])
-                                    ->searchable()
-                                    ->required()
-                                    ->live()
-                                    ->afterStateUpdated(fn ($state, callable $set) => $set('category', $state)),
-                                \Filament\Forms\Components\Hidden::make('category'),
-                                TextInput::make('kontak')
-                                    ->label('Nomor WhatsApp/HP')
-                                    ->tel(),
                                 TextInput::make('daily_rate')
                                     ->label('Upah per Hari (Rate)')
                                     ->numeric()
                                     ->prefix('Rp')
                                     ->helperText('Untuk estimasi payroll otomatis'),
+                                \Filament\Forms\Components\Hidden::make('category'),
                             ]),
                         Textarea::make('address')
-                            ->label('Alamat Lengkap')
+                            ->label('Alamat')
+                            ->columnSpanFull(),
+                        \Filament\Forms\Components\FileUpload::make('photo_path')
+                            ->label('Foto Relawan')
+                            ->image()
+                            ->avatar()
+                            ->directory('volunteer-photos')
                             ->columnSpanFull(),
                     ])
                     ->columnSpanFull(),

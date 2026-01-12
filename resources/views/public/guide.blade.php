@@ -34,7 +34,7 @@
                                 Saat pertama kali login, pastikan Anda melengkapi data-data berikut agar akun SPPG Anda berstatus <strong>Active</strong>:
                             </p>
                             <ul class="list-disc pl-5 space-y-2">
-                                <li><strong>Profil SPPG:</strong> Lengkapi alamat, titik lokasi (maps), dan nomor rekening/VA.</li>
+                                <li><strong>Profil SPPG:</strong> Lengkapi Nama SPPG, Nama Bank, Nomor VA, Tanggal Operasional, alamat, titik lokasi (maps), dan nomor rekening/VA.</li>
                                 <li><strong>Staf:</strong> Tambahkan data Staf Akuntan dan Ahli Gizi.</li>
                                 <li><strong>Relawan:</strong> Data relawan yang terlibat.</li>
                                 <li><strong>Penerima Manfaat:</strong> Daftar sekolah atau panti yang dilayani.</li>
