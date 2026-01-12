@@ -28,7 +28,7 @@ class SppgForm
                             ->preload(),
                         Select::make('pj_id')
                             ->label('PJ Pelaksana')
-                            ->relationship('pj', 'name', modifyQueryUsing: fn(\Illuminate\Database\Eloquent\Builder $query) => $query->role('PJ Pelaksana'))
+                            ->relationship('pjSppg', 'name', modifyQueryUsing: fn(\Illuminate\Database\Eloquent\Builder $query) => $query->role('PJ Pelaksana'))
                             ->searchable()
                             ->preload(),
                         Select::make('lembaga_pengusul_id')
