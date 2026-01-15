@@ -99,6 +99,10 @@ class SppgProfile extends Page implements HasForms
                     ->disk('public')
                     ->directory('sppg-photos')
                     ->visibility('public')
+                    ->required()
+                    ->validationMessages([
+                        'required' => 'Foto wajib diisi',
+                    ])
                     ->columnSpanFull(),
                 \Filament\Forms\Components\FileUpload::make('gallery_photos')
                     ->label('Galeri Foto')
@@ -122,6 +126,24 @@ class SppgProfile extends Page implements HasForms
                     ->label('Nomor Virtual Account')
                     ->required(),
             ]),
+            Fieldset::make('Kapasitas')->schema([
+                TextInput::make('porsi_besar')
+                    ->label('Kapasitas Porsi Besar')
+                    ->numeric()
+                    ->default(0)
+                    ->required()
+                    ->validationMessages([
+                        'required' => 'Kapasitas porsi besar wajib diisi',
+                    ]),
+                TextInput::make('porsi_kecil')
+                    ->label('Kapasitas Porsi Kecil')
+                    ->numeric()
+                    ->default(0)
+                    ->required()
+                    ->validationMessages([
+                        'required' => 'Kapasitas porsi kecil wajib diisi',
+                    ]),
+            ]),
             Fieldset::make('Alamat Lengkap')->schema([
                 Textarea::make('alamat')
                     ->label('Alamat')
@@ -140,6 +162,10 @@ class SppgProfile extends Page implements HasForms
                     })
                     ->live()
                     ->searchable()
+                    ->required()
+                    ->validationMessages([
+                        'required' => 'Provinsi wajib diisi',
+                    ])
                     ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
                     ->afterStateUpdated(function ($set) {
                         $set('city_code', null);
@@ -164,6 +190,10 @@ class SppgProfile extends Page implements HasForms
                     })
                     ->live()
                     ->searchable()
+                    ->required()
+                    ->validationMessages([
+                        'required' => 'Kota/Kabupaten wajib diisi',
+                    ])
                     ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
                     ->disabled(fn($get) => ! $get('province_code'))
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
@@ -210,6 +240,10 @@ class SppgProfile extends Page implements HasForms
                     })
                     ->live()
                     ->searchable()
+                    ->required()
+                    ->validationMessages([
+                        'required' => 'Kecamatan wajib diisi',
+                    ])
                     ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
                     ->disabled(fn($get) => ! $get('city_code'))
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
@@ -256,6 +290,10 @@ class SppgProfile extends Page implements HasForms
                     })
                     ->live()
                     ->searchable()
+                    ->required()
+                    ->validationMessages([
+                        'required' => 'Kelurahan/Desa wajib diisi',
+                    ])
                     ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
                     ->disabled(fn($get) => ! $get('district_code'))
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
@@ -292,21 +330,44 @@ class SppgProfile extends Page implements HasForms
                         ->defaultLocation(-7.797068, 110.370529)
                         ->zoom(13)
                         ->height('300px')
+                        ->required()
+                        ->validationMessages([
+                            'required' => 'Lokasi di peta wajib diisi',
+                        ])
                         ->latitudeField('latitude')
                         ->longitudeField('longitude'),
                     TextInput::make('latitude')
                         ->label('Latitude')
-                        ->disabled(),
+                        ->disabled()
+                        ->dehydrated()
+                        ->required()
+                        ->validationMessages([
+                            'required' => 'Latitude wajib diisi',
+                        ]),
                     TextInput::make('longitude')
                         ->label('Longitude')
-                        ->disabled(),
+                        ->disabled()
+                        ->dehydrated()
+                        ->required()
+                        ->validationMessages([
+                            'required' => 'Longitude wajib diisi',
+                        ]),
                 ]),
             Fieldset::make('Dokumen SPPG')
                 ->schema([
                     \Filament\Forms\Components\FileUpload::make('izin_operasional_path')
                         ->label('Dokumen Verval')
                         ->directory('sppg-docs')
-                        ->acceptedFileTypes(['application/pdf', 'image/*']),
+                        ->acceptedFileTypes(['application/pdf'])
+                        ->required()
+                        ->validationMessages([
+                            'required' => 'Dokumen verval wajib diisi',
+                        ]),
+                    \Filament\Forms\Components\FileUpload::make('sertifikat_akreditasi_path')
+                        ->label('Sertifikat Akreditasi')
+                        ->directory('sppg-docs')
+                        ->acceptedFileTypes(['application/pdf'])
+                        ->visibility('public'),
                     \Filament\Forms\Components\FileUpload::make('sertifikat_halal_path')
                         ->label('Sertifikat Halal')
                         ->directory('sppg-docs')
@@ -316,7 +377,7 @@ class SppgProfile extends Page implements HasForms
                         ->directory('sppg-docs')
                         ->acceptedFileTypes(['application/pdf', 'image/*']),
                     \Filament\Forms\Components\FileUpload::make('lhaccp_path')
-                        ->label('LHACCP')
+                        ->label('HACCP')
                         ->directory('sppg-docs')
                         ->acceptedFileTypes(['application/pdf', 'image/*']),
                     \Filament\Forms\Components\FileUpload::make('iso_path')

@@ -54,7 +54,7 @@ Route::get('/tim', function () {
 
 Route::controller(\App\Http\Controllers\PublicSppgController::class)->group(function () {
     Route::get('/daftar-sppg', 'index')->name('sppg.public.index');
-    Route::get('/daftar-sppg/{sppg:kode_sppg}', 'show')->name('sppg.public.show');
+    Route::get('/daftar-sppg/{sppg}', 'show')->name('sppg.public.show');
 });
 
 Route::get('/artikel', [\App\Http\Controllers\PublicBlogController::class, 'index'])->name('blog.public.index');
@@ -64,5 +64,5 @@ Route::get('/artikel/{post:slug}', [\App\Http\Controllers\PublicBlogController::
 Route::get('/daftar', SelfRegistration::class)->name('register.self');
 Route::get('/daftar/{role}/{token}', SelfRegistration::class)->name('register.self.token');
 
-// require __DIR__.'/auth.php';
+// require __DIR__.'/auth.php';´
 

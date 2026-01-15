@@ -74,7 +74,7 @@
                                 <tr class="group hover:bg-[#fcfbf9] dark:hover:bg-[#362e26] transition-colors">
                                     <td class="p-4">
                                         <div class="flex flex-col">
-                                            <a href="{{ route('sppg.public.show', $sppg->kode_sppg) }}" class="text-text-main dark:text-white font-bold text-base hover:text-primary transition-colors">
+                                            <a href="{{ route('sppg.public.show', $sppg) }}" class="text-text-main dark:text-white font-bold text-base hover:text-primary transition-colors">
                                                 {{ $sppg->nama_sppg }}
                                             </a>
                                             <span class="text-xs text-text-secondary">ID: {{ $sppg->kode_sppg ?? '-' }}</span>
@@ -113,7 +113,7 @@
                                         @endif
                                     </td>
                                     <td class="p-4 text-right">
-                                        <a href="{{ route('sppg.public.show', $sppg->kode_sppg) }}" class="text-text-secondary hover:text-text-main dark:hover:text-white p-1 rounded hover:bg-gray-100 dark:hover:bg-neutral-700 inline-block">
+                                        <a href="{{ route('sppg.public.show', $sppg) }}" class="text-text-secondary hover:text-text-main dark:hover:text-white p-1 rounded hover:bg-gray-100 dark:hover:bg-neutral-700 inline-block">
                                             <span class="material-symbols-outlined">visibility</span>
                                         </a>
                                     </td>
@@ -135,7 +135,7 @@
                     @forelse($sppgs as $sppg)
                     <div class="bg-white dark:bg-surface-dark rounded-xl p-4 border border-[#e6e2de] dark:border-neutral-700 shadow-sm flex flex-col gap-3">
                         <div class="flex flex-col gap-1">
-                            <a href="{{ route('sppg.public.show', $sppg->kode_sppg) }}" class="text-text-main dark:text-white font-bold text-lg hover:text-primary transition-colors block">
+                            <a href="{{ route('sppg.public.show', $sppg) }}" class="text-text-main dark:text-white font-bold text-lg hover:text-primary transition-colors block">
                                 {{ $sppg->nama_sppg }}
                             </a>
                             <div class="flex items-center gap-2 flex-wrap">
@@ -176,7 +176,7 @@
                         </div>
 
                         <div class="mt-1 pt-2">
-                             <a href="{{ route('sppg.public.show', $sppg->kode_sppg) }}" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-sm font-semibold text-text-main dark:text-white transition-colors border border-gray-200 dark:border-neutral-600">
+                             <a href="{{ route('sppg.public.show', $sppg) }}" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-sm font-semibold text-text-main dark:text-white transition-colors border border-gray-200 dark:border-neutral-600">
                                 <span>Lihat Detail</span>
                                 <span class="material-symbols-outlined text-sm">arrow_forward</span>
                             </a>

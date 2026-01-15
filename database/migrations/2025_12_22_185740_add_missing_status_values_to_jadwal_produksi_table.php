@@ -13,7 +13,9 @@ return new class extends Migration
     {
         // Use raw SQL to modify the ENUM column
         // Laravel's Blueprint doesn't support modifying ENUMs directly
-        \DB::statement("ALTER TABLE `jadwal_produksi` MODIFY COLUMN `status` ENUM('Direncanakan', 'Menunggu ACC Kepala SPPG', 'Terverifikasi', 'Didistribusikan', 'Ditolak', 'Selesai') NOT NULL DEFAULT 'Direncanakan'");
+        if (\DB::getDriverName() !== 'sqlite') {
+            \DB::statement("ALTER TABLE `jadwal_produksi` MODIFY COLUMN `status` ENUM('Direncanakan', 'Menunggu ACC Kepala SPPG', 'Terverifikasi', 'Didistribusikan', 'Ditolak', 'Selesai') NOT NULL DEFAULT 'Direncanakan'");
+        }
     }
 
     /**

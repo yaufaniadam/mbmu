@@ -40,6 +40,10 @@ class SppgsTable
                         default => 'gray',
                     })
                     ->sortable(),
+                \Filament\Tables\Columns\IconColumn::make('is_active')
+                    ->label('Aktif')
+                    ->boolean()
+                    ->sortable(),
                 TextColumn::make('grade')->label('Akreditasi')->sortable(),
                 TextColumn::make('kepalaSppg.name')
                     ->label('Kepala SPPG')

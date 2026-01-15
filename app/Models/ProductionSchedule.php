@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductionSchedule extends Model
 {
+    use \Illuminate\Database\Eloquent\Factories\HasFactory;
     protected $table = 'jadwal_produksi';
 
     protected $fillable = [

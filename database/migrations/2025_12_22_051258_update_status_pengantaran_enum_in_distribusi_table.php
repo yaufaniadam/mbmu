@@ -12,7 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("ALTER TABLE distribusi MODIFY COLUMN status_pengantaran ENUM('Menunggu', 'Sedang Dikirim', 'Terkirim', 'Selesai') DEFAULT 'Menunggu'");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE distribusi MODIFY COLUMN status_pengantaran ENUM('Menunggu', 'Sedang Dikirim', 'Terkirim', 'Selesai') DEFAULT 'Menunggu'");
+        }
     }
 
     /**

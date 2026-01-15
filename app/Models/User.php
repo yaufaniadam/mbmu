@@ -132,4 +132,20 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->telepon;
     }
+
+    /**
+     * Get instructions created by this user
+     */
+    public function createdInstructions()
+    {
+        return $this->hasMany(Instruction::class, 'created_by');
+    }
+
+    /**
+     * Get instruction acknowledgments by this user
+     */
+    public function instructionAcknowledgments()
+    {
+        return $this->hasMany(InstructionAcknowledgment::class);
+    }
 }

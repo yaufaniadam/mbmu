@@ -140,7 +140,7 @@ class InvoiceGenerationService
             'A' => 6000000,
             'B' => 4500000,
             'C' => 3000000,
-            default => 3000000,
+            default => 6000000,
         };
 
         $amount = $activeDays * $ratePerDay;

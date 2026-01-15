@@ -13,14 +13,16 @@ return new class extends Migration
     {
         // First, clean up any existing duplicates
         // Keep only the most recent record for each sppg_id + tanggal combination
-        DB::statement("
-            DELETE t1 FROM jadwal_produksi t1
-            INNER JOIN jadwal_produksi t2 
-            WHERE 
-                t1.sppg_id = t2.sppg_id 
-                AND t1.tanggal = t2.tanggal
-                AND t1.id < t2.id
-        ");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("
+                DELETE t1 FROM jadwal_produksi t1
+                INNER JOIN jadwal_produksi t2 
+                WHERE 
+                    t1.sppg_id = t2.sppg_id 
+                    AND t1.tanggal = t2.tanggal
+                    AND t1.id < t2.id
+            ");
+        }
 
         Schema::table('jadwal_produksi', function (Blueprint $table) {
             // Add unique constraint: one distribution plan per SPPG per day

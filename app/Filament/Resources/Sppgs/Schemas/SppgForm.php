@@ -327,7 +327,7 @@ class SppgForm
                             ->directory('sppg-docs')
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('lhaccp_path')
-                            ->label('LHACCP')
+                            ->label('HACCP')
                             ->disk('public')
                             ->directory('sppg-docs')
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
