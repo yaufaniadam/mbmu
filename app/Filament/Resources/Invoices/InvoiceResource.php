@@ -128,7 +128,14 @@ class InvoiceResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'UNPAID' => 'Belum Bayar',
+                        'WAITING_VERIFICATION' => 'Menunggu Verifikasi',
+                        'PAID' => 'Lunas',
+                        'REJECTED' => 'Ditolak',
+                        default => $state,
+                    })
+                    ->color(fn (string $state): string =>match ($state) {
                         'UNPAID' => 'gray',
                         'WAITING_VERIFICATION' => 'warning',
                         'PAID' => 'success',

@@ -54,6 +54,7 @@ class Sppg extends Model
         'longitude',
         'photo_path',
         'grade',
+        'sertifikat_akreditasi_path',
         'izin_operasional_path',
         'sertifikat_halal_path',
         'slhs_path',
@@ -196,5 +197,10 @@ class Sppg extends Model
     public function city()
     {
         return $this->belongsTo(\Laravolt\Indonesia\Models\City::class, 'city_code', 'code');
+    }
+
+    public function menus()
+    {
+        return $this->hasMany(Menu::class);
     }
 }

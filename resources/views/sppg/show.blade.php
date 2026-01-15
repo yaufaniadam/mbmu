@@ -64,9 +64,6 @@
                         {{ $sppg->status ?? '-' }}
                     </span>
                     @endif
-                    <span class="inline-flex items-center gap-1 rounded-full bg-white/10 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-white border border-white/20">
-                        ID: {{ $sppg->kode_sppg }}
-                    </span>
                 </div>
                 <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight">{{ $sppg->nama_sppg }}</h1>
                 <p class="text-slate-200 mt-2 max-w-2xl text-sm sm:text-base font-light">
@@ -166,6 +163,44 @@
                     </div>
                     @endif
                 </div>
+            </div>
+
+            <!-- Menus Section -->
+            <div class="bg-card-light dark:bg-card-dark rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Menu Kami</h3>
+                </div>
+                
+                @if($sppg->menus->count() > 0)
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    @foreach($sppg->menus as $menu)
+                    <div class="group relative rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                        <!-- Image -->
+                        <div class="aspect-square w-full overflow-hidden cursor-pointer" onclick="window.open('{{ Storage::disk('public')->url($menu->image) }}', '_blank')">
+                            <img src="{{ Storage::disk('public')->url($menu->image) }}" 
+                                 alt="{{ $menu->name ?? 'Menu Image' }}" 
+                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        </div>
+                        
+                        <!-- Caption (Optional) -->
+                        @if($menu->name || $menu->description)
+                        <div class="p-3 bg-white dark:bg-slate-900">
+                            @if($menu->name)
+                            <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate" title="{{ $menu->name }}">{{ $menu->name }}</h4>
+                            @endif
+                            @if($menu->description)
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2" title="{{ $menu->description }}">{{ $menu->description }}</p>
+                            @endif
+                        </div>
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+                @else
+                <div class="text-center py-8 text-slate-500 dark:text-slate-400">
+                    <p class="text-sm">Belum ada menu yang ditampilkan.</p>
+                </div>
+                @endif
             </div>
         </div>
 

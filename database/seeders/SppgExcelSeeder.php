@@ -207,8 +207,8 @@ class SppgExcelSeeder extends Seeder
             'password' => Hash::make($password),
         ]);
 
-        // Assign "PJ Pelaksana" role
-        $pjRole = Role::where('name', 'PJ Pelaksana')->first();
+        // Assign "Pimpinan Lembaga Pengusul" role
+        $pjRole = Role::where('name', 'Pimpinan Lembaga Pengusul')->first();
         if ($pjRole) {
             $user->assignRole($pjRole);
         }

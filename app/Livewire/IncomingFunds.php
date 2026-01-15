@@ -148,7 +148,7 @@ class IncomingFunds extends TableWidget
                     ->icon('heroicon-m-pencil-square')
                     ->color('warning')
                     ->visible(fn (SppgIncomingFund $record) => 
-                        Auth::user()->hasRole('Superadmin') && 
+                        Auth::user()->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']) && 
                         $record->source !== 'Penerimaan Royalti'
                     )
                     ->modalHeading('Revisi Data Dana Masuk')
@@ -180,7 +180,7 @@ class IncomingFunds extends TableWidget
                 DeleteAction::make()
                     ->label('Hapus')
                     ->visible(fn (SppgIncomingFund $record) => 
-                        Auth::user()->hasRole('Superadmin') && 
+                        Auth::user()->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']) && 
                         $record->source !== 'Penerimaan Royalti'
                     )
                     ->modalHeading('Hapus Data Dana Masuk?')

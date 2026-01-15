@@ -27,7 +27,7 @@ class SppgForm
                             ->searchable()
                             ->preload(),
                         Select::make('pj_id')
-                            ->label('PJ Pelaksana')
+                            ->label('Perwakilan Yayasan')
                             ->relationship('pjSppg', 'name', modifyQueryUsing: fn(\Illuminate\Database\Eloquent\Builder $query) => $query->role('PJ Pelaksana'))
                             ->searchable()
                             ->preload(),
@@ -49,13 +49,18 @@ class SppgForm
                             ])
                             ->required(),
                         Select::make('status')
-                            ->label('Status')
+                            ->label('Status Operasional')
                             ->options([
-                                'Aktif' => 'Aktif',
-                                'Tidak Aktif' => 'Tidak Aktif',
+                                'Proses Persiapan' => 'Proses Persiapan',
+                                'Verifikasi dan Validasi' => 'Verifikasi dan Validasi',
+                                'Operasional / Siap Berjalan' => 'Operasional / Siap Berjalan',
                             ])
                             ->required()
-                            ->default('Aktif'),
+                            ->default('Proses Persiapan'),
+                        \Filament\Forms\Components\Toggle::make('is_active')
+                            ->label('Status Aktif')
+                            ->inline(false)
+                            ->default(true),
                         TextInput::make('nama_bank')
                             ->label('Nama Bank')
                             ->required(),
@@ -81,6 +86,10 @@ class SppgForm
                             })
                             ->live()
                             ->searchable()
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Provinsi wajib diisi',
+                            ])
                             ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
                             ->afterStateUpdated(function (callable $set) {
                                 $set('city_code', null);
@@ -100,6 +109,10 @@ class SppgForm
                             })
                             ->live()
                             ->searchable()
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Kota/Kabupaten wajib diisi',
+                            ])
                             ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
                             ->disabled(fn($get) => ! $get('province_code'))
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
@@ -141,6 +154,10 @@ class SppgForm
                             })
                             ->live()
                             ->searchable()
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Kecamatan wajib diisi',
+                            ])
                             ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                 $set('village_code', null);
@@ -181,6 +198,10 @@ class SppgForm
                             })
                             ->live()
                             ->searchable()
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Kelurahan/Desa wajib diisi',
+                            ])
                             ->dehydrateStateUsing(fn($state) => $state === null ? null : (string) $state)
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                  // Geocode Village
@@ -213,6 +234,10 @@ class SppgForm
                             ->defaultLocation(-7.797068, 110.370529)
                             ->zoom(13)
                             ->height('300px')
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Lokasi di peta wajib diisi',
+                            ])
                             ->latitudeField('latitude')
                             ->longitudeField('longitude')
                             ->afterStateHydrated(function ($state, $component, $record) {
@@ -226,24 +251,30 @@ class SppgForm
                         TextInput::make('latitude')
                             ->label('Latitude')
                             ->disabled()
-                            ->dehydrated(),
+                            ->dehydrated()
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Latitude wajib diisi',
+                            ]),
                         TextInput::make('longitude')
                             ->label('Longitude')
                             ->disabled()
-                            ->dehydrated(),
+                            ->dehydrated()
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Longitude wajib diisi',
+                            ]),
                         \Filament\Forms\Components\FileUpload::make('photo_path')
                             ->label('Foto SPPG')
                             ->image()
                             ->disk('public')
                             ->directory('sppg-photos')
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Foto wajib diisi',
+                            ])
                             ->columnSpanFull(),
-                        Select::make('grade')
-                            ->label('Grade Akreditasi')
-                            ->options([
-                                'A' => 'A',
-                                'B' => 'B',
-                                'C' => 'C',
-                            ]),
+
                         TextInput::make('porsi_besar')
                             ->label('Kapasitas Porsi Besar')
                             ->numeric()
@@ -274,7 +305,17 @@ class SppgForm
                             ->label('Dokumen Verval')
                             ->disk('public')
                             ->directory('sppg-docs')
-                            ->acceptedFileTypes(['application/pdf', 'image/*']),
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Dokumen verval wajib diisi',
+                            ]),
+                        \Filament\Forms\Components\FileUpload::make('sertifikat_akreditasi_path')
+                            ->label('Sertifikat Akreditasi')
+                            ->disk('public')
+                            ->directory('sppg-docs')
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->visibility('public'),
                         \Filament\Forms\Components\FileUpload::make('sertifikat_halal_path')
                             ->label('Sertifikat Halal')
                             ->disk('public')
