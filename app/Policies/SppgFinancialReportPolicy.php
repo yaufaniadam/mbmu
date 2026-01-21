@@ -14,7 +14,15 @@ class SppgFinancialReportPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:SppgFinancialReport');
+        // Allow Kepala SPPG, Admin roles, and Kornas staff to view financial reports
+        return $authUser->hasAnyRole([
+            'Kepala SPPG',
+            'Admin SPPG',
+            'Superadmin',
+            'Direktur Kornas',
+            'Staf Akuntan Kornas',
+            'Staf Kornas'
+        ]);
     }
 
     public function view(AuthUser $authUser, SppgFinancialReport $sppgFinancialReport): bool
@@ -24,7 +32,8 @@ class SppgFinancialReportPolicy
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:SppgFinancialReport');
+        // Only Kepala SPPG and Admin SPPG can upload financial reports
+        return $authUser->hasAnyRole(['Kepala SPPG', 'Admin SPPG']);
     }
 
     public function update(AuthUser $authUser, SppgFinancialReport $sppgFinancialReport): bool

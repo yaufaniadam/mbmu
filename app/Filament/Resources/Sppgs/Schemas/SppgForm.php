@@ -27,7 +27,7 @@ class SppgForm
                             ->searchable()
                             ->preload(),
                         Select::make('pj_id')
-                            ->label('Perwakilan Yayasan')
+                            ->label('PIC')
                             ->relationship('pjSppg', 'name', modifyQueryUsing: fn(\Illuminate\Database\Eloquent\Builder $query) => $query->role('PJ Pelaksana'))
                             ->searchable()
                             ->preload(),
@@ -346,6 +346,15 @@ class SppgForm
                             ->disk('public')
                             ->directory('sppg-docs')
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
+                        \Filament\Forms\Components\FileUpload::make('pks_path')
+                            ->label('Perjanjian Kerjasama (PKS)')
+                            ->disk('public')
+                            ->directory('sppg-docs')
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Dokumen PKS wajib diisi',
+                            ]),
                     ])->columns(2),
 
                 \Filament\Schemas\Components\Section::make('Sosial Media')

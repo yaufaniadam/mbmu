@@ -27,7 +27,8 @@ class User extends Authenticatable implements FilamentUser
                 'Direktur Kornas', 
                 'Staf Kornas', 
                 'Staf Akuntan Kornas', 
-                'Pimpinan Lembaga Pengusul'
+                'Pimpinan Lembaga Pengusul',
+                'PJ Pelaksana'
             ]);
         }
 

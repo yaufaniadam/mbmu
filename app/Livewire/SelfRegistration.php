@@ -29,7 +29,6 @@ class SelfRegistration extends Component
     public string $telepon = '';
     public string $email = '';
     public string $password = '';
-    public string $password_confirmation = '';
 
     // State
     public int $step = 1; // 1: Validasi Token, 2: Isi Data, 3: Sukses
@@ -97,14 +96,14 @@ class SelfRegistration extends Component
             'name' => 'required|string|max:255',
             'telepon' => 'required|string|max:20|unique:users,telepon',
             'email' => 'nullable|email|unique:users,email',
-            'password' => 'nullable|string|min:6|confirmed',
+            'password' => 'nullable|string|min:6',
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
             'telepon.required' => 'Nomor HP wajib diisi.',
             'telepon.unique' => 'Nomor HP sudah terdaftar.',
             'email.unique' => 'Email sudah terdaftar.',
             'password.min' => 'Password minimal 6 karakter.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min' => 'Password minimal 6 karakter.',
         ]);
 
         // Normalize phone number
@@ -166,14 +165,19 @@ class SelfRegistration extends Component
                     DB::commit();
 
                     // Send WhatsApp notification
-                    $wablas = new WablasService();
-                    $wablas->sendRegistrationSuccess(
-                        $this->telepon,
-                        $this->name,
-                        $this->generatedPassword,
-                        $this->registrationToken->sppg->nama_sppg,
-                        $this->roleLabels[$this->role] ?? $this->role
-                    );
+                    try {
+                        $wablas = new WablasService();
+                        $wablas->sendRegistrationSuccess(
+                            $this->telepon,
+                            $this->name,
+                            $this->generatedPassword,
+                            $this->registrationToken->sppg->nama_sppg,
+                            $this->roleLabels[$this->role] ?? $this->role
+                        );
+                    } catch (\Exception $e) {
+                        // Log error but don't fail the registration
+                        \Illuminate\Support\Facades\Log::error('Failed to send registration WA: ' . $e->getMessage());
+                    }
 
                     $this->registrationComplete = true;
                     $this->step = 3;

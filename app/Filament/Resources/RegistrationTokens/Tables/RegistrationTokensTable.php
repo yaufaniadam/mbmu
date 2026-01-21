@@ -22,18 +22,18 @@ class RegistrationTokensTable
                     ->label('SPPG')
                     ->searchable()
                     ->sortable(),
-                
-                TextColumn::make('role')
-                    ->label('Role')
-                    ->formatStateUsing(fn (string $state): string => RegistrationToken::ROLE_LABELS[$state] ?? $state)
+
+                TextColumn::make('sppg.status')
+                    ->label('Status SPPG')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'kepala_sppg' => 'primary',
-                        'ahli_gizi' => 'success',
-                        'akuntan' => 'warning',
-                        'administrator' => 'info',
+                        'Proses Persiapan' => 'warning',
+                        'Verifikasi' => 'info',
+                        'Operasional' => 'success',
                         default => 'gray',
                     }),
+                
+
                 
                 TextColumn::make('token')
                     ->label('Kode')

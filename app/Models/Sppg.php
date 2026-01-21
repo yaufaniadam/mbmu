@@ -62,6 +62,7 @@ class Sppg extends Model
         'iso_path',
         'sertifikat_lahan_path',
         'dokumen_lain_path',
+        'pks_path',
         'facebook',
         'instagram',
         'youtube',

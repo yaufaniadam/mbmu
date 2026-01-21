@@ -14,22 +14,22 @@ class SppgIncomingFundCategoryPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:SppgIncomingFundCategory');
+        return $authUser->can('ViewAny:SppgIncomingFundCategory') || $authUser->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']);
     }
 
     public function view(AuthUser $authUser, SppgIncomingFundCategory $sppgIncomingFundCategory): bool
     {
-        return $authUser->can('View:SppgIncomingFundCategory');
+        return $authUser->can('View:SppgIncomingFundCategory') || $authUser->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']);
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:SppgIncomingFundCategory');
+        return $authUser->can('Create:SppgIncomingFundCategory') || $authUser->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']);
     }
 
     public function update(AuthUser $authUser, SppgIncomingFundCategory $sppgIncomingFundCategory): bool
     {
-        return $authUser->can('Update:SppgIncomingFundCategory');
+        return $authUser->can('Update:SppgIncomingFundCategory') || $authUser->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']);
     }
 
     public function delete(AuthUser $authUser, SppgIncomingFundCategory $sppgIncomingFundCategory): bool

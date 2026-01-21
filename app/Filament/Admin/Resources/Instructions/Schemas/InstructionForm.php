@@ -30,6 +30,14 @@ class InstructionForm
                             ->label('Isi Instruksi')
                             ->required()
                             ->columnSpanFull(),
+
+                        \Filament\Forms\Components\FileUpload::make('attachment_path')
+                            ->label('Lampiran (Gambar/Dokumen)')
+                            ->helperText('Upload gambar atau dokumen jika diperlukan')
+                            ->disk('public')
+                            ->directory('instruction-attachments')
+                            ->acceptedFileTypes(['image/*', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
+                            ->columnSpanFull(),
                         
                         Select::make('recipient_type')
                             ->label('Penerima')

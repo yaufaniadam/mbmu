@@ -178,7 +178,7 @@ class InvoiceResource extends Resource
                     ->modalCancelAction(false)
                     ->visible(fn (Invoice $record) => 
                         $record->status === 'WAITING_VERIFICATION' && (
-                            ($record->type === 'SPPG_SEWA' && auth()->user()->hasRole('Pimpinan Lembaga Pengusul')) ||
+                            ($record->type === 'SPPG_SEWA' && auth()->user()->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])) ||
                             ($record->type === 'LP_ROYALTY' && auth()->user()->hasAnyRole(['Staf Akuntan Kornas', 'Superadmin']))
                         )
                     )
@@ -284,7 +284,7 @@ class InvoiceResource extends Resource
                     ->color('warning')
                     ->visible(fn (Invoice $record) => in_array($record->status, ['UNPAID', 'REJECTED']) 
                         && $record->type === 'LP_ROYALTY'
-                        && auth()->user()->hasRole('Pimpinan Lembaga Pengusul'))
+                        && auth()->user()->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana']))
                     ->form([
                         Section::make('Konfirmasi Transfer Kontribusi Kornas')
                             ->schema([
@@ -341,7 +341,7 @@ class InvoiceResource extends Resource
         $query = parent::getEloquentQuery();
         $user = auth()->user();
 
-        if ($user->hasRole('Pimpinan Lembaga Pengusul')) {
+        if ($user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])) {
             $lembaga = \App\Models\User::find($user->id)->lembagaDipimpin;
             if ($lembaga) {
                 // Show Invoices where SPPG ID is in User's Lembaga's SPPGs

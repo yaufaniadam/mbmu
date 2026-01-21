@@ -64,7 +64,8 @@ class Dashboard extends BaseDashboard
         // National roles see Province Filter
         $nationalRoles = ['Superadmin', 'Staf Kornas', 'Direktur Kornas'];
         $isNational = $user->hasAnyRole($nationalRoles);
-        $isPimpinan = $user->hasRole('Pimpinan Lembaga Pengusul');
+        $isNational = $user->hasAnyRole($nationalRoles);
+        $isPimpinan = $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana']);
 
         $sppgOptions = [];
         if ($isNational) {

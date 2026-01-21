@@ -122,7 +122,7 @@ class SppgExcelSeeder extends Seeder
                     'max_uses' => 1,
                     'is_active' => true,
                     'recipient_name' => $pjUser?->name ?? $data['nama_pj'] ?? null,
-                    'recipient_phone' => $pjUser?->telepon ?? isset($data['wa_pj']) ? ('0' . ltrim($data['wa_pj'], '0')) : null,
+                    'recipient_phone' => $pjUser?->telepon ?? (isset($data['wa_pj']) ? $this->normalizePhone($data['wa_pj']) : null),
                 ]);
 
                 $imported++;
@@ -181,10 +181,31 @@ class SppgExcelSeeder extends Seeder
         );
     }
 
+    protected function normalizePhone(string $phone): string
+    {
+        $phone = preg_replace('/[^0-9]/', '', $phone);
+        
+        // Remove leading 0 and replace with 62
+        if (str_starts_with($phone, '0')) {
+            $phone = '62' . substr($phone, 1);
+        } 
+        // If starts with 8, add 62
+        elseif (str_starts_with($phone, '8')) {
+            $phone = '62' . $phone;
+        }
+        // If not starting with 62, prepend it (safety check, though careful with short numbers)
+        elseif (!str_starts_with($phone, '62')) {
+            $phone = '62' . $phone;
+        }
+
+        return $phone;
+    }
+
     protected function findOrCreatePjUser(array $data): ?User
     {
         $namaPj = trim($data['nama_pj']);
-        $waPj = trim($data['wa_pj']);
+        // Normalize phone to 62 format
+        $waPj = $this->normalizePhone(trim($data['wa_pj']));
 
         if (empty($namaPj) || empty($waPj)) {
             return null;
@@ -207,10 +228,25 @@ class SppgExcelSeeder extends Seeder
             'password' => Hash::make($password),
         ]);
 
-        // Assign "Pimpinan Lembaga Pengusul" role
-        $pjRole = Role::where('name', 'Pimpinan Lembaga Pengusul')->first();
+        // Assign "Pimpinan Lembaga Pengusul" (Perwakilan Yayasan) AND "PJ Pelaksana" roles
+        // This ensures they have full access to Admin Panel (as Pimpinan) and Operational features (as PJ)
+        
+        $pimpinanRole = Role::where('name', 'Pimpinan Lembaga Pengusul')->first();
+        if ($pimpinanRole) {
+            $user->assignRole($pimpinanRole);
+        }
+
+        $pjRole = Role::where('name', 'PJ Pelaksana')->first();
         if ($pjRole) {
             $user->assignRole($pjRole);
+        }
+
+        // Link User to Lembaga Pengusul if not already linked
+        if (isset($data['pengusul'])) {
+            $lembaga = LembagaPengusul::where('nama_lembaga', trim($data['pengusul']))->first();
+            if ($lembaga && !$lembaga->pimpinan_id) {
+                $lembaga->update(['pimpinan_id' => $user->id]);
+            }
         }
 
         return $user;

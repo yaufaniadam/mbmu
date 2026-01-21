@@ -18,7 +18,7 @@ class LembagaPengusulsTable
                 TextColumn::make('nama_lembaga')
                     ->searchable(),
                 TextColumn::make('pimpinan.name')
-                    ->numeric()
+                    ->label('Perwakilan Yayasan')
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -34,7 +34,7 @@ class LembagaPengusulsTable
             ])
             ->recordActions([
                 ViewAction::make()
-                    ->visible(fn () => auth()->user()->hasAnyRole(['Superadmin', 'Direktur Kornas'])),
+                    ->visible(fn () => auth()->user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])),
                 EditAction::make()
                     ->visible(fn () => auth()->user()->hasRole('Superadmin')),
             ])

@@ -33,7 +33,7 @@ class ManageFinance extends Page implements HasForms
         // Pimpinan Lembaga Pengusul needs access for:
         // - verify_rent: Menerima pembayaran insentif dari SPPG
         // - pay_royalty: Bayar kontribusi ke Kornas
-        if ($user->hasRole('Pimpinan Lembaga Pengusul')) {
+        if ($user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])) {
             return true;
         }
 
@@ -52,7 +52,8 @@ class ManageFinance extends Page implements HasForms
     public static function shouldRegisterNavigation(): bool
     {
         // Hide for SPPG roles because they now have "PayIncentive" page
-        if (auth()->user()?->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan'])) {
+        // PJ Pelaksana is now treated as Pimpinan (Foundation Rep), so we show it
+        if (auth()->user()?->hasAnyRole(['Kepala SPPG', 'Staf Akuntan'])) {
             return false;
         }
 
@@ -70,11 +71,11 @@ class ManageFinance extends Page implements HasForms
                 // Kornas defaults to their own Buku Kas Pusat
                 $this->activeTab = 'buku_kas_pusat';
             }
-        } elseif ($user->hasRole('Pimpinan Lembaga Pengusul')) {
+        } elseif ($user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])) {
              if (request()->query('activeTab') === null) {
                 $this->activeTab = 'verify_rent';
             }
-        } elseif ($user->hasAnyRole(['Kepala SPPG', 'Staf Akuntan', 'PJ Pelaksana'])) {
+        } elseif ($user->hasAnyRole(['Kepala SPPG', 'Staf Akuntan'])) {
              if (request()->query('activeTab') === null) {
                 $this->activeTab = 'buku_kas';
             }
@@ -107,10 +108,10 @@ class ManageFinance extends Page implements HasForms
 
             'buku_kas' => $user->hasAnyRole(['Superadmin', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']),
             
-            'pay_rent' => $user->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']),
-            'verify_rent' => $user->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul']),
-            'pay_royalty' => $user->hasAnyRole(['Pimpinan Lembaga Pengusul']),
-            'verify_royalty' => $user->hasAnyRole(['Staf Kornas', 'Direktur Kornas']),
+            'pay_rent' => $user->hasAnyRole(['Kepala SPPG', 'Staf Akuntan']),
+            'verify_rent' => $user->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'PJ Pelaksana', 'Staf Akuntan Kornas']),
+            'pay_royalty' => $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana']),
+            'verify_royalty' => $user->hasAnyRole(['Staf Kornas', 'Direktur Kornas', 'Staf Akuntan Kornas']),
             'transactions' => false,
             default => false,
         };

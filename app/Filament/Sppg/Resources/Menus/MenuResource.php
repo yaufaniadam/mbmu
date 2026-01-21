@@ -42,6 +42,15 @@ class MenuResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        if (Auth::user()?->hasRole('Staf Akuntan Kornas')) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

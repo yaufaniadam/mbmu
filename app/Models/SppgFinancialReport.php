@@ -13,6 +13,7 @@ class SppgFinancialReport extends Model
     protected $fillable = [
         'sppg_id',
         'user_id',
+        'category',
         'start_date',
         'end_date',
         'file_path',

@@ -70,8 +70,8 @@ class Dashboard extends BaseDashboard
         // Check if user has ANY of these roles
         $isMapRole = $user->hasAnyRole($mapRoles);
 
-        // Check if user is Pimpinan
-        $isPimpinan = $user->hasRole('Pimpinan Lembaga Pengusul');
+        // Check if user is Pimpinan or PJ Pelaksana
+        $isPimpinan = $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana']);
 
         // 2. Section Visibility: Visible if user is EITHER a Map Role OR Pimpinan
         $canSeeSection = $isMapRole || $isPimpinan;

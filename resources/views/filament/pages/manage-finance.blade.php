@@ -36,10 +36,10 @@
             </x-filament::tabs.item>
         @endif
 
-        {{-- Tab 4: Bayar Royalti (LP Only) --}}
+        {{-- Tab 4: Bayar Kontribusi (LP Only) --}}
         @if (auth()->user()->hasAnyRole(['Pimpinan Lembaga Pengusul']))
             <x-filament::tabs.item :active="$activeTab === 'pay_royalty'" wire:click="$set('activeTab', 'pay_royalty')" icon="heroicon-o-banknotes">
-                Bayar Royalti
+                Bayar Kontribusi
             </x-filament::tabs.item>
         @endif
 
