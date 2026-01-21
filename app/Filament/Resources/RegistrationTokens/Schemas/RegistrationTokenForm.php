@@ -21,9 +21,14 @@ class RegistrationTokenForm
                     ->schema([
                         Select::make('sppg_id')
                             ->label('SPPG')
-                            ->options(Sppg::query()->pluck('nama_sppg', 'id'))
+                            ->options(
+                                Sppg::query()
+                                    ->whereIn('status', ['Proses Persiapan', 'Operasional / Siap Berjalan'])
+                                    ->pluck('nama_sppg', 'id')
+                            )
                             ->searchable()
-                            ->required(),
+                            ->required()
+                            ->helperText('Hanya SPPG dengan status Proses Persiapan dan Operasional yang dapat menerima token'),
                         
                         Select::make('role')
                             ->label('Role/Jabatan')

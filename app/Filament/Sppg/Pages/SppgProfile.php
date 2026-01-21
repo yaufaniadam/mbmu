@@ -126,6 +126,15 @@ class SppgProfile extends Page implements HasForms
                     ->label('Nomor Virtual Account')
                     ->required(),
             ]),
+            Fieldset::make('Tanggal Operasional')->schema([
+                \Filament\Forms\Components\DatePicker::make('tanggal_mulai_sewa')
+                    ->label('Tanggal Mulai Operasional')
+                    ->helperText('Tanggal SPPG mulai beroperasi')
+                    ->required()
+                    ->validationMessages([
+                        'required' => 'Tanggal mulai operasional wajib diisi',
+                    ]),
+            ]),
             Fieldset::make('Kapasitas')->schema([
                 TextInput::make('porsi_besar')
                     ->label('Kapasitas Porsi Besar')
@@ -335,7 +344,17 @@ class SppgProfile extends Page implements HasForms
                             'required' => 'Lokasi di peta wajib diisi',
                         ])
                         ->latitudeField('latitude')
-                        ->longitudeField('longitude'),
+                        ->longitudeField('longitude')
+                        ->default(function () {
+                            if ($this->sppg && $this->sppg->latitude && $this->sppg->longitude) {
+                                return [
+                                    'lat' => (float) $this->sppg->latitude,
+                                    'lng' => (float) $this->sppg->longitude,
+                                    'zoom' => 15,
+                                ];
+                            }
+                            return null;
+                        }),
                     TextInput::make('latitude')
                         ->label('Latitude')
                         ->disabled()
@@ -357,6 +376,7 @@ class SppgProfile extends Page implements HasForms
                 ->schema([
                     \Filament\Forms\Components\FileUpload::make('izin_operasional_path')
                         ->label('Dokumen Verval')
+                        ->disk('public')
                         ->directory('sppg-docs')
                         ->acceptedFileTypes(['application/pdf'])
                         ->required()
@@ -390,8 +410,18 @@ class SppgProfile extends Page implements HasForms
                         ->acceptedFileTypes(['application/pdf', 'image/*']),
                     \Filament\Forms\Components\FileUpload::make('dokumen_lain_path')
                         ->label('Dokumen Lain-lain')
+                        ->disk('public')
                         ->directory('sppg-docs')
                         ->acceptedFileTypes(['application/pdf', 'image/*']),
+                    \Filament\Forms\Components\FileUpload::make('pks_path')
+                        ->label('Perjanjian Kerjasama (PKS)')
+                        ->disk('public')
+                        ->directory('sppg-docs')
+                        ->acceptedFileTypes(['application/pdf'])
+                        ->required()
+                        ->validationMessages([
+                            'required' => 'Dokumen PKS wajib diisi',
+                        ]),
                 ])->columns(2),
         ];
     }

@@ -172,6 +172,13 @@ class SppgResource extends Resource
                                             ->color(fn ($state) => $state ? 'primary' : 'gray')
                                             ->url(fn ($state) => $state ? \Illuminate\Support\Facades\Storage::disk('public')->url($state) : null)
                                             ->openUrlInNewTab(),
+                                        TextEntry::make('pks_path')
+                                            ->label('Perjanjian Kerjasama (PKS)')
+                                            ->formatStateUsing(fn ($state) => $state ? 'Download' : 'Belum ada')
+                                            ->icon(fn ($state) => $state ? 'heroicon-m-arrow-down-tray' : null)
+                                            ->color(fn ($state) => $state ? 'primary' : 'gray')
+                                            ->url(fn ($state) => $state ? \Illuminate\Support\Facades\Storage::disk('public')->url($state) : null)
+                                            ->openUrlInNewTab(),
                                     ]),
                             ]),
                     ]),
