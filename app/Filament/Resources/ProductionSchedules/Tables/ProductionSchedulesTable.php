@@ -135,7 +135,7 @@ class ProductionSchedulesTable
                     ->label('Evaluasi')
                     ->icon('heroicon-o-clipboard-document-check')
                     ->color('success')
-                    ->visible(fn(ProductionSchedule $record) => \Illuminate\Support\Facades\Auth::user()->hasAnyRole(['Ahli Gizi', 'Staf Gizi']) && !$record->verification)
+                    ->visible(fn(ProductionSchedule $record) => \Illuminate\Support\Facades\Auth::user()->hasAnyRole(['Ahli Gizi', 'Staf Gizi', 'Kepala SPPG']) && !$record->verification)
                     ->form(function () {
                         $settings = \App\Models\ProductionVerificationSetting::first();
                         $checklist = $settings?->checklist_data ?? [];

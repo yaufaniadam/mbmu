@@ -26,9 +26,9 @@ class SppgFinancialReportResource extends Resource
     protected static ?string $model = SppgFinancialReport::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-chart-bar';
-    protected static ?string $navigationLabel = 'Laporan Keuangan';
-    protected static ?string $pluralModelLabel = 'Laporan Keuangan';
-    protected static ?string $modelLabel = 'Laporan Keuangan';
+    protected static ?string $navigationLabel = 'Laporan';
+    protected static ?string $pluralModelLabel = 'Laporan';
+    protected static ?string $modelLabel = 'Laporan';
     protected static string|UnitEnum|null $navigationGroup = 'Keuangan';
 
     public static function form(Schema $schema): Schema
@@ -37,6 +37,14 @@ class SppgFinancialReportResource extends Resource
             ->components([
                 Section::make('Laporan')
                     ->schema([
+                        \Filament\Forms\Components\Select::make('category')
+                            ->label('Jenis Laporan')
+                            ->options([
+                                'keuangan' => 'Laporan Keuangan',
+                                'kegiatan' => 'Laporan Kegiatan',
+                            ])
+                            ->default('keuangan')
+                            ->required(),
                         DatePicker::make('start_date')
                             ->label('Tanggal Awal Periode')
                             ->native(false)
@@ -48,7 +56,7 @@ class SppgFinancialReportResource extends Resource
                             ->displayFormat('d M Y')
                             ->required(),
                         FileUpload::make('file_path')
-                            ->label('File Excel Laporan')
+                            ->label('File Laporan (Excel/PDF)')
                             ->disk('public')
                             ->directory('financial-reports')
                             ->acceptedFileTypes(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/pdf'])
@@ -67,6 +75,20 @@ class SppgFinancialReportResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('category')
+                    ->label('Jenis')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'keuangan' => 'success',
+                        'kegiatan' => 'info',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'keuangan' => 'Keuangan',
+                        'kegiatan' => 'Kegiatan',
+                        default => $state,
+                    })
+                    ->sortable(),
                 TextColumn::make('start_date')
                     ->label('Periode')
                     ->formatStateUsing(fn ($record) => $record->start_date->format('d M Y') . ' - ' . $record->end_date->format('d M Y'))
@@ -96,7 +118,12 @@ class SppgFinancialReportResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                \Filament\Tables\Filters\SelectFilter::make('category')
+                    ->label('Jenis Laporan')
+                    ->options([
+                        'keuangan' => 'Laporan Keuangan',
+                        'kegiatan' => 'Laporan Kegiatan',
+                    ]),
             ])
             ->actions([
                 ViewAction::make(),
@@ -130,12 +157,20 @@ class SppgFinancialReportResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        // Hide for Superadmin as requested
-        if (Auth::user()?->hasRole('Superadmin')) {
-            return false;
+        $panelId = \Filament\Facades\Filament::getCurrentPanel()?->getId();
+        $user = Auth::user();
+        
+        // Show in Admin panel for Kornas staff to monitor all SPPG reports
+        if ($panelId === 'admin') {
+            return $user?->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']);
+        }
+        
+        // Show in SPPG panel for Kepala SPPG and Admin SPPG
+        if ($panelId === 'sppg') {
+            return $user?->hasAnyRole(['Kepala SPPG', 'Admin SPPG']);
         }
 
-        return true;
+        return false;
     }
 
     public static function getPages(): array

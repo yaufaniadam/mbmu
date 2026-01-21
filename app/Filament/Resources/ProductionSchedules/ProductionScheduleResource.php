@@ -67,8 +67,8 @@ class ProductionScheduleResource extends Resource
             return $unitTugas ? ProductionSchedule::where([['sppg_id', '=', $unitTugas->id], ['status', '=', 'Menunggu ACC Kepala SPPG']])->count() : 0;
         }
 
-        // Ahli Gizi & Staf Gizi → Show schedules needing evaluation
-        if ($user->hasAnyRole(['Ahli Gizi', 'Staf Gizi'])) {
+        // Ahli Gizi, Staf Gizi & Kepala SPPG → Show schedules needing evaluation
+        if ($user->hasAnyRole(['Ahli Gizi', 'Staf Gizi', 'Kepala SPPG'])) {
             $unitTugas = $user->unitTugas->first();
             if (!$unitTugas) return 0;
             
