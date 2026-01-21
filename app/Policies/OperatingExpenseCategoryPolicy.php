@@ -14,22 +14,22 @@ class OperatingExpenseCategoryPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:OperatingExpenseCategory');
+        return $authUser->can('ViewAny:OperatingExpenseCategory') || $authUser->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']);
     }
 
     public function view(AuthUser $authUser, OperatingExpenseCategory $operatingExpenseCategory): bool
     {
-        return $authUser->can('View:OperatingExpenseCategory');
+        return $authUser->can('View:OperatingExpenseCategory') || $authUser->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']);
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:OperatingExpenseCategory');
+        return $authUser->can('Create:OperatingExpenseCategory') || $authUser->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']);
     }
 
     public function update(AuthUser $authUser, OperatingExpenseCategory $operatingExpenseCategory): bool
     {
-        return $authUser->can('Update:OperatingExpenseCategory');
+        return $authUser->can('Update:OperatingExpenseCategory') || $authUser->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']);
     }
 
     public function delete(AuthUser $authUser, OperatingExpenseCategory $operatingExpenseCategory): bool

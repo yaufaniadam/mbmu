@@ -32,6 +32,15 @@ class ComplaintResource extends Resource
     protected static string|UnitEnum|null $navigationGroup = null;
     protected static ?int $navigationSort = 3;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        if (Auth::user()?->hasRole('Staf Akuntan Kornas')) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -48,11 +57,17 @@ class ComplaintResource extends Resource
                                     'Virtual Account' => 'Virtual Account',
                                 ];
                                 
-                                // LP can report about Kepala, SPPG can report about Lembaga Pengusul
-                                if (Auth::user()->hasRole('Kepala SPPG')) {
+                                $user = Auth::user();
+                                
+                                // Kepala SPPG specific options
+                                if ($user->hasRole('Kepala SPPG')) {
                                     $baseOptions['Lembaga Pengusul'] = 'Lembaga Pengusul';
-                                } else {
-                                    $baseOptions['Kepala'] = 'Kepala';
+                                    $baseOptions['Lain-lain'] = 'Lain-lain';
+                                } 
+                                // Lembaga Pengusul specific options
+                                elseif ($user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])) {
+                                    $baseOptions['Kepala'] = 'Kepala'; // Report about Kepala SPPG
+                                    $baseOptions['Sarpras'] = 'Sarpras';
                                 }
                                 
                                 return $baseOptions;

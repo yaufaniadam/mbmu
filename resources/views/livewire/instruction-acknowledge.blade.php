@@ -1,27 +1,38 @@
-<div>
+<div class="flex flex-col items-center justify-center p-6 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+    <h4 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-4">
+        Konfirmasi bahwa Anda telah membaca instruksi ini
+    </h4>
+
+    <button
+        type="button"
+        wire:click="acknowledge"
+        wire:loading.attr="disabled"
+        @if($acknowledgment) disabled @endif
+        class="
+            relative flex items-center justify-center gap-2 px-8 py-3 rounded-full font-bold text-sm transition-all duration-300 shadow-sm
+            {{ $acknowledgment
+                ? 'bg-green-500 text-white ring-2 ring-green-500 ring-offset-2 dark:ring-offset-gray-900 cursor-default'
+                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 ring-1 ring-gray-300 dark:ring-gray-600 hover:ring-primary-500 hover:text-primary-600 dark:hover:text-primary-400'
+            }}
+        "
+    >
+        @if($acknowledgment)
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span>SUDAH DIBACA</span>
+        @else
+            <span class="w-5 h-5 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" wire:loading></span>
+            <span wire:loading.remove>
+                SAYA SUDAH MEMBACA
+            </span>
+        @endif
+    </button>
+
     @if($acknowledgment)
-        <div class="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-            <svg class="w-4 h-4 text-green-600 dark:text-green-400" style="width: 1rem; height: 1rem;" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-            <div>
-                <div class="font-medium text-green-800 dark:text-green-200">Sudah Dibaca</div>
-                <div class="text-sm text-green-600 dark:text-green-400">
-                    {{ $acknowledgment->acknowledged_at->format('d M Y H:i') }}
-                </div>
-            </div>
-        </div>
-    @else
-        <button 
-            wire:click="acknowledge" 
-            type="button"
-            class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors"
-        >
-            <svg class="w-4 h-4" style="width: 1rem; height: 1rem;" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            Saya Sudah Membaca
-        </button>
+        <p class="mt-3 text-xs text-gray-400 dark:text-gray-500 font-mono">
+            {{ $acknowledgment->acknowledged_at->format('d M Y • H:i') }} WIB
+        </p>
     @endif
 </div>
 

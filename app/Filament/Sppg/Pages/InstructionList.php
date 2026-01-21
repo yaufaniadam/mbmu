@@ -28,6 +28,17 @@ class InstructionList extends Page implements HasTable
     
     protected string $view = 'filament.sppg.pages.instruction-list';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        // Hide from Admins/Kornas who have access to the full InstructionResource
+        // Unless they really want to see the 'recipient view'
+        if (auth()->user()?->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas', 'Staf Akuntan Kornas'])) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function table(Table $table): Table
     {
         return $table
@@ -63,13 +74,36 @@ class InstructionList extends Page implements HasTable
                 \Filament\Actions\Action::make('view')
                     ->label('Lihat')
                     ->icon('heroicon-o-eye')
-                    ->modalHeading(fn (Instruction $record) => $record->title)
-                    ->modalContent(fn (Instruction $record) => view('filament.sppg.pages.instruction-detail', [
-                        'instruction' => $record,
-                    ]))
-                    ->modalSubmitAction(false)
-                    ->modalCancelActionLabel('Tutup')
-                    ->modalWidth('3xl'),
+                ->modalHeading(fn (Instruction $record) => $record->title)
+                ->modalContent(fn (Instruction $record) => view('filament.sppg.pages.instruction-detail', [
+                    'instruction' => $record,
+                ]))
+                ->modalSubmitAction(false) // Hide default submit button
+                ->modalCancelActionLabel('Tutup') // Cancel button label
+                ->modalFooterActions(function (Instruction $record) {
+                    $actions = [
+                        // We must include the cancel action manually if we override footer actions
+                        \Filament\Actions\Action::make('close')
+                            ->label('Tutup')
+                            ->color('gray')
+                            ->extraAttributes(['x-on:click' => 'close()'])
+                            ->action(fn() => null),
+                    ];
+
+                    if ($record->attachment_path) {
+                        $url = \Illuminate\Support\Facades\Storage::disk('public')->url($record->attachment_path);
+                        
+                        $actions[] = \Filament\Actions\Action::make('download')
+                            ->label('Download Lampiran')
+                            ->icon('heroicon-o-arrow-down-tray')
+                            ->color('primary')
+                            ->url($url)
+                            ->openUrlInNewTab();
+                    }
+
+                    return $actions;
+                })
+                ->modalWidth('3xl'),
             ])
             ->paginated([10, 25, 50]);
     }

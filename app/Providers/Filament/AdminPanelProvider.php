@@ -54,6 +54,7 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Pages\Dashboard::class,
                 ManageFinance::class,
                 ProductionVerificationSetting::class,
+                \App\Filament\Sppg\Pages\InstructionList::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
             ->widgets([

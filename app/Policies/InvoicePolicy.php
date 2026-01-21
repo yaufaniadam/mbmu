@@ -14,12 +14,12 @@ class InvoicePolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Invoice');
+        return $authUser->can('ViewAny:Invoice') || $authUser->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']);
     }
 
     public function view(AuthUser $authUser, Invoice $invoice): bool
     {
-        return $authUser->can('View:Invoice');
+        return $authUser->can('View:Invoice') || $authUser->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']);
     }
 
     public function create(AuthUser $authUser): bool

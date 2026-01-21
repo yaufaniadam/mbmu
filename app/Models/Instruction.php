@@ -14,6 +14,7 @@ class Instruction extends Model
     protected $fillable = [
         'title',
         'content',
+        'attachment_path',
         'recipient_type',
         'recipient_ids',
         'created_by',

@@ -13,6 +13,7 @@ use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class InstructionResource extends Resource
 {
@@ -29,6 +30,20 @@ class InstructionResource extends Resource
     protected static ?int $navigationSort = 9;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-megaphone';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        if (Auth::user()?->hasRole('Staf Akuntan Kornas')) {
+            return false;
+        }
+
+        // Hide from Lembaga Pengusul as they are recipients, not admins
+        if (Auth::user()?->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])) {
+            return false;
+        }
+
+        return true;
+    }
 
     public static function form(Schema $schema): Schema
     {

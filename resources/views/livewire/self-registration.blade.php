@@ -167,18 +167,7 @@
                             @error('password') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
 
-                        {{-- Confirm Password --}}
-                        @if($password)
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password</label>
-                            <input 
-                                type="password" 
-                                wire:model="password_confirmation"
-                                placeholder="Ulangi password"
-                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
-                            >
-                        </div>
-                        @endif
+
 
                         <button 
                             type="submit"
