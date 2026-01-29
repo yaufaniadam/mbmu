@@ -269,6 +269,7 @@ class SppgForm
                             ->image()
                             ->disk('public')
                             ->directory('sppg-photos')
+                            ->maxSize(10240)
                             ->required()
                             ->validationMessages([
                                 'required' => 'Foto wajib diisi',
@@ -290,6 +291,7 @@ class SppgForm
                             ->image()
                             ->disk('public')
                             ->directory('sppg-gallery')
+                            ->maxSize(10240)
                             ->visibility('public')
                             ->downloadable()
                             ->openable()
@@ -305,6 +307,7 @@ class SppgForm
                             ->label('Dokumen Verval')
                             ->disk('public')
                             ->directory('sppg-docs')
+                            ->maxSize(10240)
                             ->acceptedFileTypes(['application/pdf'])
                             ->required()
                             ->validationMessages([
@@ -314,42 +317,50 @@ class SppgForm
                             ->label('Sertifikat Akreditasi')
                             ->disk('public')
                             ->directory('sppg-docs')
+                            ->maxSize(10240)
                             ->acceptedFileTypes(['application/pdf'])
                             ->visibility('public'),
                         \Filament\Forms\Components\FileUpload::make('sertifikat_halal_path')
                             ->label('Sertifikat Halal')
                             ->disk('public')
                             ->directory('sppg-docs')
+                            ->maxSize(10240)
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('slhs_path')
                             ->label('SLHS')
                             ->disk('public')
                             ->directory('sppg-docs')
+                            ->maxSize(10240)
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('lhaccp_path')
                             ->label('HACCP')
                             ->disk('public')
                             ->directory('sppg-docs')
+                            ->maxSize(10240)
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('iso_path')
                             ->label('ISO')
                             ->disk('public')
                             ->directory('sppg-docs')
+                            ->maxSize(10240)
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('sertifikat_lahan_path')
                             ->label('Sertifikat Lahan')
                             ->disk('public')
                             ->directory('sppg-docs')
+                            ->maxSize(10240)
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('dokumen_lain_path')
                             ->label('Dokumen Lain-lain')
                             ->disk('public')
                             ->directory('sppg-docs')
+                            ->maxSize(10240)
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('pks_path')
                             ->label('Perjanjian Kerjasama (PKS)')
                             ->disk('public')
                             ->directory('sppg-docs')
+                            ->maxSize(10240)
                             ->acceptedFileTypes(['application/pdf'])
                             ->required()
                             ->validationMessages([

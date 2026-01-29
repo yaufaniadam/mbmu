@@ -54,6 +54,7 @@
                             <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ url('/') }}">Beranda</a>
                             <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('team.public') }}">Tentang</a>
                             <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('sppg.public.index') }}">Program</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('menu.public.index') }}">Menu Makanan</a>
                             <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('blog.public.index') }}">Blog</a>
                             <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('contact.public') }}">Kontak</a>
                         </div>
@@ -78,6 +79,7 @@
                     <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ url('/') }}">Beranda</a>
                     <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('team.public') }}">Tentang</a>
                     <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('sppg.public.index') }}">Program</a>
+                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('menu.public.index') }}">Menu Makanan</a>
                     <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('blog.public.index') }}">Blog</a>
                     <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('contact.public') }}">Kontak</a>
                     

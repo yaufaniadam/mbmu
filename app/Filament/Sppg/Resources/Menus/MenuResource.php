@@ -75,12 +75,18 @@ class MenuResource extends Resource
                     ->label('Foto Menu')
                     ->image()
                     ->directory('menu-photos')
+                    ->maxSize(10240)
                     ->columnSpanFull()
                     ->required()
                     ->imageEditor(),
                 Forms\Components\TextInput::make('name')
                     ->label('Nama Menu (Opsional)')
                     ->placeholder('Misal: Nasi Goreng Spesial')
+                    ->columnSpanFull(),
+                Forms\Components\DatePicker::make('date')
+                    ->label('Tanggal Menu')
+                    ->default(now())
+                    ->required()
                     ->columnSpanFull(),
                 Forms\Components\Textarea::make('description')
                     ->label('Deskripsi (Opsional)')
@@ -105,13 +111,59 @@ class MenuResource extends Resource
                     ->label('Deskripsi')
                     ->limit(50)
                     ->placeholder('-'),
+                TextColumn::make('date')
+                    ->label('Tanggal')
+                    ->date('d M Y')
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                \Filament\Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        \Filament\Forms\Components\DatePicker::make('created_from')
+                            ->label('Dari Tanggal'),
+                        \Filament\Forms\Components\DatePicker::make('created_until')
+                            ->label('Sampai Tanggal'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
+                \Filament\Tables\Filters\SelectFilter::make('sppg_id')
+                    ->label('SPPG')
+                    ->relationship('sppg', 'nama_sppg')
+                    ->searchable()
+                    ->preload(),
+                \Filament\Tables\Filters\SelectFilter::make('province_code')
+                    ->label('Provinsi')
+                    ->options(fn() => \Laravolt\Indonesia\Models\Province::pluck('name', 'code'))
+                    ->query(fn (Builder $query, array $data) => 
+                        $query->when(
+                            $data['value'],
+                            fn ($q) => $q->whereHas('sppg', fn ($sq) => $sq->where('province_code', $data['value']))
+                        )
+                    )
+                    ->searchable(),
+                \Filament\Tables\Filters\SelectFilter::make('city_code')
+                    ->label('Kabupaten/Kota')
+                    ->options(fn() => \Laravolt\Indonesia\Models\City::pluck('name', 'code'))
+                    ->query(fn (Builder $query, array $data) => 
+                        $query->when(
+                            $data['value'],
+                            fn ($q) => $q->whereHas('sppg', fn ($sq) => $sq->where('city_code', $data['value']))
+                        )
+                    )
+                    ->searchable(),
             ])
             ->recordActions([
                 EditAction::make(),

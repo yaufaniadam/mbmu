@@ -160,6 +160,7 @@ class Delivery extends Page implements HasForms
                                 ->image()
                                 ->disk('local')
                                 ->directory(fn() => "delivery/{$this->record->id}/proof")
+                                ->maxSize(10240)
                                 ->preserveFilenames()
                                 ->visibility('private')
                                 ->required(),
@@ -243,6 +244,7 @@ class Delivery extends Page implements HasForms
                                 ->image()
                                 ->disk('local')
                                 ->directory(fn() => "delivery/{$this->record->id}/pickup")
+                                ->maxSize(10240)
                                 ->preserveFilenames()
                                 ->visibility('private')
                                 ->required(),

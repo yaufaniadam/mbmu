@@ -57,6 +57,8 @@ Route::controller(\App\Http\Controllers\PublicSppgController::class)->group(func
     Route::get('/daftar-sppg/{sppg}', 'show')->name('sppg.public.show');
 });
 
+Route::get('/menu', [\App\Http\Controllers\PublicMenuController::class, 'index'])->name('menu.public.index');
+
 Route::get('/artikel', [\App\Http\Controllers\PublicBlogController::class, 'index'])->name('blog.public.index');
 Route::get('/artikel/{post:slug}', [\App\Http\Controllers\PublicBlogController::class, 'show'])->name('blog.public.show');
 

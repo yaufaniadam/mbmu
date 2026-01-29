@@ -32,6 +32,7 @@ class TeamMemberForm
                     ->image()
                     ->disk('public')
                     ->directory('team-members')
+                    ->maxSize(10240)
                     ->imagePreviewHeight('200')
                     ->columnSpanFull(),
                 Textarea::make('bio')

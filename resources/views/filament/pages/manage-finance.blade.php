@@ -5,7 +5,7 @@
     <x-filament::tabs label="Finance Tabs">
 
         {{-- Tab 0: Dashboard Keuangan --}}
-        @if (auth()->user()->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
+        @if (auth()->user()->hasAnyRole(['Superadmin', 'Kepala SPPG', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
             <x-filament::tabs.item :active="$activeTab === 'dashboard'" wire:click="$set('activeTab', 'dashboard')" icon="heroicon-o-chart-bar">
                 Dashboard
             </x-filament::tabs.item>
@@ -123,9 +123,7 @@
 
         @if ($activeTab === 'verify_royalty')
              <div style="display: flex; flex-direction: column; gap: 2rem;">
-                @if (!auth()->user()->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']))
-                    @livewire(\App\Livewire\VerifyPaymentList::class, ['type' => 'LP_ROYALTY'])
-                @endif
+                @livewire(\App\Livewire\VerifyPaymentList::class, ['type' => 'LP_ROYALTY'])
                 @livewire(\App\Livewire\IncomingPayment::class, ['type' => 'LP_ROYALTY'])
             </div>
         @endif

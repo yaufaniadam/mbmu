@@ -23,6 +23,7 @@ class HomeSliderForm
                     ->image()
                     ->disk('public')
                     ->directory('home-sliders')
+                    ->maxSize(10240)
                     ->imagePreviewHeight('200')
                     ->required()
                     ->columnSpanFull(),

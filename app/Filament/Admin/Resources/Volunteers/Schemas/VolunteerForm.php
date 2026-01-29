@@ -48,6 +48,7 @@ class VolunteerForm
                             ->image()
                             ->avatar()
                             ->directory('volunteer-photos')
+                            ->maxSize(10240)
                             ->columnSpanFull(),
                         Select::make('posisi')
                             ->label('Jabatan')

@@ -114,6 +114,7 @@ class StaffForm
                             ->avatar()
                             ->image()
                             ->directory('staff-photos')
+                            ->maxSize(10240)
                             ->columnSpanFull(),
                     ])
                     ->columnSpanFull(),

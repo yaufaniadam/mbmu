@@ -47,6 +47,7 @@ class UsersForm
                             ->image()
                             ->avatar()
                             ->directory('user-photos')
+                            ->maxSize(10240)
                             ->columnSpanFull(),
                         Select::make('roles')
                             ->label('Jabatan')

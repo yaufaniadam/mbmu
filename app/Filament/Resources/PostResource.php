@@ -65,16 +65,28 @@ class PostResource extends Resource
                             ->label('Gambar Utama')
                             ->image()
                             ->disk('public')
-                            ->directory('blog-images'),
+                            ->directory('blog-images')
+                            ->maxSize(10240),
                         Select::make('status')
                             ->label('Status')
-                            ->options([
-                                'draft' => 'Draft',
-                                'published' => 'Published',
-                                'archived' => 'Archived',
-                            ])
+                            ->options(function () {
+                                if (Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
+                                    return [
+                                        'draft' => 'Draft',
+                                        'pending_review' => 'Pending Review',
+                                        'published' => 'Published',
+                                        'archived' => 'Archived',
+                                    ];
+                                }
+                                
+                                return [
+                                    'draft' => 'Draft',
+                                    'pending_review' => 'Ajukan Review',
+                                ];
+                            })
                             ->default('draft')
-                            ->required(),
+                            ->required()
+                            ->disableOptionWhen(fn (string $value): bool => $value === 'published' && !Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])),
                         DateTimePicker::make('published_at')
                             ->label('Tanggal Publish')
                             ->native(false),
@@ -106,6 +118,7 @@ class PostResource extends Resource
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'draft' => 'gray',
+                        'pending_review' => 'info',
                         'published' => 'success',
                         'archived' => 'warning',
                         default => 'gray',

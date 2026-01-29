@@ -69,6 +69,7 @@ class InvoiceResource extends Resource
                             ->image()
                             ->directory('invoice-proofs')
                             ->visibility('public')
+                            ->maxSize(10240)
                             ->required()
                             ->columnSpanFull()
                             ->helperText('Upload foto/screenshot bukti transfer.'),

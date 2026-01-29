@@ -252,7 +252,7 @@ class VerifyPaymentList extends TableWidget
                                         if (!$path) {
                                             return new HtmlString('<div style="padding: 1rem; text-align: center; color: #ef4444;">File bukti transfer tidak ditemukan.</div>');
                                         }
-                                        $url = Storage::url($path);
+                                        $url = Storage::disk('public')->url($path);
                                         return new HtmlString('
                                     <div style="display: flex; justify-content: center; align-items: center; border-radius: 0.5rem; padding: 0.5rem;">
                                         <img src="' . $url . '" alt="Bukti Transfer Full" style="max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 8px;">
@@ -369,9 +369,31 @@ class VerifyPaymentList extends TableWidget
         ];
     }
 
-    private function canVerifyOrReject(): bool
+    private function canVerifyOrReject(?Invoice $record = null): bool
     {
         $user = Auth::user();
-        return $user && ($user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']));
+
+        if (!$user) {
+            return false;
+        }
+
+        if ($user->hasRole('Superadmin')) {
+            return true;
+        }
+
+        // If no record provided, fall back to general role check (legacy behavior)
+        if (!$record) {
+            return $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']);
+        }
+
+        if ($record->type === 'SPPG_SEWA') {
+            return $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana']);
+        }
+
+        if ($record->type === 'LP_ROYALTY') {
+            return $user->hasAnyRole(['Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']);
+        }
+
+        return false;
     }
 }

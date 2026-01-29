@@ -280,7 +280,7 @@ class IncomingFunds extends TableWidget
                 ->acceptedFileTypes(['image/*', 'application/pdf']) // Allow PDFs
                 ->disk('public')
                 ->directory('incoming-funds-proof')
-                ->maxSize(5120)
+                ->maxSize(10240)
                 ->required()
                 ->imagePreviewHeight('200')
                 ->columnSpanFull(),

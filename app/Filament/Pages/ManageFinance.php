@@ -52,7 +52,6 @@ class ManageFinance extends Page implements HasForms
     public static function shouldRegisterNavigation(): bool
     {
         // Hide for SPPG roles because they now have "PayIncentive" page
-        // PJ Pelaksana is now treated as Pimpinan (Foundation Rep), so we show it
         if (auth()->user()?->hasAnyRole(['Kepala SPPG', 'Staf Akuntan'])) {
             return false;
         }
@@ -101,7 +100,7 @@ class ManageFinance extends Page implements HasForms
         }
 
         return match ($tab) {
-            'dashboard' => $user->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
+            'dashboard' => $user->hasAnyRole(['Superadmin', 'Kepala SPPG', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
             
             // 1. Buku Kas Pusat (Kornas Only)
             'buku_kas_pusat' => $user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
