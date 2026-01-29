@@ -27,6 +27,17 @@ class SppgFinancialReportPolicy
 
     public function view(AuthUser $authUser, SppgFinancialReport $sppgFinancialReport): bool
     {
+        if ($authUser->hasAnyRole([
+            'Kepala SPPG',
+            'Admin SPPG',
+            'Superadmin',
+            'Direktur Kornas',
+            'Staf Akuntan Kornas',
+            'Staf Kornas'
+        ])) {
+            return true;
+        }
+
         return $authUser->can('View:SppgFinancialReport');
     }
 

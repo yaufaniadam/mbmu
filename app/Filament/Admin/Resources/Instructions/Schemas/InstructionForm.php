@@ -36,6 +36,7 @@ class InstructionForm
                             ->helperText('Upload gambar atau dokumen jika diperlukan')
                             ->disk('public')
                             ->directory('instruction-attachments')
+                            ->maxSize(10240)
                             ->acceptedFileTypes(['image/*', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
                             ->columnSpanFull(),
                         

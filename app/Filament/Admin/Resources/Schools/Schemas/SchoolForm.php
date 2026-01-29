@@ -185,6 +185,7 @@ class SchoolForm
                     ->label('Foto Sekolah/Penerima')
                     ->image()
                     ->directory('school-photos')
+                    ->maxSize(10240)
                     ->columnSpanFull(),
             ]);
     }

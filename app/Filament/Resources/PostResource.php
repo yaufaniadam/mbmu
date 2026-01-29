@@ -65,7 +65,8 @@ class PostResource extends Resource
                             ->label('Gambar Utama')
                             ->image()
                             ->disk('public')
-                            ->directory('blog-images'),
+                            ->directory('blog-images')
+                            ->maxSize(10240),
                         Select::make('status')
                             ->label('Status')
                             ->options([

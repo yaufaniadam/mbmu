@@ -75,6 +75,7 @@ class MenuResource extends Resource
                     ->label('Foto Menu')
                     ->image()
                     ->directory('menu-photos')
+                    ->maxSize(10240)
                     ->columnSpanFull()
                     ->required()
                     ->imageEditor(),

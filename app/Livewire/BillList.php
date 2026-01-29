@@ -128,6 +128,72 @@ class BillList extends TableWidget
                     ->form([
                         Section::make('Informasi Transfer')
                             ->schema([
+                                Placeholder::make('payment_details')
+                                    ->label('Rincian Pembayaran')
+                                    ->content(function (Invoice $record) {
+                                        $rows = [];
+                                        
+                                        if ($record->type === 'SPPG_SEWA') {
+                                            $activeDays = \App\Models\ProductionSchedule::where('sppg_id', $record->sppg_id)
+                                                ->whereBetween('tanggal', [$record->start_date, $record->end_date])
+                                                ->whereIn('status', ['Selesai', 'Didistribusikan', 'Terverifikasi', 'Direncanakan'])
+                                                ->count();
+                                            
+                                            $description = "Insentif SPPG";
+                                            $days = $activeDays > 0 ? $activeDays : '-';
+                                            $rate = $activeDays > 0 ? 'Rp ' . number_format($record->amount / $activeDays, 0, ',', '.') : '-';
+                                            $total = 'Rp ' . number_format($record->amount, 0, ',', '.');
+                                            
+                                            $rows[] = [
+                                                'desc' => $description,
+                                                'days' => $days,
+                                                'rate' => $rate,
+                                                'total' => $total,
+                                            ];
+                                        } elseif ($record->type === 'LP_ROYALTY') {
+                                            $rows[] = [
+                                                'desc' => "Kontribusi Kornas (10% Insentif)",
+                                                'days' => '-',
+                                                'rate' => '-',
+                                                'total' => 'Rp ' . number_format($record->amount, 0, ',', '.'),
+                                            ];
+                                        }
+
+                                        $tableRows = collect($rows)->map(fn($row) => "
+                                            <tr class='bg-white border-b dark:bg-gray-800 dark:border-gray-700'>
+                                                <td class='px-4 py-2 font-medium text-gray-900 dark:text-white border border-gray-200 dark:border-gray-600'>{$row['desc']}</td>
+                                                <td class='px-4 py-2 text-center border border-gray-200 dark:border-gray-600'>{$row['days']}</td>
+                                                <td class='px-4 py-2 text-right border border-gray-200 dark:border-gray-600'>{$row['rate']}</td>
+                                                <td class='px-4 py-2 text-right border border-gray-200 dark:border-gray-600'>{$row['total']}</td>
+                                            </tr>
+                                        ")->join('');
+
+                                        $grandTotal = 'Rp ' . number_format($record->amount, 0, ',', '.');
+
+                                        return new \Illuminate\Support\HtmlString("
+                                            <div class='w-full overflow-x-auto border border-gray-200 rounded-lg mb-4 mt-2 dark:border-gray-600'>
+                                                <table class='w-full text-sm text-left text-gray-500 dark:text-gray-400'>
+                                                    <thead class='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
+                                                        <tr>
+                                                            <th class='px-4 py-2 border border-gray-200 dark:border-gray-600'>Keterangan</th>
+                                                            <th class='px-4 py-2 border border-gray-200 text-center dark:border-gray-600'>Jumlah Hari</th>
+                                                            <th class='px-4 py-2 border border-gray-200 text-right dark:border-gray-600'>Biaya</th>
+                                                            <th class='px-4 py-2 border border-gray-200 text-right dark:border-gray-600'>Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {$tableRows}
+                                                        <tr class='font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700'>
+                                                            <td class='px-4 py-2 text-right border border-gray-200 dark:border-gray-600' colspan='3'>TOTAL</td>
+                                                            <td class='px-4 py-2 text-right border border-gray-200 dark:border-gray-600'>{$grandTotal}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        ");
+                                    })
+                                    ->columnSpanFull(),
+
                                 TextInput::make('source_bank')
                                     ->label('Bank Sumber')
                                     ->placeholder('Contoh: BSI, Mandiri')
@@ -160,7 +226,9 @@ class BillList extends TableWidget
                             ->label('Bukti Transfer')
                             ->image()
                             ->directory('invoice-proofs')
+                            ->disk('public')
                             ->visibility('public')
+                            ->maxSize(10240)
                             ->required()
                             ->disabled(fn ($record) => $record->status === 'PAID')
                             ->columnSpanFull(),

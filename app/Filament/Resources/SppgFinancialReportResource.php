@@ -59,6 +59,7 @@ class SppgFinancialReportResource extends Resource
                             ->label('File Laporan (Excel/PDF)')
                             ->disk('public')
                             ->directory('financial-reports')
+                            ->maxSize(10240)
                             ->acceptedFileTypes(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/pdf'])
                             ->required()
                             ->downloadable()

@@ -123,9 +123,7 @@
 
         @if ($activeTab === 'verify_royalty')
              <div style="display: flex; flex-direction: column; gap: 2rem;">
-                @if (!auth()->user()->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']))
-                    @livewire(\App\Livewire\VerifyPaymentList::class, ['type' => 'LP_ROYALTY'])
-                @endif
+                @livewire(\App\Livewire\VerifyPaymentList::class, ['type' => 'LP_ROYALTY'])
                 @livewire(\App\Livewire\IncomingPayment::class, ['type' => 'LP_ROYALTY'])
             </div>
         @endif

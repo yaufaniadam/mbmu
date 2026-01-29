@@ -256,7 +256,7 @@ class OperatingExpenses extends TableWidget
                 ->acceptedFileTypes(['image/*', 'application/pdf']) // Allow PDFs too if needed
                 ->disk('public')
                 ->directory('operating-expenses-proof')
-                ->maxSize(5120)
+                ->maxSize(10240)
                 ->required()
                 ->imagePreviewHeight('200')
                 ->columnSpanFull(),

@@ -91,6 +91,7 @@ class InvoiceResource extends Resource
                             ->image()
                             ->directory('invoice-proofs')
                             ->visibility('public')
+                            ->maxSize(10240)
                             ->columnSpanFull(),
                     ])
                     ->columns(2)
@@ -179,7 +180,7 @@ class InvoiceResource extends Resource
                     ->visible(fn (Invoice $record) => 
                         $record->status === 'WAITING_VERIFICATION' && (
                             ($record->type === 'SPPG_SEWA' && auth()->user()->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])) ||
-                            ($record->type === 'LP_ROYALTY' && auth()->user()->hasAnyRole(['Staf Akuntan Kornas', 'Superadmin']))
+                            ($record->type === 'LP_ROYALTY' && auth()->user()->hasAnyRole(['Staf Akuntan Kornas', 'Superadmin', 'Staf Kornas']))
                         )
                     )
                     ->schema(fn (Invoice $record) => [
@@ -203,6 +204,7 @@ class InvoiceResource extends Resource
                                 ImageEntry::make('proof_of_payment')
                                     ->label('')
                                     ->imageHeight(300)
+                                    ->disk('public')
                                     ->columnSpanFull(),
                             ]),
 
@@ -288,6 +290,53 @@ class InvoiceResource extends Resource
                     ->form([
                         Section::make('Konfirmasi Transfer Kontribusi Kornas')
                             ->schema([
+                                Forms\Components\Placeholder::make('payment_details')
+                                    ->label('Rincian Pembayaran')
+                                    ->content(function (Invoice $record) {
+                                        $rows = [];
+                                        
+                                        $rows[] = [
+                                            'desc' => "Kontribusi Kornas (10% Insentif)",
+                                            'days' => '-',
+                                            'rate' => '-',
+                                            'total' => 'Rp ' . number_format($record->amount, 0, ',', '.'),
+                                        ];
+
+                                        $tableRows = collect($rows)->map(fn($row) => "
+                                            <tr class='bg-white border-b dark:bg-gray-800 dark:border-gray-700'>
+                                                <td class='px-4 py-2 font-medium text-gray-900 dark:text-white border border-gray-200 dark:border-gray-600'>{$row['desc']}</td>
+                                                <td class='px-4 py-2 text-center border border-gray-200 dark:border-gray-600'>{$row['days']}</td>
+                                                <td class='px-4 py-2 text-right border border-gray-200 dark:border-gray-600'>{$row['rate']}</td>
+                                                <td class='px-4 py-2 text-right border border-gray-200 dark:border-gray-600'>{$row['total']}</td>
+                                            </tr>
+                                        ")->join('');
+
+                                        $grandTotal = 'Rp ' . number_format($record->amount, 0, ',', '.');
+
+                                        return new \Illuminate\Support\HtmlString("
+                                            <div class='w-full overflow-x-auto border border-gray-200 rounded-lg mb-4 mt-2 dark:border-gray-600'>
+                                                <table class='w-full text-sm text-left text-gray-500 dark:text-gray-400'>
+                                                    <thead class='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
+                                                        <tr>
+                                                            <th class='px-4 py-2 border border-gray-200 dark:border-gray-600'>Keterangan</th>
+                                                            <th class='px-4 py-2 border border-gray-200 text-center dark:border-gray-600'>Jumlah Hari</th>
+                                                            <th class='px-4 py-2 border border-gray-200 text-right dark:border-gray-600'>Biaya</th>
+                                                            <th class='px-4 py-2 border border-gray-200 text-right dark:border-gray-600'>Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {$tableRows}
+                                                        <tr class='font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700'>
+                                                            <td class='px-4 py-2 text-right border border-gray-200 dark:border-gray-600' colspan='3'>TOTAL</td>
+                                                            <td class='px-4 py-2 text-right border border-gray-200 dark:border-gray-600'>{$grandTotal}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        ");
+                                    })
+                                    ->columnSpanFull(),
+
                                 Forms\Components\TextInput::make('source_bank')->label('Bank Sumber')->required(),
                                 Forms\Components\TextInput::make('destination_bank')->label('Bank Tujuan (Kornas)')->required(),
                                 Forms\Components\DatePicker::make('transfer_date')->label('Tanggal Transfer')->default(now())->required(),
@@ -296,6 +345,7 @@ class InvoiceResource extends Resource
                                     ->image()
                                     ->directory('invoice-proofs')
                                     ->disk('public')
+                                    ->maxSize(10240)
                                     ->required(),
                             ])->columns(2)
                     ])
@@ -321,7 +371,7 @@ class InvoiceResource extends Resource
                     ->modalSubmitAction(false)
                     ->modalCancelAction(false)
                     ->modalContent(function (Invoice $record) {
-                        $url = \Illuminate\Support\Facades\Storage::url($record->proof_of_payment);
+                        $url = \Illuminate\Support\Facades\Storage::disk('public')->url($record->proof_of_payment);
                         return new \Illuminate\Support\HtmlString("
                             <div class='flex justify-center'>
                                 <img src='{$url}' class='max-w-full h-auto rounded-lg shadow-lg' />
