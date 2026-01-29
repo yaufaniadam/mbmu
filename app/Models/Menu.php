@@ -15,6 +15,7 @@ class Menu extends Model
         'image',
         'name',
         'description',
+        'date',
     ];
 
     public function sppg()
