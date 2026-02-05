@@ -26,13 +26,73 @@ class RegistrationTokenForm
                                     ->whereIn('status', ['Proses Persiapan', 'Operasional / Siap Berjalan'])
                                     ->pluck('nama_sppg', 'id')
                             )
+                            ->getOptionLabelUsing(fn ($value): ?string => Sppg::find($value)?->nama_sppg)
                             ->searchable()
                             ->required()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                if (!$state) return;
+                                
+                                $sppg = Sppg::find($state);
+                                if (!$sppg) return;
+
+                                $role = $get('role');
+                                $user = null;
+
+                                if ($role === 'kepala_lembaga') {
+                                    // Sppg -> LembagaPengusul -> Pimpinan
+                                    if ($sppg->lembagaPengusul && $sppg->lembagaPengusul->pimpinan) {
+                                        $user = $sppg->lembagaPengusul->pimpinan;
+                                    }
+                                } elseif ($role === 'kepala_sppg') {
+                                    // Sppg -> KepalaSPPG
+                                    if ($sppg->kepalaSppg) {
+                                        $user = $sppg->kepalaSppg;
+                                    }
+                                }
+                                // Fallback logic: if only one role is set or implicit
+                                if (!$user) { 
+                                     if ($sppg->lembagaPengusul && $sppg->lembagaPengusul->pimpinan) {
+                                        $user = $sppg->lembagaPengusul->pimpinan;
+                                        $set('role', 'kepala_lembaga');
+                                     }
+                                }
+
+                                if ($user) {
+                                    $set('recipient_name', $user->name);
+                                    $set('recipient_phone', $user->telepon); 
+                                }
+                            })
                             ->helperText('Hanya SPPG dengan status Proses Persiapan dan Operasional yang dapat menerima token'),
                         
                         Select::make('role')
                             ->label('Role/Jabatan')
                             ->options(RegistrationToken::ROLE_LABELS)
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                // Trigger same logic as when SPPG is selected
+                                $sppgId = $get('sppg_id');
+                                if (!$sppgId || !$state) return;
+
+                                $sppg = Sppg::find($sppgId);
+                                if (!$sppg) return;
+
+                                $user = null;
+                                if ($state === 'kepala_lembaga') {
+                                    if ($sppg->lembagaPengusul && $sppg->lembagaPengusul->pimpinan) {
+                                        $user = $sppg->lembagaPengusul->pimpinan;
+                                    }
+                                } elseif ($state === 'kepala_sppg') {
+                                    if ($sppg->kepalaSppg) {
+                                        $user = $sppg->kepalaSppg;
+                                    }
+                                }
+
+                                if ($user) {
+                                    $set('recipient_name', $user->name);
+                                    $set('recipient_phone', $user->telepon);
+                                }
+                            })
                             ->required(),
                         
                         TextInput::make('token')
@@ -52,16 +112,19 @@ class RegistrationTokenForm
                             ->numeric()
                             ->default(1)
                             ->minValue(1)
-                            ->required(),
+                            ->required()
+                            ->hidden(), // Hide it
                         
                         DateTimePicker::make('expires_at')
                             ->label('Berlaku Sampai')
                             ->nullable()
-                            ->helperText('Kosongkan jika tidak ada batas waktu'),
+                            ->helperText('Kosongkan jika tidak ada batas waktu')
+                            ->hidden(),
                         
                         Toggle::make('is_active')
                             ->label('Aktif')
-                            ->default(true),
+                            ->default(true)
+                            ->hidden(), // Hide but keep default true
                     ])
                     ->columns(3),
                 Section::make('Target Penerima (Opsional - untuk WA)')

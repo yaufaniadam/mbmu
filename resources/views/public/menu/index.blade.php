@@ -103,7 +103,7 @@
                         <div class="flex items-center gap-2 text-xs text-text-secondary dark:text-gray-400">
                             <span class="material-symbols-outlined text-base">location_on</span>
                             <span class="truncate">
-                                {{ $menu->sppg->city->name ?? '-' }}, {{ $menu->sppg->province->name ?? '-' }}
+                                {{ \Illuminate\Support\Str::title($menu->sppg->city->name ?? '-') }}, {{ \Illuminate\Support\Str::title($menu->sppg->province->name ?? '-') }}
                             </span>
                         </div>
 

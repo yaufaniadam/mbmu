@@ -240,7 +240,7 @@ class InvoiceResource extends Resource
                                             // 3. Generate Royalty ONLY for SPPG_SEWA
                                             if ($record->type === 'SPPG_SEWA') {
                                                 $royaltyAmount = $record->amount * 0.10;
-                                                Invoice::create([
+                                                $royaltyInvoice = Invoice::create([
                                                     'invoice_number' => 'ROY-' . $record->invoice_number,
                                                     'sppg_id' => $record->sppg_id,
                                                     'type' => 'LP_ROYALTY',
@@ -250,8 +250,35 @@ class InvoiceResource extends Resource
                                                     'end_date' => $record->end_date,
                                                     'due_date' => now()->addDays(3),
                                                 ]);
+
+                                                // NOTIFICATION 1: Notify Pimpinan Lembaga about new Royalty Bill
+                                                $sppg = $record->sppg;
+                                                $lembaga = $sppg?->lembagaPengusul;
+                                                $pimpinan = $lembaga?->pimpinan;
+                                                
+                                                if ($pimpinan) {
+                                                    try {
+                                                        $pimpinan->notify(new \App\Notifications\RoyaltyPaymentDueNotification($royaltyInvoice));
+                                                    } catch (\Exception $e) {
+                                                        \Illuminate\Support\Facades\Log::error("Failed to notify Pimpinan about Royalty: " . $e->getMessage());
+                                                    }
+                                                }
                                             }
                                         });
+
+                                        // NOTIFICATION 3: Notify Pimpinan Lembaga if Royalty Payment is Approved
+                                        if ($record->type === 'LP_ROYALTY') {
+                                            $sppg = $record->sppg;
+                                            $pimpinan = $sppg?->lembagaPengusul?->pimpinan;
+                                            
+                                            if ($pimpinan) {
+                                                try {
+                                                    $pimpinan->notify(new \App\Notifications\RoyaltyApprovedNotification($record));
+                                                } catch (\Exception $e) {
+                                                    \Illuminate\Support\Facades\Log::error("Failed to send Royalty Approval Notification: " . $e->getMessage());
+                                                }
+                                            }
+                                        }
 
                                         $typeLabel = $record->type === 'SPPG_SEWA' ? 'Insentif' : 'Kontribusi';
                                         Notification::make()->title("Pembayaran {$typeLabel} Disetujui")->success()->send();
@@ -276,6 +303,21 @@ class InvoiceResource extends Resource
                                         'status' => 'REJECTED',
                                         'rejection_reason' => $data['rejection_reason'],
                                     ]);
+
+                                     // NOTIFICATION 4: Notify Pimpinan Lembaga if Royalty Payment is Rejected
+                                     if ($record->type === 'LP_ROYALTY') {
+                                        $sppg = $record->sppg;
+                                        $pimpinan = $sppg?->lembagaPengusul?->pimpinan;
+                                        
+                                        if ($pimpinan) {
+                                            try {
+                                                $pimpinan->notify(new \App\Notifications\RoyaltyRejectedNotification($record));
+                                            } catch (\Exception $e) {
+                                                \Illuminate\Support\Facades\Log::error("Failed to send Royalty Rejection Notification: " . $e->getMessage());
+                                            }
+                                        }
+                                    }
+
                                     Notification::make()->title('Pembayaran Ditolak')->danger()->send();
                                 }),
                         ])->fullWidth(),
@@ -358,6 +400,20 @@ class InvoiceResource extends Resource
                             'status' => 'WAITING_VERIFICATION',
                             'rejection_reason' => null,
                         ]);
+
+                        // NOTIFICATION 2: Notify Kornas Staff about Incoming Contribution Payment
+                        if ($record->type === 'LP_ROYALTY') {
+                            // Defines recipients: Users with specific roles (Matching approved plan + Superadmin)
+                            $recipients = \App\Models\User::role(['Staf Kornas', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Superadmin'])->get();
+                            
+                            foreach ($recipients as $recipient) {
+                                try {
+                                    $recipient->notify(new \App\Notifications\RoyaltyPaymentSubmittedNotification($record));
+                                } catch (\Exception $e) {
+                                    \Illuminate\Support\Facades\Log::error("Failed to send Royalty Notification to {$recipient->name}: " . $e->getMessage());
+                                }
+                            }
+                        }
 
                         Notification::make()->title('Bukti Pembayaran Diupload')->success()->send();
                     }),

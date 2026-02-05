@@ -314,7 +314,7 @@ class VerifyPaymentList extends TableWidget
                                                     // C. Generate Royalty Invoice (10%)
                                                     $royaltyAmount = $record->amount * 0.10; // 10%
 
-                                                    Invoice::create([
+                                                    $royaltyInvoice = Invoice::create([
                                                         'invoice_number' => 'ROY-' . $record->invoice_number,
                                                         'sppg_id' => $record->sppg_id,
                                                         'type' => 'LP_ROYALTY',
@@ -324,8 +324,28 @@ class VerifyPaymentList extends TableWidget
                                                         'end_date' => $record->end_date,
                                                         'due_date' => now()->addDays(3),
                                                     ]);
+
+                                                    // Notify Pimpinan Lembaga Pengusul about the new Royalty Bill
+                                                    try {
+                                                        $sppg = $record->sppg;
+                                                        if ($sppg && $sppg->lembagaPengusul && $sppg->lembagaPengusul->pimpinan) {
+                                                            $sppg->lembagaPengusul->pimpinan->notify(new \App\Notifications\RoyaltyPaymentDueNotification($royaltyInvoice));
+                                                        }
+                                                    } catch (\Exception $e) {
+                                                        // Log error
+                                                    }
                                                 }
                                             });
+
+                                            // Notify Kepala SPPG
+                                            $sppg = $record->sppg;
+                                            if ($sppg && $sppg->kepalaSppg) {
+                                                try {
+                                                    $sppg->kepalaSppg->notify(new \App\Notifications\InvoiceApprovedNotification($record));
+                                                } catch (\Exception $e) {
+                                                    // Log error but allow process to complete
+                                                }
+                                            }
 
                                             $message = $record->type === 'SPPG_SEWA'
                                                 ? 'Pembayaran Diverifikasi, Pengeluaran SPPG Tercatat & Tagihan Royalty Diterbitkan.'
@@ -356,6 +376,17 @@ class VerifyPaymentList extends TableWidget
                                                 'status' => 'REJECTED',
                                                 'rejection_reason' => $data['rejection_reason'],
                                             ]);
+
+                                            // Notify Kepala SPPG
+                                            $sppg = $record->sppg;
+                                            if ($sppg && $sppg->kepalaSppg) {
+                                                try {
+                                                    $sppg->kepalaSppg->notify(new \App\Notifications\InvoiceRejectedNotification($record));
+                                                } catch (\Exception $e) {
+                                                    // Log error
+                                                }
+                                            }
+
                                             Notification::make()->title('Pembayaran Ditolak')->success()->send();
                                         } catch (Exception $e) {
                                             Notification::make()->title('Gagal Menolak')->body('Error: ' . $e->getMessage())->danger()->send();

@@ -28,6 +28,7 @@ class Invoice extends Model
         'end_date' => 'date',
         'due_date' => 'date',
         'verified_at' => 'datetime',
+        'transfer_date' => 'date',
     ];
 
     public function sppg()

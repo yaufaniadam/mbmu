@@ -64,3 +64,7 @@ php artisan queue:work                    # Worker terus jalan
 - Admin Panel: `/admin`
 - SPPG Panel: `/sppg`
 - Production Panel: `/production`
+
+php artisan mbm:generate-test-data
+
+

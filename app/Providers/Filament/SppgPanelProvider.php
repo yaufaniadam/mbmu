@@ -32,6 +32,7 @@ class SppgPanelProvider extends PanelProvider
             ->id('sppg')
             ->path('sppg')
             ->login(\App\Filament\Pages\Auth\CustomLogin::class)
+            ->profile(\App\Filament\Pages\Auth\EditProfile::class)
             ->brandLogo(asset('logombm-small.png'))
             ->darkModeBrandLogo(asset('logombm-w.png'))
             ->brandLogoHeight('3rem')

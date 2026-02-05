@@ -35,6 +35,7 @@ class RegistrationToken extends Model
      * Role labels for display
      */
     public const ROLE_LABELS = [
+        'kepala_lembaga' => 'Kepala Lembaga Pengusul',
         'kepala_sppg' => 'Kepala SPPG',
         'ahli_gizi' => 'Ahli Gizi',
         'akuntan' => 'Staf Akuntan',

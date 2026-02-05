@@ -32,6 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(\App\Filament\Pages\Auth\CustomLogin::class)
+            ->profile(\App\Filament\Pages\Auth\EditProfile::class)
             ->brandLogo(asset('logombm-small.png'))
             ->darkModeBrandLogo(asset('logombm-w.png'))
             ->brandLogoHeight('3rem')
@@ -48,6 +49,7 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Admin\Resources\Schools\AdminSchoolResource::class,
                 \App\Filament\Admin\Resources\Volunteers\RelawanResource::class,
                 \App\Filament\Sppg\Resources\Menus\MenuResource::class,
+                \App\Filament\Admin\Resources\Documents\DocumentResource::class,
             ])
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
             ->pages([
@@ -55,6 +57,7 @@ class AdminPanelProvider extends PanelProvider
                 ManageFinance::class,
                 ProductionVerificationSetting::class,
                 \App\Filament\Sppg\Pages\InstructionList::class,
+                \App\Filament\Pages\TestNotifications::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
             ->widgets([
@@ -97,6 +100,7 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 'panels::body.end',
                 fn(): string => '<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>'
-            );
+            )
+            ->databaseNotifications();
     }
 }

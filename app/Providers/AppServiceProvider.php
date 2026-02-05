@@ -40,5 +40,10 @@ class AppServiceProvider extends ServiceProvider
         OperatingExpense::observe(FinancialObserver::class);
         Remittance::observe(FinancialObserver::class);
         Sppg::observe(SppgObserver::class);
+
+        // Superadmin Bypass
+        \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+            return $user->hasRole('Superadmin') ? true : null;
+        });
     }
 }

@@ -32,7 +32,7 @@
                         <div class="flex flex-col justify-center p-8 lg:p-12 gap-6 bg-white dark:bg-[#141e2b] relative z-10">
                             <div class="flex items-center gap-3">
                                 <span class="bg-primary/20 text-primary dark:text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Featured</span>
-                                <span class="text-[#686868] dark:text-[#b0a695] text-sm">{{ $featured->published_at->format('M d, Y') }}</span>
+                                <span class="text-[#686868] dark:text-[#b0a695] text-sm">{{ $featured->published_at ? $featured->published_at->format('M d, Y') : '-' }}</span>
                             </div>
                             <h2 class="text-[#181511] dark:text-white text-3xl lg:text-4xl font-bold leading-tight">
                                 <a href="{{ route('blog.public.show', $featured->slug) }}" class="hover:text-primary transition-colors">{{ $featured->title }}</a>
@@ -80,7 +80,7 @@
                                     <div class="size-6 rounded-full bg-gray-300 bg-cover" 
                                          style="background-image: url('{{ $post->author && $post->author->photo_path ? Storage::url($post->author->photo_path) : 'https://ui-avatars.com/api/?name='.urlencode($post->author->name ?? 'Admin') }}');">
                                     </div>
-                                    <span class="font-medium">{{ $post->author->name ?? 'Unknown Author' }}</span> • <span>{{ $post->published_at->format('M d, Y') }}</span>
+                                    <span class="font-medium">{{ $post->author->name ?? 'Unknown Author' }}</span> • <span>{{ $post->published_at ? $post->published_at->format('M d, Y') : '-' }}</span>
                                 </div>
                             </div>
                         </article>

@@ -3,19 +3,34 @@
 namespace App\Filament\Resources\RegistrationTokens\Tables;
 
 use App\Models\RegistrationToken;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Filament\Actions\Action;
+use Filament\Tables\Actions\Action;
 
 class RegistrationTokensTable
 {
-    public static function configure(Table $table): Table
+    public static function configure(Table $table, bool $showRoleFilter = true): Table
     {
+        $filters = [
+            SelectFilter::make('is_active')
+                ->label('Status')
+                ->options([
+                    '1' => 'Aktif',
+                    '0' => 'Tidak Aktif',
+                ]),
+        ];
+
+        if ($showRoleFilter) {
+            array_unshift($filters, SelectFilter::make('role')
+                ->label('Role')
+                ->options(RegistrationToken::ROLE_LABELS));
+        }
+
         return $table
             ->columns([
                 TextColumn::make('sppg.nama_sppg')
@@ -75,22 +90,12 @@ class RegistrationTokensTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                SelectFilter::make('role')
-                    ->label('Role')
-                    ->options(RegistrationToken::ROLE_LABELS),
-                
-                SelectFilter::make('is_active')
-                    ->label('Status')
-                    ->options([
-                        '1' => 'Aktif',
-                        '0' => 'Tidak Aktif',
-                    ]),
-            ])
-            ->recordActions([
+            ->filters($filters)
+
+            ->actions([
                 EditAction::make(),
-                \Filament\Actions\Action::make('send_wa')
-                    ->label('Kirim WA')
+                Action::make('send_wa')
+                    ->label('Kirim Token (Lama)')
                     ->icon('heroicon-o-chat-bubble-left-right')
                     ->color('success')
                     ->requiresConfirmation()
@@ -122,37 +127,88 @@ class RegistrationTokensTable
                         }
                     })
                     ->visible(true),
+                Action::make('send_credentials')
+                    ->label('Kirim Kridensial')
+                    ->icon('heroicon-o-key')
+                    ->color('primary')
+                    ->requiresConfirmation()
+                    ->modalHeading('Kirim Kridensial Login')
+                    ->modalDescription(fn (RegistrationToken $record) => "Kirim username & password baru ke WA: {$record->recipient_phone} ({$record->recipient_name})? \n\nPERINGATAN: Password pengguna akan di-reset!")
+                    ->form([
+                        \Filament\Forms\Components\TextInput::make('recipient_phone')
+                            ->label('Nomor Tujuan')
+                            ->default(fn (RegistrationToken $record) => $record->recipient_phone)
+                            ->required(),
+                    ])
+                    ->action(function (RegistrationToken $record, array $data) {
+                        try {
+                            $record->update(['recipient_phone' => $data['recipient_phone']]);
+                            
+                            $sppg = $record->sppg;
+                            if (!$sppg) {
+                                throw new \Exception('SPPG tidak ditemukan.');
+                            }
+
+                            $user = null;
+                            $notification = null;
+
+                            // Generate new password
+                            $password = \Illuminate\Support\Str::random(8); 
+
+                            // Determine target user and notification based on role
+                            if ($record->role === 'kepala_lembaga') {
+                                if (!$sppg->lembagaPengusul || !$sppg->lembagaPengusul->pimpinan) {
+                                    throw new \Exception('Data Kepala Lembaga Pengusul tidak ditemukan.');
+                                }
+                                $user = $sppg->lembagaPengusul->pimpinan;
+                                $notification = new \App\Notifications\KirimKridensial($user, $password);
+                            } elseif ($record->role === 'kepala_sppg') {
+                                if (!$sppg->kepalaSppg) {
+                                    throw new \Exception('Data Kepala SPPG tidak ditemukan. Pastikan SPPG sudah memiliki Kepala SPPG.');
+                                }
+                                $user = $sppg->kepalaSppg;
+                                $notification = new \App\Notifications\KirimKridensialSppg($user, $password);
+                            } else {
+                                // Fallback or throw error if role is not supported for credentials
+                                throw new \Exception('Role ini tidak mendukung pengiriman kridensial, atau fitur belum diimplementasikan.');
+                            }
+                            
+                            // Reset Password
+                            $user->password = \Illuminate\Support\Facades\Hash::make($password);
+                            $user->save();
+
+                            // Send Notification
+                            \Illuminate\Support\Facades\Log::info("KirimKridensial Action ({$record->role}): Sending to " . $data['recipient_phone']);
+                            
+                            \Illuminate\Support\Facades\Notification::route('WhatsApp', $data['recipient_phone'])
+                                ->notify($notification);
+                            
+                            \Filament\Notifications\Notification::make()
+                                ->title('Kridensial Dikirim')
+                                ->body("Password berhasil di-reset dan dikirim ke User: {$user->name} ({$record->role})")
+                                ->success()
+                                ->send();
+                        } catch (\Exception $e) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Gagal mengirim')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    })
+                    ->visible(true),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                    \Filament\Actions\BulkAction::make('bulk_send_wa')
+                    \Filament\Tables\Actions\BulkAction::make('bulk_send_wa')
                         ->label('Kirim WA Massal')
                         ->icon('heroicon-o-chat-bubble-left-right')
                         ->color('success')
                         ->requiresConfirmation()
+                        ->hidden() // Hide for now as logic is different
                         ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
-                            \Illuminate\Support\Facades\Notification::send($records, new \App\Notifications\KirimToken($records->first())); // Notification::send handles collection, but we need to pass individual instance to constructor? NO. 
-                            // Laravel Notification::send($collection, $notification) sends the SAME notification instance to all.
-                            // But our KirimToken constructor takes a $token. If we pass one token, the message for ALL users will show that ONE token's data. 
-                            // So for personalized messages, we must loop.
-                            
-                            $sent = 0;
-                            foreach ($records as $record) {
-                                if (empty($record->recipient_phone)) continue;
-                                
-                                try {
-                                    $record->notify(new \App\Notifications\KirimToken($record));
-                                    $sent++;
-                                } catch (\Exception $e) {
-                                    // log error
-                                }
-                            }
-                            
-                            \Filament\Notifications\Notification::make()
-                                ->title("{$sent} Pesan WA Terkirim")
-                                ->success()
-                                ->send();
+                             // existing code hidden
                         }),
                 ]),
             ])

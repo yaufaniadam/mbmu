@@ -71,6 +71,15 @@ class ViewComplaint extends ViewRecord
         $this->record->refresh();
         $this->replyMessage = '';
         
+        // Notify User if the reply is from Admin/Kornas
+        if ($user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
+            try {
+                $this->record->user->notify(new \App\Notifications\ComplaintResponded($this->record, $this->replyMessage));
+            } catch (\Exception $e) {
+                // Log error
+            }
+        }
+        
         Notification::make()->title('Pesan terkirim')->success()->send();
     }
 

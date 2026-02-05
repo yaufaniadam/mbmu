@@ -53,9 +53,7 @@
         @empty
             <x-filament::section>
                 <div class="text-center text-gray-500 py-8">
-                    <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
+
                     <p class="font-medium">Belum ada percakapan</p>
                     <p class="text-sm mt-1">Mulai percakapan dengan mengirim balasan di bawah</p>
                 </div>

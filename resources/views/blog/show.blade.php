@@ -39,7 +39,7 @@
                         <div class="flex items-center gap-2 text-xs text-[#686868] dark:text-gray-400">
                             <span>Author</span>
                             <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
-                            <span>{{ $post->published_at->format('M d, Y') }}</span>
+                            <span>{{ $post->published_at ? $post->published_at->format('M d, Y') : '-' }}</span>
                             <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
                             <span>{{ ceil(str_word_count(strip_tags($post->content)) / 200) }} min read</span>
                         </div>
@@ -93,7 +93,7 @@
                         </div>
                         <div>
                             <h4 class="font-bold text-sm text-[#181511] dark:text-white group-hover:text-primary transition-colors line-clamp-2">{{ $related->title }}</h4>
-                            <p class="text-xs text-gray-500 mt-1">{{ $related->published_at->format('M d') }}</p>
+                            <p class="text-xs text-gray-500 mt-1">{{ $related->published_at ? $related->published_at->format('M d') : '-' }}</p>
                         </div>
                     </a>
                     @empty
