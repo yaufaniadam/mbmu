@@ -23,4 +23,21 @@ class CreateComplaint extends CreateRecord
         
         return $data;
     }
+
+    protected function afterCreate(): void
+    {
+        $complaint = $this->getRecord();
+        
+        // Notify Admins and Kornas Staff
+        $recipients = \App\Models\User::role(['Superadmin', 'Staf Kornas', 'Direktur Kornas'])->get();
+        
+        foreach ($recipients as $recipient) {
+            try {
+                \Illuminate\Support\Facades\Log::info("Sending complaint notification to: " . $recipient->name);
+                $recipient->notify(new \App\Notifications\ComplaintSubmitted($complaint));
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error("Failed to notify " . $recipient->name . ": " . $e->getMessage());
+            }
+        }
+    }
 }

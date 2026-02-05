@@ -56,10 +56,7 @@ class SppgsRelationManager extends RelationManager
                     ->color('gray')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('balance')
-                    ->label('Saldo Kas')
-                    ->money('IDR', locale: 'id')
-                    ->sortable(),
+
                 Tables\Columns\ToggleColumn::make('is_active')
                     ->label('Aktif'),
             ])

@@ -40,6 +40,7 @@ class PayIncentive extends Page
         if (!$sppg) return null;
 
         $count = \App\Models\Invoice::where('sppg_id', $sppg->id)
+            ->where('type', 'SPPG_SEWA')
             ->where('status', 'UNPAID')
             ->count();
 

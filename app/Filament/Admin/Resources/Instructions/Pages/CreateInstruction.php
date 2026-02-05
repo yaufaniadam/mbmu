@@ -21,4 +21,23 @@ class CreateInstruction extends CreateRecord
     {
         return $this->getResource()::getUrl('index');
     }
+
+    protected function afterCreate(): void
+    {
+        $instruction = $this->getRecord();
+        $recipients = $instruction->getTargetedUsers();
+
+        foreach ($recipients as $recipient) {
+            try {
+                $recipient->notify(new \App\Notifications\InstructionPublished($instruction));
+            } catch (\Exception $e) {
+                // Log error but continue
+            }
+        }
+        
+        \Filament\Notifications\Notification::make()
+            ->title('Instruksi diterbitkan dan notifikasi dikirim ke ' . $recipients->count() . ' pengguna')
+            ->success()
+            ->send();
+    }
 }

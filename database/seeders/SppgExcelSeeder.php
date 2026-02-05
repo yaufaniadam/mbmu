@@ -33,7 +33,7 @@ class SppgExcelSeeder extends Seeder
 
     public function run(): void
     {
-        $csvPath = database_path('seeders/data/sppg_excel_import.csv');
+        $csvPath = database_path('seeders/data/sppg_test.csv');
         
         if (!file_exists($csvPath)) {
             $this->command->error('CSV file not found: ' . $csvPath);
@@ -41,7 +41,8 @@ class SppgExcelSeeder extends Seeder
         }
 
         $handle = fopen($csvPath, 'r');
-        $header = fgetcsv($handle);
+        // Use semicolon as delimiter since the file format has changed
+        $header = fgetcsv($handle, 0, ';');
         
         $imported = 0;
         $skipped = 0;
@@ -50,7 +51,13 @@ class SppgExcelSeeder extends Seeder
         DB::beginTransaction();
 
         try {
-            while (($row = fgetcsv($handle)) !== false) {
+            while (($row = fgetcsv($handle, 0, ';')) !== false) {
+                // Ensure row count matches header count to prevent array_combine errors
+                if (count($row) !== count($header)) {
+                    $this->command->warn("Row skipped due to column mismatch.");
+                    continue;
+                }
+
                 $data = array_combine($header, $row);
                 
                 // Skip if no nama_sppg or kode_sppg
@@ -73,6 +80,7 @@ class SppgExcelSeeder extends Seeder
                 }
 
                 // Find or create Lembaga Pengusul
+                // Pass full data array to access nama_sppg
                 $lembagaPengusul = $this->findOrCreateLembagaPengusul($data);
                 
                 // IMPORTANT: Skip SPPG creation if Lembaga Pengusul is not found to prevent orphan data
@@ -100,6 +108,20 @@ class SppgExcelSeeder extends Seeder
                     $pjUser = $this->findOrCreatePjUser($data);
                 }
 
+                // Create or find Kepala SPPG user
+                $kepalaSppgUser = null;
+                if (!empty($data['ka_sppg']) && !empty($data['wa_ka_sppg'])) {
+                    $kepalaSppgUser = $this->findOrCreateKepalaSppgUser($data);
+                }
+
+                // CHECK: If Kepala SPPG User is already assigned to another SPPG, we cannot assign them again due to unique constraint
+                $kepalaSppgIdToAssign = $kepalaSppgUser?->id;
+                if ($kepalaSppgUser && $kepalaSppgUser->sppgDiKepalai()->exists()) {
+                    $existingSppg = $kepalaSppgUser->sppgDiKepalai;
+                    $this->command->warn("User {$kepalaSppgUser->name} ({$kepalaSppgUser->telepon}) sudah menjadi Kepala SPPG di '{$existingSppg->nama_sppg}'. Tidak ditambahkan sebagai Kepala di '{$data['nama_sppg']}'.");
+                    $kepalaSppgIdToAssign = null;
+                }
+
                 // Create SPPG
                 $sppg = Sppg::create([
                     'nama_sppg' => trim($data['nama_sppg']),
@@ -108,25 +130,58 @@ class SppgExcelSeeder extends Seeder
                     'status' => trim($data['status'] ?? '') ?: null,
                     'lembaga_pengusul_id' => $lembagaPengusul->id,
                     'pj_id' => $pjUser?->id,
+                    'kepala_sppg_id' => $kepalaSppgIdToAssign,
                     'alamat' => $alamat ?: 'Alamat belum diisi',
                     'province_code' => $province?->code,
                     'city_code' => $city?->code,
                     'district_code' => $district?->code,
                 ]);
 
-                // Create registration token for Kepala SPPG
-                RegistrationToken::create([
-                    'token' => RegistrationToken::generateToken(),
-                    'sppg_id' => $sppg->id,
-                    'role' => 'kepala_sppg',
-                    'max_uses' => 1,
-                    'is_active' => true,
-                    'recipient_name' => $pjUser?->name ?? $data['nama_pj'] ?? null,
-                    'recipient_phone' => $pjUser?->telepon ?? (isset($data['wa_pj']) ? $this->normalizePhone($data['wa_pj']) : null),
-                ]);
+                // 1. Create Token for Kepala SPPG
+                $kaSppgName = $kepalaSppgUser?->name ?? $data['ka_sppg'] ?? null;
+                $kaSppgPhone = $kepalaSppgUser?->telepon ?? (isset($data['wa_ka_sppg']) ? $this->normalizePhone($data['wa_ka_sppg']) : null);
+                
+                if (!empty($kaSppgPhone)) {
+                    RegistrationToken::create([
+                        'token' => RegistrationToken::generateToken(),
+                        'sppg_id' => $sppg->id,
+                        'role' => 'kepala_sppg',
+                        'max_uses' => 1,
+                        'is_active' => true,
+                        'recipient_name' => $kaSppgName,
+                        'recipient_phone' => $kaSppgPhone,
+                    ]);
+                    $tokensCreated++;
+                }
+
+                // 2. Create Token for Kepala Lembaga (PJ)
+                // Always create this if PJ info exists, as they need to register/manage the Lembaga aspect
+                $pjName = $pjUser?->name ?? $data['nama_pj'] ?? null;
+                $pjPhone = $pjUser?->telepon ?? (isset($data['wa_pj']) ? $this->normalizePhone($data['wa_pj']) : null);
+
+                if (!empty($pjPhone)) {
+                     // Check if we already created a token for this Lembaga Pengusul in this run
+                     // Or theoretically check DB, but in this seeder context, deduping per run is key.
+                     // Note: We prefer to check if a token for this Lembaga already exists to be safe.
+                     $existingToken = RegistrationToken::whereHas('sppg', function($q) use ($lembagaPengusul) {
+                        $q->where('lembaga_pengusul_id', $lembagaPengusul->id);
+                     })->where('role', 'kepala_lembaga')->exists();
+
+                     if (!$existingToken) {
+                         RegistrationToken::create([
+                            'token' => RegistrationToken::generateToken(),
+                            'sppg_id' => $sppg->id,
+                            'role' => 'kepala_lembaga',
+                            'max_uses' => 1,
+                            'is_active' => true,
+                            'recipient_name' => $pjName,
+                            'recipient_phone' => $pjPhone,
+                        ]);
+                        $tokensCreated++;
+                     }
+                }
 
                 $imported++;
-                $tokensCreated++;
             }
 
             DB::commit();
@@ -166,15 +221,20 @@ class SppgExcelSeeder extends Seeder
     protected function findOrCreateLembagaPengusul(array $data): ?LembagaPengusul
     {
         // Validate pengusul field is not empty
-        $namaPengusul = trim($data['pengusul'] ?? '');
+        $namaPengusulRaw = trim($data['pengusul'] ?? '');
+        $namaSppg = trim($data['nama_sppg'] ?? '');
         
-        if (empty($namaPengusul)) {
+        if (empty($namaPengusulRaw)) {
             return null;
         }
 
+        // Combined Name: "Pengusul - Nama SPPG"
+        // e.g., "PDM Kota Serang - SMP Birrul Walidain"
+        $namaLembaga = $namaPengusulRaw . ' - ' . $namaSppg;
+
         // Find existing or create new
         return LembagaPengusul::firstOrCreate(
-            ['nama_lembaga' => $namaPengusul],
+            ['nama_lembaga' => $namaLembaga],
             [
                 'alamat_lembaga' => trim($data['kab_kota'] ?? '') . ', ' . trim($data['provinsi'] ?? ''),
             ]
@@ -242,11 +302,51 @@ class SppgExcelSeeder extends Seeder
         }
 
         // Link User to Lembaga Pengusul if not already linked
-        if (isset($data['pengusul'])) {
-            $lembaga = LembagaPengusul::where('nama_lembaga', trim($data['pengusul']))->first();
-            if ($lembaga && !$lembaga->pimpinan_id) {
-                $lembaga->update(['pimpinan_id' => $user->id]);
+        // NOTE: Since Lembaga Pengusul names are now unique per SPPG, this logic might need adjustment if users reuse the SAME user for multiple Lembagas.
+        // But assuming 1 user -> 1 Pimpinan for now, or just setting it if empty.
+        // Re-fetching the specific lembaga created/found above is safer if we passed it in, but here we construct name again.
+        $namaPengusulRaw = trim($data['pengusul'] ?? '');
+        $namaSppg = trim($data['nama_sppg'] ?? '');
+        $targetLembagaName = $namaPengusulRaw . ' - ' . $namaSppg;
+
+        $lembaga = LembagaPengusul::where('nama_lembaga', $targetLembagaName)->first();
+        if ($lembaga && !$lembaga->pimpinan_id) {
+            $lembaga->update(['pimpinan_id' => $user->id]);
+        }
+
+        return $user;
+    }
+
+    protected function findOrCreateKepalaSppgUser(array $data): ?User
+    {
+        $nama = trim($data['ka_sppg']);
+        $wa = $this->normalizePhone(trim($data['wa_ka_sppg']));
+
+        if (empty($nama) || empty($wa)) {
+            return null;
+        }
+
+        // Check if user already exists
+        $existingUser = User::where('telepon', $wa)->first();
+        if ($existingUser) {
+            // Check if they have the role, if not assign it
+            if (!$existingUser->hasRole('Kepala SPPG')) {
+                $existingUser->assignRole('Kepala SPPG');
             }
+            return $existingUser;
+        }
+
+        $password = 'mbm' . substr($wa, -4);
+
+        $user = User::create([
+            'name' => $nama,
+            'telepon' => $wa,
+            'password' => Hash::make($password),
+        ]);
+
+        $role = Role::where('name', 'Kepala SPPG')->first();
+        if ($role) {
+            $user->assignRole($role);
         }
 
         return $user;

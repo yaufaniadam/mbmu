@@ -32,12 +32,18 @@ class KirimToken extends Notification implements ShouldQueue
      */
     public function toWhatsApp(object $notifiable): array
     {
-        $message = "Assalamualaikum {$this->token->recipient_name},\n\n"
-            . "Silakan login ke MBMu App lalu buat akun.\n\n"
-            . "👉 Link: {$this->token->getRegistrationUrl()}\n"
-            . "🔑 Token: {$this->token->token}\n\n"
-            . "Gunakan link dan token di atas untuk mendaftar sebagai {$this->token->role_label} di {$this->token->sppg->nama_sppg}.\n\n"
-            . "Terima Kasih.";
+        $template = \App\Models\NotificationTemplate::where('key', 'registration_token')->first();
+        $messageContent = $template ? $template->content : "Assalamualaikum {{recipient_name}},\n\nToken: {{token}}\nLink: {{registration_url}}";
+
+        $placeholders = [
+            '{{recipient_name}}' => $this->token->recipient_name,
+            '{{registration_url}}' => $this->token->getRegistrationUrl(),
+            '{{token}}' => $this->token->token,
+            '{{role_label}}' => $this->token->role_label,
+            '{{sppg_name}}' => $this->token->sppg->nama_sppg ?? '',
+        ];
+
+        $message = str_replace(array_keys($placeholders), array_values($placeholders), $messageContent);
 
         return [
             'phone' => $notifiable->routeNotificationFor('WhatsApp'),

@@ -74,6 +74,7 @@ class MenuResource extends Resource
                 Forms\Components\FileUpload::make('image')
                     ->label('Foto Menu')
                     ->image()
+                    ->disk('public')
                     ->directory('menu-photos')
                     ->maxSize(10240)
                     ->columnSpanFull()

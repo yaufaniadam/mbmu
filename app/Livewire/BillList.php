@@ -247,6 +247,32 @@ class BillList extends TableWidget
                             'rejection_reason' => null, 
                         ]);
 
+                        // NOTIFICATION LOGIC
+                        if ($record->type === 'SPPG_SEWA') {
+                            // Notify Pimpinan Lembaga Pengusul (Incentive Payment)
+                            $sppg = $record->sppg;
+                            if ($sppg && $sppg->lembagaPengusul) {
+                                $pimpinan = $sppg->lembagaPengusul->pimpinan;
+                                if ($pimpinan) {
+                                    try {
+                                        $pimpinan->notify(new \App\Notifications\IncentivePaymentSubmitted($record));
+                                    } catch (\Exception $e) {
+                                        \Illuminate\Support\Facades\Log::error("Failed to send Incentive Notification: " . $e->getMessage());
+                                    }
+                                }
+                            }
+                        } elseif ($record->type === 'LP_ROYALTY') {
+                            // Notify Kornas Team (Royalty Payment) + Superadmin
+                            $kornasUsers = User::role(['Staf Kornas', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Superadmin'])->get();
+                            foreach ($kornasUsers as $user) {
+                                try {
+                                    $user->notify(new \App\Notifications\RoyaltyPaymentSubmittedNotification($record));
+                                } catch (\Exception $e) {
+                                    \Illuminate\Support\Facades\Log::error("Failed to send Royalty Notification to {$user->name}: " . $e->getMessage());
+                                }
+                            }
+                        }
+
                         Notification::make()
                             ->title('Pembayaran Dikirim')
                             ->body('Detail pembayaran bank Anda telah disimpan.')

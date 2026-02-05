@@ -63,16 +63,33 @@ class InvoiceGenerated extends Notification implements ShouldQueue
         $accountNumber = $lembaga?->nomor_rekening ?? '(Rekening Belum Diatur)';
         $lembagaName = $lembaga?->nama_lembaga ?? 'Lembaga Pengusul';
 
-        $message = "Assalamualaikum {$notifiable->name},\n\n"
-            . "Invoice Baru telah diterbitkan untuk {$sppg->nama_sppg}.\n\n"
-            . "📄 *Invoice*: {$this->invoice->invoice_number}\n"
-            . "🗓 *Periode*: {$periode}\n"
-            . "💰 *Total*: {$formattedAmount}\n\n"
+        $template = \App\Models\NotificationTemplate::where('key', 'invoice_generated')->first();
+
+        $defaultMessage = "Assalamualaikum {{name}},\n\n"
+            . "Invoice Baru telah diterbitkan untuk {{sppg_name}}.\n\n"
+            . "📄 *Invoice*: {{invoice_number}}\n"
+            . "🗓 *Periode*: {{period}}\n"
+            . "💰 *Total*: {{amount}}\n\n"
             . "Mohon segera lakukan pembayaran ke rekening berikut:\n"
-            . "🏦 *Bank*: {$bankName}\n"
-            . "💳 *No. Rek*: {$accountNumber}\n"
-            . "An. {$lembagaName}\n\n"
+            . "🏦 *Bank*: {{bank_name}}\n"
+            . "💳 *No. Rek*: {{account_number}}\n"
+            . "An. {{account_holder}}\n\n"
             . "Terima kasih.";
+
+        $messageContent = $template ? $template->content : $defaultMessage;
+
+        $placeholders = [
+            '{{name}}' => $notifiable->name,
+            '{{sppg_name}}' => $sppg->nama_sppg,
+            '{{invoice_number}}' => $this->invoice->invoice_number,
+            '{{period}}' => $periode,
+            '{{amount}}' => $formattedAmount,
+            '{{bank_name}}' => $bankName,
+            '{{account_number}}' => $accountNumber,
+            '{{account_holder}}' => $lembagaName,
+        ];
+
+        $message = str_replace(array_keys($placeholders), array_values($placeholders), $messageContent);
 
         return [
             'phone' => $notifiable->routeNotificationFor('WhatsApp'),

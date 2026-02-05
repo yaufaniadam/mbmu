@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('token', 32)->unique();
             $table->foreignId('sppg_id')->constrained('sppg')->onDelete('cascade');
-            $table->enum('role', ['kepala_sppg', 'ahli_gizi', 'akuntan', 'administrator']);
+            $table->enum('role', ['kepala_lembaga', 'kepala_sppg', 'ahli_gizi', 'akuntan', 'administrator']);
             $table->integer('max_uses')->default(1);
             $table->integer('used_count')->default(0);
             $table->timestamp('expires_at')->nullable();

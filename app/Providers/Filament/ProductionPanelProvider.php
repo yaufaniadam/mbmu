@@ -38,6 +38,7 @@ class ProductionPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->login(\App\Filament\Pages\Auth\CustomLogin::class)
+            ->profile(\App\Filament\Pages\Auth\EditProfile::class)
             ->discoverResources(in: app_path('Filament/Production/Resources'), for: 'App\Filament\Production\Resources')
             ->discoverPages(in: app_path('Filament/Production/Pages'), for: 'App\Filament\Production\Pages')
             ->pages([
