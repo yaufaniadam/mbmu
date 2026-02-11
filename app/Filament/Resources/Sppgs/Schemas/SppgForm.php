@@ -357,14 +357,14 @@ class SppgForm
                             ->maxSize(10240)
                             ->acceptedFileTypes(['application/pdf', 'image/*']),
                         \Filament\Forms\Components\FileUpload::make('pks_path')
-                            ->label('Perjanjian Kerjasama (PKS)')
+                            ->label('Perjanjian Kerjasama')
                             ->disk('public')
                             ->directory('sppg-docs')
                             ->maxSize(10240)
                             ->acceptedFileTypes(['application/pdf'])
                             ->required()
                             ->validationMessages([
-                                'required' => 'Dokumen PKS wajib diisi',
+                                'required' => 'Dokumen wajib diisi',
                             ]),
                     ])->columns(2),
 

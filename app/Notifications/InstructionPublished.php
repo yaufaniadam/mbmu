@@ -34,10 +34,36 @@ class InstructionPublished extends Notification implements ShouldQueue
     }
 
     /**
+     * Get the appropriate URL for the notification based on user role.
+     */
+    protected function getNotificationUrl(object $notifiable): string
+    {
+        // List of roles that have access to the Admin panel
+        // Copied from User::canAccessPanel('admin') logic
+        $adminRoles = [
+            'Superadmin', 
+            'Direktur Kornas', 
+            'Staf Kornas', 
+            'Staf Akuntan Kornas', 
+            'Pimpinan Lembaga Pengusul', 
+            'PJ Pelaksana'
+        ];
+
+        if ($notifiable instanceof \App\Models\User && $notifiable->hasRole($adminRoles)) {
+            return url('/admin/instructions/' . $this->instruction->id);
+        }
+
+        // Default to SPPG panel instruction list for others
+        return url('/sppg/instruction-list');
+    }
+
+    /**
      * Get the mail representation of the notification.
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $url = $this->getNotificationUrl($notifiable);
+
         return (new MailMessage)
             ->subject('Instruksi Baru: ' . $this->instruction->title)
             ->greeting("Assalamualaikum {$notifiable->name},")
@@ -45,7 +71,7 @@ class InstructionPublished extends Notification implements ShouldQueue
             ->line("**Judul:** {$this->instruction->title}")
             ->line("**Ringkasan:**")
             ->line(str($this->instruction->content)->limit(100))
-            ->action('Baca Instruksi Lengkap', url('/admin/instructions/' . $this->instruction->id))
+            ->action('Baca Instruksi Lengkap', $url)
             ->line('Mohon segera membaca dan memahami instruksi tersebut.');
     }
 
@@ -54,15 +80,17 @@ class InstructionPublished extends Notification implements ShouldQueue
      */
     public function toDatabase(object $notifiable): array
     {
+        $url = $this->getNotificationUrl($notifiable);
+
         return \Filament\Notifications\Notification::make()
             ->title('Instruksi Baru')
             ->body("Instruksi baru: {$this->instruction->title}. Silakan cek sekarang.")
             ->icon('heroicon-o-megaphone')
             ->info()
             ->actions([
-                \Filament\Notifications\Actions\Action::make('read')
+                \Filament\Actions\Action::make('read')
                     ->button()
-                    ->url('/admin/instructions/' . $this->instruction->id),
+                    ->url($url),
             ])
             ->getDatabaseMessage();
     }
@@ -74,6 +102,7 @@ class InstructionPublished extends Notification implements ShouldQueue
     {
         $title = $this->instruction->title;
         $snippet = str($this->instruction->content)->limit(100);
+        $url = $this->getNotificationUrl($notifiable);
 
         $template = \App\Models\NotificationTemplate::where('key', 'instruction_published')->first();
 
@@ -81,7 +110,8 @@ class InstructionPublished extends Notification implements ShouldQueue
             . "📢 *INSTRUKSI BARU*\n\n"
             . "*{{title}}*\n\n"
             . "{{snippet}}\n\n"
-            . "Silakan baca selengkapnya di aplikasi.\n\n"
+            . "Silakan baca selengkapnya di aplikasi:\n"
+            . "{{url}}\n\n"
             . "Terima kasih.";
 
         $messageContent = $template ? $template->content : $defaultMessage;
@@ -90,6 +120,7 @@ class InstructionPublished extends Notification implements ShouldQueue
             '{{name}}' => $notifiable->name,
             '{{title}}' => $title,
             '{{snippet}}' => $snippet,
+            '{{url}}' => $url,
         ];
 
         $message = str_replace(array_keys($placeholders), array_values($placeholders), $messageContent);

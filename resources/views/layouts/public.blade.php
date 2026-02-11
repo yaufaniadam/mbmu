@@ -53,10 +53,7 @@
                         <div class="flex items-center gap-6">
                             <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ url('/') }}">Beranda</a>
                             <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('team.public') }}">Tentang</a>
-                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('sppg.public.index') }}">Program</a>
-                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('menu.public.index') }}">Menu Makanan</a>
-                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('blog.public.index') }}">Blog</a>
-                            <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('contact.public') }}">Kontak</a>
+
                         </div>
                         
                         <!-- Dark Mode Toggle -->
@@ -78,10 +75,7 @@
                 <div class="flex flex-col gap-4 p-4">
                     <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ url('/') }}">Beranda</a>
                     <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('team.public') }}">Tentang</a>
-                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('sppg.public.index') }}">Program</a>
-                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('menu.public.index') }}">Menu Makanan</a>
-                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('blog.public.index') }}">Blog</a>
-                    <a class="text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2" href="{{ route('contact.public') }}">Kontak</a>
+
                     
                     <!-- Mobile Dark Mode Toggle -->
                     <button id="mobile-theme-toggle" class="flex items-center gap-2 text-base font-medium text-text-main dark:text-white hover:text-primary transition-colors px-2 text-left">
@@ -121,7 +115,7 @@
                         <div class="flex flex-col gap-4">
                             <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Bantuan</h4>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('guide.public') }}">Panduan Aplikasi</a>
-                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('contact.public') }}">Kontak</a>
+
                         </div>
                         <div class="flex flex-col gap-4">
                             <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Area Login</h4>

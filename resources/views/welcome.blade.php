@@ -120,41 +120,7 @@
     </div>
 </section>
 
-<section class="py-16 px-4 md:px-10 bg-[#fbfbf9] dark:bg-background-dark w-full">
-    <div class="max-w-[1280px] mx-auto flex flex-col gap-10">
-        <div class="flex flex-col md:flex-row justify-between items-end gap-4 border-b border-[#e6e1db] dark:border-gray-800 pb-6">
-            <div>
-                <h2 class="text-[#181511] dark:text-white text-3xl font-bold leading-tight tracking-[-0.015em] mb-2">Berita & Update</h2>
-                <p class="text-[#686868] text-base">Berita dan Update Kornas Makan Bergizi Muhammadiyah</p>
-            </div>
-            <a class="text-primary font-bold hover:underline flex items-center gap-1" href="{{ url('/artikel') }}">
-                Lihat Semua <span class="material-symbols-outlined text-sm">arrow_forward</span>
-            </a>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        @forelse($posts as $post)
-            <article class="flex flex-col rounded-lg overflow-hidden bg-white dark:bg-surface-dark shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-transform duration-300">
-                <a href="{{ route('blog.public.show', $post->slug) }}" class="w-full aspect-video bg-cover bg-center block" data-alt="{{ $post->title }}" style="background-image: url('{{ $post->featured_image ? Storage::url($post->featured_image) : 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80' }}');">
-                </a>
-                <div class="p-5 flex flex-col flex-1 gap-3">
-                    <!-- <span class="text-xs font-bold text-secondary-green uppercase tracking-wide">News</span> -->
-                    <h3 class="text-lg font-bold text-text-main dark:text-white leading-snug">
-                        <a href="{{ route('blog.public.show', $post->slug) }}" class="hover:text-primary transition-colors">{{ $post->title }}</a>
-                    </h3>
-                    <p class="text-sm text-text-secondary line-clamp-3">{{ $post->excerpt }}</p>
-                    <div class="mt-auto pt-2">
-                        <a class="text-sm font-bold text-primary hover:text-primary-dark" href="{{ route('blog.public.show', $post->slug) }}">Baca Selengkapnya</a>
-                    </div>
-                </div>
-            </article>
-        @empty
-            <div class="col-span-1 sm:col-span-2 lg:col-span-4 text-center py-10">
-                <p class="text-text-secondary">Belum ada berita yang ditampilkan.</p>
-            </div>
-        @endforelse
-        </div>
-    </div>
-</section>
+
 
 {{-- Testimony Section (Hidden for now) --}}
 {{-- <section class="py-20 px-4 md:px-10 bg-orange-50 dark:bg-background-dark w-full border-t border-orange-100 dark:border-gray-800">
