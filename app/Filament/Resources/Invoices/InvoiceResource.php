@@ -447,19 +447,40 @@ class InvoiceResource extends Resource
         $query = parent::getEloquentQuery();
         $user = auth()->user();
 
-        if ($user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])) {
-            $lembaga = \App\Models\User::find($user->id)->lembagaDipimpin;
-            if ($lembaga) {
-                // Show Invoices where SPPG ID is in User's Lembaga's SPPGs
-                $sppgIds = $lembaga->sppgs->pluck('id');
-                $query->whereIn('sppg_id', $sppgIds);
-            } else {
-                // Safety fallback
-                $query->whereRaw('1=0');
+        // 1. National Level: Can see everything
+        if ($user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
+            return $query;
+        }
+
+        // 2. Local Level: Restrict to SPPG
+        // Check for Kepala SPPG
+        if ($user->hasRole('Kepala SPPG')) {
+            $sppg = $user->sppgDikepalai;
+            if ($sppg) {
+                return $query->where('sppg_id', $sppg->id);
             }
         }
 
-        return $query;
+        // Check for Staff assigned to SPPG (including Staf Akuntan, Admin SPPG, PJ Pelaksana)
+        if ($user->hasAnyRole(['Staf Akuntan', 'Admin SPPG', 'PJ Pelaksana', 'Staf Administrator SPPG'])) {
+            $unitTugas = $user->unitTugas->first();
+            if ($unitTugas) {
+                return $query->where('sppg_id', $unitTugas->id);
+            }
+        }
+
+        // Pimpinan Lembaga Pengusul
+        if ($user->hasRole('Pimpinan Lembaga Pengusul')) {
+            $lembaga = $user->lembagaDipimpin;
+            if ($lembaga) {
+                // Show Invoices where SPPG ID is in User's Lembaga's SPPGs
+                $sppgIds = $lembaga->sppgs->pluck('id');
+                return $query->whereIn('sppg_id', $sppgIds);
+            }
+        }
+
+        // Fallback: See nothing
+        return $query->whereRaw('1 = 0');
     }
 
     public static function getRelations(): array

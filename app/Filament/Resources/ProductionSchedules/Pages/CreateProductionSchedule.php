@@ -85,6 +85,9 @@ class CreateProductionSchedule extends CreateRecord
         $data = $this->data; // Get all form data
         $record = $this->getRecord(); // Get the ProductionSchedule that was just created
 
+        // Get valid school IDs for this SPPG
+        $validSchoolIds = \App\Models\School::where('sppg_id', $record->sppg_id)->pluck('id')->toArray();
+
         if (isset($data['porsi_per_sekolah']) && is_array($data['porsi_per_sekolah'])) {
             $distributions = [];
             foreach ($data['porsi_per_sekolah'] as $sekolahId => $porsi) {
@@ -92,6 +95,11 @@ class CreateProductionSchedule extends CreateRecord
                 // Ensure the 'sekolah_id' from the hidden field exists
                 if (! isset($porsi['sekolah_id'])) {
                     continue; // Skip if data is incomplete
+                }
+
+                // Security Check: Verify if school belongs to the SPPG
+                if (!in_array($porsi['sekolah_id'], $validSchoolIds)) {
+                    continue; // Skip unauthorized school
                 }
 
                 $distributions[] = [

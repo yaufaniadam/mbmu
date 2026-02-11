@@ -140,35 +140,54 @@ class SppgFinancialReportResource extends Resource
         $query = parent::getEloquentQuery();
         $user = Auth::user();
 
-        // If user is Kepal SPPG or equivalent restrict to their SPPG
-        // Assuming user has 'sppg_id' or relation to SPPG. 
-        // Based on Sppg model, head is 'kepala_sppg_id'.
-        // But users don't have 'sppg_id' column directly usually? 
-        // Let's check User model later. 
-        // For now, if role is 'Kepala SPPG', filter by user_id = Auth::id() OR if they manage an SPPG.
-        // Assuming 'user_id' in SppgFinancialReport is the uploader. 
-        // If the uploader is the Kepala SPPG, then filtering by user_id is safe.
-        
-        if ($user->hasRole(['Kepala SPPG', 'Admin SPPG'])) {
-             return $query->where('user_id', $user->id);
+        // 1. National Level: Can see everything
+        if ($user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
+            return $query;
         }
 
-        return $query;
+        // 2. Local Level: Restrict to SPPG
+        // Check for Kepala SPPG
+        if ($user->hasRole('Kepala SPPG')) {
+            $sppg = $user->sppgDikepalai;
+            if ($sppg) {
+                return $query->where('sppg_id', $sppg->id);
+            }
+        }
+
+        // Check for Staff assigned to SPPG (including Staf Akuntan, Admin SPPG, PJ Pelaksana)
+        if ($user->hasAnyRole(['Staf Akuntan', 'Admin SPPG', 'PJ Pelaksana', 'Staf Administrator SPPG'])) {
+            $unitTugas = $user->unitTugas->first();
+            if ($unitTugas) {
+                return $query->where('sppg_id', $unitTugas->id);
+            }
+        }
+
+        // Pimpinan Lembaga Pengusul
+        if ($user->hasRole('Pimpinan Lembaga Pengusul')) {
+            $lembaga = $user->lembagaDipimpin;
+            if ($lembaga) {
+                $sppgIds = $lembaga->sppgs->pluck('id');
+                return $query->whereIn('sppg_id', $sppgIds);
+            }
+        }
+
+        // Fallback: See nothing if no role matches or no assignment found
+        return $query->whereRaw('1 = 0');
     }
 
     public static function shouldRegisterNavigation(): bool
     {
         $panelId = \Filament\Facades\Filament::getCurrentPanel()?->getId();
         $user = Auth::user();
-        
+
         // Show in Admin panel for Kornas staff to monitor all SPPG reports
         if ($panelId === 'admin') {
             return $user?->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']);
         }
-        
-        // Show in SPPG panel for Kepala SPPG and Admin SPPG
+
+        // Show in SPPG panel for Local roles
         if ($panelId === 'sppg') {
-            return $user?->hasAnyRole(['Kepala SPPG', 'Admin SPPG']);
+            return $user?->hasAnyRole(['Kepala SPPG', 'Admin SPPG', 'Staf Akuntan', 'PJ Pelaksana']);
         }
 
         return false;
