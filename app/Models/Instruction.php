@@ -72,10 +72,17 @@ class Instruction extends Model
               })
               // 4. Instructions for specific Lembaga Pengusul
               ->orWhere(function ($sq) use ($user) {
-                  $lembagaId = $user->lembagaDipimpin?->id;
-                  if ($lembagaId) {
-                      $sq->where('recipient_type', 'lembaga_pengusul')
-                         ->whereJsonContains('recipient_ids', [$lembagaId]);
+                  // Jika user adalah Pimpinan Lembaga
+                  if ($user->lembagaDipimpin()->exists()) {
+                      $lembagaId = $user->lembagaDipimpin->id;
+                       $sq->where('recipient_type', 'lembaga_pengusul')
+                          ->whereJsonContains('recipient_ids', [$lembagaId]);
+                  }
+                  
+                  // ATAU Jika user tergabung dalam SPPG di bawah naungan Lembaga tsb
+                  if ($user->sppg_id && $user->sppg && $user->sppg->lembaga_pengusul_id) {
+                       $sq->where('recipient_type', 'lembaga_pengusul')
+                          ->whereJsonContains('recipient_ids', [$user->sppg->lembaga_pengusul_id]);
                   }
               })
               // 5. Instructions for specific user
@@ -128,8 +135,13 @@ class Instruction extends Model
             'all' => User::all(),
             'role' => User::role($this->recipient_ids)->get(),
             'sppg' => User::whereIn('sppg_id', $this->recipient_ids ?? [])->get(),
-            'lembaga_pengusul' => User::whereHas('lembagaDipimpin', function ($q) {
-                $q->whereIn('id', $this->recipient_ids ?? []);
+            'lembaga_pengusul' => User::where(function($query) {
+                $query->whereHas('lembagaDipimpin', function ($q) {
+                    $q->whereIn('id', $this->recipient_ids ?? []);
+                })
+                ->orWhereHas('sppg', function ($q) {
+                    $q->whereIn('lembaga_pengusul_id', $this->recipient_ids ?? []);
+                });
             })->get(),
             'user' => User::whereIn('id', $this->recipient_ids ?? [])->get(),
             default => collect([]),

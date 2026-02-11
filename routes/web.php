@@ -36,9 +36,7 @@ Route::get('/profil', function () {
     return view('public.profile');
 })->name('profile.public');
 
-Route::get('/kontak', function () {
-    return view('public.contact');
-})->name('contact.public');
+
 
 Route::get('/panduan', function () {
     return view('public.guide');

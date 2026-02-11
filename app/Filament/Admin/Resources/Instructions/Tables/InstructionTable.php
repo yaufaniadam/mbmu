@@ -43,9 +43,24 @@ class InstructionTable
                         'info' => 'user',
                     ]),
                 
-                TextColumn::make('creator.name')
-                    ->label('Dibuat Oleh')
-                    ->sortable(),
+                TextColumn::make('recipient_names')
+                    ->label('Penerima')
+                    ->getStateUsing(fn (Instruction $record) => match ($record->recipient_type) {
+                        'all' => 'Semua',
+                        'role' => \Spatie\Permission\Models\Role::whereIn('id', $record->recipient_ids ?? [])->pluck('name')->join(', '),
+                        'sppg' => \App\Models\Sppg::whereIn('id', $record->recipient_ids ?? [])->pluck('nama_sppg')->join(', '),
+                        'lembaga_pengusul' => \App\Models\LembagaPengusul::whereIn('id', $record->recipient_ids ?? [])->pluck('nama_lembaga')->join(', '),
+                        'user' => \App\Models\User::whereIn('id', $record->recipient_ids ?? [])->pluck('name')->join(', '),
+                        default => '-',
+                    })
+                    ->limit(50)
+                    ->tooltip(function (TextColumn $column): ?string {
+                        $state = $column->getState();
+                        if (strlen($state) <= 50) {
+                            return null;
+                        }
+                        return $state;
+                    }),
                 
                 TextColumn::make('acknowledgment_rate')
                     ->label('Tingkat Dibaca')

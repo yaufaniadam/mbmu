@@ -31,7 +31,7 @@ class CreateInstruction extends CreateRecord
             try {
                 $recipient->notify(new \App\Notifications\InstructionPublished($instruction));
             } catch (\Exception $e) {
-                // Log error but continue
+                \Illuminate\Support\Facades\Log::error("Failed to notify user {$recipient->id}: " . $e->getMessage());
             }
         }
         

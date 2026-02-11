@@ -28,9 +28,7 @@ class TestNotifications extends Page implements HasForms
     
     public static function shouldRegisterNavigation(): bool
     {
-        // Hide for Pimpinan Lembaga Pengusul as requested
-        // Or better yet, strictly limit to Superadmin/Devs
-        return ! auth()->user()->hasRole('Pimpinan Lembaga Pengusul');
+        return false;
     }
     
     protected string $view = 'filament.pages.test-notifications';
