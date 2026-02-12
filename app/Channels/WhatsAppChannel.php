@@ -21,7 +21,20 @@ class WhatsAppChannel
         $targetNumber = $data['phone'];
         $message = $data['message'];
 
-        // Kirim pesan menggunakan service yang sudah ada
-        (new WhatsAppService())->sendMessage($targetNumber, $message);
+        $service = new WhatsAppService();
+
+        // Tentukan model terkait (default: notifiable user)
+        $relatedModel = $notifiable;
+        if (method_exists($notification, 'getRelatedModel')) {
+            $relatedModel = $notification->getRelatedModel();
+        }
+
+        // Cek jika ada dokumen yang akan dikirim
+        if (isset($data['document']) && !empty($data['document'])) {
+            $service->sendDocument($targetNumber, $data['document'], $message, $relatedModel);
+        } else {
+            // Kirim pesan biasa
+            $service->sendMessage($targetNumber, $message, $relatedModel);
+        }
     }
 }

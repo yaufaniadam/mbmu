@@ -33,7 +33,7 @@ class SppgExcelSeeder extends Seeder
 
     public function run(): void
     {
-        $csvPath = database_path('seeders/data/sppg_excel_import.csv');
+        $csvPath = database_path('seeders/data/sppg_test.csv');
         
         if (!file_exists($csvPath)) {
             $this->command->error('CSV file not found: ' . $csvPath);

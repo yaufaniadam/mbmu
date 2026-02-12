@@ -43,6 +43,14 @@ class Instruction extends Model
     }
 
     /**
+     * Get related WhatsApp messages.
+     */
+    public function whatsappMessages()
+    {
+        return $this->morphMany(WhatsAppMessage::class, 'related');
+    }
+
+    /**
      * Scope to filter only active instructions
      */
     public function scopeActive(Builder $query): Builder
@@ -133,7 +141,9 @@ class Instruction extends Model
     {
         return match($this->recipient_type) {
             'all' => User::all(),
-            'role' => User::role($this->recipient_ids)->get(),
+            'role' => User::whereHas('roles', function ($query) {
+                $query->whereIn('id', $this->recipient_ids ?? []);
+            })->get(),
             'sppg' => User::whereIn('sppg_id', $this->recipient_ids ?? [])->get(),
             'lembaga_pengusul' => User::where(function($query) {
                 $query->whereHas('lembagaDipimpin', function ($q) {

@@ -76,11 +76,17 @@ class KepalaSppgTokensTable
                     ->placeholder('-')
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('registration_url')
-                    ->label('Link Registrasi')
-                    ->state(fn (RegistrationToken $record): string => $record->getRegistrationUrl())
-                    ->limit(30)
-                    ->tooltip(fn (RegistrationToken $record): string => $record->getRegistrationUrl()),
+                TextColumn::make('latestWhatsAppMessage.status')
+                    ->label('Status WA')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'pending' => 'gray',
+                        'sent' => 'info',
+                        'read' => 'success',
+                        'failed' => 'danger',
+                        default => 'gray',
+                    })
+                    ->tooltip(fn (RegistrationToken $record) => $record->latestWhatsAppMessage?->message ?? '-'),
                 
                 TextColumn::make('used_count')
                     ->label('Digunakan')
@@ -116,7 +122,9 @@ class KepalaSppgTokensTable
                     ->action(function (RegistrationToken $record, array $data) {
                         $record->update(['recipient_phone' => $data['recipient_phone']]);
                         try {
-                            \Illuminate\Support\Facades\Notification::send($record, new \App\Notifications\KirimToken($record));
+                            // Using notify to ensure polymorphic relation
+                            $record->notify(new \App\Notifications\KirimToken($record));
+                            
                             \Filament\Notifications\Notification::make()->title('Pesan WA Dikirim')->success()->send();
                         } catch (\Exception $e) {
                             \Filament\Notifications\Notification::make()->title('Gagal mengirim WA')->body($e->getMessage())->danger()->send();
@@ -157,7 +165,10 @@ class KepalaSppgTokensTable
                             $notification = new \App\Notifications\KirimKridensialSppg($user, $password);
                             
                             \Illuminate\Support\Facades\Log::info("KirimKridensial Action ({$record->role}): Sending to " . $data['recipient_phone']);
-                            \Illuminate\Support\Facades\Notification::route('WhatsApp', $data['recipient_phone'])->notify($notification);
+                            
+                            // Use $record->notify so the WhatsAppChannel receives the RegistrationToken instance
+                            $record->notify($notification);
+                            
                             \Filament\Notifications\Notification::make()->title('Kridensial Dikirim')->body("Password berhasil di-reset dan dikirim ke User: {$user->name}")->success()->send();
                         } catch (\Exception $e) {
                             \Filament\Notifications\Notification::make()->title('Gagal mengirim')->body($e->getMessage())->danger()->send();

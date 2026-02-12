@@ -136,4 +136,20 @@ class RegistrationToken extends Model
     {
         return self::ROLE_MAPPING[$this->role] ?? $this->role;
     }
+
+    /**
+     * Get related WhatsApp messages.
+     */
+    public function whatsappMessages()
+    {
+        return $this->morphMany(WhatsAppMessage::class, 'related');
+    }
+
+    /**
+     * Get the latest WhatsApp message status.
+     */
+    public function latestWhatsAppMessage()
+    {
+        return $this->morphOne(WhatsAppMessage::class, 'related')->latestOfMany();
+    }
 }

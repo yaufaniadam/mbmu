@@ -45,5 +45,10 @@ class AppServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
             return $user->hasRole('Superadmin') ? true : null;
         });
+
+        // Force HTTPS if using Ngrok or behind secure proxy
+        if (request()->server('HTTP_X_FORWARDED_PROTO') === 'https' || str_contains(request()->getHost(), 'ngrok-free.app')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
     }
 }
