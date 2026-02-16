@@ -25,7 +25,7 @@ class UsersResource extends Resource
 
     protected static ?string $navigationLabel = 'Manajemen Pengguna';
 
-    protected static string|UnitEnum|null $navigationGroup = null;
+    protected static string|UnitEnum|null $navigationGroup = 'SDM & Pengguna';
 
     protected static ?int $navigationSort = 8;
 

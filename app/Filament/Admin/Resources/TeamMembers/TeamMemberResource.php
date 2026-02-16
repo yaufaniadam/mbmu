@@ -27,7 +27,7 @@ class TeamMemberResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan Situs';
+    protected static string|\UnitEnum|null $navigationGroup = 'SDM & Pengguna';
 
     protected static ?string $navigationLabel = 'Tim';
 

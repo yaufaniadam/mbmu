@@ -25,7 +25,7 @@ class KepalaSppgTokenResource extends Resource
     
     protected static ?string $pluralModelLabel = 'Token Kepala SPPG';
     
-    protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
+    protected static string|\UnitEnum|null $navigationGroup = 'SDM & Pengguna';
 
     // Ensure unique slug so it doesn't conflict with the main resource
     protected static ?string $slug = 'registration-tokens/kepala-sppg';

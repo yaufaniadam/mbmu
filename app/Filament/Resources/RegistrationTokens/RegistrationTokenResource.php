@@ -28,7 +28,7 @@ class RegistrationTokenResource extends Resource
     
     protected static ?string $pluralModelLabel = 'Token Pimpinan';
     
-    protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
+    protected static string|\UnitEnum|null $navigationGroup = 'SDM & Pengguna';
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()->where('role', 'kepala_lembaga');

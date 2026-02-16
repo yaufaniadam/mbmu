@@ -29,7 +29,7 @@ class WhatsAppMessageResource extends Resource
 
     protected static ?string $navigationLabel = 'WhatsApp Outbox';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'System';
+    protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-chat-bubble-left-right';
 

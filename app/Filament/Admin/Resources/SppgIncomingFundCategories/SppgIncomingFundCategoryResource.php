@@ -21,7 +21,7 @@ class SppgIncomingFundCategoryResource extends Resource
     
     protected static ?string $navigationLabel = 'Kategori Penerimaan Dana';
     
-    protected static string|UnitEnum|null $navigationGroup = 'Pengaturan';
+    protected static string|UnitEnum|null $navigationGroup = 'Keuangan';
 
     protected static ?int $navigationSort = 1;
 
