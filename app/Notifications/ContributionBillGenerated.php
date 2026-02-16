@@ -49,7 +49,7 @@ class ContributionBillGenerated extends Notification implements ShouldQueue
             ->line("**Invoice:** {$this->invoice->invoice_number}")
             ->line("**Jumlah:** {$formattedAmount}")
             ->line("**Jatuh Tempo:** {$dueDate}")
-            ->action('Lihat Tagihan', url('/admin/invoices'))
+            ->action('Lihat Tagihan', url('/lembaga/manage-finance?activeTab=pay_royalty'))
             ->line('Mohon segera lakukan pembayaran sebelum tanggal jatuh tempo.');
     }
 
@@ -69,7 +69,7 @@ class ContributionBillGenerated extends Notification implements ShouldQueue
             ->actions([
                 \Filament\Notifications\Actions\Action::make('view')
                     ->button()
-                    ->url('/admin/invoices'),
+                    ->url('/lembaga/manage-finance?activeTab=pay_royalty'),
             ])
             ->getDatabaseMessage();
     }

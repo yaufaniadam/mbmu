@@ -38,8 +38,7 @@ class InstructionPublished extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        // 'mail' removed due to invalid SMTP configuration blocking other channels
-        return [WhatsAppChannel::class, 'database'];
+        return [WhatsAppChannel::class, 'database', 'mail'];
     }
 
     /**
@@ -57,6 +56,10 @@ class InstructionPublished extends Notification implements ShouldQueue
             'Pimpinan Lembaga Pengusul', 
             'PJ Pelaksana'
         ];
+
+        if ($notifiable instanceof \App\Models\User && $notifiable->hasRole('Pimpinan Lembaga Pengusul')) {
+            return url('/lembaga/instructions/' . $this->instruction->id);
+        }
 
         if ($notifiable instanceof \App\Models\User && $notifiable->hasRole($adminRoles)) {
             return url('/admin/instructions/' . $this->instruction->id);
@@ -84,9 +87,12 @@ class InstructionPublished extends Notification implements ShouldQueue
             ->line('Mohon segera membaca dan memahami instruksi tersebut.');
 
         if ($this->instruction->attachment_path) {
-            $disk = \Illuminate\Support\Facades\Storage::disk('public');
-            if ($disk->exists($this->instruction->attachment_path)) {
-                $mailMessage->attach($disk->path($this->instruction->attachment_path));
+            $path = $this->instruction->attachment_path;
+            
+            if (\Illuminate\Support\Facades\Storage::disk('local')->exists($path)) {
+                $mailMessage->attach(\Illuminate\Support\Facades\Storage::disk('local')->path($path));
+            } elseif (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                 $mailMessage->attach(\Illuminate\Support\Facades\Storage::disk('public')->path($path));
             }
         }
 
@@ -124,6 +130,16 @@ class InstructionPublished extends Notification implements ShouldQueue
 
         $template = \App\Models\NotificationTemplate::where('key', 'instruction_published')->first();
 
+        // Generate Signed URL for attachment if exists
+        $attachmentUrl = null;
+        if ($this->instruction->attachment_path) {
+            $attachmentUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute(
+                'instructions.attachment.signed',
+                now()->addHours(1),
+                ['instruction' => $this->instruction]
+            );
+        }
+
         $defaultMessage = "Assalamualaikum {{name}},\n\n"
             . "📢 *INSTRUKSI BARU*\n\n"
             . "*{{title}}*\n\n"
@@ -131,8 +147,7 @@ class InstructionPublished extends Notification implements ShouldQueue
             . "Silakan baca selengkapnya di aplikasi:\n"
             . "{{url}}\n\n";
 
-        if ($this->instruction->attachment_path) {
-            $attachmentUrl = \Illuminate\Support\Facades\Storage::disk('public')->url($this->instruction->attachment_path);
+        if ($attachmentUrl) {
             $defaultMessage .= "Unduh Lampiran:\n" . $attachmentUrl . "\n\n";
         }
 
@@ -141,37 +156,24 @@ class InstructionPublished extends Notification implements ShouldQueue
         $messageContent = $template ? $template->content : $defaultMessage;
 
         // Ensure attachment URL is included if using a template that doesn't have the placeholder
-        if ($template && $this->instruction->attachment_path && !str_contains($messageContent, '{{attachment_url}}')) {
+        if ($template && $attachmentUrl && !str_contains($messageContent, '{{attachment_url}}')) {
              $messageContent .= "\n\nUnduh Lampiran:\n{{attachment_url}}";
         }
         
-        $attachmentUrl = $this->instruction->attachment_path 
-            ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->instruction->attachment_path) 
-            : '-';
-
         $placeholders = [
             '{{name}}' => $notifiable->name,
             '{{title}}' => $title,
             '{{snippet}}' => $snippet,
             '{{url}}' => $url,
-            '{{attachment_url}}' => $attachmentUrl,
+            '{{attachment_url}}' => $attachmentUrl ?? '-',
         ];
 
         $message = str_replace(array_keys($placeholders), array_values($placeholders), $messageContent);
 
-        // Fallback: If using default message and attachment exists, ensure it's there (already done above in defaultMessage construction)
-        // If using custom template and they didn't put {{attachment_url}}, it won't show.
-        // We could force append it if not present, but that might break formatting.
-        // For now, let's rely on the updated default message or the user updating their template.
-        
-        // However, since I modified $defaultMessage above, if $template is null, it works.
-        // If $template is NOT null, I need to make sure I didn't break anything. 
-        // The safe bet is to just pass the placeholders.
-
         return [
             'phone' => $notifiable->routeNotificationFor('WhatsApp'),
             'message' => $message,
-            'document' => $attachmentUrl !== '-' ? $attachmentUrl : null,
+            'document' => $attachmentUrl ?? null,
         ];
     }
 }

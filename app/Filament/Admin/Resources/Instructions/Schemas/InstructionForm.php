@@ -33,10 +33,10 @@ class InstructionForm
 
                         \Filament\Forms\Components\FileUpload::make('attachment_path')
                             ->label('Lampiran (Gambar/Dokumen)')
-                            ->helperText('Upload gambar atau dokumen jika diperlukan')
-                            ->disk('public')
+                            ->helperText('Upload gambar atau dokumen jika diperlukan (Maks. 2MB)')
+                            ->disk('local')
                             ->directory('instruction-attachments')
-                            ->maxSize(10240)
+                            ->maxSize(2048)
                             ->acceptedFileTypes(['image/*', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
                             ->columnSpanFull(),
                         

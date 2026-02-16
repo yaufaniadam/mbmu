@@ -21,9 +21,7 @@ class CanAccessAdminPanel
             'Direktur Kornas', 
             'Staf Kornas', 
             'Staf Akuntan Kornas', 
-            'Pimpinan Lembaga Pengusul', 
-            'Kepala SPPG', 
-            'PJ Pelaksana'
+            'Kepala SPPG'
         ])) {
             return $next($request);
         }

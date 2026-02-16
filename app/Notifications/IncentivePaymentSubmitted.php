@@ -55,7 +55,7 @@ class IncentivePaymentSubmitted extends Notification implements ShouldQueue
             ->actions([
                 \Filament\Actions\Action::make('view')
                     ->button()
-                    ->url('/admin/manage-finance?activeTab=verify_rent'),
+                    ->url('/lembaga/manage-finance?activeTab=verify_rent'),
             ])
             ->getDatabaseMessage();
     }

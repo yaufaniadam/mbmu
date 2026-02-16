@@ -29,9 +29,19 @@ class WhatsAppChannel
             $relatedModel = $notification->getRelatedModel();
         }
 
-        // Cek jika ada dokumen yang akan dikirim
+        // Cek jika ada dokumen/image yang akan dikirim
         if (isset($data['document']) && !empty($data['document'])) {
-            $service->sendDocument($targetNumber, $data['document'], $message, $relatedModel);
+            // Detect file type by extension
+            $fileExtension = strtolower(pathinfo($data['document'], PATHINFO_EXTENSION));
+            $imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            
+            if (in_array($fileExtension, $imageExtensions)) {
+                // Send as image (v2 API)
+                $service->sendImage($targetNumber, $data['document'], $message, $relatedModel);
+            } else {
+                // Send as document (v2 API)
+                $service->sendDocument($targetNumber, $data['document'], $message, $relatedModel);
+            }
         } else {
             // Kirim pesan biasa
             $service->sendMessage($targetNumber, $message, $relatedModel);

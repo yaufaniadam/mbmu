@@ -67,13 +67,7 @@ class Dashboard extends BaseDashboard
         $isNational = $user->hasAnyRole($nationalRoles);
         $isPimpinan = $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana']);
 
-        $sppgOptions = [];
-        if ($isNational) {
-            $sppgOptions = Sppg::pluck('nama_sppg', 'id');
-        } elseif ($isPimpinan) {
-            // Pimpinan sees their own SPPGs
-            $sppgOptions = User::find($user->id)->lembagaDipimpin?->sppgs->pluck('nama_sppg', 'id') ?? [];
-        }
+
 
         return $schema
             ->components([
@@ -88,14 +82,6 @@ class Dashboard extends BaseDashboard
                             ->afterStateUpdated(fn() => $this->dispatch('refresh-map-widget'))
                             ->visible($isNational),
 
-                        Select::make('sppg_id')
-                            ->label('SPPG')
-                            ->placeholder('Semua SPPG (Nasional)')
-                            ->options($sppgOptions)
-                            ->searchable()
-                            ->preload(true)
-                            ->live()
-                            ->afterStateUpdated(fn() => $this->dispatch('refresh-map-widget')),
                     ])
                     ->columns(1)
                     ->visible($isNational || $isPimpinan),

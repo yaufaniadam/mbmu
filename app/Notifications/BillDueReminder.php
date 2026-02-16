@@ -57,7 +57,7 @@ class BillDueReminder extends Notification implements ShouldQueue
             ->line("**Invoice:** {$this->invoice->invoice_number}")
             ->line("**Jumlah:** {$formattedAmount}")
             ->line("**Jatuh Tempo:** {$dueDate}")
-            ->action('Bayar Sekarang', url('/admin/invoices'))
+            ->action('Bayar Sekarang', url($this->invoice->type === 'LP_ROYALTY' ? '/lembaga/manage-finance?activeTab=pay_royalty' : '/sppg/manage-finance?activeTab=pay_rent'))
             ->line('Mohon segera menyelesaikan pembayaran.');
     }
 
@@ -83,7 +83,7 @@ class BillDueReminder extends Notification implements ShouldQueue
             ->actions([
                 \Filament\Notifications\Actions\Action::make('pay')
                     ->button()
-                    ->url('/admin/invoices'),
+                    ->url($this->invoice->type === 'LP_ROYALTY' ? '/lembaga/manage-finance?activeTab=pay_royalty' : '/sppg/manage-finance?activeTab=pay_rent'),
             ])
             ->getDatabaseMessage();
     }

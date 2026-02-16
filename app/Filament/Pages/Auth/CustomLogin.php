@@ -26,6 +26,7 @@ class CustomLogin extends BaseLogin
             $roleName = match ($panelId) {
                 'admin' => 'Administrator',
                 'sppg' => 'SPPG',
+                'lembaga' => 'Lembaga Pengusul',
                 'production' => 'Tim Produksi',
                 default => 'User',
             };
