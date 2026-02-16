@@ -29,7 +29,7 @@ class SppgResource extends Resource
 
     protected static ?string $navigationLabel = 'Unit SPPG';
 
-    protected static string|UnitEnum|null $navigationGroup = null;
+    protected static string|UnitEnum|null $navigationGroup = 'Operasional';
 
     protected static ?int $navigationSort = 5;
 

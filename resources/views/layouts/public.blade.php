@@ -120,7 +120,7 @@
                         <div class="flex flex-col gap-4">
                             <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Area Login</h4>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.admin.auth.login') }}">Login Kornas</a>
-                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.admin.auth.login', ['role' => 'pengusul']) }}">Login Lembaga Pengusul</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.lembaga.auth.login') }}">Login Lembaga Pengusul</a>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.sppg.auth.login') }}">Login SPPG</a>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.production.auth.login') }}">Login Distribusi</a>
                         </div>

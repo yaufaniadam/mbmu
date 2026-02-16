@@ -64,5 +64,13 @@ Route::get('/artikel/{post:slug}', [\App\Http\Controllers\PublicBlogController::
 Route::get('/daftar', SelfRegistration::class)->name('register.self');
 Route::get('/daftar/{role}/{token}', SelfRegistration::class)->name('register.self.token');
 
-// require __DIR__.'/auth.php';´
+// require __DIR__.'/auth.php';
 
+Route::middleware('auth')->group(function () {
+    Route::get('/instructions/{instruction}/attachment', [App\Http\Controllers\InstructionAttachmentController::class, 'download'])
+        ->name('instructions.attachment.download');
+});
+
+Route::get('/instructions/{instruction}/attachment/signed', [App\Http\Controllers\InstructionAttachmentController::class, 'downloadSigned'])
+    ->name('instructions.attachment.signed')
+    ->middleware('signed');

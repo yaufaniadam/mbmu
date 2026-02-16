@@ -60,53 +60,68 @@ class VerifyPaymentList extends TableWidget
                     $query->where('type', 'LP_ROYALTY');
                 }
 
-                $query->where('status', 'WAITING_VERIFICATION');
+                // Show all relevant statuses for verification list (History included)
+                $query->whereIn('status', ['WAITING_VERIFICATION', 'PAID', 'REJECTED', 'UNPAID']);
+
                 $query->orderBy('updated_at', 'desc');
 
                 return $query;
             })
             ->columns([
-                Stack::make([
-                    TextColumn::make('sppg.nama_sppg')
-                        ->label('SPPG')
-                        ->weight('bold')
-                        ->icon('heroicon-m-building-office')
-                        ->visible(fn () => Auth::user()->hasAnyRole(['Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas'])),
+                TextColumn::make('invoice_number')
+                    ->label('No. Invoice')
+                    ->searchable()
+                    ->sortable(),
 
-                    TextColumn::make('period_range')
-                        ->label('Periode')
-                        ->state(fn(Invoice $record) => "Periode " . $record->start_date->format('d M Y') . " s.d " . $record->end_date->format('d M Y'))
-                        ->icon('heroicon-m-calendar'),
+                TextColumn::make('sppg.nama_sppg')
+                    ->label('SPPG')
+                    ->searchable()
+                    ->sortable()
+                    ->visible(fn () => !Auth::user()->hasRole('Kepala SPPG')),
 
-                    TextColumn::make('invoice_number')
-                        ->label('Nomor Invoice')
-                        ->formatStateUsing(fn ($state) => $state)
-                        ->description(fn (Invoice $record) => 'Rp ' . number_format($record->amount, 0, ',', '.'))
-                        ->icon('heroicon-m-banknotes'),
+                TextColumn::make('period_range')
+                    ->label('Periode')
+                    ->state(function (Invoice $record) {
+                        return $record->start_date->format('d M') . ' - ' . $record->end_date->format('d M');
+                    }),
 
-                    TextColumn::make('status')
-                        ->badge()
-                        ->formatStateUsing(fn(string $state): string => match ($state) {
-                            'WAITING_VERIFICATION' => 'Menunggu Verifikasi',
-                            'PAID' => 'Pembayaran Diterima',
-                            'REJECTED' => 'Pembayaran Ditolak',
-                            default => $state,
-                        })
-                        ->color(fn(string $state): string => match ($state) {
-                            'WAITING_VERIFICATION' => 'warning',
-                            'PAID' => 'success',
-                            'REJECTED' => 'danger',
-                            default => 'gray',
-                        })
-                        ->icon(fn(string $state): string => match ($state) {
-                            'WAITING_VERIFICATION' => 'heroicon-m-arrow-path',
-                            'PAID' => 'heroicon-m-check',
-                            'REJECTED' => 'heroicon-m-x-mark',
-                            default => null,
-                        }),
-                ])
+                TextColumn::make('amount')
+                    ->label('Jumlah')
+                    ->money('idr')
+                    ->sortable(),
+
+                TextColumn::make('status')
+                    ->badge()
+                    ->formatStateUsing(fn(string $state): string => match ($state) {
+                        'WAITING_VERIFICATION' => 'Menunggu Verifikasi',
+                        'PAID' => 'Diterima',
+                        'REJECTED' => 'Ditolak',
+                        'UNPAID' => 'Belum Bayar',
+                        default => $state,
+                    })
+                    ->color(fn(string $state): string => match ($state) {
+                        'WAITING_VERIFICATION' => 'warning',
+                        'PAID' => 'success',
+                        'REJECTED' => 'danger',
+                        default => 'gray',
+                    }),
+
+                TextColumn::make('transfer_date')
+                    ->label('Tanggal Transfer')
+                    ->date('d M Y')
+                    ->sortable()
+                    ->placeholder('-'),
             ])
-            ->filters([])
+            ->filters([
+                \Filament\Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        'WAITING_VERIFICATION' => 'Menunggu Verifikasi',
+                        'PAID' => 'Diterima',
+                        'REJECTED' => 'Ditolak',
+                        'UNPAID' => 'Belum Bayar',
+                    ])
+                    ->default('WAITING_VERIFICATION'),
+            ])
             ->headerActions([
                 //
             ])
@@ -271,7 +286,7 @@ class VerifyPaymentList extends TableWidget
                                     ->requiresConfirmation()
                                     ->modalHeading('Konfirmasi Verifikasi')
                                     ->modalDescription('Apakah Anda yakin ingin menyetujui dan memverifikasi pembayaran ini? Konfirmasi pembayaran tidak dapat dibatalkan.')
-                                    ->action(function (Invoice $record) {
+                                    ->action(function (Invoice $record, \App\Livewire\VerifyPaymentList $livewire) {
                                         try {
                                             DB::transaction(function () use ($record) {
                                                 $record->update([
@@ -352,6 +367,8 @@ class VerifyPaymentList extends TableWidget
                                                 : 'Pembayaran Royalty Diverifikasi & Tercatat sebagai Pemasukan.';
 
                                             Notification::make()->title($message)->success()->send();
+                                            $livewire->replaceMountedTableAction(null); // Close Modal
+
                                         } catch (Exception $e) {
                                             Notification::make()->title('Gagal Verifikasi')->body('Error: ' . $e->getMessage())->danger()->send();
                                         }
@@ -370,7 +387,7 @@ class VerifyPaymentList extends TableWidget
                                     ])
                                     ->modalHeading('Tolak Pembayaran')
                                     ->modalDescription('Masukkan alasan penolakan.')
-                                    ->action(function (Invoice $record, array $data) {
+                                    ->action(function (Invoice $record, array $data, \App\Livewire\VerifyPaymentList $livewire) {
                                         try {
                                             $record->update([
                                                 'status' => 'REJECTED',
@@ -388,6 +405,7 @@ class VerifyPaymentList extends TableWidget
                                             }
 
                                             Notification::make()->title('Pembayaran Ditolak')->success()->send();
+                                            $livewire->replaceMountedTableAction(null); // Close Modal
                                         } catch (Exception $e) {
                                             Notification::make()->title('Gagal Menolak')->body('Error: ' . $e->getMessage())->danger()->send();
                                         }

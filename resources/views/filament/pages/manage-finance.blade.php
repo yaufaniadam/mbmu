@@ -109,12 +109,7 @@
         @endif
 
         @if ($activeTab === 'verify_rent')
-            <div style="display: flex; flex-direction: column; gap: 2rem;">
-                @if (!auth()->user()->hasRole('Superadmin'))
-                    @livewire(\App\Livewire\VerifyPaymentList::class, ['type' => 'SPPG_SEWA'])
-                @endif
-                @livewire(\App\Livewire\IncomingPayment::class, ['type' => 'SPPG_SEWA'])
-            </div>
+            @livewire(\App\Livewire\VerifyPaymentList::class, ['type' => 'SPPG_SEWA'])
         @endif
 
         @if ($activeTab === 'pay_royalty')

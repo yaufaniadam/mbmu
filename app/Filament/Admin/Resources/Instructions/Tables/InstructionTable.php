@@ -61,6 +61,30 @@ class InstructionTable
                         }
                         return $state;
                     }),
+
+                TextColumn::make('whatsapp_status_summary')
+                    ->label('Status WA')
+                    ->state(function (Instruction $record) {
+                        $stats = $record->whatsappMessages()
+                            ->selectRaw('status, count(*) as count')
+                            ->groupBy('status')
+                            ->pluck('count', 'status');
+                        
+                        $count = [
+                            'pending' => $stats['pending'] ?? 0,
+                            'sent' => ($stats['sent'] ?? 0) + ($stats['read'] ?? 0) + ($stats['delivered'] ?? 0),
+                            'failed' => $stats['failed'] ?? 0,
+                        ];
+                        
+                        $parts = [];
+                        if ($count['sent'] > 0) $parts[] = "<span class='text-success-600 font-bold'>✅ {$count['sent']}</span>";
+                        if ($count['pending'] > 0) $parts[] = "<span class='text-gray-500'>⏳ {$count['pending']}</span>";
+                        if ($count['failed'] > 0) $parts[] = "<span class='text-danger-600 font-bold'>❌ {$count['failed']}</span>";
+                        
+                        return empty($parts) ? '-' : implode(' | ', $parts);
+                    })
+                    ->html()
+                    ->tooltip('Sent | Pending | Failed'),
                 
                 TextColumn::make('acknowledgment_rate')
                     ->label('Tingkat Dibaca')

@@ -27,7 +27,7 @@ class HomeSliderResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan Situs';
+    protected static string|\UnitEnum|null $navigationGroup = 'Situs & Konten';
 
     protected static ?string $navigationLabel = 'Slider Homepage';
 

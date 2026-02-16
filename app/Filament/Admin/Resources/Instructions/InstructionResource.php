@@ -25,7 +25,7 @@ class InstructionResource extends Resource
 
     protected static ?string $navigationLabel = 'Instruksi';
 
-    protected static string|UnitEnum|null $navigationGroup = null;
+    protected static string|UnitEnum|null $navigationGroup = 'Operasional';
 
     protected static ?int $navigationSort = 9;
 

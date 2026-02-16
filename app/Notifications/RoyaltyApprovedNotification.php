@@ -52,7 +52,7 @@ class RoyaltyApprovedNotification extends Notification implements ShouldQueue
             ->actions([
                 \Filament\Actions\Action::make('view')
                     ->button()
-                    ->url('/admin/manage-finance?activeTab=pay_royalty'),
+                    ->url('/lembaga/manage-finance?activeTab=pay_royalty'),
             ])
             ->getDatabaseMessage();
     }

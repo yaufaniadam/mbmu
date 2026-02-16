@@ -36,7 +36,7 @@ class MenuResource extends Resource
     
     protected static ?string $pluralModelLabel = 'Menu Makanan';
 
-    protected static string|UnitEnum|null $navigationGroup = null;
+    protected static string|UnitEnum|null $navigationGroup = 'Situs & Konten';
 
     protected static ?int $navigationSort = 3;
 

@@ -57,6 +57,18 @@ class PimpinanTokensTable
                     ->placeholder('-')
                     ->toggleable(isToggledHiddenByDefault: true),
 
+                TextColumn::make('latestWhatsAppMessage.status')
+                    ->label('Status WA')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'pending' => 'gray',
+                        'sent' => 'info',
+                        'read' => 'success',
+                        'failed' => 'danger',
+                        default => 'gray',
+                    })
+                    ->tooltip(fn (RegistrationToken $record) => $record->latestWhatsAppMessage?->message ?? '-'),
+
                 TextColumn::make('recipient_name')
                     ->label('Nama Penerima')
                     ->searchable()
@@ -126,7 +138,11 @@ class PimpinanTokensTable
                             $user->save();
 
                             \Illuminate\Support\Facades\Log::info("KirimKridensial Action ({$record->role}): Sending to " . $data['recipient_phone']);
-                            \Illuminate\Support\Facades\Notification::route('WhatsApp', $data['recipient_phone'])->notify($notification);
+                            
+                            // Use $record->notify so the WhatsAppChannel receives the RegistrationToken instance
+                            // This allows polymorphic relationship to work
+                            $record->notify($notification);
+                            
                             \Filament\Notifications\Notification::make()->title('Kridensial Dikirim')->body("Password berhasil di-reset dan dikirim ke User: {$user->name}")->success()->send();
                         } catch (\Exception $e) {
                             \Filament\Notifications\Notification::make()->title('Gagal mengirim')->body($e->getMessage())->danger()->send();

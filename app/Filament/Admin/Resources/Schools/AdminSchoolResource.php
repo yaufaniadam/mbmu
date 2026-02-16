@@ -23,7 +23,7 @@ class AdminSchoolResource extends Resource
 
     protected static ?string $navigationLabel = 'Penerima MBM';
 
-    protected static string|UnitEnum|null $navigationGroup = null;
+    protected static string|UnitEnum|null $navigationGroup = 'Kelembagaan';
 
     protected static ?int $navigationSort = 6;
 
