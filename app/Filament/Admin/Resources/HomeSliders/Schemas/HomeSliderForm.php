@@ -21,7 +21,6 @@ class HomeSliderForm
                 FileUpload::make('image_path')
                     ->label('Gambar Slider')
                     ->image()
-                    ->disk('public')
                     ->directory('home-sliders')
                     ->maxSize(10240)
                     ->imagePreviewHeight('200')
