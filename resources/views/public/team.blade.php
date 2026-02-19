@@ -43,7 +43,7 @@
                     <div class="relative h-64 overflow-hidden">
                         @php
                             $imageUrl = null;
-                            if ($member->photo_path) {
+                            if ($member->photo_path && Storage::disk('public')->exists($member->photo_path)) {
                                 $imageUrl = Storage::disk('public')->url($member->photo_path);
                             } elseif ($member->position === 'ketua') {
                                 $imageUrl = asset('ketua.png');
@@ -103,7 +103,7 @@
                 <!-- Staff Card -->
                 <div class="flex flex-col items-center bg-white dark:bg-neutral-dark p-6 rounded-xl border border-[#e6e2de] dark:border-[#3a3025] text-center hover:shadow-md transition-shadow">
                     <div class="size-24 rounded-full overflow-hidden mb-4 border-4 border-primary/20">
-                        @if($member->photo_path)
+                        @if($member->photo_path && Storage::disk('public')->exists($member->photo_path))
                         <img alt="{{ $member->name }}" class="w-full h-full object-cover" src="{{ Storage::disk('public')->url($member->photo_path) }}"/>
                         @else
                         <div class="w-full h-full bg-gradient-to-br from-primary/20 to-secondary-green/20 flex items-center justify-center">
