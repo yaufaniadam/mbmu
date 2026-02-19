@@ -74,3 +74,18 @@ Route::middleware('auth')->group(function () {
 Route::get('/instructions/{instruction}/attachment/signed', [App\Http\Controllers\InstructionAttachmentController::class, 'downloadSigned'])
     ->name('instructions.attachment.signed')
     ->middleware('signed');
+
+// Delivery Role Routes
+Route::middleware('guest')->group(function () {
+    Route::get('/delivery/login', \App\Livewire\Delivery\Login::class)->name('delivery.login');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/delivery/dashboard', \App\Livewire\Delivery\Dashboard::class)->name('delivery.dashboard');
+    Route::post('/delivery/logout', function () {
+        auth()->logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect()->route('delivery.login');
+    })->name('delivery.logout');
+});
