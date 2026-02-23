@@ -45,7 +45,11 @@ class ResetPassword extends Component
         $this->loading = true;
         $this->error = '';
 
-        $user = User::where('telepon', $this->telepon)->first();
+        $alternativePhone = str_starts_with($this->telepon, '62') 
+            ? '0' . substr($this->telepon, 2) 
+            : '62' . substr($this->telepon, 1);
+
+        $user = User::whereIn('telepon', [$this->telepon, $alternativePhone])->first();
 
         if (!$user) {
             $this->error = 'Pengguna tidak ditemukan.';
