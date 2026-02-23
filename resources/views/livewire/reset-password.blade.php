@@ -60,6 +60,10 @@
                                 :type="showPassword ? 'text' : 'password'" required 
                                 class="appearance-none block w-full px-3 py-3 pr-10 border border-gray-300 dark:border-gray-700 placeholder-gray-400 text-text-main dark:text-white dark:bg-gray-800 rounded-xl focus:outline-none focus:ring-primary focus:border-primary sm:text-sm transition-all" 
                                 placeholder="Ketik ulang password">
+                            <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                                <span class="material-symbols-outlined text-xl" x-show="!showPassword">visibility</span>
+                                <span class="material-symbols-outlined text-xl" x-show="showPassword" x-cloak>visibility_off</span>
+                            </button>
                         </div>
                     </div>
                 </div>
