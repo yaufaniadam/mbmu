@@ -32,10 +32,13 @@ class ClaimAccount extends Component
         $this->success = false;
 
         $normalizedPhone = $this->normalizePhone($this->telepon);
+        $alternativePhone = str_starts_with($normalizedPhone, '62') 
+            ? '0' . substr($normalizedPhone, 2) 
+            : '62' . substr($normalizedPhone, 1);
 
         // 1. Find a valid registration token for this phone number
 
-        $token = RegistrationToken::where('recipient_phone', $normalizedPhone)
+        $token = RegistrationToken::whereIn('recipient_phone', [$normalizedPhone, $alternativePhone])
             ->where('is_active', true)
             ->where(function ($query) {
                 $query->whereNull('expires_at')

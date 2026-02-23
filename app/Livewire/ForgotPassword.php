@@ -28,8 +28,11 @@ class ForgotPassword extends Component
         $this->success = false;
 
         $normalizedPhone = $this->normalizePhone($this->telepon);
+        $alternativePhone = str_starts_with($normalizedPhone, '62') 
+            ? '0' . substr($normalizedPhone, 2) 
+            : '62' . substr($normalizedPhone, 1);
 
-        $user = User::where('telepon', $normalizedPhone)->first();
+        $user = User::whereIn('telepon', [$normalizedPhone, $alternativePhone])->first();
 
         if (!$user) {
             $this->error = 'Maaf, nomor WhatsApp ini belum terdaftar di sistem kami.';

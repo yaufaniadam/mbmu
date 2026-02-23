@@ -38,7 +38,13 @@ class Login extends Component
         $loginValue = $this->login;
 
         if ($loginField === 'telepon') {
-            $loginValue = $this->normalizePhone($loginValue);
+            $normalizedPhone = $this->normalizePhone($this->login);
+            $alternativePhone = str_starts_with($normalizedPhone, '62') 
+                ? '0' . substr($normalizedPhone, 2) 
+                : '62' . substr($normalizedPhone, 1);
+            
+            $user = \App\Models\User::whereIn('telepon', [$normalizedPhone, $alternativePhone])->first();
+            $loginValue = $user ? $user->telepon : $normalizedPhone;
         }
 
         if (Auth::attempt([$loginField => $loginValue, 'password' => $this->password], $this->remember)) {
