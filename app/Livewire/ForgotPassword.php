@@ -41,6 +41,13 @@ class ForgotPassword extends Component
         }
 
         try {
+            // Ensure the user has an email for the password reset tokens table
+            // If they don't have one, we'll use a placeholder based on their phone
+            $resetEmail = $user->email ?? $normalizedPhone . '@mbm1912.id';
+            
+            // We temporarily set the email on the model instance so the repository can use it
+            $user->email = $resetEmail;
+
             // Generate a secure token
             $token = Password::getRepository()->create($user);
             

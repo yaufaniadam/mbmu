@@ -53,6 +53,10 @@ class ResetPassword extends Component
             return;
         }
 
+        // Ensure we use the same reset email logic as ForgotPassword
+        $resetEmail = $user->email ?? $this->telepon . '@mbm1912.id';
+        $user->email = $resetEmail;
+
         // Verify token again via Laravel's Password broker logic
         if (!Password::getRepository()->exists($user, $this->token)) {
             $this->error = 'Token reset password tidak valid atau sudah kedaluwarsa. Silakan minta link baru.';
