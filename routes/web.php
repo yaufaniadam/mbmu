@@ -64,6 +64,9 @@ Route::get('/artikel/{post:slug}', [\App\Http\Controllers\PublicBlogController::
 Route::get('/daftar', SelfRegistration::class)->name('register.self');
 Route::get('/daftar/{role}/{token}', SelfRegistration::class)->name('register.self.token');
 Route::get('/aktivasi', \App\Livewire\ClaimAccount::class)->name('claim.account');
+Route::get('/lupa-password', \App\Livewire\ForgotPassword::class)->name('password.request');
+Route::get('/reset-password/{token}/{telepon}', \App\Livewire\ResetPassword::class)->name('password.reset');
+
 
 
 // require __DIR__.'/auth.php';

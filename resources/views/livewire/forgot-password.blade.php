@@ -2,10 +2,10 @@
     <div class="max-w-md w-full space-y-8 bg-surface-light dark:bg-surface-dark p-8 rounded-2xl shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800">
         <div>
             <h2 class="mt-6 text-center text-3xl font-extrabold text-text-main dark:text-white">
-                Aktivasi Akun
+                Lupa Password?
             </h2>
             <p class="mt-2 text-center text-sm text-text-secondary">
-                Dapatkan kode registrasi Anda melalui WhatsApp
+                Masukkan nomor WhatsApp Anda untuk mendapatkan link reset password.
             </p>
         </div>
 
@@ -17,23 +17,23 @@
                     </div>
                     <div class="ml-3">
                         <h3 class="text-sm font-medium text-green-800 dark:text-green-300">
-                            Token Berhasil Dikirim!
+                            Berhasil!
                         </h3>
                         <div class="mt-2 text-sm text-green-700 dark:text-green-400">
-                            <p>Silakan cek pesan WhatsApp Anda. Klik link yang ada di dalam pesan tersebut untuk melanjutkan proses pendaftaran.</p>
+                            <p>Link reset password telah dikirim ke WhatsApp Anda. Silakan cek pesan Anda dan ikuti instruksi yang ada.</p>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="mt-6 flex justify-center">
-                <a href="{{ url('/') }}" class="text-primary hover:text-primary-dark font-medium text-sm flex items-center gap-2">
+                <a href="{{ route('filament.sppg.auth.login') }}" class="text-primary hover:text-primary-dark font-medium text-sm flex items-center gap-2">
                     <span class="material-symbols-outlined text-base">arrow_back</span>
-                    Kembali ke Beranda
+                    Kembali ke Login
                 </a>
             </div>
         @else
-            <form class="mt-8 space-y-6" wire:submit.prevent="claim">
+            <form class="mt-8 space-y-6" wire:submit.prevent="sendResetLink">
                 <div class="rounded-md shadow-sm space-y-4">
                     <div>
                         <label for="telepon" class="block text-sm font-medium text-text-main dark:text-white mb-2">
@@ -69,7 +69,7 @@
                 <div>
                     <button type="submit" wire:loading.attr="disabled"
                         class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                        <span wire:loading.remove>Dapatkan Kode Aktivasi</span>
+                        <span wire:loading.remove>Kirim Link Reset Password</span>
                         <span wire:loading class="flex items-center gap-2">
                             <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -82,17 +82,13 @@
             </form>
             
             <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 text-center flex flex-col gap-2">
-                <p class="text-sm text-text-secondary">
-                    Sudah punya akun? 
-                    <a href="{{ route('filament.sppg.auth.login') }}" class="font-bold text-primary hover:text-primary-dark">
-                        Login di sini
-                    </a>
-                </p>
-                <a href="{{ route('password.request') }}" class="text-xs text-text-secondary hover:text-primary transition-colors">
-                    Lupa password? Reset via WhatsApp
+                <a href="{{ route('filament.sppg.auth.login') }}" class="text-sm font-bold text-primary hover:text-primary-dark">
+                    Kembali ke Login
+                </a>
+                <a href="{{ route('claim.account') }}" class="text-xs text-text-secondary hover:text-text-main">
+                    Belum aktivasi akun? Klik di sini
                 </a>
             </div>
-
         @endif
     </div>
 </div>

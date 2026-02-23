@@ -8,10 +8,10 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('app:generate-bills')->everyTenSeconds();
+Schedule::command('app:generate-bills')->everyTenSeconds()->withoutOverlapping();
 
 // Auto-generate daily distribution plans for all SPPGs
-Schedule::command('distribution:generate-daily')->dailyAt('00:01');
+Schedule::command('distribution:generate-daily')->dailyAt('00:01')->withoutOverlapping();
 
 // Auto-generate SPPG Invoices every 10 active days
-Schedule::command('invoice:generate')->dailyAt('00:05');
+Schedule::command('invoice:generate')->dailyAt('00:05')->withoutOverlapping();
