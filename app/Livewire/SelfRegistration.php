@@ -115,14 +115,14 @@ class SelfRegistration extends Component
             'name' => 'required|string|max:255',
             'telepon' => 'required|string|max:20|unique:users,telepon',
             'email' => 'nullable|email|unique:users,email',
-            'password' => 'nullable|string|min:6',
+            'password' => 'required|string|min:8',
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
             'telepon.required' => 'Nomor HP wajib diisi.',
             'telepon.unique' => 'Nomor HP sudah terdaftar.',
             'email.unique' => 'Email sudah terdaftar.',
-            'password.min' => 'Password minimal 6 karakter.',
-            'password.min' => 'Password minimal 6 karakter.',
+            'password.required' => 'Password wajib diisi untuk keperluan login.',
+            'password.min' => 'Password minimal 8 karakter.',
         ]);
 
         // Normalize phone number

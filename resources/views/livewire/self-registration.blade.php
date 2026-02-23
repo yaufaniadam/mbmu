@@ -107,7 +107,7 @@
                         </div>
                     </div>
 
-                    <form wire:submit.prevent="register">
+                    <form wire:submit.prevent="register" x-data="{ showPassword: false }">
                         @if(session('error'))
                             <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
                                 {{ session('error') }}
@@ -156,16 +156,22 @@
                             @error('email') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
 
-                        {{-- Password (Optional) --}}
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-gray-400">(opsional)</span></label>
-                            <input 
-                                type="password" 
-                                wire:model="password"
-                                placeholder="Kosongkan untuk password otomatis"
-                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
-                            >
-                            <p class="text-xs text-gray-400 mt-1">Jika dikosongkan, password akan digenerate otomatis</p>
+                        {{-- Password --}}
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Password *</label>
+                            <div class="relative">
+                                <input 
+                                    :type="showPassword ? 'text' : 'password'" 
+                                    wire:model="password"
+                                    placeholder="Masukkan password untuk login"
+                                    class="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                                >
+                                <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                                    <span class="material-symbols-outlined text-xl" x-show="!showPassword">visibility</span>
+                                    <span class="material-symbols-outlined text-xl" x-show="showPassword" x-cloak>visibility_off</span>
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">Minimal 8 karakter</p>
                             @error('password') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
 
