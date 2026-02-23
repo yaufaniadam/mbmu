@@ -131,13 +131,26 @@ class SelfRegistration extends Component
                 DB::beginTransaction();
 
                 try {
-                    // Create user
-                    $user = User::create([
-                        'name' => $this->name,
-                        'telepon' => $this->telepon,
-                        'email' => $this->email ?: null,
-                        'password' => Hash::make($this->password),
-                    ]);
+                    // Check if user already exists
+                    $user = User::where('telepon', $this->telepon)->first();
+                    
+                    if ($user) {
+                        // MERGE LOGIC: If user exists, update their name if it was empty or changed
+                        if (empty($user->name)) {
+                            $user->update(['name' => $this->name]);
+                        }
+                        // We don't change the password here for security reasons 
+                        // unless you want to allow it. Better to keep existing password.
+                    } else {
+                        // Create user
+                        $user = User::create([
+                            'name' => $this->name,
+                            'telepon' => $this->telepon,
+                            'email' => $this->email ?: null,
+                            'password' => Hash::make($this->password),
+                        ]);
+                    }
+
 
                     // Assign Spatie role
                     $spatieRoleName = $this->registrationToken->getSpatieRoleName();

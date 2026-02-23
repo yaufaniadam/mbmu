@@ -33,15 +33,8 @@ class ClaimAccount extends Component
 
         $normalizedPhone = $this->normalizePhone($this->telepon);
 
-        // 1. Check if the user is already registered
-        $userExists = User::where('telepon', $normalizedPhone)->exists();
-        if ($userExists) {
-            $this->error = 'Nomor HP ini sudah terdaftar. Silakan login langsung atau gunakan fitur Lupa Password.';
-            $this->loading = false;
-            return;
-        }
+        // 1. Find a valid registration token for this phone number
 
-        // 2. Find a valid registration token for this phone number
         $token = RegistrationToken::where('recipient_phone', $normalizedPhone)
             ->where('is_active', true)
             ->where(function ($query) {
