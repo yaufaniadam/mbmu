@@ -32,15 +32,22 @@
                 }, 3000);
             </script>
         @else
-            <form class="mt-8 space-y-6" wire:submit.prevent="resetPassword">
+            <form class="mt-8 space-y-6" wire:submit.prevent="resetPassword" x-data="{ showPassword: false }">
                 <div class="rounded-md shadow-sm space-y-4">
                     <div>
                         <label for="password" class="block text-sm font-medium text-text-main dark:text-white mb-2">
                             Password Baru
                         </label>
-                        <input wire:model.defer="password" id="password" name="password" type="password" required 
-                            class="appearance-none block w-full px-3 py-3 border border-gray-300 dark:border-gray-700 placeholder-gray-400 text-text-main dark:text-white dark:bg-gray-800 rounded-xl focus:outline-none focus:ring-primary focus:border-primary sm:text-sm transition-all" 
-                            placeholder="Minimal 8 karakter">
+                        <div class="relative">
+                            <input wire:model.defer="password" id="password" name="password" 
+                                :type="showPassword ? 'text' : 'password'" required 
+                                class="appearance-none block w-full px-3 py-3 pr-10 border border-gray-300 dark:border-gray-700 placeholder-gray-400 text-text-main dark:text-white dark:bg-gray-800 rounded-xl focus:outline-none focus:ring-primary focus:border-primary sm:text-sm transition-all" 
+                                placeholder="Minimal 8 karakter">
+                            <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                                <span class="material-symbols-outlined text-xl" x-show="!showPassword">visibility</span>
+                                <span class="material-symbols-outlined text-xl" x-show="showPassword" x-cloak>visibility_off</span>
+                            </button>
+                        </div>
                         @error('password') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                     </div>
 
@@ -48,9 +55,12 @@
                         <label for="password_confirmation" class="block text-sm font-medium text-text-main dark:text-white mb-2">
                             Konfirmasi Password Baru
                         </label>
-                        <input wire:model.defer="password_confirmation" id="password_confirmation" name="password_confirmation" type="password" required 
-                            class="appearance-none block w-full px-3 py-3 border border-gray-300 dark:border-gray-700 placeholder-gray-400 text-text-main dark:text-white dark:bg-gray-800 rounded-xl focus:outline-none focus:ring-primary focus:border-primary sm:text-sm transition-all" 
-                            placeholder="Ketik ulang password">
+                        <div class="relative">
+                            <input wire:model.defer="password_confirmation" id="password_confirmation" name="password_confirmation" 
+                                :type="showPassword ? 'text' : 'password'" required 
+                                class="appearance-none block w-full px-3 py-3 pr-10 border border-gray-300 dark:border-gray-700 placeholder-gray-400 text-text-main dark:text-white dark:bg-gray-800 rounded-xl focus:outline-none focus:ring-primary focus:border-primary sm:text-sm transition-all" 
+                                placeholder="Ketik ulang password">
+                        </div>
                     </div>
                 </div>
 
