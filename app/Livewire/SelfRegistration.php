@@ -90,6 +90,23 @@ class SelfRegistration extends Component
         $this->role = $token->role;
         $this->tokenValidated = true;
         $this->step = 2;
+
+        // Pre-fill data from token if available
+        if ($token->recipient_name) {
+            $this->name = $token->recipient_name;
+        }
+        
+        if ($token->recipient_phone) {
+            // Strip leading 62 or 0 if present to match the input format (which adds +62)
+            $phone = $token->recipient_phone;
+            if (str_starts_with($phone, '62')) {
+                $this->telepon = substr($phone, 2);
+            } elseif (str_starts_with($phone, '0')) {
+                $this->telepon = substr($phone, 1);
+            } else {
+                $this->telepon = $phone;
+            }
+        }
     }
 
     public function register()
