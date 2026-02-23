@@ -81,17 +81,12 @@
                 </div>
             </form>
             
-            <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 text-center flex flex-col gap-2">
-                <p class="text-sm text-text-secondary">
-                    Sudah punya akun? 
-                    <a href="{{ route('filament.sppg.auth.login') }}" class="font-bold text-primary hover:text-primary-dark">
-                        Login di sini
-                    </a>
-                </p>
+            <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 text-center">
                 <a href="{{ route('password.request') }}" class="text-xs text-text-secondary hover:text-primary transition-colors">
                     Lupa password? Reset via WhatsApp
                 </a>
             </div>
+
 
         @endif
     </div>

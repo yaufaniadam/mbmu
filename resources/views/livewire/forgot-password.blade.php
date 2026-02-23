@@ -27,11 +27,12 @@
             </div>
             
             <div class="mt-6 flex justify-center">
-                <a href="{{ route('filament.sppg.auth.login') }}" class="text-primary hover:text-primary-dark font-medium text-sm flex items-center gap-2">
+                <a href="{{ url('/') }}" class="text-primary hover:text-primary-dark font-medium text-sm flex items-center gap-2">
                     <span class="material-symbols-outlined text-base">arrow_back</span>
-                    Kembali ke Login
+                    Kembali ke Beranda
                 </a>
             </div>
+
         @else
             <form class="mt-8 space-y-6" wire:submit.prevent="sendResetLink">
                 <div class="rounded-md shadow-sm space-y-4">
@@ -81,14 +82,12 @@
                 </div>
             </form>
             
-            <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 text-center flex flex-col gap-2">
-                <a href="{{ route('filament.sppg.auth.login') }}" class="text-sm font-bold text-primary hover:text-primary-dark">
-                    Kembali ke Login
-                </a>
+            <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 text-center">
                 <a href="{{ route('claim.account') }}" class="text-xs text-text-secondary hover:text-text-main">
                     Belum aktivasi akun? Klik di sini
                 </a>
             </div>
+
         @endif
     </div>
 </div>
