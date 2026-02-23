@@ -50,7 +50,13 @@ class CustomLogin extends BaseLogin
                     ->autocomplete()
                     ->autofocus()
                     ->extraInputAttributes(['tabindex' => 1]),
-                $this->getPasswordFormComponent(),
+                $this->getPasswordFormComponent()
+                    ->hint(new HtmlString("
+                        <a href='" . route('password.request') . "' class='text-xs text-primary-600 hover:text-primary-500 font-medium'>
+                            Lupa password?
+                        </a>
+                    ")),
+
                 $this->getRememberFormComponent(),
             ])
             ->statePath('data');
