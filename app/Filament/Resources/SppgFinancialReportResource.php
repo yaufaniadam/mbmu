@@ -44,7 +44,14 @@ class SppgFinancialReportResource extends Resource
                                 'kegiatan' => 'Laporan Kegiatan',
                             ])
                             ->default('keuangan')
+                            ->live()
                             ->required(),
+                        \Filament\Forms\Components\TextInput::make('realization_amount')
+                            ->label('Realisasi Anggaran')
+                            ->prefix('Rp')
+                            ->numeric()
+                            ->required(fn ($get) => $get('category') === 'keuangan')
+                            ->visible(fn ($get) => $get('category') === 'keuangan'),
                         DatePicker::make('start_date')
                             ->label('Tanggal Awal Periode')
                             ->native(false)
@@ -98,7 +105,7 @@ class SppgFinancialReportResource extends Resource
                     ->label('Nama SPPG')
                     ->sortable()
                     ->searchable()
-                    ->visible(fn () => Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])),
+                    ->visible(fn () => Auth::user()->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])),
                 TextColumn::make('file_path')
                     ->label('File')
                     ->formatStateUsing(fn () => 'Download')
@@ -141,7 +148,7 @@ class SppgFinancialReportResource extends Resource
         $user = Auth::user();
 
         // 1. National Level: Can see everything
-        if ($user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
+        if ($user->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
             return $query;
         }
 
@@ -182,7 +189,7 @@ class SppgFinancialReportResource extends Resource
 
         // Show in Admin panel for Kornas staff to monitor all SPPG reports
         if ($panelId === 'admin') {
-            return $user?->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']);
+            return $user?->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']);
         }
 
         // Show in SPPG panel for Local roles

@@ -263,7 +263,7 @@ class BillList extends TableWidget
                             }
                         } elseif ($record->type === 'LP_ROYALTY') {
                             // Notify Kornas Team (Royalty Payment) + Superadmin
-                            $kornasUsers = User::role(['Staf Kornas', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Superadmin'])->get();
+                            $kornasUsers = User::role(['Staf Kornas', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Superadmin'])->get();
                             foreach ($kornasUsers as $user) {
                                 try {
                                     $user->notify(new \App\Notifications\RoyaltyPaymentSubmittedNotification($record));

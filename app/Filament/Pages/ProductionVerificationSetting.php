@@ -63,7 +63,7 @@ class ProductionVerificationSetting extends Page implements HasActions, HasForms
         $user = Auth::user();
 
         // STRICT ROLE CHECK: Only National Roles can access this Settings Page
-        if (! $user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas', 'Staf Akuntan Kornas'])) {
+        if (! $user->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Kornas', 'Staf Akuntan Kornas'])) {
              abort(403, 'Halaman ini khusus untuk pengaturan kriteria verifikasi oleh tingkat Pusat (Kornas).');
         }
 

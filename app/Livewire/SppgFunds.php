@@ -21,7 +21,7 @@ class SppgFunds extends StatsOverviewWidget
             'Superadmin',
             'Staf Kornas',
             'Staf Akuntan Kornas',
-            'Direktur Kornas',
+            'Ketua Kornas',
         ]);
     }
 

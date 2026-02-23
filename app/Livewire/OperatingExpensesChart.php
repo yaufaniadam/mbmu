@@ -19,7 +19,7 @@ class OperatingExpensesChart extends ChartWidget
             'PJ Pelaksana',
             'Superadmin',
             'Staf Kornas',
-            'Direktur Kornas',
+            'Ketua Kornas',
         ]);
     }
 

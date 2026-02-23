@@ -21,7 +21,7 @@ class AuthServiceProvider extends ServiceProvider
                 'Kepala SPPG',
                 'PJ Pelaksana',
                 'Staf Kornas',
-                'Direktur Kornas',
+                'Ketua Kornas',
                 'Staf Akuntan Kornas',
                 'Staf Akuntan'
             ]);
@@ -54,7 +54,7 @@ class AuthServiceProvider extends ServiceProvider
                 'Kepala SPPG',
                 'PJ Pelaksana',
                 'Superadmin',
-                'Direktur Kornas',
+                'Ketua Kornas',
                 'Staf Kornas'
             ]);
         });

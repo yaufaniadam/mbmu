@@ -35,7 +35,7 @@ class OperatingExpenses extends TableWidget
             'Superadmin',
             'Staf Kornas',
             'Staf Akuntan Kornas',
-            'Direktur Kornas',
+            'Ketua Kornas',
         ]);
     }
 
@@ -57,7 +57,7 @@ class OperatingExpenses extends TableWidget
                 }
 
                 // 2. Role-based fallback
-                if ($user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas'])) {
+                if ($user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Ketua Kornas'])) {
                     // Kornas/Admin can see everything or filter via sidebar/header
                     return $query;
                 }
@@ -189,7 +189,7 @@ class OperatingExpenses extends TableWidget
                     ->label('Tambah Pengeluaran')
                     ->visible(fn () => 
                         Auth::user()->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Superadmin']) || 
-                        ($this->scope !== 'unit' && ! Auth::user()->hasAnyRole(['Staf Kornas', 'Direktur Kornas']))
+                        ($this->scope !== 'unit' && ! Auth::user()->hasAnyRole(['Staf Kornas', 'Ketua Kornas']))
                     )
                     ->modalHeading('Catat Biaya Operasional Baru')
                     ->mutateDataUsing(function (array $data): array {

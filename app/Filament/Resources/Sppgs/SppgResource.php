@@ -47,7 +47,7 @@ class SppgResource extends Resource
 
     public static function canView(\Illuminate\Database\Eloquent\Model $record): bool
     {
-        return auth()->user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']);
+        return auth()->user()->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']);
     }
 
     public static function form(Schema $schema): Schema

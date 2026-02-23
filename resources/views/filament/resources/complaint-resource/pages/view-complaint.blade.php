@@ -20,6 +20,21 @@
 
         <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg mt-4">
             <p class="whitespace-pre-wrap text-gray-900 dark:text-gray-100">{{ $record->content }}</p>
+
+            @if($record->supporting_document)
+                <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <x-filament::button
+                        tag="a"
+                        href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($record->supporting_document) }}"
+                        target="_blank"
+                        icon="heroicon-o-arrow-down-tray"
+                        color="amber"
+                        size="sm"
+                    >
+                        Download Dokumen Pendukung
+                    </x-filament::button>
+                </div>
+            @endif
         </div>
     </x-filament::section>
 
@@ -27,7 +42,7 @@
     <div>
         @forelse($record->messages as $message)
             @php
-                $isKornas = $message->user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']);
+                $isKornas = $message->user->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']);
             @endphp
             
             <x-filament::section class="mb-6" style="margin-bottom: 0.75rem !important;">

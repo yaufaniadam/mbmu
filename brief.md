@@ -31,7 +31,7 @@ Berikut adalah pembagian peran yang direncanakan:
 Pengguna di level ini memiliki akses ke data agregat nasional dan dapat mengelola data master.
 
 * **Superadmin:** Memiliki akses penuh ke seluruh sistem, termasuk konfigurasi teknis dan manajemen peran.  
-* **Direktur Kornas:** Memiliki akses *read-only* (hanya melihat) ke dashboard dan laporan nasional.  
+* **Ketua Kornas:** Memiliki akses *read-only* (hanya melihat) ke dashboard dan laporan nasional.  
 * **Staf Kornas:** Bertugas sebagai administrator harian. Dapat mengelola data master (membuat, mengedit, menghapus SPPG) dan mengelola semua akun pengguna di sistem, serta mengelola sistem keuangan Kornas.
 
 #### **2.2. Level Lokal (Akses Terbatas per SPPG)**
@@ -53,7 +53,7 @@ Berikut adalah 11 peran yang telah didefinisikan dalam sistem:
 | Kategori | Nama Peran | Lingkup | Deskripsi Singkat |
 | :---- | :---- | :---- | :---- |
 | **Nasional** | `Superadmin` | Global | Akses penuh ke sistem, termasuk konfigurasi teknis. |
-| **Nasional** | `Direktur Kornas` | Global | Akses read-only ke data dan laporan level nasional. |
+| **Nasional** | `Ketua Kornas` | Global | Akses read-only ke data dan laporan level nasional. |
 | **Nasional** | `Staf Kornas` | Global | Administrator harian. Mengelola data master SPPG dan Pengguna. |
 | **Lokal** | `Pimpinan Lembaga Pengusul` | Global | Akses read-only untuk memantau SPPG di bawah lembaganya. |
 | **Lokal** | `Kepala SPPG` | Per SPPG | Admin utama untuk satu SPPG. Dapat mengelola staf dan operasional. |

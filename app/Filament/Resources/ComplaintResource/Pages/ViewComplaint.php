@@ -33,7 +33,7 @@ class ViewComplaint extends ViewRecord
                 ->icon('heroicon-o-arrow-path')
                 ->color('warning')
                 ->requiresConfirmation()
-                ->visible(fn () => $this->record->status === 'Closed' && Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']))
+                ->visible(fn () => $this->record->status === 'Closed' && Auth::user()->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']))
                 ->action(function () {
                     $this->record->update(['status' => 'Open']);
                     Notification::make()->title('Tiket dibuka kembali')->success()->send();
@@ -56,7 +56,7 @@ class ViewComplaint extends ViewRecord
 
         // Update complaint status
         $user = Auth::user();
-        if ($user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
+        if ($user->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
             $this->record->update([
                 'status' => 'Responded',
                 'feedback_by' => Auth::id(),
@@ -72,7 +72,7 @@ class ViewComplaint extends ViewRecord
         $this->replyMessage = '';
         
         // Notify User if the reply is from Admin/Kornas
-        if ($user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
+        if ($user->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
             try {
                 $this->record->user->notify(new \App\Notifications\ComplaintResponded($this->record, $this->replyMessage));
             } catch (\Exception $e) {

@@ -37,7 +37,7 @@ class OsmMapWidget extends Widget
 
         // 2. Check for specific roles
         // This assumes you are using Spatie Permissions or Filament Shield
-        return $user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Direktur Kornas']);
+        return $user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Ketua Kornas']);
     }
 
     #[On('refresh-map-widget')]

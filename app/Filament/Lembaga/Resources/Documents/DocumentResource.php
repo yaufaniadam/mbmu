@@ -44,7 +44,7 @@ class DocumentResource extends Resource
 
         if ($user->hasRole('Superadmin')) return true;
 
-        if ($user->hasRole(['Direktur Kornas', 'Staf Kornas', 'Pimpinan Lembaga Pengusul'])) {
+        if ($user->hasRole(['Ketua Kornas', 'Staf Kornas', 'Pimpinan Lembaga Pengusul'])) {
             return true;
         }
 
@@ -139,7 +139,7 @@ class DocumentResource extends Resource
                     return $query;
                 }
                 
-                if ($user->hasRole(['Direktur Kornas', 'Staf Kornas'])) {
+                if ($user->hasRole(['Ketua Kornas', 'Staf Kornas'])) {
                     // Kornas presumably sees all documents?
                     return $query;
                 }

@@ -1,0 +1,15 @@
+[Unit]
+Description=Laravel Octane
+After=network.target mysql.service
+
+[Service]
+User=www-data
+Group=www-data
+Restart=always
+RestartSec=5
+WorkingDirectory=/var/www/html
+ExecStart=/usr/bin/php /var/www/html/artisan octane:start --server=swoole --host=127.0.0.1 --port=8000
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

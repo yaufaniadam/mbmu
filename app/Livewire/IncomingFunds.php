@@ -33,7 +33,7 @@ class IncomingFunds extends TableWidget
             'Superadmin',
             'Staf Kornas',
             'Staf Akuntan Kornas',
-            'Direktur Kornas',
+            'Ketua Kornas',
         ]);
     }
 
@@ -55,7 +55,7 @@ class IncomingFunds extends TableWidget
                 }
 
                 // 2. Role-based fallback
-                if ($user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas'])) {
+                if ($user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Ketua Kornas'])) {
                     // Kornas/Admin can see everything
                     return $query;
                 }
@@ -193,7 +193,7 @@ class IncomingFunds extends TableWidget
                     ->label('Tambah Pemasukan')
                     ->visible(fn () => 
                         Auth::user()->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Superadmin']) || 
-                        ($this->scope !== 'unit' && ! Auth::user()->hasAnyRole(['Direktur Kornas']))
+                        ($this->scope !== 'unit' && ! Auth::user()->hasAnyRole(['Ketua Kornas']))
                     )
                     ->modalHeading('Catat Penerimaan Dana Baru')
                     ->schema($this->getFormSchema())

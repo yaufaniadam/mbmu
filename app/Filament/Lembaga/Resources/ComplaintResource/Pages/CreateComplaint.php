@@ -29,7 +29,7 @@ class CreateComplaint extends CreateRecord
         $complaint = $this->getRecord();
         
         // Notify Admins and Kornas Staff
-        $recipients = \App\Models\User::role(['Superadmin', 'Staf Kornas', 'Direktur Kornas'])->get();
+        $recipients = \App\Models\User::role(['Superadmin', 'Staf Kornas', 'Ketua Kornas'])->get();
         
         foreach ($recipients as $recipient) {
             try {

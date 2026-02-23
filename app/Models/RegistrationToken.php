@@ -46,11 +46,13 @@ class RegistrationToken extends Model
      * Map registration roles to Spatie permission roles
      */
     public const ROLE_MAPPING = [
+        'kepala_lembaga' => 'Pimpinan Lembaga Pengusul',
         'kepala_sppg' => 'Kepala SPPG',
-        'ahli_gizi' => 'Ahli Gizi',
+        'ahli_gizi' => 'Staf Gizi',
         'akuntan' => 'Staf Akuntan',
         'administrator' => 'Staf Administrator SPPG',
     ];
+
 
     public function sppg(): BelongsTo
     {

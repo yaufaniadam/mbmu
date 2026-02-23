@@ -62,7 +62,7 @@ class Dashboard extends BaseDashboard
         $user = Auth::user();
 
         // National roles see Province Filter
-        $nationalRoles = ['Superadmin', 'Staf Kornas', 'Direktur Kornas'];
+        $nationalRoles = ['Superadmin', 'Staf Kornas', 'Ketua Kornas'];
         $isNational = $user->hasAnyRole($nationalRoles);
         $isNational = $user->hasAnyRole($nationalRoles);
         $isPimpinan = $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana']);

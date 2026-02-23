@@ -65,7 +65,7 @@ class ManageFinance extends Page implements HasForms
         $user = auth()->user();
 
         // Default tab based on role
-        if ($user->hasAnyRole(['Staf Kornas', 'Direktur Kornas'])) {
+        if ($user->hasAnyRole(['Staf Kornas', 'Ketua Kornas'])) {
             if (request()->query('activeTab') === null) {
                 // Kornas defaults to their own Buku Kas Pusat
                 $this->activeTab = 'buku_kas_pusat';
@@ -100,17 +100,17 @@ class ManageFinance extends Page implements HasForms
         }
 
         return match ($tab) {
-            'dashboard' => $user->hasAnyRole(['Superadmin', 'Kepala SPPG', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
+            'dashboard' => $user->hasAnyRole(['Superadmin', 'Kepala SPPG', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Ketua Kornas']),
             
             // 1. Buku Kas Pusat (Kornas Only)
-            'buku_kas_pusat' => $user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']),
+            'buku_kas_pusat' => $user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Ketua Kornas']),
 
             'buku_kas' => $user->hasAnyRole(['Superadmin', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']),
             
             'pay_rent' => $user->hasAnyRole(['Kepala SPPG', 'Staf Akuntan']),
             'verify_rent' => $user->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'PJ Pelaksana', 'Staf Akuntan Kornas']),
             'pay_royalty' => $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana']),
-            'verify_royalty' => $user->hasAnyRole(['Staf Kornas', 'Direktur Kornas', 'Staf Akuntan Kornas']),
+            'verify_royalty' => $user->hasAnyRole(['Staf Kornas', 'Ketua Kornas', 'Staf Akuntan Kornas']),
             'transactions' => false,
             default => false,
         };

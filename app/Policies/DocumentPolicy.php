@@ -13,7 +13,7 @@ class DocumentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas', 'Pimpinan Lembaga Pengusul']);
+        return $user->hasRole(['Superadmin', 'Ketua Kornas', 'Staf Kornas', 'Pimpinan Lembaga Pengusul']);
     }
 
     /**
@@ -21,7 +21,7 @@ class DocumentPolicy
      */
     public function view(User $user, Document $document): bool
     {
-        if ($user->hasRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas'])) {
+        if ($user->hasRole(['Superadmin', 'Ketua Kornas', 'Staf Kornas'])) {
             return true;
         }
 
@@ -34,7 +34,7 @@ class DocumentPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas', 'Pimpinan Lembaga Pengusul']);
+        return $user->hasRole(['Superadmin', 'Ketua Kornas', 'Staf Kornas', 'Pimpinan Lembaga Pengusul']);
     }
 
     /**
@@ -42,7 +42,7 @@ class DocumentPolicy
      */
     public function update(User $user, Document $document): bool
     {
-        if ($user->hasRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas'])) {
+        if ($user->hasRole(['Superadmin', 'Ketua Kornas', 'Staf Kornas'])) {
             return true;
         }
 
@@ -55,7 +55,7 @@ class DocumentPolicy
      */
     public function delete(User $user, Document $document): bool
     {
-        if ($user->hasRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas'])) {
+        if ($user->hasRole(['Superadmin', 'Ketua Kornas', 'Staf Kornas'])) {
             return true;
         }
 

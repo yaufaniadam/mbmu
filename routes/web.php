@@ -63,6 +63,8 @@ Route::get('/artikel/{post:slug}', [\App\Http\Controllers\PublicBlogController::
 // Self Registration Routes
 Route::get('/daftar', SelfRegistration::class)->name('register.self');
 Route::get('/daftar/{role}/{token}', SelfRegistration::class)->name('register.self.token');
+Route::get('/aktivasi', \App\Livewire\ClaimAccount::class)->name('claim.account');
+
 
 // require __DIR__.'/auth.php';
 

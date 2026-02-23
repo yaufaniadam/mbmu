@@ -56,7 +56,7 @@ class VerifyPaymentList extends TableWidget
                     }
                 }
 
-                if (Auth::user()->hasAnyRole(['Staf Kornas', 'Direktur Kornas']) && !$this->type) {
+                if (Auth::user()->hasAnyRole(['Staf Kornas', 'Ketua Kornas']) && !$this->type) {
                     $query->where('type', 'LP_ROYALTY');
                 }
 
@@ -367,7 +367,7 @@ class VerifyPaymentList extends TableWidget
                                                 : 'Pembayaran Royalty Diverifikasi & Tercatat sebagai Pemasukan.';
 
                                             Notification::make()->title($message)->success()->send();
-                                            $livewire->replaceMountedTableAction(null); // Close Modal
+                                            $livewire->unmountTableAction(); // Close Modal
 
                                         } catch (Exception $e) {
                                             Notification::make()->title('Gagal Verifikasi')->body('Error: ' . $e->getMessage())->danger()->send();
@@ -405,7 +405,7 @@ class VerifyPaymentList extends TableWidget
                                             }
 
                                             Notification::make()->title('Pembayaran Ditolak')->success()->send();
-                                            $livewire->replaceMountedTableAction(null); // Close Modal
+                                            $livewire->unmountTableAction(); // Close Modal
                                         } catch (Exception $e) {
                                             Notification::make()->title('Gagal Menolak')->body('Error: ' . $e->getMessage())->danger()->send();
                                         }
@@ -432,7 +432,7 @@ class VerifyPaymentList extends TableWidget
 
         // If no record provided, fall back to general role check (legacy behavior)
         if (!$record) {
-            return $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']);
+            return $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Staf Kornas', 'Staf Akuntan Kornas', 'Ketua Kornas']);
         }
 
         if ($record->type === 'SPPG_SEWA') {
@@ -440,7 +440,7 @@ class VerifyPaymentList extends TableWidget
         }
 
         if ($record->type === 'LP_ROYALTY') {
-            return $user->hasAnyRole(['Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']);
+            return $user->hasAnyRole(['Staf Kornas', 'Staf Akuntan Kornas', 'Ketua Kornas']);
         }
 
         return false;

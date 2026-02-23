@@ -22,7 +22,7 @@ class OperatingExpensesStats extends StatsOverviewWidget
             'PJ Pelaksana',
             'Superadmin',
             'Staf Kornas',
-            'Direktur Kornas',
+            'Ketua Kornas',
         ]);
     }
 

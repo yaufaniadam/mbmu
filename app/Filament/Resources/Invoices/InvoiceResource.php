@@ -404,7 +404,7 @@ class InvoiceResource extends Resource
                         // NOTIFICATION 2: Notify Kornas Staff about Incoming Contribution Payment
                         if ($record->type === 'LP_ROYALTY') {
                             // Defines recipients: Users with specific roles (Matching approved plan + Superadmin)
-                            $recipients = \App\Models\User::role(['Staf Kornas', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Superadmin'])->get();
+                            $recipients = \App\Models\User::role(['Staf Kornas', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Superadmin'])->get();
                             
                             foreach ($recipients as $recipient) {
                                 try {
@@ -448,7 +448,7 @@ class InvoiceResource extends Resource
         $user = auth()->user();
 
         // 1. National Level: Can see everything
-        if ($user->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
+        if ($user->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
             return $query;
         }
 

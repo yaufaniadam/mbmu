@@ -20,7 +20,7 @@ class IncomingFundsChart extends ChartWidget
             'Superadmin',
             'Staf Kornas',
             'Staf Akuntan Kornas',
-            'Direktur Kornas',
+            'Ketua Kornas',
         ]);
     }
 

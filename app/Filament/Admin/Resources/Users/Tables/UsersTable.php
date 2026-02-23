@@ -22,7 +22,7 @@ class UsersTable
                 TextColumn::make('sppg_column')
                     ->label('SPPG')
                     ->state(function (\App\Models\User $record): string {
-                        if ($record->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas'])) {
+                        if ($record->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Ketua Kornas'])) {
                             return 'Kornas';
                         }
 
@@ -44,7 +44,7 @@ class UsersTable
                     ->label('Lembaga Pengusul')
                     ->state(function (\App\Models\User $record): string {
                         // Kornas tidak ada Lembaga Pengusul
-                        if ($record->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas'])) {
+                        if ($record->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Ketua Kornas'])) {
                             return '-';
                         }
 

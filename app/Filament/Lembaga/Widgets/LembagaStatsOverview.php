@@ -54,10 +54,19 @@ class LembagaStatsOverview extends BaseWidget
             ->where('status', 'UNPAID')
             ->sum('amount');
 
+        // Count schools for SPPGs under the Lembaga
+        $sppgIds = $lembaga->sppgs->pluck('id');
+        $totalSchools = \App\Models\School::whereIn('sppg_id', $sppgIds)->count();
+
         return [
             Stat::make('Total SPPG', $totalSppg)
                 ->description('SPPG yang dibawahi')
                 ->descriptionIcon('heroicon-m-building-office-2')
+                ->color('primary'),
+            
+            Stat::make('Penerima MBM', number_format($totalSchools, 0, ',', '.'))
+                ->description('Total Penerima Manfaat')
+                ->descriptionIcon('heroicon-o-academic-cap')
                 ->color('success'),
             
             Stat::make('Pending Verifikasi', $pendingVerifications)

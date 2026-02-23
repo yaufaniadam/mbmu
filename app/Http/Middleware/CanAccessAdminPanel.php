@@ -18,7 +18,7 @@ class CanAccessAdminPanel
     {
         if (Auth::check() && Auth::user()->hasAnyRole([
             'Superadmin', 
-            'Direktur Kornas', 
+            'Ketua Kornas', 
             'Staf Kornas', 
             'Staf Akuntan Kornas', 
             'Kepala SPPG'

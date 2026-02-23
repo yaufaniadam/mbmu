@@ -34,7 +34,7 @@ class LembagaPengusulsTable
             ])
             ->recordActions([
                 ViewAction::make()
-                    ->visible(fn () => auth()->user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])),
+                    ->visible(fn () => auth()->user()->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])),
                 EditAction::make()
                     ->visible(fn () => auth()->user()->hasRole('Superadmin')),
             ])

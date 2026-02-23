@@ -24,7 +24,7 @@ class InstructionPolicy
     public function view(User $user, Instruction $instruction): bool
     {
         // Admins can view all instructions
-        if ($user->hasRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas', 'Staf Akuntan Kornas'])) {
+        if ($user->hasRole(['Superadmin', 'Ketua Kornas', 'Staf Kornas', 'Staf Akuntan Kornas'])) {
             return true;
         }
 
@@ -39,7 +39,7 @@ class InstructionPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas']);
+        return $user->hasRole(['Superadmin', 'Ketua Kornas', 'Staf Kornas']);
     }
 
     /**

@@ -69,7 +69,9 @@ class RolePermissionSeeder extends Seeder
         // 3. Buat Roles (Peran Pengguna)
         $roles = [
             'Superadmin',
-            'Direktur Kornas',
+            'Ketua Kornas',
+            'Sekretaris Kornas',
+            'Bendahara Kornas',
             'Staf Kornas',
             'Pimpinan Lembaga Pengusul',
             'Kepala SPPG',
@@ -88,8 +90,26 @@ class RolePermissionSeeder extends Seeder
         }
 
         // 4. Berikan Permissions ke Roles
-        // Direktur Kornas
-        $roleModels['Direktur Kornas']->syncPermissions([
+        // Ketua Kornas
+        $roleModels['Ketua Kornas']->syncPermissions([
+            'view-national-dashboard',
+            'view-national-reports',
+            'ViewAny:Complaint',
+            'View:Complaint',
+            'Update:Complaint',
+        ]);
+
+        // Sekretaris Kornas - Same permissions as Direktur
+        $roleModels['Sekretaris Kornas']->syncPermissions([
+            'view-national-dashboard',
+            'view-national-reports',
+            'ViewAny:Complaint',
+            'View:Complaint',
+            'Update:Complaint',
+        ]);
+
+        // Bendahara Kornas - Same permissions as Direktur
+        $roleModels['Bendahara Kornas']->syncPermissions([
             'view-national-dashboard',
             'view-national-reports',
             'ViewAny:Complaint',
@@ -153,7 +173,12 @@ class RolePermissionSeeder extends Seeder
             'View:ProductionSchedule',
             'Create:ProductionSchedule',
             'Update:ProductionSchedule',
-            'Delete:ProductionSchedule'
+            'Delete:ProductionSchedule',
+            // Complaint
+            'ViewAny:Complaint',
+            'View:Complaint',
+            'Create:Complaint',
+            'Update:Complaint',
         ]);
 
         // Penerima Kuasa
@@ -168,7 +193,12 @@ class RolePermissionSeeder extends Seeder
             'ViewAny:ProductionSchedule',
             'View:ProductionSchedule',
             'Create:ProductionSchedule',
-            'Update:ProductionSchedule'
+            'Update:ProductionSchedule',
+            // Complaint
+            'ViewAny:Complaint',
+            'View:Complaint',
+            'Create:Complaint',
+            'Update:Complaint',
         ]);
 
         // Staf Gizi
@@ -214,10 +244,10 @@ class RolePermissionSeeder extends Seeder
         $superAdmin->assignRole($roleModels['Superadmin']);
 
         $direktur = User::firstOrCreate(
-            ['email' => 'direktur.kornas@mbmu.id'],
-            ['name' => 'Direktur Kornas MBM', 'password' => Hash::make('direkturKornas')]
+            ['email' => 'ketua.kornas@mbmu.id'],
+            ['name' => 'Ketua Kornas MBM', 'password' => Hash::make('ketuaKornas')]
         );
-        $direktur->assignRole($roleModels['Direktur Kornas']);
+        $direktur->assignRole($roleModels['Ketua Kornas']);
 
         $stafKornas = User::firstOrCreate(
             ['email' => 'staf.kornas@mbmu.id'],
@@ -229,6 +259,18 @@ class RolePermissionSeeder extends Seeder
             ['email' => 'akuntan.kornas@mbmu.id'],
             ['name' => 'Staf Akuntan Kornas MBM', 'password' => Hash::make('akuntanKornas')]
         );
-        $stafAkuntanKornas->assignRole($roleModels['Staf Akuntan Kornas']);
+        
+        // Create Sekretaris and Bendahara default users
+        $sekretaris = User::firstOrCreate(
+            ['email' => 'sekretaris.kornas@mbmu.id'],
+            ['name' => 'Sekretaris Kornas MBM', 'password' => Hash::make('sekretarisKornas')]
+        );
+        $sekretaris->assignRole($roleModels['Sekretaris Kornas']);
+
+        $bendahara = User::firstOrCreate(
+            ['email' => 'bendahara.kornas@mbmu.id'],
+            ['name' => 'Bendahara Kornas MBM', 'password' => Hash::make('bendaharaKornas')]
+        );
+        $bendahara->assignRole($roleModels['Bendahara Kornas']);
     }
 }

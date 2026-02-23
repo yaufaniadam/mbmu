@@ -5,13 +5,13 @@
     <x-filament::tabs label="Finance Tabs">
 
         {{-- Tab 0: Dashboard Keuangan --}}
-        @if (auth()->user()->hasAnyRole(['Superadmin', 'Kepala SPPG', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
+        @if (auth()->user()->hasAnyRole(['Superadmin', 'Kepala SPPG', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Ketua Kornas']))
             <x-filament::tabs.item :active="$activeTab === 'dashboard'" wire:click="$set('activeTab', 'dashboard')" icon="heroicon-o-chart-bar">
                 Dashboard
             </x-filament::tabs.item>
         @endif
         {{-- Tab 1: Buku Kas Pusat (Kornas Only) --}}
-        @if (auth()->user()->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
+        @if (auth()->user()->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Ketua Kornas']))
             <x-filament::tabs.item :active="$activeTab === 'buku_kas_pusat'" wire:click="$set('activeTab', 'buku_kas_pusat')" icon="heroicon-o-building-library">
                 Buku Kas Pusat
             </x-filament::tabs.item>
@@ -44,14 +44,14 @@
         @endif
 
         {{-- Tab 5: Penerimaan Royalti (Kornas Only) --}}
-        @if (auth()->user()->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
+        @if (auth()->user()->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Ketua Kornas']))
             <x-filament::tabs.item :active="$activeTab === 'verify_royalty'" wire:click="$set('activeTab', 'verify_royalty')" icon="heroicon-o-check-badge">
                 Penerimaan Kontribusi
             </x-filament::tabs.item>
         @endif
 
         {{-- Tab 6: Riwayat Transaksi (All) - HIDDEN --}}
-        {{-- @if (auth()->user()->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Direktur Kornas']))
+        {{-- @if (auth()->user()->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Kornas', 'Staf Akuntan Kornas', 'Ketua Kornas']))
             <x-filament::tabs.item :active="$activeTab === 'transactions'" wire:click="$set('activeTab', 'transactions')" icon="heroicon-o-clock">
                 Riwayat Transaksi
             </x-filament::tabs.item>

@@ -11,12 +11,12 @@ use Livewire\Attributes\Title;
 #[Title('Login Pengantaran')]
 class Login extends Component
 {
-    public $email = '';
+    public $login = '';
     public $password = '';
     public $remember = false;
 
     protected $rules = [
-        'email' => 'required|email',
+        'login' => 'required',
         'password' => 'required',
     ];
 
@@ -34,7 +34,14 @@ class Login extends Component
     {
         $this->validate();
 
-        if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+        $loginField = filter_var($this->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'telepon';
+        $loginValue = $this->login;
+
+        if ($loginField === 'telepon') {
+            $loginValue = $this->normalizePhone($loginValue);
+        }
+
+        if (Auth::attempt([$loginField => $loginValue, 'password' => $this->password], $this->remember)) {
             $user = Auth::user();
             
             if ($user->hasRole('Staf Pengantaran')) {
@@ -43,11 +50,23 @@ class Login extends Component
             }
 
             Auth::logout();
-            $this->addError('email', 'Akun Anda tidak memiliki akses pengantaran.');
+            $this->addError('login', 'Akun Anda tidak memiliki akses pengantaran.');
             return;
         }
 
-        $this->addError('email', 'Email atau password salah.');
+        $this->addError('login', 'Login atau password salah.');
+    }
+
+    protected function normalizePhone(string $phone): string
+    {
+        $phone = preg_replace('/[^0-9+]/', '', $phone);
+        $phone = ltrim($phone, '+');
+        if (str_starts_with($phone, '0')) {
+            $phone = '62' . substr($phone, 1);
+        } elseif (!str_starts_with($phone, '62')) {
+            $phone = '62' . $phone;
+        }
+        return $phone;
     }
 
     public function render()

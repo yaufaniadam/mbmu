@@ -47,30 +47,32 @@ class ComplaintResource extends Resource
             ->components([
                 Section::make('Detail Pengaduan')
                     ->schema([
-                         Select::make('subject')
+                        Select::make('subject')
                             ->label('Subjek Pengaduan')
                             ->options(function () {
-                                $baseOptions = [
+                                $user = Auth::user();
+                                $options = [
                                     'Pencairan' => 'Pencairan',
                                     'Akuntan' => 'Akuntan',
                                     'Ahli Gizi' => 'Ahli Gizi',
                                     'Virtual Account' => 'Virtual Account',
                                 ];
                                 
-                                $user = Auth::user();
-                                
-                                // Kepala SPPG specific options
-                                if ($user->hasRole('Kepala SPPG')) {
-                                    $baseOptions['Lembaga Pengusul'] = 'Lembaga Pengusul';
-                                    $baseOptions['Lain-lain'] = 'Lain-lain';
-                                } 
-                                // Lembaga Pengusul specific options
-                                elseif ($user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])) {
-                                    $baseOptions['Kepala'] = 'Kepala'; // Report about Kepala SPPG
-                                    $baseOptions['Sarpras'] = 'Sarpras';
+                                if ($user?->hasRole('Kepala SPPG')) {
+                                    $options['Lembaga Pengusul'] = 'Lembaga Pengusul';
+                                    $options['Kecelakaan Kerja/Accident'] = 'Kecelakaan Kerja/Accident';
+                                    $options['Kasus'] = 'Kasus';
+                                    $options['Bencana'] = 'Bencana';
+                                    $options['Lain-lain'] = 'Lain-lain';
+                                } elseif ($user?->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])) {
+                                    $options['Kepala'] = 'Kepala';
+                                    $options['Sarpras'] = 'Sarpras';
+                                    $options['Kecelakaan Kerja/Accident'] = 'Kecelakaan Kerja/Accident';
+                                    $options['Kasus'] = 'Kasus';
+                                    $options['Bencana'] = 'Bencana';
                                 }
                                 
-                                return $baseOptions;
+                                return $options;
                             })
                             ->required()
                             ->disabled(fn ($record) => $record && $record->status !== 'Open'),
@@ -79,6 +81,31 @@ class ComplaintResource extends Resource
                             ->rows(5)
                             ->required()
                             ->disabled(fn ($record) => $record && $record->status !== 'Open'),
+                        \Filament\Forms\Components\FileUpload::make('supporting_document')
+                            ->label('Dokumen Pendukung')
+                            ->disk('public')
+                            ->directory('complaint-documents')
+                            ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png'])
+                            ->maxSize(5120) // 5MB
+                            ->downloadable()
+                            ->openable()
+                            ->hidden(fn ($operation) => $operation === 'view')
+                            ->disabled(fn ($record) => $record && $record->status !== 'Open'),
+                        Placeholder::make('download_document')
+                            ->label('Download Dokumen')
+                            ->visible(fn ($record) => !empty($record?->supporting_document))
+                            ->content(function ($record) {
+                                if (!$record || !$record->supporting_document) return null;
+                                $url = \Illuminate\Support\Facades\Storage::disk('public')->url($record->supporting_document);
+                                return new \Illuminate\Support\HtmlString("
+                                    <a href='{$url}' target='_blank' class='inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500'>
+                                        <svg class='-ml-1 mr-2 h-5 w-5' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                                            <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3' />
+                                        </svg>
+                                        Download Dokumen Pendukung
+                                    </a>
+                                ");
+                            }),
                         Select::make('status')
                             ->label('Status')
                             ->options([
@@ -93,12 +120,12 @@ class ComplaintResource extends Resource
                     ->columnSpan(fn ($record) => $record && $record->feedback ? 1 : 2),
 
                 Section::make('Feedback Kornas')
-                    ->visible(fn ($record) => $record && ($record->feedback || Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])))
+                    ->visible(fn ($record) => $record && ($record->feedback || Auth::user()->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])))
                     ->schema([
                         Textarea::make('feedback')
                             ->label('Tanggapan / Rekomendasi')
                             ->rows(5)
-                            ->disabled(fn () => !Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])),
+                            ->disabled(fn () => !Auth::user()->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])),
                         Placeholder::make('feedback_info')
                             ->label('Ditanggapi Oleh')
                             ->content(fn ($record) => $record->responder->name . ' (' . $record->feedback_at->format('d M Y H:i') . ')')
@@ -120,7 +147,7 @@ class ComplaintResource extends Resource
                     ->label('Pengirim')
                     ->searchable()
                     ->sortable()
-                    ->visible(fn () => Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])),
+                    ->visible(fn () => Auth::user()->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])),
                 TextColumn::make('subject')
                     ->label('Subjek')
                     ->searchable()

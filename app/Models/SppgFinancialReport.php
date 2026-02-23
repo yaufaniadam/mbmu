@@ -16,6 +16,7 @@ class SppgFinancialReport extends Model
         'category',
         'start_date',
         'end_date',
+        'realization_amount',
         'file_path',
         'notes',
         'status',

@@ -19,6 +19,7 @@ class Complaint extends Model
         'feedback',
         'feedback_by',
         'feedback_at',
+        'supporting_document',
     ];
 
     protected $casts = [

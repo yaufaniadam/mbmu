@@ -32,7 +32,7 @@ class InstructionList extends Page implements HasTable
     {
         // Hide from Admins/Kornas who have access to the full InstructionResource
         // Unless they really want to see the 'recipient view'
-        if (auth()->user()?->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas', 'Staf Akuntan Kornas'])) {
+        if (auth()->user()?->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Kornas', 'Staf Akuntan Kornas'])) {
             return false;
         }
 

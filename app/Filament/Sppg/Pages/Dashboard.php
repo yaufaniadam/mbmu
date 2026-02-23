@@ -65,7 +65,7 @@ class Dashboard extends BaseDashboard
         $user = Auth::user();
 
         // 1. Define the roles allowed to see the Map Widget (and thus the Province Filter)
-        $mapRoles = ['Superadmin', 'Staf Kornas', 'Direktur Kornas'];
+        $mapRoles = ['Superadmin', 'Staf Kornas', 'Ketua Kornas'];
 
         // Check if user has ANY of these roles
         $isMapRole = $user->hasAnyRole($mapRoles);

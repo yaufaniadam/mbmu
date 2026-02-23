@@ -70,7 +70,7 @@ class PostResource extends Resource
                         Select::make('status')
                             ->label('Status')
                             ->options(function () {
-                                if (Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
+                                if (Auth::user()->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
                                     return [
                                         'draft' => 'Draft',
                                         'pending_review' => 'Pending Review',
@@ -86,7 +86,7 @@ class PostResource extends Resource
                             })
                             ->default('draft')
                             ->required()
-                            ->disableOptionWhen(fn (string $value): bool => $value === 'published' && !Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])),
+                            ->disableOptionWhen(fn (string $value): bool => $value === 'published' && !Auth::user()->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])),
                         DateTimePicker::make('published_at')
                             ->label('Tanggal Publish')
                             ->native(false),
@@ -113,7 +113,7 @@ class PostResource extends Resource
                     ->searchable(),
                 TextColumn::make('sppg.nama_sppg')
                     ->label('SPPG')
-                    ->visible(fn () => Auth::user()->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])),
+                    ->visible(fn () => Auth::user()->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])),
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {

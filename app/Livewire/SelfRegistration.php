@@ -37,11 +37,13 @@ class SelfRegistration extends Component
 
     // Role labels for display
     public array $roleLabels = [
+        'kepala_lembaga' => 'Kepala Lembaga Pengusul',
         'kepala_sppg' => 'Kepala SPPG',
         'ahli_gizi' => 'Ahli Gizi',
         'akuntan' => 'Staf Akuntan',
         'administrator' => 'Staf Administrator',
     ];
+
 
     public function mount(string $role = '', string $token = '')
     {
@@ -159,8 +161,16 @@ class SelfRegistration extends Component
                         ]);
                     }
 
+                    // If registering as Kepala Lembaga Pengusul, update lembaga_pengusul table
+                    if ($this->role === 'kepala_lembaga' && $this->registrationToken->sppg->lembagaPengusul) {
+                        $this->registrationToken->sppg->lembagaPengusul->update([
+                            'pimpinan_id' => $user->id,
+                        ]);
+                    }
+
                     // Mark token as used
                     $this->registrationToken->markAsUsed();
+
 
                     DB::commit();
 

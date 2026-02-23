@@ -21,6 +21,10 @@ return new class extends Migration
         // Note: Check DB type from metadata if crucial, but assuming standard MySQL/MariaDB for this stack.
         // If SQLite (testing), this might fail, but usually standard dev is MySQL/PG.
         
+        if (DB::getDriverName() === 'sqlite') {
+            return;
+        }
+        
          DB::statement("ALTER TABLE posts MODIFY COLUMN status ENUM('draft', 'pending_review', 'published', 'archived') NOT NULL DEFAULT 'draft'");
     }
 
@@ -34,6 +38,10 @@ return new class extends Migration
         // We'll map them back to draft just in case before reverting, or just revert definition.
         
         DB::table('posts')->where('status', 'pending_review')->update(['status' => 'draft']);
+        
+        if (DB::getDriverName() === 'sqlite') {
+            return;
+        }
         
         DB::statement("ALTER TABLE posts MODIFY COLUMN status ENUM('draft', 'published', 'archived') NOT NULL DEFAULT 'draft'");
     }

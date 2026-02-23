@@ -56,10 +56,14 @@ class SppgStatsOverview extends StatsOverviewWidget
                     ->icon('heroicon-o-building-storefront', IconPosition::Before)
                     ->description('Total unit SPPG nasional')
                     ->color('primary'),
+                Stat::make('Penerima MBM', number_format(\App\Models\School::count(), 0, ',', '.'))
+                    ->icon('heroicon-o-academic-cap', IconPosition::Before)
+                    ->description('Total Penerima Manfaat')
+                    ->color('success'),
                 Stat::make('Total Staf', number_format($totalStaf, 0, ',', '.'))
                     ->icon('heroicon-o-users', IconPosition::Before)
                     ->description('Total staf terdaftar')
-                    ->color('success'),
+                    ->color('info'),
                 Stat::make('Total Relawan', number_format($totalRelawan, 0, ',', '.'))
                     ->icon('heroicon-o-user-group', IconPosition::Before)
                     ->description("Total relawan (L: $totalL, P: $totalP)")
@@ -78,6 +82,10 @@ class SppgStatsOverview extends StatsOverviewWidget
                     ->icon('heroicon-o-building-storefront', IconPosition::Before)
                     ->description('Unit Operasional')
                     ->color('primary'),
+                Stat::make('Penerima MBM', number_format($sppg->schools()->count(), 0, ',', '.'))
+                    ->icon('heroicon-o-academic-cap', IconPosition::Before)
+                    ->description('Total Penerima Manfaat')
+                    ->color('success'),
                 Stat::make('Total Staf', number_format($totalStaf, 0, ',', '.'))
                     ->icon('heroicon-o-users', IconPosition::Before)
                     ->description('Staf unit ini')

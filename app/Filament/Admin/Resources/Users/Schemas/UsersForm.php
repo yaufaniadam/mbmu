@@ -22,8 +22,7 @@ class UsersForm
                             ->required(),
                         TextInput::make('email')
                             ->label('email')
-                            ->email()
-                            ->required(),
+                            ->email(),
                         TextInput::make('telepon')
                             ->label('Telepon')
                             ->tel()

@@ -32,7 +32,9 @@ class DatabaseSeeder extends Seeder
             FinancialCategorySeeder::class,
             ProductionVerificationSettingSeeder::class,
             NotificationTemplateSeeder::class,
+            // KornasOfficialSeeder::class, // Integrated into RolePermissionSeeder
             PublicContentSeeder::class,
+            ComplaintCategorySeeder::class,
          ]);
     }
 }

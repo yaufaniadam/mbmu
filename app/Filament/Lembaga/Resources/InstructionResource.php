@@ -24,7 +24,7 @@ class InstructionResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         // Hide from Admins/Kornas who have access to the full InstructionResource (Admin)
-        if (auth()->user()?->hasAnyRole(['Superadmin', 'Direktur Kornas', 'Staf Kornas', 'Staf Akuntan Kornas'])) {
+        if (auth()->user()?->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Kornas', 'Staf Akuntan Kornas'])) {
             return false;
         }
 

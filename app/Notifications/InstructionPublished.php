@@ -50,7 +50,7 @@ class InstructionPublished extends Notification implements ShouldQueue
         // Copied from User::canAccessPanel('admin') logic
         $adminRoles = [
             'Superadmin', 
-            'Direktur Kornas', 
+            'Ketua Kornas', 
             'Staf Kornas', 
             'Staf Akuntan Kornas', 
             'Pimpinan Lembaga Pengusul', 

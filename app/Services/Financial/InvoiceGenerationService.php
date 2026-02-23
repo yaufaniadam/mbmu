@@ -81,11 +81,12 @@ class InvoiceGenerationService
                 ->where('tanggal', '>=', $startDate)
                 ->whereIn('status', ['Selesai', 'Didistribusikan', 'Terverifikasi', 'Direncanakan'])
                 ->orderBy('tanggal', 'asc')
-                ->limit(10)
+                ->limit(config('financial.billing_period', 10))
                 ->get();
 
-            // If we don't have enough active days for a full period (10 days), stop.
-            if ($schedules->count() < 10) {
+            // If we don't have enough active days for a full period (threshold check), stop.
+            if ($schedules->count() < config('financial.billing_period', 10)) {
+
                 break;
             }
 

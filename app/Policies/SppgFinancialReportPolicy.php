@@ -19,7 +19,7 @@ class SppgFinancialReportPolicy
             'Kepala SPPG',
             'Admin SPPG',
             'Superadmin',
-            'Direktur Kornas',
+            'Ketua Kornas',
             'Staf Akuntan Kornas',
             'Staf Kornas'
         ]);
@@ -31,7 +31,7 @@ class SppgFinancialReportPolicy
             'Kepala SPPG',
             'Admin SPPG',
             'Superadmin',
-            'Direktur Kornas',
+            'Ketua Kornas',
             'Staf Akuntan Kornas',
             'Staf Kornas'
         ])) {

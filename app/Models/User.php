@@ -20,28 +20,54 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        if ($panel->getId() === 'admin') {
-            // Only Admin/Management roles access Admin Panel
-            return $this->hasRole([
+        $panelId = $panel->getId();
+
+        if ($panelId === 'admin') {
+            // Only National/Kornas roles access Admin Panel
+            return $this->hasAnyRole([
                 'Superadmin', 
-                'Direktur Kornas', 
+                'Ketua Kornas', 
+                'Sekretaris Kornas',
+                'Bendahara Kornas',
                 'Staf Kornas', 
                 'Staf Akuntan Kornas', 
-                'Pimpinan Lembaga Pengusul',
-                'PJ Pelaksana'
             ]);
         }
 
-        if ($panel->getId() === 'sppg') {
-            // SPPG Panel for Operational roles
-            // Super Admin also allowed for verification/debugging
-            return $this->hasRole(['Super Admin', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Administrator SPPG']) 
-                   || $this->sppgDiKepalai()->exists() 
-                   || $this->unitTugas()->exists();
+        if ($panelId === 'lembaga') {
+            // Lembaga Panel for Pimpinan and PJ
+            return $this->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana', 'Superadmin']);
         }
+
+        if ($panelId === 'sppg') {
+            // SPPG Panel for Operational roles
+            return $this->hasAnyRole([
+                'Kepala SPPG', 
+                'PJ Pelaksana', 
+                'Ahli Gizi',
+                'Staf Gizi', 
+                'Staf Akuntan', 
+                'Staf Administrator SPPG',
+                'Staf Pengantaran',
+                'Superadmin'
+            ]) || $this->sppgDiKepalai()->exists() || $this->unitTugas()->exists();
+        }
+
+        if ($panelId === 'production') {
+            // Production Panel for specialized operational tasks
+            return $this->hasAnyRole([
+                'Ahli Gizi', 
+                'Staf Gizi', 
+                'Staf Pengantaran', 
+                'Staf Akuntan',
+                'Superadmin'
+            ]);
+        }
+
 
         return true;
     }
+
 
     /**
      * The attributes that are mass assignable.
