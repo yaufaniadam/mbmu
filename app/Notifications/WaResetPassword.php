@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use App\Channels\WablasChannel;
+use App\Channels\WhatsAppChannel;
 
 class WaResetPassword extends Notification
 {
@@ -21,7 +21,7 @@ class WaResetPassword extends Notification
 
     public function via($notifiable): array
     {
-        return [WablasChannel::class];
+        return [WhatsAppChannel::class];
     }
 
     public function toWhatsApp($notifiable)
@@ -36,6 +36,7 @@ class WaResetPassword extends Notification
                   "*Tim MBM-U*";
 
         return [
+            'phone' => $notifiable->telepon,
             'message' => $message,
         ];
     }
