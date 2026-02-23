@@ -80,7 +80,13 @@ class CustomLogin extends BaseLogin
         // Normalize phone if it's a phone number
         $loginValue = $data['login'];
         if ($loginField === 'telepon') {
-            $loginValue = $this->normalizePhone($loginValue);
+            $normalizedPhone = $this->normalizePhone($loginValue);
+            $alternativePhone = str_starts_with($normalizedPhone, '62') 
+                ? '0' . substr($normalizedPhone, 2) 
+                : '62' . substr($normalizedPhone, 1);
+            
+            $user = \App\Models\User::whereIn('telepon', [$normalizedPhone, $alternativePhone])->first();
+            $loginValue = $user ? $user->telepon : $normalizedPhone;
         }
 
         $credentials = [
