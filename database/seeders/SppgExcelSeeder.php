@@ -155,6 +155,8 @@ class SppgExcelSeeder extends Seeder
                     'district_code' => $district?->code,
                 ]);
 
+                \Illuminate\Support\Facades\Log::info("Created SPPG: {$sppg->nama_sppg} (ID: {$sppg->id})");
+
                 // 1. Create Token for Kepala SPPG
                 $kaSppgName = $kepalaSppgUser?->name ?? $data['ka_sppg'] ?? null;
                 $kaSppgPhone = $kepalaSppgUser?->telepon ?? (isset($data['wa_ka_sppg']) ? $this->normalizePhone($data['wa_ka_sppg']) : null);
@@ -306,6 +308,8 @@ class SppgExcelSeeder extends Seeder
             'password' => $password,
         ]);
 
+        \Illuminate\Support\Facades\Log::info("Created PJ User: {$user->name} (ID: {$user->id})");
+
         // Assign "Pimpinan Lembaga Pengusul" (Perwakilan Yayasan) AND "PJ Pelaksana" roles
         // This ensures they have full access to Admin Panel (as Pimpinan) and Operational features (as PJ)
         
@@ -361,6 +365,8 @@ class SppgExcelSeeder extends Seeder
             'telepon' => $wa,
             'password' => $password,
         ]);
+
+        \Illuminate\Support\Facades\Log::info("Created Ka Sppg User: {$user->name} (ID: {$user->id})");
 
         $role = Role::where('name', 'Kepala SPPG')->first();
         if ($role) {
