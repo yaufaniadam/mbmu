@@ -101,8 +101,22 @@ class SelfRegistration extends Component
             $existingUser = null;
             if ($token->role === 'kepala_sppg') {
                 $existingUser = $token->sppg->kepalaSppg;
+                
+                // fallback to pivot table if direct column is empty
+                if (!$existingUser) {
+                    $pivotRole = \Spatie\Permission\Models\Role::where('name', 'Kepala SPPG')->first();
+                    $staff = $token->sppg->staffs()->where('role_id', $pivotRole?->id)->first();
+                    $existingUser = $staff?->user;
+                }
             } elseif ($token->role === 'kepala_lembaga') {
                 $existingUser = $token->sppg->kepalaPengusul;
+
+                // fallback to pivot table if direct column is empty
+                if (!$existingUser) {
+                    $pivotRole = \Spatie\Permission\Models\Role::where('name', 'Pimpinan Lembaga Pengusul')->first();
+                    $staff = $token->sppg->staffs()->where('role_id', $pivotRole?->id)->first();
+                    $existingUser = $staff?->user;
+                }
             }
 
             if ($existingUser) {

@@ -115,34 +115,46 @@
                         @endif
 
                         {{-- Nama --}}
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap *</label>
-                            <input 
-                                type="text" 
-                                wire:model="name"
-                                placeholder="Masukkan nama lengkap"
-                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition {{ $hasTokenData && $name ? 'bg-gray-50 text-gray-500 cursor-not-allowed' : '' }}"
-                                {{ $hasTokenData && $name ? 'readonly' : '' }}
-                            >
-                            @error('name') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
-                        </div>
+                        @if($hasTokenData && $name)
+                            <div class="mb-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Lengkap</label>
+                                <p class="text-gray-900 font-medium">{{ $name }}</p>
+                            </div>
+                        @else
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap *</label>
+                                <input 
+                                    type="text" 
+                                    wire:model="name"
+                                    placeholder="Masukkan nama lengkap"
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                                >
+                                @error('name') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            </div>
+                        @endif
 
                         {{-- No HP --}}
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nomor HP (WhatsApp) *</label>
-                            <div class="relative">
-                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">+62</span>
-                                <input 
-                                    type="tel" 
-                                    wire:model="telepon"
-                                    placeholder="81234567890"
-                                    class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition {{ $hasTokenData && $telepon ? 'bg-gray-50 text-gray-500 cursor-not-allowed' : '' }}"
-                                    {{ $hasTokenData && $telepon ? 'readonly' : '' }}
-                                >
+                        @if($hasTokenData && $telepon)
+                            <div class="mb-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nomor HP (WhatsApp)</label>
+                                <p class="text-gray-900 font-medium">+62 {{ $telepon }}</p>
                             </div>
-                            <p class="text-xs text-gray-400 mt-1">Akan digunakan untuk login & menerima notifikasi</p>
-                            @error('telepon') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
-                        </div>
+                        @else
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nomor HP (WhatsApp) *</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">+62</span>
+                                    <input 
+                                        type="tel" 
+                                        wire:model="telepon"
+                                        placeholder="81234567890"
+                                        class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                                    >
+                                </div>
+                                <p class="text-xs text-gray-400 mt-1">Akan digunakan untuk login & menerima notifikasi</p>
+                                @error('telepon') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            </div>
+                        @endif
 
                         {{-- Email (Optional) --}}
                         <div class="mb-4">
