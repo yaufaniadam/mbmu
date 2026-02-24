@@ -92,16 +92,44 @@ class SelfRegistration extends Component
         $this->tokenValidated = true;
         $this->step = 2;
 
-        // Pre-fill data from token if available
+        // Pre-fill data from token or existing user record
+        $name = null;
+        $phone = null;
+
+        // 1. Try Token Data
         if ($token->recipient_name) {
-            $this->name = $token->recipient_name;
-            $this->hasTokenData = true;
+            $name = $token->recipient_name;
         }
         
         if ($token->recipient_phone) {
-            $this->hasTokenData = true;
-            // Strip leading 62 or 0 if present to match the input format (which adds +62)
             $phone = $token->recipient_phone;
+        }
+
+        // 2. Fallback to existing user records linked to SPPG
+        if ((!$name || !$phone) && $token->sppg) {
+            $existingUser = null;
+            if ($token->role === 'kepala_sppg') {
+                $existingUser = $token->sppg->kepalaSppg;
+            } elseif ($token->role === 'kepala_lembaga') {
+                $existingUser = $token->sppg->kepalaPengusul;
+            }
+
+            if ($existingUser) {
+                $name = $name ?: $existingUser->name;
+                $phone = $phone ?: $existingUser->telepon;
+            }
+        }
+
+        // Apply pre-filled data
+        if ($name) {
+            $this->name = $name;
+            $this->hasTokenData = true;
+        }
+
+        if ($phone) {
+            $this->hasTokenData = true;
+            $phone = (string) $phone;
+            // Strip leading 62 or 0 if present to match the input format (which adds +62)
             if (str_starts_with($phone, '62')) {
                 $this->telepon = substr($phone, 2);
             } elseif (str_starts_with($phone, '0')) {
@@ -114,10 +142,16 @@ class SelfRegistration extends Component
 
     public function register()
     {
+        // Normalize phone number before validation
+        $this->telepon = $this->normalizePhone($this->telepon);
+
+        // Check if user already exists
+        $user = User::where('telepon', $this->telepon)->first();
+
         $this->validate([
             'name' => 'required|string|max:255',
-            'telepon' => 'required|string|max:20|unique:users,telepon',
-            'email' => 'nullable|email|unique:users,email',
+            'telepon' => 'required|string|max:20|unique:users,telepon,' . ($user?->id ?? 'NULL'),
+            'email' => 'nullable|email|unique:users,email,' . ($user?->id ?? 'NULL'),
             'password' => 'required|string|min:8',
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
@@ -127,9 +161,6 @@ class SelfRegistration extends Component
             'password.required' => 'Password wajib diisi untuk keperluan login.',
             'password.min' => 'Password minimal 8 karakter.',
         ]);
-
-        // Normalize phone number
-        $this->telepon = $this->normalizePhone($this->telepon);
 
         // Generate password if not provided
         if (empty($this->password)) {
@@ -155,12 +186,13 @@ class SelfRegistration extends Component
                     $user = User::where('telepon', $this->telepon)->first();
                     
                     if ($user) {
-                        // MERGE LOGIC: If user exists, update their name if it was empty or changed
-                        if (empty($user->name)) {
-                            $user->update(['name' => $this->name]);
-                        }
-                        // We don't change the password here for security reasons 
-                        // unless you want to allow it. Better to keep existing password.
+                        // UPDATE LOGIC: If user exists, update their name, email and password
+                        // This effectively "activates" the account with user's desired credentials
+                        $user->update([
+                            'name' => $this->name,
+                            'email' => $this->email ?: $user->email,
+                            'password' => Hash::make($this->password),
+                        ]);
                     } else {
                         // Create user
                         $user = User::create([

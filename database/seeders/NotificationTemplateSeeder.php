@@ -59,12 +59,10 @@ class NotificationTemplateSeeder extends Seeder
                 'key' => 'registration_token',
                 'name' => 'Token Registrasi',
                 'content' => "Assalamualaikum {{recipient_name}},\n\n"
-                    . "Silakan login ke MBMu App lalu buat akun.\n\n"
-                    . "👉 Link: {{registration_url}}\n"
-                    . "🔑 Token: {{token}}\n\n"
-                    . "Gunakan link dan token di atas untuk mendaftar sebagai {{role_label}} di {{sppg_name}}.\n\n"
-                    . "Terima Kasih.",
-                'placeholders' => ['{{recipient_name}}', '{{registration_url}}', '{{token}}', '{{role_label}}', '{{sppg_name}}'],
+                    . "Silakan aktivasi akun mbm1912.id Anda.\n\n"
+                    . "👉 Link: {{registration_url}}\n\n"
+                    . "Buat password sebagai {{role_label}} di {{sppg_name}}.",
+                'placeholders' => ['{{recipient_name}}', '{{registration_url}}', '{{role_label}}', '{{sppg_name}}'],
             ],
             [
                 'key' => 'contribution_payment_received',
