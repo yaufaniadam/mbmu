@@ -345,6 +345,9 @@ class SppgExcelSeeder extends Seeder
             return null;
         }
 
+        // Generate password: mbm + last 4 digits of phone
+        $password = 'mbm' . substr($wa, -4);
+
         // Create or update user
         $user = User::updateOrCreate(
             ['telepon' => $wa],
