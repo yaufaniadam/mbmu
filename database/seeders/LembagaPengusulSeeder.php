@@ -83,7 +83,7 @@ class LembagaPengusulSeeder extends Seeder
                     'name' => $namaPimpinan,
                     'telepon' => $nohpPimpinan,
                     'alamat' => $alamatPimpinan,
-                    'password' => Hash::make('p4$$w0rd') // Password default
+                    'password' => 'mbm' . substr(preg_replace('/[^0-9]/', '', $nohpPimpinan), -4)
                 ]
             );
 

@@ -285,7 +285,7 @@ class SppgExcelSeeder extends Seeder
         $user = User::create([
             'name' => $namaPj,
             'telepon' => $waPj,
-            'password' => Hash::make($password),
+            'password' => $password,
         ]);
 
         // Assign "Pimpinan Lembaga Pengusul" (Perwakilan Yayasan) AND "PJ Pelaksana" roles
@@ -341,7 +341,7 @@ class SppgExcelSeeder extends Seeder
         $user = User::create([
             'name' => $nama,
             'telepon' => $wa,
-            'password' => Hash::make($password),
+            'password' => $password,
         ]);
 
         $role = Role::where('name', 'Kepala SPPG')->first();

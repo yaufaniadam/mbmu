@@ -28,7 +28,7 @@ class DeliveryTestSeeder extends Seeder
                 ['email' => 'driver@mbmu.id'],
                 [
                     'name' => 'Driver Test',
-                    'password' => Hash::make('password'),
+                    'password' => 'password',
                     'email_verified_at' => now(),
                 ]
             );

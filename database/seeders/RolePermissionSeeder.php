@@ -239,37 +239,37 @@ class RolePermissionSeeder extends Seeder
         // User Level Nasional (tidak terikat SPPG)
         $superAdmin = User::firstOrCreate(
             ['email' => 'superadmin@mbmu.id'],
-            ['name' => 'Super Admin', 'password' => Hash::make('mBm@2025')]
+            ['name' => 'Super Admin', 'password' => 'mBm@2025']
         );
         $superAdmin->assignRole($roleModels['Superadmin']);
 
         $direktur = User::firstOrCreate(
             ['email' => 'ketua.kornas@mbmu.id'],
-            ['name' => 'Ketua Kornas MBM', 'password' => Hash::make('ketuaKornas')]
+            ['name' => 'Ketua Kornas MBM', 'password' => 'ketuaKornas']
         );
         $direktur->assignRole($roleModels['Ketua Kornas']);
 
         $stafKornas = User::firstOrCreate(
             ['email' => 'staf.kornas@mbmu.id'],
-            ['name' => 'Staf Kornas MBM', 'password' => Hash::make('stafKornas')]
+            ['name' => 'Staf Kornas MBM', 'password' => 'stafKornas']
         );
         $stafKornas->assignRole($roleModels['Staf Kornas']);
 
         $stafAkuntanKornas = User::firstOrCreate(
             ['email' => 'akuntan.kornas@mbmu.id'],
-            ['name' => 'Staf Akuntan Kornas MBM', 'password' => Hash::make('akuntanKornas')]
+            ['name' => 'Staf Akuntan Kornas MBM', 'password' => 'akuntanKornas']
         );
         
         // Create Sekretaris and Bendahara default users
         $sekretaris = User::firstOrCreate(
             ['email' => 'sekretaris.kornas@mbmu.id'],
-            ['name' => 'Sekretaris Kornas MBM', 'password' => Hash::make('sekretarisKornas')]
+            ['name' => 'Sekretaris Kornas MBM', 'password' => 'sekretarisKornas']
         );
         $sekretaris->assignRole($roleModels['Sekretaris Kornas']);
 
         $bendahara = User::firstOrCreate(
             ['email' => 'bendahara.kornas@mbmu.id'],
-            ['name' => 'Bendahara Kornas MBM', 'password' => Hash::make('bendaharaKornas')]
+            ['name' => 'Bendahara Kornas MBM', 'password' => 'bendaharaKornas']
         );
         $bendahara->assignRole($roleModels['Bendahara Kornas']);
     }
