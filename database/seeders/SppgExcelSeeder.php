@@ -296,12 +296,14 @@ class SppgExcelSeeder extends Seeder
         // Generate password: mbm + last 4 digits of phone
         $password = 'mbm' . substr($waPj, -4);
 
-        // Create new user
-        $user = User::create([
-            'name' => $namaPj,
-            'telepon' => $waPj,
-            'password' => $password,
-        ]);
+        // Create or update user
+        $user = User::updateOrCreate(
+            ['telepon' => $waPj],
+            [
+                'name' => $namaPj,
+                'password' => $password,
+            ]
+        );
 
         \Illuminate\Support\Facades\Log::info("Created PJ User: {$user->name} (ID: {$user->id})");
 
@@ -343,23 +345,14 @@ class SppgExcelSeeder extends Seeder
             return null;
         }
 
-        // Check if user already exists
-        $existingUser = User::where('telepon', $wa)->first();
-        if ($existingUser) {
-            // Check if they have the role, if not assign it
-            if (!$existingUser->hasRole('Kepala SPPG')) {
-                $existingUser->assignRole('Kepala SPPG');
-            }
-            return $existingUser;
-        }
-
-        $password = 'mbm' . substr($wa, -4);
-
-        $user = User::create([
-            'name' => $nama,
-            'telepon' => $wa,
-            'password' => $password,
-        ]);
+        // Create or update user
+        $user = User::updateOrCreate(
+            ['telepon' => $wa],
+            [
+                'name' => $nama,
+                'password' => $password,
+            ]
+        );
 
         \Illuminate\Support\Facades\Log::info("Created Ka Sppg User: {$user->name} (ID: {$user->id})");
 

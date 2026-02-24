@@ -77,7 +77,7 @@ class LembagaPengusulSeeder extends Seeder
             }
 
             // 1. Buat atau Ambil User (Pimpinan)
-            $pimpinanUser = User::firstOrCreate(
+            $pimpinanUser = User::updateOrCreate(
                 ['email' => $emailPimpinan],
                 [
                     'name' => $namaPimpinan,
