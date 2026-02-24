@@ -227,8 +227,8 @@ class SelfRegistration extends Component
                         // This effectively "activates" the account with user's desired credentials
                         $user->update([
                             'name' => $this->name,
-                            'email' => $this->email ?: $user->email,
-                            'password' => Hash::make($this->password),
+                            'email' => $this->email ?: null,
+                            'password' => $this->password,
                         ]);
                     } else {
                         // Create user
@@ -236,7 +236,7 @@ class SelfRegistration extends Component
                             'name' => $this->name,
                             'telepon' => $this->telepon,
                             'email' => $this->email ?: null,
-                            'password' => Hash::make($this->password),
+                            'password' => $this->password,
                         ]);
                     }
 
