@@ -241,7 +241,7 @@
 
         {{-- Help Text --}}
         <div class="text-center mt-6 text-sm text-gray-500">
-            <p>Butuh bantuan? Hubungi PJ atau admin SPPG Anda.</p>
+            <p>Butuh bantuan? Hubungi Admin Kornas MBM</p>
         </div>
 
     </div>
