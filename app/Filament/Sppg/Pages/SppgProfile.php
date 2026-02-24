@@ -93,7 +93,7 @@ class SppgProfile extends Page implements HasForms
                     ->unique(ignoreRecord: true), // Ignore this record when checking unique
             ]),
             \Filament\Schemas\Components\Section::make('Foto')->schema([
-                \Filament\Forms\Components\FileUpload::make('photo_path')
+                \Filament\Forms\Components\FileUpload::make('photo_path')->disk('public')
                     ->label('Foto SPPG')
                     ->image()
                     ->disk('public')
@@ -105,7 +105,7 @@ class SppgProfile extends Page implements HasForms
                         'required' => 'Foto wajib diisi',
                     ])
                     ->columnSpanFull(),
-                \Filament\Forms\Components\FileUpload::make('gallery_photos')
+                \Filament\Forms\Components\FileUpload::make('gallery_photos')->disk('public')
                     ->label('Galeri Foto')
                     ->multiple()
                     ->reorderable()
@@ -376,7 +376,7 @@ class SppgProfile extends Page implements HasForms
                 ]),
             Fieldset::make('Dokumen SPPG')
                 ->schema([
-                    \Filament\Forms\Components\FileUpload::make('izin_operasional_path')
+                    \Filament\Forms\Components\FileUpload::make('izin_operasional_path')->disk('public')
                         ->label('Dokumen Verval')
                         ->disk('public')
                         ->directory('sppg-docs')
@@ -386,44 +386,44 @@ class SppgProfile extends Page implements HasForms
                         ->validationMessages([
                             'required' => 'Dokumen verval wajib diisi',
                         ]),
-                    \Filament\Forms\Components\FileUpload::make('sertifikat_akreditasi_path')
+                    \Filament\Forms\Components\FileUpload::make('sertifikat_akreditasi_path')->disk('public')
                         ->label('Sertifikat Akreditasi')
                         ->directory('sppg-docs')
                         ->maxSize(10240)
                         ->acceptedFileTypes(['application/pdf'])
                         ->visibility('public'),
-                    \Filament\Forms\Components\FileUpload::make('sertifikat_halal_path')
+                    \Filament\Forms\Components\FileUpload::make('sertifikat_halal_path')->disk('public')
                         ->label('Sertifikat Halal')
                         ->directory('sppg-docs')
                         ->maxSize(10240)
                         ->acceptedFileTypes(['application/pdf', 'image/*']),
-                    \Filament\Forms\Components\FileUpload::make('slhs_path')
+                    \Filament\Forms\Components\FileUpload::make('slhs_path')->disk('public')
                         ->label('SLHS')
                         ->directory('sppg-docs')
                         ->maxSize(10240)
                         ->acceptedFileTypes(['application/pdf', 'image/*']),
-                    \Filament\Forms\Components\FileUpload::make('lhaccp_path')
+                    \Filament\Forms\Components\FileUpload::make('lhaccp_path')->disk('public')
                         ->label('HACCP')
                         ->directory('sppg-docs')
                         ->maxSize(10240)
                         ->acceptedFileTypes(['application/pdf', 'image/*']),
-                    \Filament\Forms\Components\FileUpload::make('iso_path')
+                    \Filament\Forms\Components\FileUpload::make('iso_path')->disk('public')
                         ->label('ISO')
                         ->directory('sppg-docs')
                         ->maxSize(10240)
                         ->acceptedFileTypes(['application/pdf', 'image/*']),
-                    \Filament\Forms\Components\FileUpload::make('sertifikat_lahan_path')
+                    \Filament\Forms\Components\FileUpload::make('sertifikat_lahan_path')->disk('public')
                         ->label('Sertifikat Lahan')
                         ->directory('sppg-docs')
                         ->maxSize(10240)
                         ->acceptedFileTypes(['application/pdf', 'image/*']),
-                    \Filament\Forms\Components\FileUpload::make('dokumen_lain_path')
+                    \Filament\Forms\Components\FileUpload::make('dokumen_lain_path')->disk('public')
                         ->label('Dokumen Lain-lain')
                         ->disk('public')
                         ->directory('sppg-docs')
                         ->maxSize(10240)
                         ->acceptedFileTypes(['application/pdf', 'image/*']),
-                    \Filament\Forms\Components\FileUpload::make('pks_path')
+                    \Filament\Forms\Components\FileUpload::make('pks_path')->disk('public')
                         ->label('Perjanjian Kerjasama')
                         ->disk('public')
                         ->directory('sppg-docs')

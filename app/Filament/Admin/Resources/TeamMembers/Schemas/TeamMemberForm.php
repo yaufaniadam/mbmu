@@ -27,7 +27,7 @@ class TeamMemberForm
                         'staf' => 'Staf',
                     ])
                     ->required(),
-                FileUpload::make('photo_path')
+                FileUpload::make('photo_path')->disk('public')
                     ->label('Foto')
                     ->image()
                     ->directory('team-members')

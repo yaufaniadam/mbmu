@@ -61,7 +61,7 @@ class PostResource extends Resource
                             ->label('Isi Artikel')
                             ->required()
                             ->columnSpanFull(),
-                        FileUpload::make('featured_image')
+                        FileUpload::make('featured_image')->disk('public')
                             ->label('Gambar Utama')
                             ->image()
                             ->disk('public')

@@ -250,7 +250,7 @@ class OperatingExpenses extends TableWidget
                 ->default(now())
                 ->required(),
 
-            FileUpload::make('attachment')
+            FileUpload::make('attachment')->disk('public')
                 ->label('Bukti Lampiran (Nota/Struk)')
                 ->image() // Validates image types for upload
                 ->acceptedFileTypes(['image/*', 'application/pdf']) // Allow PDFs too if needed

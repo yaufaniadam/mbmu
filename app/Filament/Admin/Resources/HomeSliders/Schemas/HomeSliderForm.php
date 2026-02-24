@@ -18,9 +18,10 @@ class HomeSliderForm
                     ->required(),
                 Textarea::make('description')
                     ->columnSpanFull(),
-                FileUpload::make('image_path')
+                FileUpload::make('image_path')->disk('public')
                     ->label('Gambar Slider')
                     ->image()
+                    ->disk('public')
                     ->directory('home-sliders')
                     ->maxSize(10240)
                     ->imagePreviewHeight('200')

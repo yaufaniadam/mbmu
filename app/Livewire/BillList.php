@@ -222,7 +222,7 @@ class BillList extends TableWidget
                             ->columnSpanFull()
                             ->default(fn ($record) => $record->rejection_reason),
 
-                        FileUpload::make('proof_of_payment')
+                        FileUpload::make('proof_of_payment')->disk('public')
                             ->label('Bukti Transfer')
                             ->image()
                             ->directory('invoice-proofs')

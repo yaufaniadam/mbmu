@@ -78,7 +78,7 @@ class MenuResource extends Resource
                             return User::find($user->id)->unitTugas->first()?->id;
                         })
                         ->required(),
-                Forms\Components\FileUpload::make('image')
+                Forms\Components\FileUpload::make('image')->disk('public')
                     ->label('Foto Menu')
                     ->image()
                     ->disk('public')

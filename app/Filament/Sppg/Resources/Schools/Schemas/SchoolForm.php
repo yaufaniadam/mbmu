@@ -189,7 +189,7 @@ class SchoolForm
                         TextInput::make('longitude')
                             ->label('Longitude')
                             ->disabled(),
-                        \Filament\Forms\Components\FileUpload::make('photo_path')
+                        \Filament\Forms\Components\FileUpload::make('photo_path')->disk('public')
                             ->label('Foto Sekolah/Penerima')
                             ->image()
                             ->directory('school-photos')

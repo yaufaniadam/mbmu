@@ -109,7 +109,7 @@ class StaffForm
                             ->label('Alamat')
                             ->rows(3)
                             ->columnSpanFull(),
-                        \Filament\Forms\Components\FileUpload::make('photo_path')
+                        \Filament\Forms\Components\FileUpload::make('photo_path')->disk('public')
                             ->label('Foto')
                             ->avatar()
                             ->image()

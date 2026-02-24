@@ -81,7 +81,7 @@ class ComplaintResource extends Resource
                             ->rows(5)
                             ->required()
                             ->disabled(fn ($record) => $record && $record->status !== 'Open'),
-                        \Filament\Forms\Components\FileUpload::make('supporting_document')
+                        \Filament\Forms\Components\FileUpload::make('supporting_document')->disk('public')
                             ->label('Dokumen Pendukung')
                             ->disk('public')
                             ->directory('complaint-documents')

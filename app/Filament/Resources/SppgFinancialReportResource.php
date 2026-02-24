@@ -62,7 +62,7 @@ class SppgFinancialReportResource extends Resource
                             ->native(false)
                             ->displayFormat('d M Y')
                             ->required(),
-                        FileUpload::make('file_path')
+                        FileUpload::make('file_path')->disk('public')
                             ->label('File Laporan (Excel/PDF)')
                             ->disk('public')
                             ->directory('financial-reports')

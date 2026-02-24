@@ -86,7 +86,7 @@ class InvoiceResource extends Resource
                         Forms\Components\DatePicker::make('due_date')
                             ->label('Jatuh Tempo')
                             ->required(),
-                        Forms\Components\FileUpload::make('proof_of_payment')
+                        Forms\Components\FileUpload::make('proof_of_payment')->disk('public')
                             ->label('Bukti Transfer')
                             ->image()
                             ->directory('invoice-proofs')
@@ -382,7 +382,7 @@ class InvoiceResource extends Resource
                                 Forms\Components\TextInput::make('source_bank')->label('Bank Sumber')->required(),
                                 Forms\Components\TextInput::make('destination_bank')->label('Bank Tujuan (Kornas)')->required(),
                                 Forms\Components\DatePicker::make('transfer_date')->label('Tanggal Transfer')->default(now())->required(),
-                                Forms\Components\FileUpload::make('proof_of_payment')
+                                Forms\Components\FileUpload::make('proof_of_payment')->disk('public')
                                     ->label('Bukti Transfer')
                                     ->image()
                                     ->directory('invoice-proofs')

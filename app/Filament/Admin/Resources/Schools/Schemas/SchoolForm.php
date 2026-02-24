@@ -181,7 +181,7 @@ class SchoolForm
                 TextInput::make('longitude')
                     ->label('Longitude')
                     ->disabled(),
-                FileUpload::make('photo_path')
+                FileUpload::make('photo_path')->disk('public')
                     ->label('Foto Sekolah/Penerima')
                     ->image()
                     ->directory('school-photos')

@@ -155,7 +155,7 @@ class Delivery extends Page implements HasForms
                         ->modalHeading('Selesaikan Pengantaran')
                         ->modalCancelActionLabel('Batal')
                         ->schema([
-                            FileUpload::make('photo_of_proof')
+                            FileUpload::make('photo_of_proof')->disk('public')
                                 ->label('Foto Bukti')
                                 ->image()
                                 ->disk('local')
@@ -239,7 +239,7 @@ class Delivery extends Page implements HasForms
                         ->modalHeading('Selesaikan Penjemputan Alat Makan')
                         ->modalCancelActionLabel('Batal')
                         ->schema([
-                            FileUpload::make('pickup_photo_proof')
+                            FileUpload::make('pickup_photo_proof')->disk('public')
                                 ->label('Foto Bukti Penjemputan')
                                 ->image()
                                 ->disk('local')

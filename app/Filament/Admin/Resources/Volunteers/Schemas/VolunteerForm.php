@@ -43,7 +43,7 @@ class VolunteerForm
                             ]),
                         DatePicker::make('birth_date')
                             ->label('Tanggal Lahir'),
-                        FileUpload::make('photo_path')
+                        FileUpload::make('photo_path')->disk('public')
                             ->label('Foto Relawan')
                             ->image()
                             ->avatar()

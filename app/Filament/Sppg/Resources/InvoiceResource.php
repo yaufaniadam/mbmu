@@ -64,7 +64,7 @@ class InvoiceResource extends Resource
                             ->label('Instruksi Pembayaran')
                             ->content('Silakan transfer ke rekening Lembaga Pengusul (Lihat Detail SPPG), lalu upload bukti transfer di sini.'),
                          
-                         Forms\Components\FileUpload::make('proof_of_payment')
+                         Forms\Components\FileUpload::make('proof_of_payment')->disk('public')
                             ->label('Bukti Transfer')
                             ->image()
                             ->directory('invoice-proofs')

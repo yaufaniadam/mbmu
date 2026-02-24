@@ -31,7 +31,7 @@ class InstructionForm
                             ->required()
                             ->columnSpanFull(),
 
-                        \Filament\Forms\Components\FileUpload::make('attachment_path')
+                        \Filament\Forms\Components\FileUpload::make('attachment_path')->disk('public')
                             ->label('Lampiran (Gambar/Dokumen)')
                             ->helperText('Upload gambar atau dokumen jika diperlukan (Maks. 2MB)')
                             ->disk('local')

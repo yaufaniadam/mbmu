@@ -82,7 +82,7 @@ class DocumentResource extends Resource
                     ->label('Keterangan')
                     ->columnSpanFull(),
 
-                FileUpload::make('file_path')
+                FileUpload::make('file_path')->disk('public')
                     ->label('File')
                     ->acceptedFileTypes(['application/pdf'])
                     ->directory('documents')

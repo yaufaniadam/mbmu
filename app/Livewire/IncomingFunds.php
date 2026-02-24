@@ -274,7 +274,7 @@ class IncomingFunds extends TableWidget
                 ->rows(3)
                 ->columnSpanFull(),
 
-            FileUpload::make('attachment')
+            FileUpload::make('attachment')->disk('public')
                 ->label('Bukti Transfer / Dokumen')
                 ->image() // Validates image types
                 ->acceptedFileTypes(['image/*', 'application/pdf']) // Allow PDFs

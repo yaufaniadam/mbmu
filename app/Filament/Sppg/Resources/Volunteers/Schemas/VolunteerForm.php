@@ -138,7 +138,7 @@ class VolunteerForm
                         Textarea::make('address')
                             ->label('Alamat')
                             ->columnSpanFull(),
-                        \Filament\Forms\Components\FileUpload::make('photo_path')
+                        \Filament\Forms\Components\FileUpload::make('photo_path')->disk('public')
                             ->label('Foto Relawan')
                             ->image()
                             ->avatar()
