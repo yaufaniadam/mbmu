@@ -183,7 +183,7 @@
                             wire:loading.attr="disabled"
                             wire:loading.class="opacity-50 cursor-wait"
                         >
-                            <span wire:loading.remove>Daftar Sekarang</span>
+                            <span wire:loading.remove>Aktivasi Akun</span>
                             <span wire:loading>Memproses...</span>
                         </button>
                     </form>
