@@ -48,8 +48,10 @@ class ClaimAccount extends Component
 
         // 2. Fallback: Find user by phone, then find SPPG they are assigned to, then find token
         if (!$token) {
+            Log::debug('ClaimAccount Fallback Triggered', ['phone' => $normalizedPhone]);
             $user = User::whereIn('telepon', [$normalizedPhone, $alternativePhone])->first();
             if ($user) {
+                Log::debug('ClaimAccount User Found', ['id' => $user->id, 'name' => $user->name]);
                 // Check if they are Kepala SPPG
                 $sppg = \App\Models\Sppg::where('kepala_sppg_id', $user->id)->first();
                 $role = 'kepala_sppg';
@@ -58,12 +60,14 @@ class ClaimAccount extends Component
                 if (!$sppg) {
                     $lembaga = \App\Models\LembagaPengusul::where('pimpinan_id', $user->id)->first();
                     if ($lembaga) {
+                        Log::debug('ClaimAccount Lembaga Found', ['id' => $lembaga->id, 'name' => $lembaga->nama_lembaga]);
                         $sppg = \App\Models\Sppg::where('lembaga_pengusul_id', $lembaga->id)->first();
                         $role = 'kepala_lembaga';
                     }
                 }
 
                 if ($sppg) {
+                    Log::debug('ClaimAccount SPPG Found', ['id' => $sppg->id, 'role' => $role]);
                     $token = RegistrationToken::where('sppg_id', $sppg->id)
                         ->where('role', $role)
                         ->where('is_active', true)
@@ -73,7 +77,17 @@ class ClaimAccount extends Component
                         })
                         ->whereColumn('used_count', '<', 'max_uses')
                         ->first();
+                    
+                    if ($token) {
+                        Log::debug('ClaimAccount Token Found via Fallback', ['token' => $token->token]);
+                    } else {
+                         Log::debug('ClaimAccount Token NOT Found via Fallback', ['sppg_id' => $sppg->id, 'role' => $role]);
+                    }
+                } else {
+                    Log::debug('ClaimAccount SPPG NOT Found for user');
                 }
+            } else {
+                Log::debug('ClaimAccount User NOT Found');
             }
         }
 
