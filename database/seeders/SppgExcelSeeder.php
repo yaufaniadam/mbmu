@@ -41,8 +41,23 @@ class SppgExcelSeeder extends Seeder
         }
 
         $handle = fopen($csvPath, 'r');
+        
+        // Handle BOM if present
+        $bom = fread($handle, 3);
+        if ($bom !== "\xEF\xBB\xBF") {
+            rewind($handle);
+        }
+
         // Use semicolon as delimiter since the file format has changed
         $header = fgetcsv($handle, 0, ';');
+        
+        if (!$header) {
+            $this->command->error('Gagal membaca header CSV.');
+            return;
+        }
+
+        // Clean header names (remove whitespace or hidden chars)
+        $header = array_map(fn($h) => trim(str_replace('"', '', $h)), $header);
         
         $imported = 0;
         $skipped = 0;
@@ -52,16 +67,18 @@ class SppgExcelSeeder extends Seeder
 
         try {
             while (($row = fgetcsv($handle, 0, ';')) !== false) {
-                // Ensure row count matches header count to prevent array_combine errors
+                // Ensure row count matches header count
                 if (count($row) !== count($header)) {
-                    $this->command->warn("Row skipped due to column mismatch.");
+                    $this->command->warn("Row skipped due to column mismatch. Header: " . count($header) . ", Row: " . count($row));
+                    $skipped++;
                     continue;
                 }
 
                 $data = array_combine($header, $row);
                 
                 // Skip if no nama_sppg or kode_sppg
-                if (empty($data['nama_sppg']) || empty($data['kode_sppg'])) {
+                if (empty(trim($data['nama_sppg'] ?? '')) || empty(trim($data['kode_sppg'] ?? ''))) {
+                    $this->command->warn("Row skipped: nama_sppg or kode_sppg is empty.");
                     $skipped++;
                     continue;
                 }
