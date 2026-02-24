@@ -63,8 +63,6 @@ class SppgExcelSeeder extends Seeder
         $skipped = 0;
         $tokensCreated = 0;
 
-        DB::beginTransaction();
-
         try {
             while (($row = fgetcsv($handle, 0, ';')) !== false) {
                 // Ensure row count matches header count
@@ -203,8 +201,6 @@ class SppgExcelSeeder extends Seeder
 
                 $imported++;
             }
-
-            DB::commit();
             
             $this->command->info("Import completed:");
             $this->command->info("- SPPG imported: {$imported}");
@@ -212,8 +208,7 @@ class SppgExcelSeeder extends Seeder
             $this->command->info("- Skipped: {$skipped}");
 
         } catch (\Exception $e) {
-            DB::rollBack();
-            $this->command->error('Import failed: ' . $e->getMessage());
+            if ($this->command) $this->command->error('Import failed: ' . $e->getMessage());
             throw $e;
         }
 
