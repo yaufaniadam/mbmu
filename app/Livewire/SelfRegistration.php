@@ -62,7 +62,7 @@ class SelfRegistration extends Component
         $this->tokenError = '';
 
         $token = RegistrationToken::where('token', strtoupper($this->tokenCode))
-            ->with('sppg')
+            ->with(['sppg.kepalaSppg', 'sppg.kepalaPengusul'])
             ->first();
 
         if (!$token) {
@@ -93,39 +93,21 @@ class SelfRegistration extends Component
         $this->step = 2;
 
         // Pre-fill data from token or existing user record
-        $name = null;
-        $phone = null;
+        $name = $token->recipient_name;
+        $phone = $token->recipient_phone;
 
-        // 1. Try Token Data
-        if ($token->recipient_name) {
-            $name = $token->recipient_name;
-        }
-        
-        if ($token->recipient_phone) {
-            $phone = $token->recipient_phone;
-        }
-
-        // 2. Fallback to existing user records linked to SPPG
+        // Fallback to existing user records linked to SPPG
         if ((!$name || !$phone) && $token->sppg) {
-            \Illuminate\Support\Facades\Log::debug('Registration Fallback Triggered', [
-                'token_id' => $token->id,
-                'role' => $token->role ?? 'N/A',
-                'sppg_id' => $token->sppg_id,
-            ]);
-
             $existingUser = null;
             if ($token->role === 'kepala_sppg') {
                 $existingUser = $token->sppg->kepalaSppg;
-                \Illuminate\Support\Facades\Log::debug('Fallback Kepala SPPG', ['user' => $existingUser ? $existingUser->id : 'null']);
             } elseif ($token->role === 'kepala_lembaga') {
                 $existingUser = $token->sppg->kepalaPengusul;
-                \Illuminate\Support\Facades\Log::debug('Fallback Kepala Lembaga', ['user' => $existingUser ? $existingUser->id : 'null']);
             }
 
             if ($existingUser) {
                 $name = $name ?: $existingUser->name;
                 $phone = $phone ?: $existingUser->telepon;
-                \Illuminate\Support\Facades\Log::debug('Fallback Data Found', ['name' => $name, 'phone' => $phone]);
             }
         }
 
@@ -138,7 +120,6 @@ class SelfRegistration extends Component
         if ($phone) {
             $this->hasTokenData = true;
             $phone = (string) $phone;
-            \Illuminate\Support\Facades\Log::debug('Applying pre-filled phone', ['raw' => $phone]);
             // Strip leading 62 or 0 if present to match the input format (which adds +62)
             if (str_starts_with($phone, '62')) {
                 $this->telepon = substr($phone, 2);
