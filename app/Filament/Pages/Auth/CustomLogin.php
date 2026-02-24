@@ -100,16 +100,33 @@ class CustomLogin extends BaseLogin
 
         $user = Filament::auth()->user();
 
-        if (
-            ($user instanceof \Filament\Models\Contracts\FilamentUser) &&
-            (!$user->canAccessPanel(Filament::getCurrentPanel()))
-        ) {
-            Filament::auth()->logout();
+        // Check if user has access to ANY panel, not just the current one
+        $panels = [
+            Filament::getPanel('admin'),
+            Filament::getPanel('sppg'),
+            Filament::getPanel('lembaga'),
+            Filament::getPanel('production'),
+        ];
 
+        $hasAccessToAnyPanel = false;
+        foreach ($panels as $panel) {
+            if ($panel && $user->canAccessPanel($panel)) {
+                $hasAccessToAnyPanel = true;
+                break;
+            }
+        }
+
+        if (!$hasAccessToAnyPanel) {
+            Filament::auth()->logout();
             $this->throwFailureValidationException();
         }
 
         session()->regenerate();
+
+        // Smart redirect: If they log in from the "wrong" panel, take them to the right one
+        if (!$user->canAccessPanel(Filament::getCurrentPanel())) {
+            return redirect()->to($user->getDashboardUrl());
+        }
 
         return app(LoginResponse::class);
     }

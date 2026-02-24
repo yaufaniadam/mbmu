@@ -68,6 +68,22 @@ class User extends Authenticatable implements FilamentUser
         return true;
     }
 
+    public function getDashboardUrl(): string
+    {
+        if ($this->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Sekretaris Kornas', 'Bendahara Kornas', 'Staf Kornas', 'Staf Akuntan Kornas'])) {
+            return '/admin';
+        }
+
+        if ($this->hasRole('Pimpinan Lembaga Pengusul')) {
+            return '/lembaga';
+        }
+
+        if ($this->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Ahli Gizi', 'Staf Gizi', 'Staf Akuntan', 'Staf Administrator SPPG', 'Staf Pengantaran'])) {
+            return '/sppg';
+        }
+
+        return '/';
+    }
 
     /**
      * The attributes that are mass assignable.
