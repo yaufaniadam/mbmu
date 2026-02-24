@@ -107,7 +107,7 @@
                         </div>
                     </div>
 
-                    <form wire:submit.prevent="register" method="POST" action="javascript:void(0)" x-data="{ showPassword: false }">
+                    <form wire:submit.prevent="register" x-data="{ showPassword: false }">
                         @if(session('error'))
                             <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
                                 {{ session('error') }}
@@ -190,8 +190,7 @@
 
 
                         <button 
-                            type="button"
-                            wire:click="register"
+                            type="submit"
                             class="w-full py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition shadow-lg shadow-emerald-200"
                             wire:loading.attr="disabled"
                             wire:loading.class="opacity-50 cursor-wait"
