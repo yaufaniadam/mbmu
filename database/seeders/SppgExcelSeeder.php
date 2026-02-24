@@ -52,7 +52,7 @@ class SppgExcelSeeder extends Seeder
         $header = fgetcsv($handle, 0, ';');
         
         if (!$header) {
-            $this->command->error('Gagal membaca header CSV.');
+            if ($this->command) $this->command->error('Gagal membaca header CSV.');
             return;
         }
 
@@ -69,16 +69,17 @@ class SppgExcelSeeder extends Seeder
             while (($row = fgetcsv($handle, 0, ';')) !== false) {
                 // Ensure row count matches header count
                 if (count($row) !== count($header)) {
-                    $this->command->warn("Row skipped due to column mismatch. Header: " . count($header) . ", Row: " . count($row));
+                    if ($this->command) $this->command->warn("Row skipped due to column mismatch. Header: " . count($header) . ", Row: " . count($row));
                     $skipped++;
                     continue;
                 }
 
                 $data = array_combine($header, $row);
+                \Illuminate\Support\Facades\Log::info("Processing row: " . ($data['nama_sppg'] ?? 'unknown'));
                 
                 // Skip if no nama_sppg or kode_sppg
                 if (empty(trim($data['nama_sppg'] ?? '')) || empty(trim($data['kode_sppg'] ?? ''))) {
-                    $this->command->warn("Row skipped: nama_sppg or kode_sppg is empty.");
+                    if ($this->command) $this->command->warn("Row skipped: nama_sppg or kode_sppg is empty.");
                     $skipped++;
                     continue;
                 }
