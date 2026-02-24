@@ -125,7 +125,18 @@ class CustomLogin extends BaseLogin
 
         // Smart redirect: If they log in from the "wrong" panel, take them to the right one
         if (!$user->canAccessPanel(Filament::getCurrentPanel())) {
-            return redirect()->to($user->getDashboardUrl());
+            $redirectUrl = $user->getDashboardUrl();
+
+            return new class($redirectUrl) implements LoginResponse {
+                public function __construct(private readonly string $url)
+                {
+                }
+
+                public function toResponse($request): \Symfony\Component\HttpFoundation\Response
+                {
+                    return redirect()->to($this->url);
+                }
+            };
         }
 
         return app(LoginResponse::class);
