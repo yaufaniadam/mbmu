@@ -61,7 +61,7 @@ class ManageFinance extends Page implements HasForms
 
     public function mount(): void
     {
-        Gate::authorize('View:ManageFinance');
+        abort_unless(static::canAccess(), 403);
         $user = auth()->user();
 
         // Default tab based on role
