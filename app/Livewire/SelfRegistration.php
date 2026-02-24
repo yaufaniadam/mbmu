@@ -147,6 +147,11 @@ class SelfRegistration extends Component
 
     public function register()
     {
+        \Illuminate\Support\Facades\Log::info('SelfRegistration: Start register()', [
+            'token' => $this->registrationToken?->token,
+            'phone' => $this->telepon
+        ]);
+
         // Normalize phone number before validation
         $this->telepon = $this->normalizePhone($this->telepon);
 
@@ -258,6 +263,8 @@ class SelfRegistration extends Component
                         // Log error but don't fail the registration
                         \Illuminate\Support\Facades\Log::error('Failed to send registration WA: ' . $e->getMessage());
                     }
+
+                    \Illuminate\Support\Facades\Log::info('SelfRegistration: Registration Successful', ['token' => $this->registrationToken->token]);
 
                     $this->registrationComplete = true;
                     $this->step = 3;

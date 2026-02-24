@@ -107,7 +107,7 @@
                         </div>
                     </div>
 
-                    <form wire:submit.prevent="register" x-data="{ showPassword: false }">
+                    <form wire:submit.prevent="register" method="POST" action="javascript:void(0)" x-data="{ showPassword: false }">
                         @if(session('error'))
                             <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
                                 {{ session('error') }}
@@ -190,7 +190,8 @@
 
 
                         <button 
-                            type="submit"
+                            type="button"
+                            wire:click="register"
                             class="w-full py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition shadow-lg shadow-emerald-200"
                             wire:loading.attr="disabled"
                             wire:loading.class="opacity-50 cursor-wait"
@@ -211,8 +212,10 @@
                         </svg>
                     </div>
 
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Pendaftaran Berhasil! 🎉</h2>
-                    <p class="text-gray-500 dark:text-gray-400 mb-6">Akun Anda telah dibuat dan siap digunakan</p>
+                    <div class="mb-4">
+                        <h2 class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">Aktivasi Berhasil! 🎉</h2>
+                        <p class="text-gray-600 dark:text-gray-400">Akun Anda telah diaktifkan dan siap digunakan.</p>
+                    </div>
 
                     {{-- Credentials Card --}}
                     <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 mb-6 text-left">
