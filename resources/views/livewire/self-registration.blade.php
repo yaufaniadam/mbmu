@@ -125,7 +125,7 @@
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Lengkap *</label>
                                 <input 
                                     type="text" 
-                                    wire:model="name"
+                                    wire:model.blur="name"
                                     placeholder="Masukkan nama lengkap"
                                     class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                                 >
@@ -161,7 +161,7 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email <span class="text-gray-400">(opsional)</span></label>
                             <input 
                                 type="email" 
-                                wire:model="email"
+                                wire:model.blur="email"
                                 placeholder="email@contoh.com"
                                 class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                             >
@@ -174,7 +174,7 @@
                             <div class="relative">
                                 <input 
                                     :type="showPassword ? 'text' : 'password'" 
-                                    wire:model="password"
+                                    wire:model.blur="password"
                                     placeholder="Masukkan password untuk login"
                                     class="w-full px-4 py-3 pr-12 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                                 >
