@@ -36,7 +36,14 @@ class MenuResource extends Resource
     
     protected static ?string $pluralModelLabel = 'Menu Makanan';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Situs & Konten';
+    public static function getNavigationGroup(): ?string
+    {
+        if (Auth::user()?->hasRole('Kepala SPPG')) {
+            return 'Operasional';
+        }
+
+        return 'Situs & Konten';
+    }
 
     protected static ?int $navigationSort = 3;
 
