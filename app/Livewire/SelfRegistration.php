@@ -34,6 +34,7 @@ class SelfRegistration extends Component
     public int $step = 1; // 1: Validasi Token, 2: Isi Data, 3: Sukses
     public bool $registrationComplete = false;
     public string $generatedPassword = '';
+    public bool $hasTokenData = false;
 
     // Role labels for display
     public array $roleLabels = [
@@ -94,9 +95,11 @@ class SelfRegistration extends Component
         // Pre-fill data from token if available
         if ($token->recipient_name) {
             $this->name = $token->recipient_name;
+            $this->hasTokenData = true;
         }
         
         if ($token->recipient_phone) {
+            $this->hasTokenData = true;
             // Strip leading 62 or 0 if present to match the input format (which adds +62)
             $phone = $token->recipient_phone;
             if (str_starts_with($phone, '62')) {

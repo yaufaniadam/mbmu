@@ -121,8 +121,8 @@
                                 type="text" 
                                 wire:model="name"
                                 placeholder="Masukkan nama lengkap"
-                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition {{ $registrationToken->recipient_name ? 'bg-gray-50 text-gray-500 cursor-not-allowed' : '' }}"
-                                {{ $registrationToken->recipient_name ? 'readonly' : '' }}
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition {{ $hasTokenData && $name ? 'bg-gray-50 text-gray-500 cursor-not-allowed' : '' }}"
+                                {{ $hasTokenData && $name ? 'readonly' : '' }}
                             >
                             @error('name') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
@@ -136,8 +136,8 @@
                                     type="tel" 
                                     wire:model="telepon"
                                     placeholder="81234567890"
-                                    class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition {{ $registrationToken->recipient_phone ? 'bg-gray-50 text-gray-500 cursor-not-allowed' : '' }}"
-                                    {{ $registrationToken->recipient_phone ? 'readonly' : '' }}
+                                    class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition {{ $hasTokenData && $telepon ? 'bg-gray-50 text-gray-500 cursor-not-allowed' : '' }}"
+                                    {{ $hasTokenData && $telepon ? 'readonly' : '' }}
                                 >
                             </div>
                             <p class="text-xs text-gray-400 mt-1">Akan digunakan untuk login & menerima notifikasi</p>
