@@ -97,15 +97,19 @@ class SelfRegistration extends Component
         if (!$token->isValid()) {
             if (!$token->is_active) {
                 $this->tokenError = 'Kode registrasi sudah tidak aktif.';
+                return;
             } elseif ($token->expires_at && $token->expires_at->isPast()) {
                 $this->tokenError = 'Kode registrasi sudah kadaluarsa.';
+                return;
             } elseif ($token->used_count >= $token->max_uses) {
                 if (auth()->check()) {
                     return $this->redirectDashboard();
                 }
-                $this->tokenError = 'Kode registrasi sudah mencapai batas penggunaan. Silakan login menggunakan akun yang telah diaktivasi.';
+                // Allow proceeding to Step 2 even if used, so they can "re-activate" 
+                // or fix credentials if they have the link.
+            } else {
+                return;
             }
-            return;
         }
 
         // Check if role matches (if role is specified in URL)
