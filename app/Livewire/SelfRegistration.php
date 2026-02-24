@@ -51,10 +51,34 @@ class SelfRegistration extends Component
         $this->role = $role;
         $this->tokenCode = $token;
 
+        // If user is already logged in, take them to their dashboard
+        if (auth()->check()) {
+            return $this->redirectDashboard();
+        }
+
         // If token is provided in URL, validate it immediately
         if ($this->tokenCode) {
             $this->validateToken();
         }
+    }
+
+    protected function redirectDashboard()
+    {
+        $user = auth()->user();
+        
+        if ($user->hasRole('Pimpinan Lembaga Pengusul')) {
+            return redirect()->to('/lembaga');
+        } 
+        
+        if ($user->hasAnyRole(['Kepala SPPG', 'Staf Gizi', 'Staf Akuntan', 'Staf Administrator SPPG'])) {
+            return redirect()->to('/sppg');
+        }
+
+        if ($user->hasRole('super_admin')) {
+            return redirect()->to('/admin');
+        }
+
+        return redirect()->to('/');
     }
 
     public function validateToken()
@@ -76,7 +100,10 @@ class SelfRegistration extends Component
             } elseif ($token->expires_at && $token->expires_at->isPast()) {
                 $this->tokenError = 'Kode registrasi sudah kadaluarsa.';
             } elseif ($token->used_count >= $token->max_uses) {
-                $this->tokenError = 'Kode registrasi sudah mencapai batas penggunaan.';
+                if (auth()->check()) {
+                    return $this->redirectDashboard();
+                }
+                $this->tokenError = 'Kode registrasi sudah mencapai batas penggunaan. Silakan login menggunakan akun yang telah diaktivasi.';
             }
             return;
         }
@@ -266,8 +293,11 @@ class SelfRegistration extends Component
 
                     \Illuminate\Support\Facades\Log::info('SelfRegistration: Registration Successful', ['token' => $this->registrationToken->token]);
 
+                    // Automatically login the user
+                    auth()->login($user);
+
                     $this->registrationComplete = true;
-                    return redirect()->route('register.success');
+                    return $this->redirectDashboard();
 
                 } catch (\Exception $e) {
                     DB::rollBack();
