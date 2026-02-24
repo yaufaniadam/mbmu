@@ -114,7 +114,7 @@
                         </div>
                         <div class="flex flex-col gap-4">
                             <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Bantuan</h4>
-                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('guide.public') }}">Panduan Aplikasi</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="https://docs.google.com/document/d/1bdtnxtsVPqqniKRn2MUxf9Dcdx7dBat0/edit?usp=sharing&ouid=117369864434049511282&rtpof=true&sd=true" target="_blank">Panduan Aplikasi</a>
 
                         </div>
                         <div class="flex flex-col gap-4">

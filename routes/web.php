@@ -39,7 +39,7 @@ Route::get('/profil', function () {
 
 
 Route::get('/panduan', function () {
-    return view('public.guide');
+    return redirect('https://docs.google.com/document/d/1bdtnxtsVPqqniKRn2MUxf9Dcdx7dBat0/edit?usp=sharing&ouid=117369864434049511282&rtpof=true&sd=true');
 })->name('guide.public');
 
 Route::get('/tim', function () {
