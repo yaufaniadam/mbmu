@@ -107,7 +107,7 @@
                         </div>
                     </div>
 
-                    <form wire:submit.prevent="register" onsubmit="return false;" x-data="{ showPassword: false }">
+                    <form wire:submit.prevent="register" x-data="{ showPassword: false }">
                         @if(session('error'))
                             <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
                                 {{ session('error') }}

@@ -32,7 +32,6 @@
         }
     </script>
     @stack('styles')
-    @livewireStyles
 </head>
 <body class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-display overflow-x-hidden w-full transition-colors duration-300">
     <div class="relative flex flex-col min-h-screen w-full">
@@ -209,6 +208,5 @@
         }
     </script>
     @stack('scripts')
-    @livewireScripts
 </body>
 </html>
