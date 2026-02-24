@@ -15,6 +15,8 @@ class PayIncentive extends Page
 
     protected static string|UnitEnum|null $navigationGroup = 'Keuangan';
 
+    protected static ?string $title = 'Bayar Insentif';
+
     protected static ?string $navigationLabel = 'Bayar Insentif';
 
     protected static ?int $navigationSort = 3;
