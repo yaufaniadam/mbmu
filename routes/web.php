@@ -62,6 +62,9 @@ Route::get('/artikel/{post:slug}', [\App\Http\Controllers\PublicBlogController::
 
 // Self Registration Routes
 Route::get('/daftar', SelfRegistration::class)->name('register.self');
+Route::get('/daftar/sukses', function() {
+    return view('public.registration-success');
+})->name('register.success');
 Route::get('/daftar/{role}/{token}', SelfRegistration::class)->name('register.self.token');
 Route::get('/aktivasi', \App\Livewire\ClaimAccount::class)->name('claim.account');
 Route::get('/lupa-password', \App\Livewire\ForgotPassword::class)->name('password.request');

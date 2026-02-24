@@ -267,7 +267,7 @@ class SelfRegistration extends Component
                     \Illuminate\Support\Facades\Log::info('SelfRegistration: Registration Successful', ['token' => $this->registrationToken->token]);
 
                     $this->registrationComplete = true;
-                    $this->step = 3;
+                    return redirect()->route('register.success');
 
                 } catch (\Exception $e) {
                     DB::rollBack();
