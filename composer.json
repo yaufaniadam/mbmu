@@ -20,6 +20,7 @@
         "laravolt/indonesia": "^0.38.0",
         "league/flysystem-aws-s3-v3": "^3.0",
         "livewire/livewire": "^3.6",
+        "mews/purifier": "^3.4",
         "openspout/openspout": "^4.32",
         "spatie/laravel-permission": "^6.21"
     },

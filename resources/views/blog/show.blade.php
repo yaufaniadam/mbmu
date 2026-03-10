@@ -74,7 +74,7 @@
                 
                 <!-- Text Content -->
                 <div class="flex flex-col gap-6 text-[#181511] dark:text-gray-200 text-lg leading-8 flex-1 prose prose-lg prose-orange dark:prose-invert max-w-none">
-                    {!! $post->content !!}
+                    {!! clean($post->content) !!}
                 </div>
             </div>
         </article>

@@ -5,7 +5,7 @@
         </div>
         
         <div class="text-gray-900 dark:text-gray-100">
-            {!! $instruction->content !!}
+            {!! clean($instruction->content) !!}
         </div>
     </div>
 
