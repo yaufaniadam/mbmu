@@ -27,6 +27,17 @@ class AssignedSppg extends Widget
     {
         $user = Auth::user();
 
-        return $user->hasAnyRole(['Superadmin', 'Ahli Gizi', 'Staf Gizi', 'Staf Pengantaran', 'Staf Akuntan']);
+        if (!$user) return false;
+
+        $hasRole = $user->hasAnyRole(['Superadmin', 'Ahli Gizi', 'Staf Gizi', 'Staf Pengantaran', 'Staf Akuntan']);
+        
+        if (!$hasRole) return false;
+
+        // If not superadmin, check if they actually have an assigned SPPG
+        if (!$user->hasRole('Superadmin')) {
+            return $user->sppgDiKepalai()->exists() || $user->unitTugas()->exists();
+        }
+
+        return true;
     }
 }

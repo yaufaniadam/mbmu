@@ -19,7 +19,8 @@ class LembagaPengusulsTable
                     ->searchable(),
                 TextColumn::make('pimpinan.name')
                     ->label('Perwakilan Yayasan')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

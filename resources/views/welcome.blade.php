@@ -57,13 +57,7 @@
                             {{ $slider->description }}
                         </p>
                         @endif
-                        @if($slider->link_url)
-                        <div class="flex gap-4 pt-4">
-                            <a href="{{ $slider->link_url }}" class="h-12 px-8 text-white text-base font-bold rounded-lg transition-all shadow-lg inline-flex items-center justify-center hover:shadow-xl hover:scale-105" style="background: linear-gradient(45deg, #1C3B7C 0%, #1C3B7C 60%, #1E8657 100%);">
-                                Selengkapnya
-                            </a>
-                        </div>
-                        @endif
+                        
                     </div>
                 </div>
             </div>
@@ -119,86 +113,6 @@
         </div>
     </div>
 </section>
-
-
-
-{{-- Testimony Section (Hidden for now) --}}
-{{-- <section class="py-20 px-4 md:px-10 bg-orange-50 dark:bg-background-dark w-full border-t border-orange-100 dark:border-gray-800">
-    <div class="max-w-[1280px] mx-auto flex flex-col gap-12">
-        <div class="text-center max-w-3xl mx-auto flex flex-col gap-4">
-            <span class="text-primary font-bold uppercase tracking-wider text-sm">Community Voices</span>
-            <h2 class="text-3xl md:text-4xl font-bold text-text-main dark:text-white leading-tight">Stories from Our School Family</h2>
-            <p class="text-text-secondary text-lg">
-                Hear directly from the parents and teachers witnessing the daily transformation in our children's lives.
-            </p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-white dark:bg-surface-dark p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-orange-100 dark:border-gray-800 flex flex-col gap-6">
-                <div class="text-primary flex gap-1">
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                </div>
-                <blockquote class="text-text-main dark:text-white text-lg font-medium leading-relaxed flex-1 italic">
-                    "Since the free meal program started, my son is much more active and focuses better in class. It's a huge relief knowing he gets a healthy, balanced lunch every single day."
-                </blockquote>
-                <div class="flex items-center gap-4 mt-auto">
-                    <div class="h-12 w-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl border-2 border-white shadow-sm">
-                        SA
-                    </div>
-                    <div>
-                        <div class="font-bold text-text-main dark:text-white">Siti Aminah</div>
-                        <div class="text-sm text-text-secondary font-medium">Orang Tua Siswa</div>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-surface-dark p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-orange-100 dark:border-gray-800 flex flex-col gap-6">
-                <div class="text-primary flex gap-1">
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                </div>
-                <blockquote class="text-text-main dark:text-white text-lg font-medium leading-relaxed flex-1 italic">
-                    "Attendance has improved significantly. Students are no longer lethargic in the afternoon sessions. The difference in their energy levels and participation is night and day."
-                </blockquote>
-                <div class="flex items-center gap-4 mt-auto">
-                    <div class="h-12 w-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold text-xl border-2 border-white shadow-sm">
-                        BS
-                    </div>
-                    <div>
-                        <div class="font-bold text-text-main dark:text-white">Budi Santoso</div>
-                        <div class="text-sm text-text-secondary font-medium">Guru Wali Kelas</div>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-surface-dark p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-orange-100 dark:border-gray-800 flex flex-col gap-6">
-                <div class="text-primary flex gap-1">
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                    <span class="material-symbols-outlined text-xl text-yellow-400 fill-current">star</span>
-                </div>
-                <blockquote class="text-text-main dark:text-white text-lg font-medium leading-relaxed flex-1 italic">
-                    "This initiative is a blessing. The menu is varied and nutritious. My daughter has started eating vegetables she used to refuse at home! Thank you for caring for our kids."
-                </blockquote>
-                <div class="flex items-center gap-4 mt-auto">
-                    <div class="h-12 w-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xl border-2 border-white shadow-sm">
-                        RW
-                    </div>
-                    <div>
-                        <div class="font-bold text-text-main dark:text-white">Rina Wijaya</div>
-                        <div class="text-sm text-text-secondary font-medium">Orang Tua Siswa</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section> --}}
 
 
 @endsection

@@ -33,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login(\App\Filament\Pages\Auth\CustomLogin::class)
             ->profile(\App\Filament\Pages\Auth\EditProfile::class)
-            ->brandLogo(asset('logombm-small.png'))
+            ->brandLogo(asset('logokornas.png'))
             ->darkModeBrandLogo(asset('logombm-w.png'))
             ->brandLogoHeight('3rem')
             ->plugins([

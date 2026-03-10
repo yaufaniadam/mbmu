@@ -5,6 +5,10 @@ use App\Livewire\SelfRegistration;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    return view('splash');
+})->name('index');
+
+Route::get('/beranda', function () {
     $posts = \App\Models\Post::where('status', 'published')
         ->orderBy('id', 'desc')
         ->take(4)
@@ -19,7 +23,7 @@ Route::get('/', function () {
         ->get();
     
     return view('welcome', compact('posts', 'sliders', 'features'));
-});
+})->name('home');
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');

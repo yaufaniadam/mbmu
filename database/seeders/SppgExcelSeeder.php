@@ -202,8 +202,10 @@ class SppgExcelSeeder extends Seeder
                 $imported++;
             }
             
+            $lembagaCount = \App\Models\LembagaPengusul::count();
             $this->command->info("Import completed:");
             $this->command->info("- SPPG imported: {$imported}");
+            $this->command->info("- Lembaga Pengusul: {$lembagaCount}");
             $this->command->info("- Registration tokens created: {$tokensCreated}");
             $this->command->info("- Skipped: {$skipped}");
 
@@ -243,9 +245,8 @@ class SppgExcelSeeder extends Seeder
             return null;
         }
 
-        // Combined Name: "Pengusul - Nama SPPG"
-        // e.g., "PDM Kota Serang - SMP Birrul Walidain"
-        $namaLembaga = $namaPengusulRaw . ' - ' . $namaSppg;
+        // Unique Name based only on 'pengusul' column
+        $namaLembaga = $namaPengusulRaw;
 
         // Find existing or create new
         return LembagaPengusul::firstOrCreate(
@@ -286,51 +287,39 @@ class SppgExcelSeeder extends Seeder
             return null;
         }
 
-        // Check if user already exists by phone number
-        $existingUser = User::where('telepon', $waPj)->first();
-        if ($existingUser) {
-            // User exists, just return
-            return $existingUser;
-        }
-
         // Generate password: mbm + last 4 digits of phone
         $password = 'mbm' . substr($waPj, -4);
 
-        // Create or update user
-        $user = User::updateOrCreate(
+        // Create or find user without overwriting name if it exists
+        $user = User::firstOrCreate(
             ['telepon' => $waPj],
             [
                 'name' => $namaPj,
-                'password' => $password,
+                'password' => $password, 
             ]
         );
 
-        \Illuminate\Support\Facades\Log::info("Created PJ User: {$user->name} (ID: {$user->id})");
+        \Illuminate\Support\Facades\Log::info("Created/Found PJ User: {$user->name} (ID: {$user->id})");
 
-        // Assign "Pimpinan Lembaga Pengusul" (Perwakilan Yayasan) AND "PJ Pelaksana" roles
-        // This ensures they have full access to Admin Panel (as Pimpinan) and Operational features (as PJ)
-        
-        $pimpinanRole = Role::where('name', 'Pimpinan Lembaga Pengusul')->first();
-        if ($pimpinanRole) {
-            $user->assignRole($pimpinanRole);
-        }
-
+        // Always assign "PJ Pelaksana" role
         $pjRole = Role::where('name', 'PJ Pelaksana')->first();
-        if ($pjRole) {
+        if ($pjRole && !$user->hasRole($pjRole)) {
             $user->assignRole($pjRole);
         }
 
-        // Link User to Lembaga Pengusul if not already linked
-        // NOTE: Since Lembaga Pengusul names are now unique per SPPG, this logic might need adjustment if users reuse the SAME user for multiple Lembagas.
-        // But assuming 1 user -> 1 Pimpinan for now, or just setting it if empty.
-        // Re-fetching the specific lembaga created/found above is safer if we passed it in, but here we construct name again.
+        // Link User to Lembaga Pengusul if not already linked as pimpinan
         $namaPengusulRaw = trim($data['pengusul'] ?? '');
-        $namaSppg = trim($data['nama_sppg'] ?? '');
-        $targetLembagaName = $namaPengusulRaw . ' - ' . $namaSppg;
+        $lembaga = LembagaPengusul::where('nama_lembaga', $namaPengusulRaw)->first();
 
-        $lembaga = LembagaPengusul::where('nama_lembaga', $targetLembagaName)->first();
+        // If the Lembaga doesn't have a pimpinan yet, assign this user
         if ($lembaga && !$lembaga->pimpinan_id) {
             $lembaga->update(['pimpinan_id' => $user->id]);
+            
+            // This user is now the Pimpinan, give them the Pimpinan Role
+            $pimpinanRole = Role::where('name', 'Pimpinan Lembaga Pengusul')->first();
+            if ($pimpinanRole && !$user->hasRole($pimpinanRole)) {
+                $user->assignRole($pimpinanRole);
+            }
         }
 
         return $user;
@@ -338,18 +327,20 @@ class SppgExcelSeeder extends Seeder
 
     protected function findOrCreateKepalaSppgUser(array $data): ?User
     {
-        $nama = trim($data['ka_sppg']);
-        $wa = $this->normalizePhone(trim($data['wa_ka_sppg']));
+        $nama = trim($data['ka_sppg'] ?? '');
+        $wa = trim($data['wa_ka_sppg'] ?? '');
 
         if (empty($nama) || empty($wa)) {
             return null;
         }
 
+        $wa = $this->normalizePhone($wa);
+
         // Generate password: mbm + last 4 digits of phone
         $password = 'mbm' . substr($wa, -4);
 
-        // Create or update user
-        $user = User::updateOrCreate(
+        // Create or find user without overwriting name if it exists
+        $user = User::firstOrCreate(
             ['telepon' => $wa],
             [
                 'name' => $nama,
