@@ -207,13 +207,14 @@ class SppgResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $user = Auth::user();
+        $query = parent::getEloquentQuery()->with(['lembagaPengusul', 'kepalaSppg']);
+
         if ($user->hasRole('Pimpinan Lembaga Pengusul')) {
             $sppg = User::find($user->id)->lembagaDipimpin;
 
-            return parent::getEloquentQuery()
-                ->where('lembaga_pengusul_id', $sppg->id);
+            return $query->where('lembaga_pengusul_id', $sppg->id);
         }
 
-        return parent::getEloquentQuery();
+        return $query;
     }
 }
