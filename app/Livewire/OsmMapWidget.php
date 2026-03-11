@@ -17,6 +17,8 @@ class OsmMapWidget extends Widget
 
     protected int|string|array $columnSpan = 'full';
 
+    protected static bool $isLazy = true;
+
     // Example data to display on the map
     public array $markers = [];
 
@@ -49,6 +51,7 @@ class OsmMapWidget extends Widget
 
         // 2. Base Query
         $query = Sppg::query()
+            ->with(['kepalaSppg'])
             ->whereNotNull('latitude')
             ->whereNotNull('longitude');
 

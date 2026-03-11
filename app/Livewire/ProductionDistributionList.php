@@ -19,7 +19,7 @@ class ProductionDistributionList extends TableWidget
 
     protected static ?string $heading = 'Distribusi'; // Optional: Add a heading
 
-    protected static bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     public function table(Table $table): Table
     {

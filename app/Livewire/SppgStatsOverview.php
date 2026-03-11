@@ -17,6 +17,8 @@ class SppgStatsOverview extends StatsOverviewWidget
 
     protected int|string|array $columnSpan = 'full';
 
+    protected static bool $isLazy = true;
+
     protected function getStats(): array
     {
         /** @var \App\Models\User $user */
