@@ -19,11 +19,14 @@
         @endif
 
 
-        {{-- Tab 2: Bayar Sewa (SPPG Only) --}}
-        @if (auth()->user()->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']))
+        {{-- Tab 2: Buku Kas & Bayar Insentif --}}
+        @if (auth()->user()->hasAnyRole(['Kepala SPPG', 'Staf Akuntan']))
             <x-filament::tabs.item :active="$activeTab === 'buku_kas'" wire:click="$set('activeTab', 'buku_kas')" icon="heroicon-o-book-open">
                 Buku Kas
             </x-filament::tabs.item>
+        @endif
+
+        @if (auth()->user()->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']))
             <x-filament::tabs.item :active="$activeTab === 'pay_rent'" wire:click="$set('activeTab', 'pay_rent')" icon="heroicon-o-credit-card">
                 Bayar Insentif
             </x-filament::tabs.item>

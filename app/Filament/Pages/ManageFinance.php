@@ -105,7 +105,7 @@ class ManageFinance extends Page implements HasForms
             // 1. Buku Kas Pusat (Kornas Only)
             'buku_kas_pusat' => $user->hasAnyRole(['Superadmin', 'Staf Kornas', 'Staf Akuntan Kornas', 'Ketua Kornas']),
 
-            'buku_kas' => $user->hasAnyRole(['Superadmin', 'Kepala SPPG', 'PJ Pelaksana', 'Staf Akuntan']),
+            'buku_kas' => $user->hasAnyRole(['Superadmin', 'Kepala SPPG', 'Staf Akuntan']),
             
             'pay_rent' => $user->hasAnyRole(['Kepala SPPG', 'Staf Akuntan']),
             'verify_rent' => $user->hasAnyRole(['Superadmin', 'Pimpinan Lembaga Pengusul', 'PJ Pelaksana', 'Staf Akuntan Kornas']),
