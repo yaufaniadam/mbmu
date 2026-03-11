@@ -146,7 +146,7 @@ class SppgResource extends Resource
                     ->sortable()
                     ->weight('bold'),
                 
-                Tables\Columns\TextColumn::make('kepala.name')
+                Tables\Columns\TextColumn::make('kepalaSppg.name')
                     ->label('Kepala SPPG')
                     ->searchable()
                     ->default('-'),
@@ -180,8 +180,8 @@ class SppgResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery()->with(['kepala', 'city', 'province']);
         $user = auth()->user();
+        $query = parent::getEloquentQuery()->with(['kepalaSppg', 'city', 'province']);
 
         // Filter hanya SPPG yang dibawahi lembaga ini
         $lembaga = $user->lembagaDipimpin;

@@ -27,9 +27,9 @@ class SppgStatsOverview extends StatsOverviewWidget
         $isNationalView = false;
 
         if ($user->hasRole('Kepala SPPG')) {
-            $sppg = User::find($user->id)->sppgDikepalai;
+            $sppg = $user->sppgDiKepalai;
         } elseif ($user->hasAnyRole(['PJ Pelaksana', 'Ahli Gizi', 'Staf Administrator SPPG', 'Staf Akuntan', 'Staf Gizi', 'Staf Pengantaran'])) {
-            $sppg = User::find($user->id)->unitTugas->first();
+            $sppg = $user->unitTugas->first();
         } else {
             $sppgId = $this->pageFilters['sppg_id'] ?? null;
             if ($sppgId) {

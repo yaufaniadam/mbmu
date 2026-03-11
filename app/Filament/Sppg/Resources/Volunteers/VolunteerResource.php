@@ -100,29 +100,29 @@ class VolunteerResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $user = Auth::user();
+        $user = auth()->user();
         $query = parent::getEloquentQuery()->with(['user']);
 
         if ($user->hasRole('Kepala SPPG')) {
-            $sppg = User::find($user->id)->sppgDikepalai;
+            $sppg = $user->sppgDiKepalai;
 
             if (!$sppg) {
-                return parent::getEloquentQuery()->whereRaw('1 = 0');
+                return $query->whereRaw('1 = 0');
             }
 
-            return parent::getEloquentQuery()->where('sppg_id', $sppg->id);
+            return $query->where('sppg_id', $sppg->id);
         }
 
         if ($user->hasAnyRole(['PJ Pelaksana', 'Ahli Gizi', 'Staf Administrator SPPG', 'Staf Akuntan', 'Staf Gizi', 'Staf Pengantaran'])) {
-            $unitTugas = User::find($user->id)->unitTugas->first();
+            $unitTugas = $user->unitTugas->first();
 
             if (!$unitTugas) {
-                return parent::getEloquentQuery()->whereRaw('1 = 0');
+                return $query->whereRaw('1 = 0');
             }
 
-            return parent::getEloquentQuery()->where('sppg_id', $unitTugas->id);
+            return $query->where('sppg_id', $unitTugas->id);
         }
 
-        return parent::getEloquentQuery();
+        return $query;
     }
 }

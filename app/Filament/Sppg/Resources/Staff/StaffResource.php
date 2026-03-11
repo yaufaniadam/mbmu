@@ -80,35 +80,33 @@ class StaffResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $user = Auth::user();
+        $user = auth()->user();
         $query = parent::getEloquentQuery()->with(['roles']);
 
         if ($user->hasRole('Kepala SPPG')) {
-            $sppg = User::find($user->id)->sppgDikepalai;
+            $sppg = $user->sppgDiKepalai;
 
             if (!$sppg) {
-                return parent::getEloquentQuery()->whereRaw('1 = 0');
+                return $query->whereRaw('1 = 0');
             }
 
-            return parent::getEloquentQuery()
-                ->whereHas('unitTugas', function (Builder $query) use ($sppg) {
-                    $query->where('sppg_id', $sppg->id);
-                });
+            return $query->whereHas('unitTugas', function (Builder $query) use ($sppg) {
+                $query->where('sppg_id', $sppg->id);
+            });
         }
 
         if ($user->hasRole('Staf Administrator SPPG')) {
-            $unitTugas = User::find($user->id)->unitTugas->first();
+            $unitTugas = $user->unitTugas->first();
 
             if (!$unitTugas) {
-                return parent::getEloquentQuery()->whereRaw('1 = 0');
+                return $query->whereRaw('1 = 0');
             }
 
-            return parent::getEloquentQuery()
-                ->whereHas('unitTugas', function (Builder $query) use ($unitTugas) {
-                    $query->where('sppg_id', $unitTugas->id);
-                });
+            return $query->whereHas('unitTugas', function (Builder $query) use ($unitTugas) {
+                $query->where('sppg_id', $unitTugas->id);
+            });
         }
 
-        return parent::getEloquentQuery();
+        return $query;
     }
 }
