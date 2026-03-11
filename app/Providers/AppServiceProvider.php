@@ -59,6 +59,10 @@ class AppServiceProvider extends ServiceProvider
             fn (): string => view('filament.components.panel-switcher'),
         );
 
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::FOOTER,
+            fn (): string => view('filament.components.debug-footer'),
+        );
 
 
     }
