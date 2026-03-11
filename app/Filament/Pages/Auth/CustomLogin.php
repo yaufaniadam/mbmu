@@ -134,7 +134,7 @@ class CustomLogin extends BaseLogin
 
                 public function toResponse($request): \Symfony\Component\HttpFoundation\Response
                 {
-                    return redirect()->to($this->url);
+                    return response()->redirectTo($this->url);
                 }
             };
         }
