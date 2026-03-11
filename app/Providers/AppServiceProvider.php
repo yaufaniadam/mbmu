@@ -56,12 +56,12 @@ class AppServiceProvider extends ServiceProvider
 
         FilamentView::registerRenderHook(
             PanelsRenderHook::USER_MENU_BEFORE,
-            fn (): string => view('filament.components.panel-switcher'),
+            fn (): string => view('filament.components.panel-switcher')->render(),
         );
 
         FilamentView::registerRenderHook(
             PanelsRenderHook::FOOTER,
-            fn (): string => view('filament.components.debug-footer'),
+            fn (): string => view('filament.components.debug-footer')->render(),
         );
 
 
