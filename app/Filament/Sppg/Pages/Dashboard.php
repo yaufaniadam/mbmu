@@ -73,25 +73,35 @@ class Dashboard extends BaseDashboard
         // Check if user is Pimpinan or PJ Pelaksana
         $isPimpinan = $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana']);
 
-        // 2. Section Visibility: Visible if user is EITHER a Map Role OR Pimpinan
-        $canSeeSection = $isMapRole || $isPimpinan;
+        // 2. Section Visibility: 
+        // - Hide for PJ Pelaksana & Kepala SPPG (only 1 SPPG)
+        // - Show for Map Roles (all SPPGs)
+        // - Show for Pimpinan Lembaga (might have multiple SPPGs)
+        $isKepalaSppg = $user->hasRole('Kepala SPPG');
+        $canSeeSection = ($isMapRole || ($isPimpinan && !$isPjPelaksana)) && !$isKepalaSppg;
 
         // --- Prepare SPPG Data ---
         $sppgOptions = [];
         $defaultSppgId = null;
 
-        if ($canSeeSection) {
-            // Logic: Pimpinan sees their own SPPGs; Map Roles see ALL.
-            if ($isPimpinan) {
-                // Re-fetch user to ensure relationships are loaded if needed, or use Auth user directly
-                $sppgs = User::find($user->id)->lembagaDipimpin?->sppgs;
-            } else {
+        if ($isMapRole || $isPimpinan || $isKepalaSppg) {
+            if ($isMapRole) {
                 $sppgs = Sppg::all();
+            } elseif ($isKepalaSppg) {
+                 $sppgs = collect([$user->getManagedSppg()]);
+            } else {
+                // Pimpinan or PJ (though PJ is now hidden, we keep logic for default value)
+                $sppgs = User::find($user->id)->lembagaDipimpin?->sppgs;
+                
+                // Fallback for PJ if needed
+                if (!$sppgs && $isPjPelaksana) {
+                    $sppgs = collect([$user->getManagedSppg()]);
+                }
             }
 
             if ($sppgs && $sppgs->isNotEmpty()) {
                 $sppgOptions = $sppgs->pluck('nama_sppg', 'id');
-                $defaultSppgId = $sppgs->first()->id;
+                $defaultSppgId = $sppgs->filter()->first()?->id;
             }
         }
 
