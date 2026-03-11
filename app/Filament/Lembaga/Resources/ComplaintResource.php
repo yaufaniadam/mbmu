@@ -180,7 +180,7 @@ class ComplaintResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery();
+        $query = parent::getEloquentQuery()->with(['user', 'responder']);
         $user = Auth::user();
 
         // LP only sees their own LP complaints

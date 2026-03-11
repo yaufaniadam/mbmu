@@ -27,6 +27,11 @@ class DocumentResource extends Resource
 {
     protected static ?string $model = Document::class;
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['lembagaPengusul']);
+    }
+
     protected static ?string $modelLabel = 'Dokumen';
     
     protected static ?string $pluralModelLabel = 'Dokumen';

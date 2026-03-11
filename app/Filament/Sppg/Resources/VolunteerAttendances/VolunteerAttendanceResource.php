@@ -20,6 +20,11 @@ class VolunteerAttendanceResource extends Resource
 {
     protected static ?string $model = VolunteerAttendance::class;
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->with(['volunteer']);
+    }
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';
     
     public static function shouldRegisterNavigation(): bool

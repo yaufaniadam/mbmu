@@ -319,6 +319,7 @@ class ProductionScheduleResource extends Resource
     {
         $user = Auth::user();
         $query = parent::getEloquentQuery()
+            ->with(['sppg', 'verification'])
             ->orderByDesc('tanggal');
 
         if ($user->hasRole('Kepala SPPG')) {

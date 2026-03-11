@@ -34,6 +34,7 @@ class InstructionResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
+            ->with(['acknowledgments'])
             ->active()
             ->forUser(auth()->user())
             ->orderBy('created_at', 'desc');

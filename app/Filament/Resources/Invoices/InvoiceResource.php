@@ -444,7 +444,7 @@ class InvoiceResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery();
+        $query = parent::getEloquentQuery()->with(['sppg']);
         $user = auth()->user();
 
         // 1. National Level: Can see everything

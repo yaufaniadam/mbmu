@@ -1,5 +1,5 @@
 nama_sppg;kode_sppg;pengusul;nama_pj;wa_pj;provinsi;kab_kota;kecamatan;status;ka_sppg;wa_ka_sppg;is_active
-A18BLIBB;A18BLIBB;PDM Kota Serang ;Dodo Mulyadi;081218705997;Banten;Kota Serang;Serang;Operasional / Siap Berjalan;"DIKI KURNIA SERTIJAB, S. M";083147134538;TRUE
+A18BLIBB;A18BLIBB;PDM Kota Serang;Dodo Mulyadi;081218705997;Banten;Kota Serang;Serang;Operasional / Siap Berjalan;"DIKI KURNIA SERTIJAB, S. M";083147134538;TRUE
 DJHZ1O9D;DJHZ1O9D;PDM Kota Serang;Nursalim;082124431135;Banten;Kota Serang;Kasemen;Operasional / Siap Berjalan;BOBI IRAWAN;081911941256;TRUE
 GHXEEHP3;GHXEEHP3;PCA Kasihan;UMU HANI EDI NAWANGSIH;087838417671;D.I. Yogyakarta;Bantul;Kasihan;Operasional / Siap Berjalan;Ulularhamn;081227769590;TRUE
 WWXK9XFH;WWXK9XFH;Madrasah Muallimin Muhammadiyah Yogyakarta;Erik Tauvani Somae;082136281690;D.I. Yogyakarta;Bantul;Sedayu;Operasional / Siap Berjalan;ALIVIA ZAHRA KIRANA DEWI;082136281690;TRUE
@@ -59,7 +59,7 @@ OWIK42DJ;OWIK42DJ;PDM Temanggung;Achirudin Timora;081329808358;Jawa Tengah;Teman
 KRZ6XWHU;KRZ6XWHU;PDM Wonogiri;"Drs. H. Suratno, M.Pd";085869995804;Jawa Tengah;Wonogiri;Wonogiri;Operasional / Siap Berjalan;JEFFRI DWI ORIENTA TRIYANA S.Pd;087836311570;TRUE
 GC8T6IBY;GC8T6IBY;PDM Wonogiri;Gino;081228238620;Jawa Tengah;Wonogiri;Selogiri;Operasional / Siap Berjalan;BRAMANTYO ARDANADEDALI;087712394694;TRUE
 GIGKGDIF;GIGKGDIF;PDM Jepara;Achmad Furqon;082341380588;Jawa Tengah;Jepara;bangsri;Operasional / Siap Berjalan;Krisnawan Mustaqim Saputra;082247978193;TRUE
-LRUH617B;LRUH617B;PDA SRAGEN;SUGIYANTO;082228453164;Jawa Tengah;Sragen;Gesi;Operasional / Siap Berjalan;MUHAMMAD ZARKONI;082223809474;TRUE
+LRUH617B;LRUH617B;PDA Sragen;SUGIYANTO;082228453164;Jawa Tengah;Sragen;Gesi;Operasional / Siap Berjalan;MUHAMMAD ZARKONI;082223809474;TRUE
 0WFMXVTY;0WFMXVTY;PCM Maesan;Alfian Muftianto;085230461759;Jawa Timur;Bondowoso;Maesan;Operasional / Siap Berjalan;Syauqi Rahman;085748551099;TRUE
 U4CTQLYA;U4CTQLYA;PDPM Kab Malang;Ana Ahsanul Huda;081359147244;Jawa Timur;Kab Malang;Bululawang;Operasional / Siap Berjalan;Hariz Wijayanto;087756270831;TRUE
 PLHXX5TK;PLHXX5TK;Pondok Pesantren Entrepreneur Muhammadiyah Gondanglegi;Pahri;0818383765;Jawa Timur;Kabupaten Malang;Gondanglegi;Operasional / Siap Berjalan;MOCHAMMAD ROBITUL HAQ;081615725313;TRUE
@@ -122,7 +122,7 @@ NMKDKU3L;NMKDKU3L;PCM Belawan;"SAIFUL FAMAR, S.S";081260808165;Sumatera Utara;Ko
 FTZQFECN;FTZQFECN;PWM Sumatera Utara;Muhammad Irsyad;‪'081390081122‬;Sumatera Utara;Kota Medan;Medan Amplas;Proses Persiapan;;;FALSE
 Z3EXT7IZ;Z3EXT7IZ;PDM Serdang Bedagai;IQBAL ALKINDI;081362335215;Sumatera Utara;Serdang Begadai;Sei Rampah;Verifikasi dan Validasi;LOIS FERNANDO SITOPU;082137588848;FALSE
 HBCANIH2;HBCANIH2;MPM PP Muhammadiyah;Aidil Aulia Rafly;081337878796;Sumatera Utara;Simalungun;Dolok Batu Nanggar;Verifikasi dan Validasi;"PIKIRSON TEGUH KRISNA SITUMORANG, S.Pd.";0895601241509;FALSE
-RSWVPBCE;RSWVPBCE;SMK MUHAMMADIYAH 1 RANGKASBITUNG;Firdaus;081806072332;Banten;Lebak;Rangkasbitung;Verifikasi dan Validasi;Ika Riawati;083894913647;FALSE
+RSWVPBCE;RSWVPBCE;SMK MUHAMMADIYAH 1 RANGKASBITUNG;Firdaus Rangkasbitung;081806072332;Banten;Lebak;Rangkasbitung;Verifikasi dan Validasi;Ika Riawati;083894913647;FALSE
 LHLTFR16;LHLTFR16;PDM Kota Bengkulu;erika febrianti;08112652531;Bengkulu;Kota Bengkulu;Muara Bangka Hulu;Verifikasi dan Validasi;ANNUARY DWIRA PUTRA SB.;085709964054;FALSE
 2ICPZFU0;2ICPZFU0;PDM Kota Bengkulu;safira alyaa rinjani;082242194629;Bengkulu;Kota Bengkulu;Gading Cempaka;Verifikasi dan Validasi;FAISAL ANDIASANI;082279767299;FALSE
 NBTIOZKM;NBTIOZKM;MPM PP Muhammadiyah;"ENDRO HARYADI, S.T., M.Pd.";08562859615;D.I. Yogyakarta;Kulon Progo;Lendah;Verifikasi dan Validasi;"Haris Tulistiwo, S.Pd.";088229524911;FALSE
@@ -221,3 +221,4 @@ QI4RDBZB;QI4RDBZB;PDM Dharmasraya;Bambang Nofrianto;08116667819;Sumatera Barat;D
 3ZFXTXJH;3ZFXTXJH;Universitas Muhammadiyah Sumatera Utara;Zaka Apdillah;082174183023;Sumatera utara;Deli Serdang;Percut Sei Tuan;Verifikasi dan Validasi;MUFRIZA LUTHFI;082276987871;FALSE
 RADUOCQG;RADUOCQG;Universitas Muhammadiyah Sumatera Utara;Akrim;08126333939;Sumatera Utara;Deli Serdang;Biru-biru;Proses Persiapan;;;FALSE
 EI55IAGN;EI55IAGN;Universitas Muhammadiyah Sumatera Utara;Akrim;08126333939;Sumatera Utara;Deli Serdang;Percut Sei Tuan;Proses Persiapan;;;FALSE
+;;139;;;;;;;;;

@@ -180,7 +180,7 @@ class SppgResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery();
+        $query = parent::getEloquentQuery()->with(['kepala', 'city', 'province']);
         $user = auth()->user();
 
         // Filter hanya SPPG yang dibawahi lembaga ini

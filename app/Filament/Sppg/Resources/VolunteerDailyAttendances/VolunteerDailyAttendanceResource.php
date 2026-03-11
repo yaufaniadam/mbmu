@@ -18,6 +18,11 @@ class VolunteerDailyAttendanceResource extends Resource
 {
     protected static ?string $model = VolunteerDailyAttendance::class;
     
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->with(['volunteer', 'recordedBy']);
+    }
+    
     public static function shouldRegisterNavigation(): bool
     {
         return false;
