@@ -71,7 +71,8 @@ class Dashboard extends BaseDashboard
         $isMapRole = $user->hasAnyRole($mapRoles);
 
         // Check if user is Pimpinan or PJ Pelaksana
-        $isPimpinan = $user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana']);
+        $isPjPelaksana = $user->hasRole('PJ Pelaksana');
+        $isPimpinan = $user->hasRole('Pimpinan Lembaga Pengusul') || $isPjPelaksana;
 
         // 2. Section Visibility: 
         // - Hide for PJ Pelaksana & Kepala SPPG (only 1 SPPG)
