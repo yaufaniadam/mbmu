@@ -8,7 +8,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('app:generate-bills')->everyTenSeconds()->withoutOverlapping();
+Schedule::command('app:generate-bills')->hourly()->withoutOverlapping();
 
 // Auto-generate daily distribution plans for all SPPGs
 Schedule::command('distribution:generate-daily')->dailyAt('00:01')->withoutOverlapping();
