@@ -199,6 +199,35 @@ class SppgExcelSeeder extends Seeder
                      }
                 }
 
+                // --- NEW: Link PJ and Kepala to sppg_user_roles pivot ---
+                if ($pjUser) {
+                    $pjRole = Role::where('name', 'PJ Pelaksana')->first();
+                    if ($pjRole) {
+                        DB::table('sppg_user_roles')->updateOrInsert([
+                            'sppg_id' => $sppg->id,
+                            'user_id' => $pjUser->id,
+                            'role_id' => $pjRole->id,
+                        ], [
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
+
+                if ($kepalaSppgUser) {
+                    $kaRole = Role::where('name', 'Kepala SPPG')->first();
+                    if ($kaRole) {
+                        DB::table('sppg_user_roles')->updateOrInsert([
+                            'sppg_id' => $sppg->id,
+                            'user_id' => $kepalaSppgUser->id,
+                            'role_id' => $kaRole->id,
+                        ], [
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
+
                 $imported++;
             }
             
