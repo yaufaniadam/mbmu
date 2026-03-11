@@ -45,19 +45,13 @@ class CreateProductionVerification extends CreateRecord
         // Assign User ID
         $data['user_id'] = $user->id;
 
-        // Assign SPPG ID based on Role
-        if ($user->hasRole('Kepala SPPG')) {
-            $sppg = User::find($user->id)->sppgDikepalai;
-            $data['sppg_id'] = $sppg?->id;
-        } elseif ($user->hasRole('PJ Pelaksana')) {
-            $unitTugas = User::find($user->id)->unitTugas->first();
-            $data['sppg_id'] = $unitTugas?->id;
-        }
+        // Assign SPPG ID using unified method
+        $sppg = $user->getManagedSppg();
+        $data['sppg_id'] = $sppg?->id;
 
         // Safety check if SPPG ID is missing
         if (empty($data['sppg_id'])) {
-             // In a real app, maybe throw error, but here we might just let it fail at database level or set null?
-             // Verification needs SPPG.
+             // In a real app, maybe throw error, but here we might just let it fail at database level
         }
 
         return $data;

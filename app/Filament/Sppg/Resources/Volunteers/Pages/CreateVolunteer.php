@@ -19,7 +19,7 @@ class CreateVolunteer extends CreateRecord
 
         $user = Auth::user();
 
-        $sppgId = User::find($user->id)->sppgDikepalai;
+        $sppgId = $user->getManagedSppg();
 
         if (!$sppgId) {
             Notification::make()
@@ -37,7 +37,7 @@ class CreateVolunteer extends CreateRecord
     {
         $user = Auth::user();
 
-        $sppg = User::find($user->id)->sppgDikepalai;
+        $sppg = $user->getManagedSppg();
 
         if (!$sppg) {
             Notification::make()

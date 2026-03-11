@@ -38,7 +38,7 @@ class PayIncentive extends Page
         if (!$user) return null;
 
         // Get count of unpaid invoices for the user's SPPG
-        $sppg = $user->sppgDiKepalai ?? $user->sppg;
+        $sppg = $user->getManagedSppg();
         if (!$sppg) return null;
 
         $count = \App\Models\Invoice::where('sppg_id', $sppg->id)

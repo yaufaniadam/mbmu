@@ -16,11 +16,11 @@ class CreateStaff extends CreateRecord
 
     public function mount(): void
     {
-        $user = User::find(Auth::user()->id);
+        $user = Auth::user();
 
-        $sppgId = $user->sppgDiKepalai?->id;
+        $sppg = $user->getManagedSppg();
 
-        if (!$sppgId) {
+        if (!$sppg) {
             Notification::make()
                 ->title('Anda tidak memiliki akses ke halaman ini. Hubungi admin.')
                 ->danger()
@@ -34,9 +34,9 @@ class CreateStaff extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $user = User::find(Auth::user()->id);
+        $user = Auth::user();
 
-        $sppg = $user->sppgDiKepalai;
+        $sppg = $user->getManagedSppg();
 
         if (!$sppg) {
             Notification::make()
@@ -55,21 +55,20 @@ class CreateStaff extends CreateRecord
     protected function afterCreate(): void
     {
         $record = $this->record;
-        $user = User::find(Auth::user()->id);
+        $user = Auth::user();
 
-        $sppgId = $user->sppgDiKepalai?->id;
+        $sppg = $user->getManagedSppg();
 
-        if ($sppgId) {
+        if ($sppg) {
             // Get the roles that were just assigned to the user (via the form's relationship field)
             $roles = $record->roles; 
 
             foreach ($roles as $role) {
                 // Check if this specific user-role-sppg combination already exists to avoid duplicates
-                // (though insert usually throws error on unique constraint, here we use insert or first check)
                 
                 SppgUserRole::firstOrCreate([
                     'user_id' => $record->id,
-                    'sppg_id' => $sppgId,
+                    'sppg_id' => $sppg->id,
                     'role_id' => $role->id,
                 ]);
             }

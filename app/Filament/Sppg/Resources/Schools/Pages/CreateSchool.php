@@ -24,9 +24,9 @@ class CreateSchool extends CreateRecord
 
         $user = Auth::user();
 
-        $sppgId = User::find($user->id)->sppgDikepalai;
+        $sppg = $user->getManagedSppg();
 
-        if (!$sppgId) {
+        if (!$sppg) {
             Notification::make()
                 ->title('Anda belum ditugaskan ke sppg. Hubungi admin.')
                 ->danger()
@@ -42,7 +42,7 @@ class CreateSchool extends CreateRecord
     {
         $user = Auth::user();
 
-        $sppg = User::find($user->id)->sppgDikepalai;
+        $sppg = $user->getManagedSppg();
 
         if (!$sppg) {
             Notification::make()

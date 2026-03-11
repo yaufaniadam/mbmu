@@ -18,15 +18,7 @@ class CreateProductionSchedule extends CreateRecord
     {
         $user = Auth::user();
 
-        $sppg = null;
-
-        if ($user->hasRole('Kepala SPPG')) {
-            $sppg = User::find($user->id)->sppgDikepalai;
-        }
-
-        if ($user->hasRole('PJ Pelaksana')) {
-            $sppg = User::find($user->id)->unitTugas->first();
-        }
+        $sppg = $user->getManagedSppg();
 
         if (! $sppg) {
             Notification::make()
@@ -44,15 +36,7 @@ class CreateProductionSchedule extends CreateRecord
     {
         $user = Auth::user();
 
-        $sppg = null;
-
-        if ($user->hasRole('Kepala SPPG')) {
-            $sppg = User::find($user->id)->sppgDikepalai;
-        }
-
-        if ($user->hasRole('PJ Pelaksana')) {
-            $sppg = User::find($user->id)->unitTugas->first();
-        }
+        $sppg = $user->getManagedSppg();
 
         if (! $sppg) {
             Notification::make()
