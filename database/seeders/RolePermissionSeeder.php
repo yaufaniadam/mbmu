@@ -54,6 +54,27 @@ class RolePermissionSeeder extends Seeder
             'Update:ProductionSchedule',
             'Delete:ProductionSchedule',
 
+            // Policy-based permissions for School
+            'ViewAny:School',
+            'View:School',
+            'Create:School',
+            'Update:School',
+            'Delete:School',
+
+            // Policy-based permissions for Volunteer
+            'ViewAny:Volunteer',
+            'View:Volunteer',
+            'Create:Volunteer',
+            'Update:Volunteer',
+            'Delete:Volunteer',
+
+            // Policy-based permissions for User (Staff)
+            'ViewAny:User',
+            'View:User',
+            'Create:User',
+            'Update:User',
+            'Delete:User',
+
             // Complaint
             'ViewAny:Complaint',
             'View:Complaint',
@@ -90,7 +111,7 @@ class RolePermissionSeeder extends Seeder
         }
 
         // 4. Berikan Permissions ke Roles
-        // Ketua Kornas
+        // ... (Kornas roles sync)
         $roleModels['Ketua Kornas']->syncPermissions([
             'view-national-dashboard',
             'view-national-reports',
@@ -99,7 +120,6 @@ class RolePermissionSeeder extends Seeder
             'Update:Complaint',
         ]);
 
-        // Sekretaris Kornas - Same permissions as Direktur
         $roleModels['Sekretaris Kornas']->syncPermissions([
             'view-national-dashboard',
             'view-national-reports',
@@ -108,7 +128,6 @@ class RolePermissionSeeder extends Seeder
             'Update:Complaint',
         ]);
 
-        // Bendahara Kornas - Same permissions as Direktur
         $roleModels['Bendahara Kornas']->syncPermissions([
             'view-national-dashboard',
             'view-national-reports',
@@ -117,7 +136,6 @@ class RolePermissionSeeder extends Seeder
             'Update:Complaint',
         ]);
 
-        // Staf Kornas
         $roleModels['Staf Kornas']->syncPermissions([
             'view-national-dashboard',
             'view-national-reports',
@@ -130,7 +148,6 @@ class RolePermissionSeeder extends Seeder
             'Update:Complaint',
         ]);
 
-        // Pimpinan Lembaga Pengusul
         $roleModels['Pimpinan Lembaga Pengusul']->syncPermissions([
             'view-sppg-dashboard',
             'view-sppg-reports',
@@ -140,8 +157,8 @@ class RolePermissionSeeder extends Seeder
             'Update:Complaint',
         ]);
 
-        // Kepala SPPG
-        $roleModels['Kepala SPPG']->syncPermissions([
+        // Unified permissions for Kepala SPPG and PJ Pelaksana
+        $sppgCommonPermissions = [
             'view-sppg-dashboard',
             'manage-sppg-users',
             'manage-sppg-mitra',
@@ -157,29 +174,33 @@ class RolePermissionSeeder extends Seeder
             'Create:ProductionSchedule',
             'Update:ProductionSchedule',
             'Delete:ProductionSchedule',
+            // Schools
+            'ViewAny:School',
+            'View:School',
+            'Create:School',
+            'Update:School',
+            'Delete:School',
+            // Volunteers
+            'ViewAny:Volunteer',
+            'View:Volunteer',
+            'Create:Volunteer',
+            'Update:Volunteer',
+            'Delete:Volunteer',
+            // Users
+            'ViewAny:User',
+            'View:User',
+            'Create:User',
+            'Update:User',
+            'Delete:User',
             // Complaint
             'ViewAny:Complaint',
             'View:Complaint',
             'Create:Complaint',
             'Update:Complaint',
-        ]);
+        ];
 
-        // PJ Pelaksana
-        $roleModels['PJ Pelaksana']->syncPermissions([
-            'view-sppg-dashboard',
-            'view-sppg-reports',
-            // Production Schedule
-            'ViewAny:ProductionSchedule',
-            'View:ProductionSchedule',
-            'Create:ProductionSchedule',
-            'Update:ProductionSchedule',
-            'Delete:ProductionSchedule',
-            // Complaint
-            'ViewAny:Complaint',
-            'View:Complaint',
-            'Create:Complaint',
-            'Update:Complaint',
-        ]);
+        $roleModels['Kepala SPPG']->syncPermissions($sppgCommonPermissions);
+        $roleModels['PJ Pelaksana']->syncPermissions($sppgCommonPermissions);
 
         // Penerima Kuasa
         $roleModels['Penerima Kuasa']->syncPermissions(['view-sppg-dashboard', 'view-sppg-reports']);

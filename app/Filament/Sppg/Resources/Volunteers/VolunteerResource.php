@@ -103,26 +103,12 @@ class VolunteerResource extends Resource
         $user = auth()->user();
         $query = parent::getEloquentQuery()->with(['user']);
 
-        if ($user->hasRole('Kepala SPPG')) {
-            $sppg = $user->sppgDiKepalai;
+        $sppg = $user->getManagedSppg();
 
-            if (!$sppg) {
-                return $query->whereRaw('1 = 0');
-            }
-
-            return $query->where('sppg_id', $sppg->id);
+        if (!$sppg) {
+            return $query->whereRaw('1 = 0');
         }
 
-        if ($user->hasAnyRole(['PJ Pelaksana', 'Ahli Gizi', 'Staf Administrator SPPG', 'Staf Akuntan', 'Staf Gizi', 'Staf Pengantaran'])) {
-            $unitTugas = $user->unitTugas->first();
-
-            if (!$unitTugas) {
-                return $query->whereRaw('1 = 0');
-            }
-
-            return $query->where('sppg_id', $unitTugas->id);
-        }
-
-        return $query;
+        return $query->where('sppg_id', $sppg->id);
     }
 }

@@ -183,11 +183,16 @@ class SppgResource extends Resource
         $user = auth()->user();
         $query = parent::getEloquentQuery()->with(['kepalaSppg', 'city', 'province']);
 
-        // Filter hanya SPPG yang dibawahi lembaga ini
+        // 1. Jika Pimpinan Lembaga, lihat semua SPPG di bawah lembaga tersebut
         $lembaga = $user->lembagaDipimpin;
-        
         if ($lembaga) {
             return $query->where('lembaga_pengusul_id', $lembaga->id);
+        }
+
+        // 2. Jika PJ Pelaksana, lihat SPPG yang dikelolanya
+        $sppg = $user->getManagedSppg();
+        if ($sppg) {
+            return $query->where('id', $sppg->id);
         }
 
         // Fallback: tidak ada SPPG

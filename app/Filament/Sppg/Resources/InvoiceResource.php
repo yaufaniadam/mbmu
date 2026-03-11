@@ -118,12 +118,7 @@ class InvoiceResource extends Resource
         $user = Auth::user();
         $query = parent::getEloquentQuery()->where('type', 'SPPG_SEWA');
 
-        $sppg = null;
-        if ($user->hasRole('Kepala SPPG')) {
-            $sppg = $user->sppgDikepalai;
-        } elseif ($user->hasAnyRole(['PJ Pelaksana', 'Staf Akuntan', 'Staf Administrator SPPG'])) {
-             $sppg = $user->unitTugas->first();
-        }
+        $sppg = $user->getManagedSppg();
 
         if ($sppg) {
              return $query->where('sppg_id', $sppg->id);

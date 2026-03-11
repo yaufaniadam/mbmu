@@ -124,20 +124,15 @@ class ProductionVerificationResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        // Restrict to current SPPG
         $user = Auth::user();
-        if ($user->hasRole('Kepala SPPG')) {
-            $sppg = User::find($user->id)->sppgDikepalai;
-            if (!$sppg) return parent::getEloquentQuery()->whereRaw('1=0');
-            return parent::getEloquentQuery()->where('sppg_id', $sppg->id);
-        }
-        
-        if ($user->hasRole('PJ Pelaksana')) {
-            $unitTugas = User::find($user->id)->unitTugas->first();
-             if (!$unitTugas) return parent::getEloquentQuery()->whereRaw('1=0');
-            return parent::getEloquentQuery()->where('sppg_id', $unitTugas->id);
+        $query = parent::getEloquentQuery();
+
+        $sppg = $user->getManagedSppg();
+
+        if ($sppg) {
+            return $query->where('sppg_id', $sppg->id);
         }
 
-        return parent::getEloquentQuery();
+        return $query->whereRaw('1=0');
     }
 }

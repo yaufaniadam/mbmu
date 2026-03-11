@@ -38,7 +38,7 @@ class MenuResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        if (Auth::user()?->hasRole('Kepala SPPG')) {
+        if (Auth::user()?->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana'])) {
             return 'Operasional';
         }
 
@@ -70,13 +70,7 @@ class MenuResource extends Resource
                         ->preload()
                         ->required()
                     : Forms\Components\Hidden::make('sppg_id')
-                        ->default(function () {
-                            $user = Auth::user();
-                            if ($user->hasRole('Kepala SPPG')) {
-                                return User::find($user->id)->sppgDikepalai?->id;
-                            }
-                            return User::find($user->id)->unitTugas->first()?->id;
-                        })
+                        ->default(fn () => Auth::user()->getManagedSppg()?->id)
                         ->required(),
                 Forms\Components\FileUpload::make('image')->disk('public')
                     ->label('Foto Menu')
@@ -187,32 +181,19 @@ class MenuResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $user = Auth::user();
+        $query = parent::getEloquentQuery();
 
         if ($user->hasRole('Super Admin')) {
-            return parent::getEloquentQuery();
+            return $query;
         }
 
-        if ($user->hasRole('Kepala SPPG')) {
-            $sppg = User::find($user->id)->sppgDikepalai;
+        $sppg = $user->getManagedSppg();
 
-            if (!$sppg) {
-                return parent::getEloquentQuery()->whereRaw('1 = 0');
-            }
-
-            return parent::getEloquentQuery()->where('sppg_id', $sppg->id);
+        if (!$sppg) {
+            return $query->whereRaw('1 = 0');
         }
 
-        if ($user->hasAnyRole(['PJ Pelaksana', 'Ahli Gizi', 'Staf Administrator SPPG', 'Staf Akuntan', 'Staf Gizi', 'Staf Pengantaran'])) {
-            $unitTugas = User::find($user->id)->unitTugas->first();
-
-            if (!$unitTugas) {
-                return parent::getEloquentQuery()->whereRaw('1 = 0');
-            }
-
-            return parent::getEloquentQuery()->where('sppg_id', $unitTugas->id);
-        }
-
-        return parent::getEloquentQuery();
+        return $query->where('sppg_id', $sppg->id);
     }
 
     public static function getRelations(): array

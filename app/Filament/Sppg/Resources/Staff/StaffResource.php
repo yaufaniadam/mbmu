@@ -36,6 +36,7 @@ class StaffResource extends Resource
         $user = Auth::user();
         return $user && $user->hasAnyRole([
             'Kepala SPPG',
+            'PJ Pelaksana',
             'Staf Administrator SPPG'
         ]);
     }
@@ -45,6 +46,7 @@ class StaffResource extends Resource
         $user = Auth::user();
         return $user && $user->hasAnyRole([
             'Kepala SPPG',
+            'PJ Pelaksana',
             'Staf Administrator SPPG'
         ]);
     }
@@ -83,30 +85,14 @@ class StaffResource extends Resource
         $user = auth()->user();
         $query = parent::getEloquentQuery()->with(['roles']);
 
-        if ($user->hasRole('Kepala SPPG')) {
-            $sppg = $user->sppgDiKepalai;
+        $sppg = $user->getManagedSppg();
 
-            if (!$sppg) {
-                return $query->whereRaw('1 = 0');
-            }
-
-            return $query->whereHas('unitTugas', function (Builder $query) use ($sppg) {
-                $query->where('sppg_id', $sppg->id);
-            });
+        if (!$sppg) {
+            return $query->whereRaw('1 = 0');
         }
 
-        if ($user->hasRole('Staf Administrator SPPG')) {
-            $unitTugas = $user->unitTugas->first();
-
-            if (!$unitTugas) {
-                return $query->whereRaw('1 = 0');
-            }
-
-            return $query->whereHas('unitTugas', function (Builder $query) use ($unitTugas) {
-                $query->where('sppg_id', $unitTugas->id);
-            });
-        }
-
-        return $query;
+        return $query->whereHas('unitTugas', function (Builder $query) use ($sppg) {
+            $query->where('sppg_id', $sppg->id);
+        });
     }
 }

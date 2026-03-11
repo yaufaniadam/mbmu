@@ -166,6 +166,25 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Get the SPPG that this user manages (either as Kepala, PJ, or Staff).
+     */
+    public function getManagedSppg(): ?Sppg
+    {
+        // 1. Check if user is Kepala SPPG
+        if ($this->sppgDiKepalai) {
+            return $this->sppgDiKepalai;
+        }
+
+        // 2. Check if user is PJ Pelaksana
+        if ($this->sppgDiPj) {
+            return $this->sppgDiPj;
+        }
+
+        // 3. Fallback to Unit Tugas (pivot table)
+        return $this->unitTugas->first();
+    }
+
+    /**
      * Route notifications for the WhatsApp channel.
      *
      * @param  \Illuminate\Notifications\Notification  $notification
