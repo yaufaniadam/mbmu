@@ -218,12 +218,12 @@ class SppgResource extends Resource
     
     public static function canViewAny(): bool
     {
-        return auth()->user()->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana']);
+        return auth()->user()->hasAnyRole(['Pimpinan Lembaga Pengusul']);
     }
     
     public static function canView($record): bool
     {
-        return auth()->user()->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana']);
+        return auth()->user()->hasAnyRole(['Pimpinan Lembaga Pengusul']);
     }
     
     public static function canCreate(): bool

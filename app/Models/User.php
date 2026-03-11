@@ -35,8 +35,8 @@ class User extends Authenticatable implements FilamentUser
         }
 
         if ($panelId === 'lembaga') {
-            // Lembaga Panel for Pimpinan and PJ
-            return $this->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana', 'Superadmin']);
+            // Lembaga Panel for Pimpinan
+            return $this->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Superadmin']);
         }
 
         if ($panelId === 'sppg') {

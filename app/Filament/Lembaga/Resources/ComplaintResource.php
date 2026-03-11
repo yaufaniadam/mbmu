@@ -64,7 +64,7 @@ class ComplaintResource extends Resource
                                     $options['Kasus'] = 'Kasus';
                                     $options['Bencana'] = 'Bencana';
                                     $options['Lain-lain'] = 'Lain-lain';
-                                } elseif ($user?->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])) {
+                                } elseif ($user?->hasAnyRole(['Pimpinan Lembaga Pengusul'])) {
                                     $options['Kepala'] = 'Kepala';
                                     $options['Sarpras'] = 'Sarpras';
                                     $options['Kecelakaan Kerja/Accident'] = 'Kecelakaan Kerja/Accident';
@@ -184,7 +184,7 @@ class ComplaintResource extends Resource
         $user = Auth::user();
 
         // LP only sees their own LP complaints
-        if ($user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])) {
+        if ($user->hasAnyRole(['Pimpinan Lembaga Pengusul'])) {
             return $query->where('user_id', $user->id)
                          ->where('source_type', 'lembaga_pengusul');
         }
@@ -201,7 +201,7 @@ class ComplaintResource extends Resource
 
     public static function canCreate(): bool
     {
-        return Auth::user()->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana']);
+        return Auth::user()->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG']);
     }
 
     public static function getPages(): array

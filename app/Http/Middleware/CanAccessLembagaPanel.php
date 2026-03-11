@@ -18,7 +18,6 @@ class CanAccessLembagaPanel
     {
         if (Auth::check() && Auth::user()->hasAnyRole([
             'Pimpinan Lembaga Pengusul', 
-            'PJ Pelaksana'
         ])) {
             return $next($request);
         }
