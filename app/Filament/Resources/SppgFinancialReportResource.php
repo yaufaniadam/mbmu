@@ -144,7 +144,7 @@ class SppgFinancialReportResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery();
+        $query = parent::getEloquentQuery()->with(['sppg']);
         $user = Auth::user();
 
         // 1. National Level: Can see everything

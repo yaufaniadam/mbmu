@@ -45,7 +45,7 @@ class AdminSchoolResource extends Resource
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
-        return parent::getEloquentQuery()->withoutGlobalScopes();
+        return parent::getEloquentQuery()->with(['sppg'])->withoutGlobalScopes();
     }
 
     public static function getRelations(): array

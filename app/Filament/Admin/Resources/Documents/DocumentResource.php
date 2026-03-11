@@ -133,6 +133,8 @@ class DocumentResource extends Resource
                 //
             ])
             ->modifyQueryUsing(function (Builder $query) {
+                $query->with(['lembagaPengusul']);
+                
                 // Determine what users can see
                 $user = Auth::user();
                 if ($user->hasRole('Superadmin')) {

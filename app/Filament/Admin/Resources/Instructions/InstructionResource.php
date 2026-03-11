@@ -31,6 +31,11 @@ class InstructionResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-megaphone';
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->with(['whatsappMessages']);
+    }
+
     public static function shouldRegisterNavigation(): bool
     {
         if (Auth::user()?->hasRole('Staf Akuntan Kornas')) {

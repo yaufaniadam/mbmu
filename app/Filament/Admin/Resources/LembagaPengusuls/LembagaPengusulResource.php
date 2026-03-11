@@ -32,6 +32,11 @@ class LembagaPengusulResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-briefcase';
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->with(['pimpinan']);
+    }
+
     public static function form(Schema $schema): Schema
     {
         return LembagaPengusulForm::configure($schema);

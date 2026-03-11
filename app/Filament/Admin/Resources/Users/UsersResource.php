@@ -29,6 +29,18 @@ class UsersResource extends Resource
 
     protected static ?int $navigationSort = 8;
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->with([
+            'roles', 
+            'sppgDiKepalai', 
+            'sppgDiPj', 
+            'unitTugas', 
+            'sppg', 
+            'lembagaDipimpin'
+        ]);
+    }
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
     public static function form(Schema $schema): Schema

@@ -29,6 +29,11 @@ class RelawanResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->with(['sppg']);
+    }
+
     protected static ?string $pluralLabel = 'Relawan SPPG';
 
     public static function form(Schema $schema): Schema
