@@ -14,11 +14,11 @@ class NotificationTemplateSeeder extends Seeder
                 'key' => 'credential_pimpinan',
                 'name' => 'Kridensial Login Pimpinan Lembaga',
                 'content' => "Assalamualaikum {{name}},\n\n"
-                    . "Berikut adalah akses login Anda untuk aplikasi Makan Bergizi Muhammadiyah (MBMu) sebagai Kepala Lembaga Pengusul.\n\n"
+                    . "Berikut adalah akses login Anda untuk aplikasi Makan Bergizi Muhammadiyah (MBM1912) sebagai Kepala Lembaga Pengusul.\n\n"
                     . "🔐 *Username*: {{username}}\n"
                     . "🔑 *Password*: {{password}}\n\n"
                     . "Silakan login melalui link berikut:\n"
-                    . "👉 https://makanbergizimuhammadiyah.id/admin/login\n\n"
+                    . "👉 https://mbm1912.id/admin/login\n\n"
                     . "Langkah selanjutnya yang perlu dilakukan:\n"
                     . "1. Login ke aplikasi.\n"
                     . "2. Lengkapi Profil Lembaga Pengusul:\n"
@@ -34,11 +34,11 @@ class NotificationTemplateSeeder extends Seeder
                 'key' => 'credential_sppg',
                 'name' => 'Kridensial Login Kepala SPPG',
                 'content' => "Assalamualaikum {{name}},\n\n"
-                    . "Berikut adalah akses login Anda untuk aplikasi Makan Bergizi Muhammadiyah (MBMu) sebagai Kepala SPPG.\n\n"
+                    . "Berikut adalah akses login Anda untuk aplikasi Makan Bergizi Muhammadiyah (MBM1912) sebagai Kepala SPPG.\n\n"
                     . "🔐 *Username*: {{username}}\n"
                     . "🔑 *Password*: {{password}}\n\n"
                     . "Silakan login melalui link berikut:\n"
-                    . "👉 https://makanbergizimuhammadiyah.id/admin/login\n\n"
+                    . "👉 https://mbm1912.id/admin/login\n\n"
                     . "Instruksi selanjutnya:\n"
                     . "1. Login ke sistem menggunakan username dan password yang disediakan.\n"
                     . "2. Melengkapi profil SPPG.\n"
