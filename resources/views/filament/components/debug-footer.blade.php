@@ -1,7 +1,7 @@
 <div class="px-4 py-2 text-xs text-gray-500 bg-gray-50/50 border-t border-gray-200 dark:bg-gray-900/50 dark:border-gray-800 flex justify-between items-center">
     <div class="flex items-center gap-4">
         <span>
-            <strong>Page load:</strong> {{ number_format(microtime(true) - LARAVEL_START, 3) }}s
+            <strong>Page load:</strong> {{ number_format(microtime(true) - (defined('LARAVEL_START') ? LARAVEL_START : request()->server('REQUEST_TIME_FLOAT', microtime(true))), 3) }}s
         </span>
         <span>
             <strong>Memory:</strong> {{ number_format(memory_get_peak_usage(true) / 1024 / 1024, 2) }}MB
