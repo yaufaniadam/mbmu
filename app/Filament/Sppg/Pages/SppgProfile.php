@@ -47,7 +47,7 @@ class SppgProfile extends Page implements HasForms
     public static function shouldRegisterNavigation(): bool
     {
         // This checks the permission you just generated
-        return auth()->user()->can('manage-sppg-profile');
+        return auth()->user()?->can('manage-sppg-profile') ?? false;
     }
 
     public function getFormStatePath(): string

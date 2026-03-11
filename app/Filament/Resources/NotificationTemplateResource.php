@@ -28,7 +28,7 @@ class NotificationTemplateResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return ! auth()->user()->hasRole('Pimpinan Lembaga Pengusul');
+        return auth()->user()?->hasRole('Pimpinan Lembaga Pengusul') === false;
     }
 
     public static function form(Schema $schema): Schema

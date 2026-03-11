@@ -42,12 +42,12 @@ class SppgResource extends Resource
 
     public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
     {
-        return auth()->user()->hasRole('Superadmin');
+        return auth()->user()?->hasRole('Superadmin') ?? false;
     }
 
     public static function canView(\Illuminate\Database\Eloquent\Model $record): bool
     {
-        return auth()->user()->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']);
+        return auth()->user()?->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']) ?? false;
     }
 
     public static function form(Schema $schema): Schema
