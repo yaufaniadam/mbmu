@@ -22,6 +22,14 @@ class UsersTable
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->placeholder('-'),
+                TextColumn::make('sppgDiPj.lembagaPengusul.nama_lembaga')
+                    ->label('Lembaga (via PJ)')
+                    ->searchable()
+                    ->hidden(),
+                TextColumn::make('unitTugas.lembagaPengusul.nama_lembaga')
+                    ->label('Lembaga (via Unit)')
+                    ->searchable()
+                    ->hidden(),
                 TextColumn::make('roles.name')
                     ->label('Jabatan')
                     ->badge()
@@ -59,12 +67,17 @@ class UsersTable
                             return '-';
                         }
 
-                        // Hanya Pimpinan Lembaga Pengusul yang tampilkan Lembaga Pengusul
-                        if ($record->hasRole('Pimpinan Lembaga Pengusul')) {
-                            return $record->lembagaDipimpin?->nama_lembaga ?? '-';
+                        // Direct link (Pimpinan)
+                        if ($record->hasRole('Pimpinan Lembaga Pengusul') && $record->lembagaDipimpin) {
+                            return $record->lembagaDipimpin->nama_lembaga;
                         }
 
-                        // User terkait SPPG (PJ, Kepala, Staf) tidak tampilkan Lembaga Pengusul
+                        // Indirect link (SPPG Roles)
+                        $managedSppg = $record->getManagedSppg();
+                        if ($managedSppg && $managedSppg->lembagaPengusul) {
+                            return $managedSppg->lembagaPengusul->nama_lembaga;
+                        }
+
                         return '-';
                     })
                     ->badge()
@@ -89,7 +102,9 @@ class UsersTable
                             $data['sppg_id'],
                             fn ($query, $sppgId) => $query->where(function ($q) use ($sppgId) {
                                 $q->whereHas('unitTugas', fn ($sq) => $sq->where('sppg.id', $sppgId))
-                                  ->orWhereHas('sppgDiKepalai', fn ($sq) => $sq->where('id', $sppgId));
+                                  ->orWhereHas('sppgDiKepalai', fn ($sq) => $sq->where('id', $sppgId))
+                                  ->orWhereHas('sppgDiPj', fn ($sq) => $sq->where('id', $sppgId))
+                                  ->orWhere('sppg_id', $sppgId);
                             })
                         );
                     })
@@ -109,7 +124,13 @@ class UsersTable
                     ->query(function (\Illuminate\Database\Eloquent\Builder $query, array $data): \Illuminate\Database\Eloquent\Builder {
                         return $query->when(
                             $data['lembaga_id'],
-                            fn ($query, $lembagaId) => $query->whereHas('lembagaDipimpin', fn ($sq) => $sq->where('id', $lembagaId))
+                            fn ($query, $lembagaId) => $query->where(function ($q) use ($lembagaId) {
+                                $q->whereHas('lembagaDipimpin', fn ($sq) => $sq->where('id', $lembagaId))
+                                  ->orWhereHas('sppgDiKepalai', fn ($sq) => $sq->where('lembaga_pengusul_id', $lembagaId))
+                                  ->orWhereHas('sppgDiPj', fn ($sq) => $sq->where('lembaga_pengusul_id', $lembagaId))
+                                  ->orWhereHas('unitTugas', fn ($sq) => $sq->where('lembaga_pengusul_id', $lembagaId))
+                                  ->orWhereHas('sppg', fn ($sq) => $sq->where('lembaga_pengusul_id', $lembagaId));
+                            })
                         );
                     })
                     ->indicateUsing(function (array $data): ?string {
