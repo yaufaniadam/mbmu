@@ -43,7 +43,7 @@
             {{-- Body Content --}}
             <div class="p-6 md:p-8">
                 <div class="prose prose-sm sm:prose-base dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 leading-relaxed">
-                    {!! clean($record->content) !!}
+                    {!! $record->content !!}
                 </div>
             </div>
 
