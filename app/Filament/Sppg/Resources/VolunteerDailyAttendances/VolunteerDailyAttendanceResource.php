@@ -20,7 +20,16 @@ class VolunteerDailyAttendanceResource extends Resource
     
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
-        return parent::getEloquentQuery()->with(['volunteer', 'recordedBy']);
+        $user = auth()->user();
+        $query = parent::getEloquentQuery()->with(['volunteer', 'recordedBy']);
+
+        $sppg = $user->getManagedSppg();
+
+        if (!$sppg) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return $query->where('sppg_id', $sppg->id);
     }
 
     protected static ?string $navigationLabel = 'Data Presensi';

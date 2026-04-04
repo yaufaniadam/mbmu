@@ -20,20 +20,20 @@ class DailyAttendanceStats extends BaseWidget
         $date = $this->selectedDate ?? now()->format('Y-m-d');
 
         $user = Auth::user();
-        $sppgId = null;
+        $sppg = $user->getManagedSppg();
 
-        if ($user->hasRole('Kepala SPPG')) {
-            $sppgId = $user->sppgDikepalai?->id;
-        } elseif ($user->hasRole('PJ Pelaksana')) {
-            $sppgId = $user->unitTugas->first()?->id;
+        if (!$sppg) {
+            return [
+                Stat::make('Hadir', 0)->color('success'),
+                Stat::make('Izin', 0)->color('warning'),
+                Stat::make('Sakit', 0)->color('danger'),
+                Stat::make('Alpha', 0)->color('danger'),
+            ];
         }
 
         $query = VolunteerDailyAttendance::query()
-            ->where('attendance_date', $date);
-
-        if ($sppgId) {
-            $query->where('sppg_id', $sppgId);
-        }
+            ->where('attendance_date', $date)
+            ->where('sppg_id', $sppg->id);
 
         $stats = $query->selectRaw('status, count(*) as count')
             ->groupBy('status')

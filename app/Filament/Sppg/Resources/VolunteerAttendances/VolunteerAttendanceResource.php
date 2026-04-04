@@ -22,7 +22,16 @@ class VolunteerAttendanceResource extends Resource
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
-        return parent::getEloquentQuery()->with(['volunteer']);
+        $user = auth()->user();
+        $query = parent::getEloquentQuery()->with(['volunteer']);
+
+        $sppg = $user->getManagedSppg();
+
+        if (!$sppg) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return $query->where('sppg_id', $sppg->id);
     }
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';
