@@ -22,11 +22,6 @@ class VolunteerDailyAttendanceResource extends Resource
     {
         return parent::getEloquentQuery()->with(['volunteer', 'recordedBy']);
     }
-    
-    public static function shouldRegisterNavigation(): bool
-    {
-        return false;
-    }
 
     protected static ?string $navigationLabel = 'Data Presensi';
     

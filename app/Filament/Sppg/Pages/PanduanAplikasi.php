@@ -15,4 +15,6 @@ class PanduanAplikasi extends Page
     protected static ?int $navigationSort = 99;
 
     protected static ?string $title = 'Panduan Aplikasi SPPG';
+
+    protected static bool $shouldRegisterNavigation = false;
 }
