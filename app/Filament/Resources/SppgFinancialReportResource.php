@@ -152,30 +152,10 @@ class SppgFinancialReportResource extends Resource
             return $query;
         }
 
-        // 2. Local Level: Restrict to SPPG
-        // Check for Kepala SPPG
-        if ($user->hasRole('Kepala SPPG')) {
-            $sppg = $user->sppgDikepalai;
-            if ($sppg) {
-                return $query->where('sppg_id', $sppg->id);
-            }
-        }
-
-        // Check for Staff assigned to SPPG (including Staf Akuntan, Admin SPPG, PJ Pelaksana)
-        if ($user->hasAnyRole(['Staf Akuntan', 'Admin SPPG', 'PJ Pelaksana', 'Staf Administrator SPPG'])) {
-            $unitTugas = $user->unitTugas->first();
-            if ($unitTugas) {
-                return $query->where('sppg_id', $unitTugas->id);
-            }
-        }
-
-        // Pimpinan Lembaga Pengusul
-        if ($user->hasRole('Pimpinan Lembaga Pengusul')) {
-            $lembaga = $user->lembagaDipimpin;
-            if ($lembaga) {
-                $sppgIds = $lembaga->sppgs->pluck('id');
-                return $query->whereIn('sppg_id', $sppgIds);
-            }
+        // 2. Local Level: Restrict to SPPG using getManagedSppg
+        $sppg = $user->getManagedSppg();
+        if ($sppg) {
+            return $query->where('sppg_id', $sppg->id);
         }
 
         // Fallback: See nothing if no role matches or no assignment found
@@ -187,14 +167,25 @@ class SppgFinancialReportResource extends Resource
         $panelId = \Filament\Facades\Filament::getCurrentPanel()?->getId();
         $user = Auth::user();
 
+        if (!$user) {
+            return false;
+        }
+
         // Show in Admin panel for Kornas staff to monitor all SPPG reports
         if ($panelId === 'admin') {
-            return $user?->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']);
+            return $user->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas']);
         }
 
         // Show in SPPG panel for Local roles
         if ($panelId === 'sppg') {
-            return $user?->hasAnyRole(['Kepala SPPG', 'Admin SPPG', 'Staf Akuntan', 'PJ Pelaksana']);
+            return $user->hasAnyRole([
+                'Kepala SPPG', 
+                'Admin SPPG', 
+                'Staf Administrator SPPG', 
+                'Staf Akuntan', 
+                'PJ Pelaksana', 
+                'Pimpinan Lembaga Pengusul'
+            ]);
         }
 
         return false;
