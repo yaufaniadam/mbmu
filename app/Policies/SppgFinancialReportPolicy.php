@@ -51,17 +51,23 @@ class SppgFinancialReportPolicy
 
     public function create(AuthUser $authUser): bool
     {
-        // Only Kepala SPPG and Admin SPPG can upload financial reports
-        return $authUser->hasAnyRole(['Kepala SPPG', 'Admin SPPG']);
+        // Only Kepala SPPG, Admin SPPG, and PJ Pelaksana can upload financial reports
+        return $authUser->hasAnyRole(['Kepala SPPG', 'Admin SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Administrator SPPG']);
     }
 
     public function update(AuthUser $authUser, SppgFinancialReport $sppgFinancialReport): bool
     {
+        if ($authUser->hasAnyRole(['Kepala SPPG', 'Admin SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Administrator SPPG'])) {
+            return true;
+        }
         return $authUser->can('Update:SppgFinancialReport');
     }
 
     public function delete(AuthUser $authUser, SppgFinancialReport $sppgFinancialReport): bool
     {
+        if ($authUser->hasAnyRole(['Kepala SPPG', 'Admin SPPG', 'PJ Pelaksana'])) {
+            return true;
+        }
         return $authUser->can('Delete:SppgFinancialReport');
     }
 
