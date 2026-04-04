@@ -25,9 +25,9 @@ class VolunteerDailyAttendanceResource extends Resource
 
     protected static ?string $navigationLabel = 'Data Presensi';
     
-    protected static string|\UnitEnum|null $navigationGroup = 'Keuangan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Operasional';
     
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 99;
     
     public static function getNavigationIcon(): ?string
     {
