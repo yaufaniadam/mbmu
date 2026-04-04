@@ -14,26 +14,41 @@ class ComplaintPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
+        if ($authUser->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana', 'Superadmin', 'Ketua Kornas', 'Staf Kornas'])) {
+            return true;
+        }
         return $authUser->can('ViewAny:Complaint');
     }
 
     public function view(AuthUser $authUser, Complaint $complaint): bool
     {
+        if ($authUser->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana', 'Superadmin', 'Ketua Kornas', 'Staf Kornas'])) {
+            return true;
+        }
         return $authUser->can('View:Complaint');
     }
 
     public function create(AuthUser $authUser): bool
     {
+        if ($authUser->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana'])) {
+            return true;
+        }
         return $authUser->can('Create:Complaint');
     }
 
     public function update(AuthUser $authUser, Complaint $complaint): bool
     {
+        if ($authUser->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana'])) {
+            return true;
+        }
         return $authUser->can('Update:Complaint');
     }
 
     public function delete(AuthUser $authUser, Complaint $complaint): bool
     {
+        if ($authUser->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana'])) {
+            return true;
+        }
         return $authUser->can('Delete:Complaint');
     }
 
