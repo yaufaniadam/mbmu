@@ -14,7 +14,7 @@ class ListComplaints extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->visible(fn () => \Illuminate\Support\Facades\Auth::user()->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG'])),
+                ->visible(fn () => \Illuminate\Support\Facades\Auth::user()->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana'])),
         ];
     }
 }
