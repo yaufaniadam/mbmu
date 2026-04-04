@@ -17,6 +17,11 @@ class UsersTable
             ->columns([
                 TextColumn::make('name')->label('Nama')->sortable()->searchable(),
                 TextColumn::make('email')->label('Email')->sortable()->searchable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('lembagaDipimpin.nama_lembaga')
+                    ->label('Nama Lembaga')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->placeholder('-'),
                 TextColumn::make('roles.name')
                     ->label('Jabatan')
                     ->badge()
