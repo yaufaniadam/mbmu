@@ -61,7 +61,7 @@ class ComplaintResponded extends Notification implements ShouldQueue
             ->icon('heroicon-o-check-circle')
             ->success()
             ->actions([
-                \Filament\Notifications\Actions\Action::make('view')
+                \Filament\Actions\Action::make('view')
                     ->button()
                     ->url('/admin/complaints/' . $this->complaint->id),
             ])

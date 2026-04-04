@@ -67,7 +67,7 @@ class ContributionBillGenerated extends Notification implements ShouldQueue
             ->icon('heroicon-o-banknotes')
             ->warning()
             ->actions([
-                \Filament\Notifications\Actions\Action::make('view')
+                \Filament\Actions\Action::make('view')
                     ->button()
                     ->url('/lembaga/manage-finance?activeTab=pay_royalty'),
             ])

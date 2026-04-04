@@ -81,7 +81,7 @@ class BillDueReminder extends Notification implements ShouldQueue
             ->icon($isOverdue ? 'heroicon-o-exclamation-circle' : 'heroicon-o-clock')
             ->color($isOverdue ? 'danger' : 'warning')
             ->actions([
-                \Filament\Notifications\Actions\Action::make('pay')
+                \Filament\Actions\Action::make('pay')
                     ->button()
                     ->url($this->invoice->type === 'LP_ROYALTY' ? '/lembaga/manage-finance?activeTab=pay_royalty' : '/sppg/manage-finance?activeTab=pay_rent'),
             ])

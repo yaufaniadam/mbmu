@@ -67,7 +67,7 @@ class ContributionPaymentReceived extends Notification implements ShouldQueue
             ->icon('heroicon-o-credit-card')
             ->info()
             ->actions([
-                \Filament\Notifications\Actions\Action::make('verify')
+                \Filament\Actions\Action::make('verify')
                     ->button()
                     ->url('/admin/invoices'),
             ])

@@ -184,13 +184,13 @@ class ComplaintResource extends Resource
         $user = Auth::user();
 
         // LP only sees their own LP complaints
-        if ($user->hasAnyRole(['Pimpinan Lembaga Pengusul', 'PJ Pelaksana'])) {
+        if ($user->hasAnyRole(['Pimpinan Lembaga Pengusul'])) {
             return $query->where('user_id', $user->id)
                          ->where('source_type', 'lembaga_pengusul');
         }
 
-        // Kepala SPPG only sees their own SPPG complaints
-        if ($user->hasRole('Kepala SPPG')) {
+        // Kepala SPPG & PJ Pelaksana only sees their own SPPG complaints
+        if ($user->hasAnyRole(['Kepala SPPG', 'PJ Pelaksana'])) {
             return $query->where('user_id', $user->id)
                          ->where('source_type', 'sppg');
         }
