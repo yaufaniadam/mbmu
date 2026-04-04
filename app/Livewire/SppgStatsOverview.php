@@ -17,7 +17,7 @@ class SppgStatsOverview extends StatsOverviewWidget
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static bool $isLazy = true;
+    protected static bool $isLazy = false;
 
     protected function getStats(): array
     {
@@ -31,7 +31,7 @@ class SppgStatsOverview extends StatsOverviewWidget
         } elseif ($user->hasAnyRole(['PJ Pelaksana', 'Ahli Gizi', 'Staf Administrator SPPG', 'Staf Akuntan', 'Staf Gizi', 'Staf Pengantaran'])) {
             $sppg = $user->unitTugas->first();
         } else {
-            $sppgId = $this->pageFilters['sppg_id'] ?? null;
+            $sppgId = ($this->pageFilters ?? [])['sppg_id'] ?? null;
             if ($sppgId) {
                 $sppg = Sppg::find($sppgId);
             } else {

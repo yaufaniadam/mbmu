@@ -17,7 +17,7 @@ class OsmMapWidget extends Widget
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static bool $isLazy = true;
+    protected static bool $isLazy = false;
 
     // Example data to display on the map
     public array $markers = [];
@@ -46,8 +46,8 @@ class OsmMapWidget extends Widget
     public function updateMapData(): void
     {
         // 1. Get Filter Values from Dashboard
-        $provinceCode = $this->filters['province_code'] ?? null;
-        $sppgId = $this->filters['sppg_id'] ?? null;
+        $provinceCode = ($this->filters ?? [])['province_code'] ?? null;
+        $sppgId = ($this->filters ?? [])['sppg_id'] ?? null;
 
         // 2. Base Query
         $query = Sppg::query()

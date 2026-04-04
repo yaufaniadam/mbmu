@@ -15,6 +15,7 @@ class ProductionChart extends ChartWidget
     use InteractsWithPageFilters;
 
     protected ?string $heading = 'Aktifitas Harian';
+    protected static bool $isLazy = false;
 
     protected function getData(): array
     {
@@ -25,7 +26,7 @@ class ProductionChart extends ChartWidget
         } elseif ($user->hasAnyRole(['PJ Pelaksana', 'Ahli Gizi', 'Staf Administrator SPPG', 'Staf Akuntan', 'Staf Gizi', 'Staf Pengantaran'])) {
             $sppgId = User::find($user->id)->unitTugas->first()?->id;
         } else {
-            $sppgId = $this->pageFilters['sppg_id'] ?? null;
+            $sppgId = ($this->pageFilters ?? [])['sppg_id'] ?? null;
         }
 
         $query = ProductionSchedule::query();

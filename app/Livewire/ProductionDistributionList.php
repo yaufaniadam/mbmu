@@ -19,7 +19,7 @@ class ProductionDistributionList extends TableWidget
 
     protected static ?string $heading = 'Distribusi'; // Optional: Add a heading
 
-    protected static bool $isLazy = true;
+    protected static bool $isLazy = false;
 
     public function table(Table $table): Table
     {
@@ -30,7 +30,7 @@ class ProductionDistributionList extends TableWidget
                 /** @var \App\Models\User $user */
                 $user = Auth::user();
 
-                $sppgId = $this->pageFilters['sppg_id'] ?? null;
+                $sppgId = ($this->pageFilters ?? [])['sppg_id'] ?? null;
 
                 if ($user->hasRole('Kepala SPPG')) {
                     $sppgId = User::find($user->id)->sppgDikepalai?->id;

@@ -17,6 +17,7 @@ class SppgTopStatsWidget extends Widget
     protected string $view = 'livewire.sppg-top-stats-widget';
 
     protected int|string|array $columnSpan = 'full';
+    protected static bool $isLazy = false;
 
 
     public function getData()
@@ -46,7 +47,7 @@ class SppgTopStatsWidget extends Widget
 
         // 3. Fallback to filters for Management Roles
         if (!$sppg) {
-            $sppgId = $this->pageFilters['sppg_id'] ?? null;
+            $sppgId = ($this->pageFilters ?? [])['sppg_id'] ?? null;
             if ($sppgId) {
                 $sppg = Sppg::find($sppgId);
             } else {
