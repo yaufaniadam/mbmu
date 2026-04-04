@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use App\Models\LembagaPengusul;
 
 class UsersTable
 {
@@ -15,6 +16,7 @@ class UsersTable
         return $table
             ->columns([
                 TextColumn::make('name')->label('Nama')->sortable()->searchable(),
+                TextColumn::make('email')->label('Email')->sortable()->searchable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('roles.name')
                     ->label('Jabatan')
                     ->badge()
@@ -90,6 +92,25 @@ class UsersTable
                         if (! $data['sppg_id']) return null;
                         $sppg = \App\Models\Sppg::find($data['sppg_id']);
                         return 'SPPG: ' . ($sppg?->nama_sppg ?? 'Unknown');
+                    }),
+                \Filament\Tables\Filters\Filter::make('lembaga_filter')
+                    ->form([
+                        \Filament\Forms\Components\Select::make('lembaga_id')
+                            ->label('Filter Lembaga Pengusul')
+                            ->options(LembagaPengusul::pluck('nama_lembaga', 'id'))
+                            ->searchable()
+                            ->preload(),
+                    ])
+                    ->query(function (\Illuminate\Database\Eloquent\Builder $query, array $data): \Illuminate\Database\Eloquent\Builder {
+                        return $query->when(
+                            $data['lembaga_id'],
+                            fn ($query, $lembagaId) => $query->whereHas('lembagaDipimpin', fn ($sq) => $sq->where('id', $lembagaId))
+                        );
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (! $data['lembaga_id']) return null;
+                        $lembaga = LembagaPengusul::find($data['lembaga_id']);
+                        return 'Lembaga Pengusul: ' . ($lembaga?->nama_lembaga ?? 'Unknown');
                     }),
             ])
             ->recordActions([
