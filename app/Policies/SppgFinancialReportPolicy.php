@@ -14,10 +14,14 @@ class SppgFinancialReportPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        // Allow Kepala SPPG, Admin roles, and Kornas staff to view financial reports
+        // Allow checking roles to view financial reports
         return $authUser->hasAnyRole([
             'Kepala SPPG',
             'Admin SPPG',
+            'Staf Administrator SPPG',
+            'Staf Akuntan',
+            'PJ Pelaksana',
+            'Pimpinan Lembaga Pengusul',
             'Superadmin',
             'Ketua Kornas',
             'Staf Akuntan Kornas',
@@ -30,6 +34,10 @@ class SppgFinancialReportPolicy
         if ($authUser->hasAnyRole([
             'Kepala SPPG',
             'Admin SPPG',
+            'Staf Administrator SPPG',
+            'Staf Akuntan',
+            'PJ Pelaksana',
+            'Pimpinan Lembaga Pengusul',
             'Superadmin',
             'Ketua Kornas',
             'Staf Akuntan Kornas',
