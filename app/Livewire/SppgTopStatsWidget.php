@@ -33,20 +33,11 @@ class SppgTopStatsWidget extends Widget
         $sppg = null;
         $isNationalView = false;
 
-        // 1. Check for SPPG Head role
-        if ($user->hasRole('Kepala SPPG')) {
-            $sppg = Sppg::where('kepala_sppg_id', $user->id)->first();
-        } 
-        
-        // 2. Check for Staff Roles
-        if (!$sppg && $user->hasAnyRole(['PJ Pelaksana', 'Ahli Gizi', 'Staf Administrator SPPG', 'Staf Akuntan', 'Staf Gizi', 'Staf Pengantaran'])) {
-            $sppg = Sppg::whereHas('staff', function($query) use ($user) {
-                $query->where('users.id', $user->id);
-            })->first();
-        }
+        $managedSppg = User::find($user->id)->getManagedSppg();
 
-        // 3. Fallback to filters for Management Roles
-        if (!$sppg) {
+        if ($managedSppg) {
+            $sppg = $managedSppg;
+        } else {
             $sppgId = ($this->pageFilters ?? [])['sppg_id'] ?? null;
             if ($sppgId) {
                 $sppg = Sppg::find($sppgId);

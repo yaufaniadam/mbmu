@@ -26,17 +26,21 @@ class UsersTable
                             return 'Kornas';
                         }
 
-                        // Pimpinan Lembaga Pengusul tidak terkait SPPG
-                        if ($record->hasRole('Pimpinan Lembaga Pengusul')) {
-                            return '-';
-                        }
-
                         $sppgName = $record->sppgDiKepalai?->nama_sppg 
                             ?? $record->sppgDiPj?->nama_sppg
                             ?? $record->unitTugas->first()?->nama_sppg
                             ?? $record->sppg?->nama_sppg;
 
-                        return $sppgName ?? '-';
+                        if ($sppgName) {
+                            return $sppgName;
+                        }
+
+                        // Pimpinan Lembaga Pengusul tidak terkait SPPG unless they have another role
+                        if ($record->hasRole('Pimpinan Lembaga Pengusul')) {
+                            return '-';
+                        }
+
+                        return '-';
                     })
                     ->badge()
                     ->color(fn (string $state): string => $state === 'Kornas' ? 'info' : 'success'),

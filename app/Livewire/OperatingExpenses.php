@@ -68,9 +68,7 @@ class OperatingExpenses extends TableWidget
                 }
 
                 // Any role in SPPG panel OR SPPG-linked role in Admin panel: Scope to their assigned SPPG
-                $sppgId = $user->hasRole('Kepala SPPG')
-                    ? $user->sppgDikepalai?->id
-                    : $user->unitTugas->first()?->id;
+                $sppgId = User::find($user->id)->getManagedSppg()?->id;
 
                 if ($sppgId) {
                     return $query->where('sppg_id', $sppgId);
@@ -196,11 +194,7 @@ class OperatingExpenses extends TableWidget
                         $user = Auth::user();
                         $sppgId = null;
 
-                        if ($user->hasRole('Kepala SPPG')) {
-                            $sppgId = $user->sppgDikepalai?->id;
-                        } elseif ($user->hasRole('PJ Pelaksana')) {
-                            $sppgId = $user->unitTugas->first()?->id;
-                        }
+                        $sppgId = User::find($user->id)->getManagedSppg()?->id;
 
                         if ($sppgId) {
                             $data['sppg_id'] = $sppgId;

@@ -48,7 +48,7 @@ class BillList extends TableWidget
                     }
                     
                     // Fallback for types in SPPG role
-                    $sppg = $user->hasRole('Kepala SPPG') ? $user->sppgDikepalai : $user->unitTugas->first();
+                    $sppg = $user->getManagedSppg();
                     if ($sppg) {
                         return $query->where('sppg_id', $sppg->id);
                     }
@@ -69,12 +69,7 @@ class BillList extends TableWidget
                 // Default: SPPG Rent Invoices
                 $query->where('type', 'SPPG_SEWA');
 
-                $sppg = null;
-                if ($user->hasRole('Kepala SPPG')) {
-                    $sppg = $user->sppgDikepalai;
-                } elseif ($user->hasAnyRole(['PJ Pelaksana', 'Staf Akuntan', 'Staf Administrator SPPG'])) {
-                     $sppg = $user->unitTugas->first();
-                }
+                $sppg = clone $user->getManagedSppg();
 
                 if ($sppg) {
                      return $query->where('sppg_id', $sppg->id);

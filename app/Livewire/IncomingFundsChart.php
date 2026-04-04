@@ -38,9 +38,7 @@ class IncomingFundsChart extends ChartWidget
             $query->whereNull('sppg_id');
         } elseif ($panelId === 'sppg') {
             // SPPG panel: Scope to user's SPPG
-            $sppgId = $user->hasRole('Kepala SPPG')
-                ? $user->sppgDikepalai?->id
-                : $user->unitTugas->first()?->id;
+            $sppgId = $user->getManagedSppg()?->id;
 
             if ($sppgId) {
                 $query->where('sppg_id', $sppgId);

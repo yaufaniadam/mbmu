@@ -28,28 +28,7 @@ class TransactionList extends TableWidget
                 $query = Invoice::query();
                 $user = Auth::user();
 
-                if ($user->hasRole('Kepala SPPG')) {
-                    // Outgoing SPPG Rent
-                    $sppgId = $user->sppgDikepalai?->id;
-                    if ($sppgId) {
-                         $query->where('sppg_id', $sppgId)
-                               ->where('type', 'SPPG_SEWA');
-                    } else {
-                         // Fallback if no SPPG assigned (should not happen for valid role)
-                         $query->whereRaw('1=0');
-                    }
-                }
-                elseif ($user->hasRole('PJ Pelaksana')) {
-                    // Outgoing SPPG Rent
-                    $sppgId = $user->unitTugas->first()?->id;
-                    if ($sppgId) {
-                         $query->where('sppg_id', $sppgId)
-                               ->where('type', 'SPPG_SEWA');
-                    } else {
-                         $query->whereRaw('1=0');
-                    }
-                }
-                elseif ($user->hasRole('Pimpinan Lembaga Pengusul')) {
+                if ($user->hasRole('Pimpinan Lembaga Pengusul')) {
                     // Outgoing Royalty
                      $allowedSppgIds = $user
                         ->lembagaDipimpin
@@ -59,6 +38,15 @@ class TransactionList extends TableWidget
 
                      $query->whereIn('sppg_id', $allowedSppgIds)
                            ->where('type', 'LP_ROYALTY');
+                } else {
+                    $sppgId = User::find($user->id)->getManagedSppg()?->id;
+                    if ($sppgId) {
+                         $query->where('sppg_id', $sppgId)
+                               ->where('type', 'SPPG_SEWA');
+                    } else {
+                         // Fallback if no SPPG assigned (should not happen for valid role)
+                         $query->whereRaw('1=0');
+                    }
                 }
 
                 // Show all statuses for history

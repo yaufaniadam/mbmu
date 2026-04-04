@@ -31,10 +31,9 @@ class ProductionScheduleList extends TableWidget
 
                 $sppgId = ($this->pageFilters ?? [])['sppg_id'] ?? null;
 
-                if ($user->hasRole('Kepala SPPG')) {
-                    $sppgId = User::find($user->id)->sppgDikepalai?->id;
-                } elseif ($user->hasAnyRole(['PJ Pelaksana', 'Ahli Gizi', 'Staf Administrator SPPG', 'Staf Akuntan', 'Staf Gizi', 'Staf Pengantaran'])) {
-                    $sppgId = User::find($user->id)->unitTugas->first()?->id;
+                $managedSppg = User::find($user->id)->getManagedSppg();
+                if ($managedSppg) {
+                    $sppgId = $managedSppg->id;
                 }
 
                 return ProductionSchedule::query()

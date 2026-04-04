@@ -58,7 +58,7 @@ class SppgFunds extends StatsOverviewWidget
 
         // 2. Legacy/SPPG Panel Logic (Fallback)
         if ($panelId === 'sppg') {
-            $sppg = $user->hasRole('Kepala SPPG') ? $user->sppgDikepalai : $user->unitTugas->first();
+            $sppg = $user->getManagedSppg();
             $balance = $sppg?->balance ?? 0;
 
             return [

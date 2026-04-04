@@ -16,11 +16,7 @@ class AssignedSppg extends Widget
     {
         $user = Auth::user();
 
-        if ($user->hasRole('Kepala SPPG')) {
-            $this->sppg = User::find($user->id)->sppgDikepalai;
-        } else {
-            $this->sppg = User::find($user->id)->unitTugas->first();
-        }
+        $this->sppg = User::find($user->id)->getManagedSppg();
     }
 
     public static function canView(): bool
