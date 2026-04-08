@@ -273,15 +273,7 @@ class ProductionScheduleResource extends Resource
 
     public static function canCreate(): bool
     {
-        $panelId = \Filament\Facades\Filament::getCurrentPanel()?->getId();
-        
-        // Admin panel: Read-only, no manual creation
-        if ($panelId === 'admin') {
-            return false;
-        }
-        
-        // SPPG panel: Allow creation
-        return true;
+        return false;
     }
 
     public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool

@@ -44,7 +44,7 @@ class WhatsAppService
 
             // Mengirim request menggunakan Laravel HTTP Client
             $response = Http::get($fullUrl, [
-                'token' => $this->token, // Token saja (tanpa secret key untuk v1 API)
+                'token' => $this->token . '.' . $this->secretKey, // token.secretKey required for non-whitelisted IPs
                 'phone' => $target,
                 'message' => $message,
             ]);

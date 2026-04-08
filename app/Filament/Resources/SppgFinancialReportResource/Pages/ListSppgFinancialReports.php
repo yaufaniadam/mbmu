@@ -16,4 +16,9 @@ class ListSppgFinancialReports extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    public function getSubheading(): ?string
+    {
+        return 'Harap mengunggah Laporan Pelaksanaan/Kegiatan dan Laporan Keuangan SPPG Muhammadiyah secara lengkap, mulai dari periode awal operasional hingga periode berjalan saat ini. Seluruh laporan, baik periode sebelumnya maupun periode berjalan, wajib diunggah.';
+    }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Holiday;
 use App\Models\ProductionSchedule;
 use App\Models\Sppg;
 use Carbon\Carbon;
@@ -32,16 +31,9 @@ class CreateDailyDistributionPlans extends Command
         $today = Carbon::today();
         $this->info("Checking distribution plans for: {$today->toDateString()}");
 
-        // Skip Sundays (Minggu)
+        // Skip Sundays (Minggu) only — hari libur nasional tetap buat entry
         if ($today->isSunday()) {
             $this->info("⏭️  Skipped: Today is Sunday (Hari Minggu)");
-            return Command::SUCCESS;
-        }
-
-        // Skip holidays
-        if (Holiday::isHoliday($today)) {
-            $holiday = Holiday::whereDate('tanggal', $today)->first();
-            $this->info("⏭️  Skipped: Today is a holiday ({$holiday->nama})");
             return Command::SUCCESS;
         }
 

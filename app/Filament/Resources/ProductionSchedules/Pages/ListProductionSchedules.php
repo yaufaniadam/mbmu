@@ -12,9 +12,6 @@ class ListProductionSchedules extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            CreateAction::make()
-                ->hidden(fn () => \Filament\Facades\Filament::getCurrentPanel()->getId() === 'admin'),
-        ];
+        return [];
     }
 }
