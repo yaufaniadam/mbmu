@@ -16,8 +16,14 @@ class ListUsers extends ListRecords
             \Filament\Actions\ImportAction::make()
                 ->label('Impor Data Pengguna')
                 ->importer(\App\Filament\Imports\UserImporter::class)
+                ->color('success')
                 ->visible(fn () => true),
-            CreateAction::make(),
+            \Filament\Actions\Action::make('debug')
+                ->label('DEBUG BUTTON')
+                ->color('danger')
+                ->visible(fn () => true),
+            CreateAction::make()
+                ->label('TAMBAH PENGGUNA BARU'),
         ];
     }
 }
