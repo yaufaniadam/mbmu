@@ -140,7 +140,7 @@ class UsersTable
                     }),
             ])
             ->recordActions([
-                \Filament\Tables\Actions\Action::make('kirim_wa')
+                \Filament\Actions\Action::make('kirim_wa')
                     ->label('Kirim WA')
                     ->icon('heroicon-o-chat-bubble-left-right')
                     ->color('success')
