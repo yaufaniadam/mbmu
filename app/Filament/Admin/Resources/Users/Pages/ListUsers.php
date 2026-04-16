@@ -15,7 +15,8 @@ class ListUsers extends ListRecords
         return [
             \Filament\Actions\ImportAction::make()
                 ->label('Impor Data Pengguna')
-                ->importer(\App\Filament\Imports\UserImporter::class),
+                ->importer(\App\Filament\Imports\UserImporter::class)
+                ->visible(fn () => true),
             CreateAction::make(),
         ];
     }
