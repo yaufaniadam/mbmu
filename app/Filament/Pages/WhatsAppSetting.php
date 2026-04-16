@@ -22,7 +22,9 @@ class WhatsAppSetting extends Page implements HasForms
 
     protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
 
-    protected static ?string $navigationLabel = 'WhatsApp Setting';
+    protected static ?string $navigationLabel = 'Template Pesan';
+
+    protected ?string $heading = 'Template Pesan WhatsApp';
 
     protected static ?int $navigationSort = 2;
 
