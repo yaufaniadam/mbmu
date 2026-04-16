@@ -13,6 +13,9 @@ class ListUsers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            \Filament\Actions\ImportAction::make()
+                ->label('Impor Data Pengguna')
+                ->importer(\App\Filament\Imports\UserImporter::class),
             CreateAction::make(),
         ];
     }
