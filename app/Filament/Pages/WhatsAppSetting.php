@@ -18,7 +18,7 @@ class WhatsAppSetting extends Page implements HasForms
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-chat-bubble-left-right';
 
-    protected static string $view = 'filament.pages.whatsapp-setting';
+    protected string $view = 'filament.pages.whatsapp-setting';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
 
