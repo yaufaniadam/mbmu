@@ -49,16 +49,28 @@ class UserImporter extends Importer
     {
         $phone = trim($this->data['no_wa'] ?? '');
         
-        $user = User::where('telepon', $phone)->first() ?? new User();
+        // Normalize phone number (handle 0, 62, and stripping non-digits)
+        // Convert 08... to 628... or similar standard
+        $normalizedPhone = preg_replace('/[^0-9]/', '', $phone);
+        if (str_starts_with($normalizedPhone, '0')) {
+            $normalizedPhone = '62' . substr($normalizedPhone, 1);
+        } elseif (str_starts_with($normalizedPhone, '8')) {
+            $normalizedPhone = '62' . $normalizedPhone;
+        }
 
-        $user->telepon = $phone;
+        // Search for existing user using both raw and normalized phone
+        $user = User::where('telepon', $phone)
+            ->orWhere('telepon', $normalizedPhone)
+            ->first() ?? new User();
+
+        $user->telepon = $normalizedPhone; // Standardize to normalized format
         $user->name = $this->data['name'] ?? '';
         
         if (blank($user->email)) {
-            $user->email = $phone . '@mbmu.id';
+            $user->email = $normalizedPhone . '@mbmu.id';
         }
 
-        $lastFourDigits = substr($phone, -4);
+        $lastFourDigits = substr($normalizedPhone, -4);
         $user->password = 'mbm' . $lastFourDigits;
 
         return $user;
