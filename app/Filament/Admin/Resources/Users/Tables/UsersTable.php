@@ -156,9 +156,12 @@ class UsersTable
                         if (empty($phone)) return null;
 
                         $template = \App\Models\SystemSetting::getByKey('whatsapp_bulk_message', '');
-                        $encodedMessage = rawurlencode($template);
+                        
+                        // Normalize line breaks and encode correctly for WhatsApp
+                        $message = str_replace(["\r\n", "\r"], "\n", $template);
+                        $encodedMessage = rawurlencode($message);
 
-                        return "https://wa.me/{$phone}?text={$encodedMessage}";
+                        return "https://api.whatsapp.com/send?phone={$phone}&text={$encodedMessage}";
                     })
                     ->openUrlInNewTab(),
                 EditAction::make(),
