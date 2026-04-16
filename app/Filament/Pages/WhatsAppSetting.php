@@ -20,7 +20,7 @@ class WhatsAppSetting extends Page implements HasForms
 
     protected static string $view = 'filament.pages.whatsapp-setting';
 
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
 
     protected static ?string $navigationLabel = 'WhatsApp Setting';
 
