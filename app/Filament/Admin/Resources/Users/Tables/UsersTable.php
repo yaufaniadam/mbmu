@@ -140,6 +140,27 @@ class UsersTable
                     }),
             ])
             ->recordActions([
+                \Filament\Tables\Actions\Action::make('kirim_wa')
+                    ->label('Kirim WA')
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->color('success')
+                    ->visible(fn () => auth()->user()->hasAnyRole(['Superadmin', 'Staf Kornas']))
+                    ->url(function (\App\Models\User $record) {
+                        $phone = preg_replace('/[^0-9]/', '', $record->telepon);
+                        if (str_starts_with($phone, '0')) {
+                            $phone = '62' . substr($phone, 1);
+                        } elseif (str_starts_with($phone, '8')) {
+                            $phone = '62' . $phone;
+                        }
+
+                        if (empty($phone)) return null;
+
+                        $template = \App\Models\SystemSetting::getByKey('whatsapp_bulk_message', '');
+                        $encodedMessage = rawurlencode($template);
+
+                        return "https://wa.me/{$phone}?text={$encodedMessage}";
+                    })
+                    ->openUrlInNewTab(),
                 EditAction::make(),
             ])
             ->toolbarActions([
