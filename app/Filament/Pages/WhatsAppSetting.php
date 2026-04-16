@@ -28,6 +28,12 @@ class WhatsAppSetting extends Page implements HasForms
 
     public ?array $data = [];
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return \Filament\Facades\Filament::getCurrentPanel()?->getId() === 'admin' && 
+               auth()->user()->hasAnyRole(['Superadmin', 'Staf Kornas']);
+    }
+
     public function mount(): void
     {
         // Restriction to Admin/Staff Kornas
