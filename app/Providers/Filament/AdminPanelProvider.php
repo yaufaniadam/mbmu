@@ -58,6 +58,7 @@ class AdminPanelProvider extends PanelProvider
                 ProductionVerificationSetting::class,
                 \App\Filament\Sppg\Pages\InstructionList::class,
                 \App\Filament\Pages\TestNotifications::class,
+                \App\Filament\Pages\WhatsAppSetting::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
             ->widgets([
