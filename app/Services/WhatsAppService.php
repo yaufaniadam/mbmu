@@ -7,242 +7,106 @@ use Illuminate\Support\Facades\Log;
 
 class WhatsAppService
 {
-    protected $server;
-    protected $token;
-    protected $secretKey;
-
     /**
-     * Mengambil kredensial dari file konfigurasi.
+     * Send message via the configured gateway.
+     *
+     * @param string $to
+     * @param string $message
+     * @return array
      */
-    public function __construct()
+    public function send(string $to, string $message): array
     {
-        $this->server = config('whatsapp.server');
-        $this->token = config('whatsapp.token');
-        $this->secretKey = config('whatsapp.secret_key'); // Tambahan dari contoh Wablas
+        $gateway = config('whatsapp.gateway', 'manual');
+
+        switch ($gateway) {
+            case 'fonnte':
+                return $this->sendViaFonnte($to, $message);
+            case 'wablas':
+                return $this->sendViaWablas($to, $message);
+            default:
+                return [
+                    'success' => false,
+                    'message' => 'Manual gateway requires front-end redirection.',
+                ];
+        }
     }
 
     /**
-     * Fungsi utama untuk mengirim pesan.
+     * Get the manual redirection URL.
      *
-     * @param string $target Nomor HP tujuan (format internasional, e.g., 62812xxxx)
-     * @param string $message Isi pesan yang akan dikirim
-     * @param mixed $relatedModel Model terkait untuk polymorphic relation (opsional)
-     * @return void
+     * @param string $to
+     * @param string $message
+     * @return string
      */
-    public function sendMessage($target, $message, $relatedModel = null)
+    public function getManualUrl(string $to, string $message): string
     {
-        // Jika salah satu kredensial tidak ada, jangan lakukan apa-apa.
-        // Ini berguna untuk mode development agar tidak error.
-        if (!$this->server || !$this->token || !$this->secretKey) {
-            Log::warning('WhatsApp Service: Kredensial API tidak lengkap. Pesan tidak dikirim.');
-            return;
+        $encodedMessage = rawurlencode($message);
+        return "https://api.whatsapp.com/send?phone={$to}&text={$encodedMessage}";
+    }
+
+    /**
+     * Send message via Fonnte API.
+     */
+    protected function sendViaFonnte(string $to, string $message): array
+    {
+        $token = config('whatsapp.fonnte.token');
+
+        if (!$token) {
+            return ['success' => false, 'message' => 'Fonnte Token is missing in .env'];
         }
 
         try {
-            // Membangun URL sesuai format Wablas
-            $fullUrl = $this->server . '/api/send-message';
+            $response = Http::withHeaders([
+                'Authorization' => $token,
+            ])->post('https://api.fonnte.com/send', [
+                'target' => $to,
+                'message' => $message,
+                'countryCode' => '62', // Default Indonesia
+            ]);
 
-            // Mengirim request menggunakan Laravel HTTP Client
-            $response = Http::get($fullUrl, [
-                'token' => $this->token . '.' . $this->secretKey, // token.secretKey required for non-whitelisted IPs
-                'phone' => $target,
+            $result = $response->json();
+
+            if ($response->successful() && ($result['status'] ?? false)) {
+                return ['success' => true, 'message' => 'Message sent via Fonnte.'];
+            }
+
+            return ['success' => false, 'message' => $result['reason'] ?? 'Fonnte API error.'];
+        } catch (\Exception $e) {
+            Log::error('Fonnte Send Error: ' . $e->getMessage());
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Send message via Wablas API.
+     */
+    protected function sendViaWablas(string $to, string $message): array
+    {
+        $server = config('whatsapp.wablas.server');
+        $token = config('whatsapp.wablas.token');
+
+        if (!$server || !$token) {
+            return ['success' => false, 'message' => 'Wablas configuration is missing in .env'];
+        }
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => $token,
+            ])->get("{$server}/api/send-message", [
+                'phone' => $to,
                 'message' => $message,
             ]);
 
-            // (Opsional) Log respons dari API untuk debugging
-            if ($response->failed()) {
-                Log::error('WhatsApp Service Gagal:', [
-                    'status' => $response->status(),
-                    'body' => $response->body()
-                ]);
-                
-                // Still create a record to track the failed attempt
-                \App\Models\WhatsAppMessage::create([
-                    'wablas_message_id' => null,
-                    'phone' => $target,
-                    'message' => $message,
-                    'status' => 'failed',
-                    'related_type' => $relatedModel ? get_class($relatedModel) : null,
-                    'related_id' => $relatedModel ? $relatedModel->id : null,
-                ]);
-            } else {
-                Log::info('WhatsApp Service Berhasil:', ['body' => $response->body()]);
+            $result = $response->json();
 
-                // Simpan data pesan ke database
-                $body = $response->json();
-                $messageId = $body['data']['messages'][0]['id'] ?? null; // Sesuaikan dengan struktur respons Wablas
-                $status = $body['status'] ?? 'pending';
-
-                // Fallback jika struktur berbeda (kadang Wablas langsung return id di root atau data)
-                // Asumsi: $body['data']['messages'][0]['id'] adalah format umum untuk bulk/single send
-                
-                if (!$messageId && isset($body['data']['id'])) {
-                    $messageId = $body['data']['id'];
-                }
-
-                \App\Models\WhatsAppMessage::create([
-                    'wablas_message_id' => $messageId,
-                    'phone' => $target,
-                    'message' => $message,
-                    'status' => $status ? 'pending' : 'failed', // Default ke pending jika sukses terkirim ke Wablas
-                    'related_type' => $relatedModel ? get_class($relatedModel) : null,
-                    'related_id' => $relatedModel ? $relatedModel->id : null,
-                ]);
+            if ($response->successful() && ($result['status'] ?? false)) {
+                return ['success' => true, 'message' => 'Message sent via Wablas.'];
             }
 
+            return ['success' => false, 'message' => $result['message'] ?? 'Wablas API error.'];
         } catch (\Exception $e) {
-            Log::error('WhatsApp Service Exception:', ['error' => $e->getMessage()]);
+            Log::error('Wablas Send Error: ' . $e->getMessage());
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
-
-    /**
-     * Mengirim gambar via WhatsApp (Wablas v2 API).
-     *
-     * @param string $target Nomor HP tujuan
-     * @param string $imageUrl URL publik gambar yang akan dikirim
-     * @param string|null $caption Caption untuk gambar (opsional)
-     * @param mixed $relatedModel Model terkait untuk polymorphic relation (opsional)
-     * @return void
-     */
-    public function sendImage($target, $imageUrl, $caption = '', $relatedModel = null)
-    {
-        if (!$this->server || !$this->token || !$this->secretKey) {
-            Log::warning('WhatsApp Service: Kredensial API tidak lengkap. Gambar tidak dikirim.');
-            return;
-        }
-
-        try {
-            $fullUrl = $this->server . '/api/v2/send-image';
-            
-            $headers = [
-                'Authorization' => $this->token . '.' . $this->secretKey,
-                'Content-Type' => 'application/json',
-            ];
-
-            $payload = [
-                'data' => [
-                    [
-                        'phone' => $target,
-                        'image' => $imageUrl,
-                        'caption' => $caption,
-                    ]
-                ]
-            ];
-
-            $response = Http::withHeaders($headers)
-                ->post($fullUrl, $payload);
-
-            if ($response->failed()) {
-                Log::error('WhatsApp Service Image Gagal:', [
-                    'status' => $response->status(),
-                    'body' => $response->body()
-                ]);
-                
-                // Still create a record to track the failed attempt
-                \App\Models\WhatsAppMessage::create([
-                    'wablas_message_id' => null,
-                    'phone' => $target,
-                    'message' => $caption,
-                    'attachment_url' => $imageUrl,
-                    'status' => 'failed',
-                    'related_type' => $relatedModel ? get_class($relatedModel) : null,
-                    'related_id' => $relatedModel ? $relatedModel->id : null,
-                ]);
-            } else {
-                Log::info('WhatsApp Service Image Berhasil:', ['body' => $response->body()]);
-
-                $body = $response->json();
-                // v2 API response structure: data.messages[0].id
-                $messageId = $body['data']['messages'][0]['id'] ?? null;
-
-                \App\Models\WhatsAppMessage::create([
-                    'wablas_message_id' => $messageId,
-                    'phone' => $target,
-                    'message' => $caption,
-                    'attachment_url' => $imageUrl,
-                    'status' => 'pending',
-                    'related_type' => $relatedModel ? get_class($relatedModel) : null,
-                    'related_id' => $relatedModel ? $relatedModel->id : null,
-                ]);
-            }
-
-        } catch (\Exception $e) {
-            Log::error('WhatsApp Service Exception (Image):', ['error' => $e->getMessage()]);
-        }
-    }
-
-    /**
-     * Mengirim dokumen/file via WhatsApp (Wablas v2 API).
-     *
-     * @param string $target Nomor HP tujuan
-     * @param string $documentUrl URL publik file yang akan dikirim
-     * @param string|null $caption Caption untuk file (opsional)
-     * @param mixed $relatedModel Model terkait untuk polymorphic relation (opsional)
-     * @return void
-     */
-    public function sendDocument($target, $documentUrl, $caption = '', $relatedModel = null)
-    {
-        if (!$this->server || !$this->token || !$this->secretKey) {
-            Log::warning('WhatsApp Service: Kredensial API tidak lengkap. Dokumen tidak dikirim.');
-            return;
-        }
-
-        try {
-            $fullUrl = $this->server . '/api/v2/send-document';
-            
-            $headers = [
-                'Authorization' => $this->token . '.' . $this->secretKey,
-                'Content-Type' => 'application/json',
-            ];
-
-            $payload = [
-                'data' => [
-                    [
-                        'phone' => $target,
-                        'document' => $documentUrl,
-                    ]
-                ]
-            ];
-
-            $response = Http::withHeaders($headers)
-                ->post($fullUrl, $payload);
-
-            if ($response->failed()) {
-                Log::error('WhatsApp Service Document Gagal:', [
-                    'status' => $response->status(),
-                    'body' => $response->body()
-                ]);
-                
-                // Still create a record to track the failed attempt
-                \App\Models\WhatsAppMessage::create([
-                    'wablas_message_id' => null,
-                    'phone' => $target,
-                    'message' => $caption,
-                    'attachment_url' => $documentUrl,
-                    'status' => 'failed',
-                    'related_type' => $relatedModel ? get_class($relatedModel) : null,
-                    'related_id' => $relatedModel ? $relatedModel->id : null,
-                ]);
-            } else {
-                Log::info('WhatsApp Service Document Berhasil:', ['body' => $response->body()]);
-
-                $body = $response->json();
-                $messageId = $body['data']['messages'][0]['id'] ?? null;
-
-                \App\Models\WhatsAppMessage::create([
-                    'wablas_message_id' => $messageId,
-                    'phone' => $target,
-                    'message' => $caption,
-                    'attachment_url' => $documentUrl,
-                    'status' => 'pending',
-                    'related_type' => $relatedModel ? get_class($relatedModel) : null,
-                    'related_id' => $relatedModel ? $relatedModel->id : null,
-                ]);
-            }
-
-        } catch (\Exception $e) {
-            Log::error('WhatsApp Service Exception (Document):', ['error' => $e->getMessage()]);
-        }
-    }
-    
 }

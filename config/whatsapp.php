@@ -1,7 +1,24 @@
 <?php
+
 return [
-    'server' => env('WA_SERVER'),
-    'token' => env('WA_TOKEN'),
-    'secret_key' => env('WA_SECRET_KEY'), 
-    'admin_wa' => env('ADMIN_WA'), 
+    /*
+    |--------------------------------------------------------------------------
+    | WhatsApp Gateway
+    |--------------------------------------------------------------------------
+    |
+    | Supported gateways: "manual", "fonnte", "wablas"
+    |
+    */
+    'gateway' => env('WA_GATEWAY', 'manual'),
+
+    'fonnte' => [
+        'token' => env('FONNTE_TOKEN'),
+    ],
+
+    'wablas' => [
+        'server' => env('WABLAS_SERVER', env('WA_SERVER')),
+        'token' => env('WABLAS_TOKEN', env('WA_TOKEN')),
+    ],
+
+    'admin_wa' => env('ADMIN_WA'),
 ];
