@@ -91,7 +91,7 @@ class AdminPanelProvider extends PanelProvider
             ->spa(hasPrefetching: true)
             ->renderHook(
                 'panels::head.start',
-                fn(): string => '<meta http-equiv="Content-Security-Policy" content="script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' https://unpkg.com https://tile.openstreetmap.org blob:; worker-src \'self\' blob:; img-src \'self\' data: blob: https:; style-src \'self\' \'unsafe-inline\' https://unpkg.com;">'
+                fn(): string => '<meta http-equiv="Content-Security-Policy" content="script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' https://unpkg.com https://tile.openstreetmap.org https://www.google.com https://www.gstatic.com blob:; worker-src \'self\' blob:; img-src \'self\' data: blob: https:; style-src \'self\' \'unsafe-inline\' https://unpkg.com; frame-src https://www.google.com;">'
             )
             ->renderHook(
                 'panels::head.end',
@@ -100,6 +100,77 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 'panels::body.end',
                 fn(): string => '<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>'
+            )
+            ->renderHook(
+                'panels::body.end',
+                fn(): string => '<script src="https://www.google.com/recaptcha/api.js?render=' . config('recaptcha.site_key') . '"></script>'
+            )
+            ->renderHook(
+                'panels::body.end',
+                fn(): string => '
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var siteKey = "' . config('recaptcha.site_key') . '";
+    if (!siteKey) return;
+
+    function executeRecaptcha(callback) {
+        if (typeof grecaptcha === "undefined") {
+            setTimeout(function() { executeRecaptcha(callback); }, 300);
+            return;
+        }
+        grecaptcha.ready(function () {
+            grecaptcha.execute(siteKey, { action: "login" }).then(function (token) {
+                callback(token);
+            });
+        });
+    }
+
+    function attachRecaptcha() {
+        var form = document.querySelector("form");
+        if (!form) return;
+
+        form.addEventListener("submit", function (e) {
+            var tokenField = document.getElementById("recaptcha-token-field");
+            if (tokenField && tokenField.value) return; // token already set
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            executeRecaptcha(function(token) {
+                // Update Livewire component property
+                var livewireEl = form.closest("[wire\\\\:id]");
+                if (livewireEl && window.Livewire) {
+                    var component = window.Livewire.find(livewireEl.getAttribute("wire:id"));
+                    if (component) {
+                        component.set("recaptchaToken", token);
+                    }
+                }
+                if (tokenField) tokenField.value = token;
+                // Re-submit after token is injected
+                setTimeout(function() { form.dispatchEvent(new Event("submit", { bubbles: true })); }, 100);
+            });
+        }, true);
+    }
+
+    // Also refresh token every 90 seconds (reCAPTCHA v3 tokens expire in 2 minutes)
+    setInterval(function () {
+        executeRecaptcha(function(token) {
+            var tokenField = document.getElementById("recaptcha-token-field");
+            if (tokenField) tokenField.value = token;
+            var form = document.querySelector("form");
+            if (form) {
+                var livewireEl = form.closest("[wire\\\\:id]");
+                if (livewireEl && window.Livewire) {
+                    var component = window.Livewire.find(livewireEl.getAttribute("wire:id"));
+                    if (component) component.set("recaptchaToken", token);
+                }
+            }
+        });
+    }, 90000);
+
+    attachRecaptcha();
+});
+</script>'
             )
             ->databaseNotifications();
     }

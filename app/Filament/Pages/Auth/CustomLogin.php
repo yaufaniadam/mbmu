@@ -11,10 +11,16 @@ use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Js;
 
 class CustomLogin extends BaseLogin
 {
+    /** @var string reCAPTCHA v3 token passed from the frontend */
+    public string $recaptchaToken = '';
+
     public function getHeading(): string | Htmlable
     {
         $panelId = Filament::getCurrentPanel()->getId();
@@ -58,8 +64,23 @@ class CustomLogin extends BaseLogin
                     ")),
 
                 $this->getRememberFormComponent(),
+
+                // Hidden field to capture reCAPTCHA v3 token
+                \Filament\Forms\Components\Hidden::make('recaptcha_token')
+                    ->extraInputAttributes([
+                        'id'               => 'recaptcha-token-field',
+                        'wire:model'       => 'recaptchaToken',
+                    ]),
             ])
             ->statePath('data');
+    }
+
+    /**
+     * Inject reCAPTCHA v3 execution script into page footer.
+     */
+    protected function getFooterWidgets(): array
+    {
+        return [];
     }
 
     public function authenticate(): ?LoginResponse
@@ -71,6 +92,13 @@ class CustomLogin extends BaseLogin
 
             return null;
         }
+
+        // -------- reCAPTCHA v3 Verification --------
+        $siteKey = config('recaptcha.site_key');
+        if (!empty($siteKey)) {
+            $this->verifyRecaptcha();
+        }
+        // -------------------------------------------
 
         $data = $this->form->getState();
 
@@ -140,6 +168,52 @@ class CustomLogin extends BaseLogin
         }
 
         return app(LoginResponse::class);
+    }
+
+    /**
+     * Verify the reCAPTCHA v3 token against Google's API.
+     * Throws a ValidationException if the verification fails.
+     */
+    protected function verifyRecaptcha(): void
+    {
+        $token = $this->recaptchaToken;
+
+        if (empty($token)) {
+            throw ValidationException::withMessages([
+                'data.login' => 'Verifikasi keamanan gagal. Mohon muat ulang halaman.',
+            ]);
+        }
+
+        try {
+            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret'   => config('recaptcha.secret_key'),
+                'response' => $token,
+                'remoteip' => request()->ip(),
+            ]);
+
+            $result = $response->json();
+
+            $success  = $result['success'] ?? false;
+            $score    = $result['score'] ?? 0.0;
+            $minScore = config('recaptcha.min_score', 0.5);
+
+            if (!$success || $score < $minScore) {
+                Log::warning('reCAPTCHA v3 failed', [
+                    'ip'     => request()->ip(),
+                    'score'  => $score,
+                    'result' => $result,
+                ]);
+
+                throw ValidationException::withMessages([
+                    'data.login' => 'Verifikasi keamanan gagal. Anda terdeteksi sebagai bot.',
+                ]);
+            }
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            Log::error('reCAPTCHA v3 request error', ['error' => $e->getMessage()]);
+            // If Google's API is unreachable, fail open (don't block legit users)
+        }
     }
 
     protected function getLoginField(string $login): string
