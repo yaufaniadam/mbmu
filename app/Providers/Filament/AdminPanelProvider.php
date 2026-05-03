@@ -109,21 +109,9 @@ class AdminPanelProvider extends PanelProvider
                 'panels::body.end',
                 fn(): string => '
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+(function () {
     var siteKey = "' . config('recaptcha.site_key') . '";
     if (!siteKey) return;
-
-    function executeRecaptcha(callback) {
-        if (typeof grecaptcha === "undefined") {
-            setTimeout(function() { executeRecaptcha(callback); }, 300);
-            return;
-        }
-        grecaptcha.ready(function () {
-            grecaptcha.execute(siteKey, { action: "login" }).then(function (token) {
-                callback(token);
-            });
-        });
-    }
 
     function getWireComponent() {
         var el = document.querySelector("[wire\\:id]");
@@ -131,46 +119,31 @@ document.addEventListener("DOMContentLoaded", function () {
         return window.Livewire.find(el.getAttribute("wire:id"));
     }
 
-    function setRecaptchaToken(token) {
-        var component = getWireComponent();
-        if (component) {
-            component.set("recaptchaToken", token);
+    function refreshToken() {
+        if (typeof grecaptcha === "undefined") {
+            setTimeout(refreshToken, 500);
+            return;
         }
-    }
-
-    function attachRecaptcha() {
-        var form = document.querySelector("form");
-        if (!form) return;
-
-        var tokenSet = false;
-
-        form.addEventListener("submit", function (e) {
-            if (tokenSet) return; // already injected, allow submit
-
-            e.preventDefault();
-            e.stopPropagation();
-
-            executeRecaptcha(function(token) {
-                setRecaptchaToken(token);
-                tokenSet = true;
-                // Re-submit after token is injected into Livewire
-                setTimeout(function() {
-                    tokenSet = false; // reset so next submit also gets a fresh token
-                    form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
-                }, 200);
+        grecaptcha.ready(function () {
+            grecaptcha.execute(siteKey, { action: "login" }).then(function (token) {
+                var component = getWireComponent();
+                if (component) {
+                    component.set("recaptchaToken", token);
+                }
             });
-        }, true);
+        });
     }
 
-    // Refresh token every 90 seconds (reCAPTCHA v3 tokens expire in 2 minutes)
-    setInterval(function () {
-        executeRecaptcha(function(token) {
-            setRecaptchaToken(token);
-        });
-    }, 90000);
+    // Generate token as soon as page is ready
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", refreshToken);
+    } else {
+        refreshToken();
+    }
 
-    attachRecaptcha();
-});
+    // Refresh every 90 seconds (tokens expire after 2 minutes)
+    setInterval(refreshToken, 90000);
+})();
 </script>'
             )
             ->databaseNotifications();
