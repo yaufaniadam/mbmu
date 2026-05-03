@@ -30,6 +30,7 @@ class TeamMemberForm
                 FileUpload::make('photo_path')->disk('public')
                     ->label('Foto')
                     ->image()
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->directory('team-members')
                     ->maxSize(10240)
                     ->imagePreviewHeight('200')

@@ -45,6 +45,7 @@ class UsersForm
                             ->label('Foto Profil')
                             ->image()
                             ->avatar()
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->directory('user-photos')
                             ->maxSize(10240)
                             ->columnSpanFull(),

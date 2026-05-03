@@ -19,7 +19,8 @@ class InvoicePolicy
 
     public function view(AuthUser $authUser, Invoice $invoice): bool
     {
-        return $authUser->can('View:Invoice') || $authUser->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']);
+        /** @var \App\Models\User $authUser */
+        return $authUser->hasAccessToSppg($invoice->sppg_id) && ($authUser->can('View:Invoice') || $authUser->hasAnyRole(['Superadmin', 'Staf Akuntan Kornas']));
     }
 
     public function create(AuthUser $authUser): bool
@@ -29,7 +30,8 @@ class InvoicePolicy
 
     public function update(AuthUser $authUser, Invoice $invoice): bool
     {
-        return $authUser->can('Update:Invoice');
+        /** @var \App\Models\User $authUser */
+        return $authUser->hasAccessToSppg($invoice->sppg_id) && $authUser->can('Update:Invoice');
     }
 
     public function delete(AuthUser $authUser, Invoice $invoice): bool

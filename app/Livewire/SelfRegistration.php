@@ -6,6 +6,8 @@ use App\Models\RegistrationToken;
 use App\Models\SppgUserRole;
 use App\Models\User;
 use App\Services\WablasService;
+use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -15,6 +17,7 @@ use Spatie\Permission\Models\Role;
 
 class SelfRegistration extends Component
 {
+    use WithRateLimiting;
     // Route parameters
     public string $role = '';
     public string $tokenCode = '';
@@ -178,6 +181,13 @@ class SelfRegistration extends Component
 
     public function register()
     {
+        try {
+            $this->rateLimit(3);
+        } catch (TooManyRequestsException $exception) {
+            session()->flash('error', 'Terlalu banyak percobaan. Silakan tunggu ' . $exception->secondsUntilAvailable . ' detik.');
+            return;
+        }
+
         \Illuminate\Support\Facades\Log::info('SelfRegistration: Start register()', [
             'token' => $this->registrationToken?->token,
             'phone' => $this->telepon
@@ -312,7 +322,8 @@ class SelfRegistration extends Component
         } catch (\Illuminate\Contracts\Cache\LockTimeoutException $e) {
             session()->flash('error', 'Sistem sedang sibuk, silakan coba beberapa saat lagi.');
         } catch (\Exception $e) {
-            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error('SelfRegistration error: ' . $e->getMessage());
+            session()->flash('error', 'Terjadi kesalahan sistem. Silakan coba lagi nanti.');
         }
     }
 

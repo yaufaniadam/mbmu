@@ -31,6 +31,11 @@ class SppgFinancialReportPolicy
 
     public function view(AuthUser $authUser, SppgFinancialReport $sppgFinancialReport): bool
     {
+        /** @var \App\Models\User $authUser */
+        if (!$authUser->hasAccessToSppg($sppgFinancialReport->sppg_id)) {
+            return false;
+        }
+
         if ($authUser->hasAnyRole([
             'Kepala SPPG',
             'Admin SPPG',
@@ -57,6 +62,11 @@ class SppgFinancialReportPolicy
 
     public function update(AuthUser $authUser, SppgFinancialReport $sppgFinancialReport): bool
     {
+        /** @var \App\Models\User $authUser */
+        if (!$authUser->hasAccessToSppg($sppgFinancialReport->sppg_id)) {
+            return false;
+        }
+
         if ($authUser->hasAnyRole(['Kepala SPPG', 'Admin SPPG', 'PJ Pelaksana', 'Staf Akuntan', 'Staf Administrator SPPG'])) {
             return true;
         }

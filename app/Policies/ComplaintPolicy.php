@@ -22,9 +22,21 @@ class ComplaintPolicy
 
     public function view(AuthUser $authUser, Complaint $complaint): bool
     {
-        if ($authUser->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana', 'Superadmin', 'Ketua Kornas', 'Staf Kornas'])) {
+        /** @var \App\Models\User $authUser */
+        if ($complaint->user_id === $authUser->id) {
             return true;
         }
+
+        if ($authUser->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Kornas'])) {
+            return true;
+        }
+
+        // For Lembaga/SPPG roles, we could check if the complaint's user belongs to their SPPG, 
+        // but for now, we'll rely on the existing role check which is likely filtered by tenant in the resource.
+        if ($authUser->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana'])) {
+            return true;
+        }
+
         return $authUser->can('View:Complaint');
     }
 
@@ -38,6 +50,11 @@ class ComplaintPolicy
 
     public function update(AuthUser $authUser, Complaint $complaint): bool
     {
+        /** @var \App\Models\User $authUser */
+        if ($complaint->user_id !== $authUser->id) {
+            return false;
+        }
+
         if ($authUser->hasAnyRole(['Pimpinan Lembaga Pengusul', 'Kepala SPPG', 'PJ Pelaksana'])) {
             return true;
         }

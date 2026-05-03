@@ -19,7 +19,8 @@ class ProductionSchedulePolicy
 
     public function view(AuthUser $authUser, ProductionSchedule $productionSchedule): bool
     {
-        return $authUser->can('View:ProductionSchedule');
+        /** @var \App\Models\User $authUser */
+        return $authUser->hasAccessToSppg($productionSchedule->sppg_id) && $authUser->can('View:ProductionSchedule');
     }
 
     public function create(AuthUser $authUser): bool
@@ -29,7 +30,8 @@ class ProductionSchedulePolicy
 
     public function update(AuthUser $authUser, ProductionSchedule $productionSchedule): bool
     {
-        return $authUser->can('Update:ProductionSchedule');
+        /** @var \App\Models\User $authUser */
+        return $authUser->hasAccessToSppg($productionSchedule->sppg_id) && $authUser->can('Update:ProductionSchedule');
     }
 
     public function delete(AuthUser $authUser, ProductionSchedule $productionSchedule): bool

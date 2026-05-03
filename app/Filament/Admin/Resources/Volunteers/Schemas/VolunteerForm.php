@@ -47,6 +47,7 @@ class VolunteerForm
                             ->label('Foto Relawan')
                             ->image()
                             ->avatar()
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->directory('volunteer-photos')
                             ->maxSize(10240)
                             ->columnSpanFull(),

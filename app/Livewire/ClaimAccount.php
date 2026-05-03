@@ -5,11 +5,14 @@ namespace App\Livewire;
 use App\Models\RegistrationToken;
 use App\Models\User;
 use App\Notifications\KirimToken;
+use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Livewire\Component;
 use Illuminate\Support\Facades\Log;
 
 class ClaimAccount extends Component
 {
+    use WithRateLimiting;
     public string $telepon = '';
     public bool $success = false;
     public string $error = '';
@@ -26,6 +29,13 @@ class ClaimAccount extends Component
 
     public function claim()
     {
+        try {
+            $this->rateLimit(3);
+        } catch (TooManyRequestsException $exception) {
+            $this->error = 'Terlalu banyak percobaan. Silakan tunggu ' . $exception->secondsUntilAvailable . ' detik.';
+            return;
+        }
+
         $this->validate();
         $this->loading = true;
         $this->error = '';

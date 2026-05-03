@@ -185,6 +185,33 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Check if user has access to a specific SPPG (as Head, PIC, Staff, or via Institution).
+     */
+    public function hasAccessToSppg(int|string $sppgId): bool
+    {
+        // Kornas/Superadmin have access to all
+        if ($this->hasAnyRole(['Superadmin', 'Ketua Kornas', 'Staf Akuntan Kornas', 'Staf Kornas'])) {
+            return true;
+        }
+
+        // Check if it's their directly managed SPPG
+        $managed = $this->getManagedSppg();
+        if ($managed && $managed->id == $sppgId) {
+            return true;
+        }
+
+        // Check if they are Head of the Institution that owns this SPPG
+        if ($this->hasRole('Pimpinan Lembaga Pengusul')) {
+            $lembaga = $this->lembagaDipimpin;
+            if ($lembaga && $lembaga->sppgs()->where('id', $sppgId)->exists()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Route notifications for the WhatsApp channel.
      *
      * @param  \Illuminate\Notifications\Notification  $notification

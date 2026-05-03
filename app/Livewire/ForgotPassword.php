@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use App\Models\User;
 use App\Notifications\WaResetPassword;
+use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
@@ -11,6 +13,7 @@ use Livewire\Component;
 
 class ForgotPassword extends Component
 {
+    use WithRateLimiting;
     public string $telepon = '';
     public bool $success = false;
     public string $error = '';
@@ -22,6 +25,13 @@ class ForgotPassword extends Component
 
     public function sendResetLink()
     {
+        try {
+            $this->rateLimit(3);
+        } catch (TooManyRequestsException $exception) {
+            $this->error = 'Terlalu banyak percobaan. Silakan tunggu ' . $exception->secondsUntilAvailable . ' detik.';
+            return;
+        }
+
         $this->validate();
         $this->loading = true;
         $this->error = '';

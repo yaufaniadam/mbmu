@@ -184,6 +184,7 @@ class SchoolForm
                 FileUpload::make('photo_path')->disk('public')
                     ->label('Foto Sekolah/Penerima')
                     ->image()
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->directory('school-photos')
                     ->maxSize(10240)
                     ->columnSpanFull(),
