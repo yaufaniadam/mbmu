@@ -14,13 +14,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use Livewire\Attributes\Js;
 
 class CustomLogin extends BaseLogin
 {
-    /** @var string reCAPTCHA v3 token passed from the frontend */
-    public string $recaptchaToken = '';
-
     public function getHeading(): string | Htmlable
     {
         $panelId = Filament::getCurrentPanel()->getId();
@@ -164,12 +160,12 @@ class CustomLogin extends BaseLogin
     }
 
     /**
-     * Verify the reCAPTCHA v3 token against Google's API.
+     * Verify the reCAPTCHA v3 token sent as HTTP header X-Recaptcha-Token.
      * Throws a ValidationException if the verification fails.
      */
     protected function verifyRecaptcha(): void
     {
-        $token = $this->recaptchaToken;
+        $token = request()->header('X-Recaptcha-Token', '');
 
         if (empty($token)) {
             throw ValidationException::withMessages([

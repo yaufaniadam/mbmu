@@ -113,11 +113,7 @@ class AdminPanelProvider extends PanelProvider
     var siteKey = "' . config('recaptcha.site_key') . '";
     if (!siteKey) return;
 
-    function getWireComponent() {
-        var el = document.querySelector("[wire\\:id]");
-        if (!el || !window.Livewire) return null;
-        return window.Livewire.find(el.getAttribute("wire:id"));
-    }
+    var currentToken = "";
 
     function refreshToken() {
         if (typeof grecaptcha === "undefined") {
@@ -126,23 +122,26 @@ class AdminPanelProvider extends PanelProvider
         }
         grecaptcha.ready(function () {
             grecaptcha.execute(siteKey, { action: "login" }).then(function (token) {
-                var component = getWireComponent();
-                if (component) {
-                    component.set("recaptchaToken", token);
-                }
+                currentToken = token;
             });
         });
     }
 
-    // Generate token as soon as page is ready
+    // Generate token immediately, refresh every 90s
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", refreshToken);
     } else {
         refreshToken();
     }
-
-    // Refresh every 90 seconds (tokens expire after 2 minutes)
     setInterval(refreshToken, 90000);
+
+    // Inject token as HTTP header on every Livewire request
+    document.addEventListener("livewire:init", function () {
+        Livewire.hook("request", function ({ options }) {
+            if (!options.headers) options.headers = {};
+            options.headers["X-Recaptcha-Token"] = currentToken;
+        });
+    });
 })();
 </script>'
             )
