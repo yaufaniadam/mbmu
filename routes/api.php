@@ -7,4 +7,5 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('/webhook/whatsapp/tracking', [\App\Http\Controllers\WhatsAppTrackingController::class, 'updateStatus']);
+Route::post('/webhook/whatsapp/tracking', [\App\Http\Controllers\WhatsAppTrackingController::class, 'updateStatus'])
+    ->middleware(\App\Http\Middleware\VerifyWebhookSecret::class);

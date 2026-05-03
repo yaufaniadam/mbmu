@@ -26,3 +26,8 @@ Thumbs.db
 **/caddy
 frankenphp
 frankenphp-worker.php
+
+*.md
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php

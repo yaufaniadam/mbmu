@@ -21,4 +21,6 @@ return [
     ],
 
     'admin_wa' => env('ADMIN_WA'),
+
+    'webhook_secret' => env('WA_WEBHOOK_SECRET'),
 ];
