@@ -47,7 +47,12 @@ class UsersForm
                             ->avatar()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->directory('user-photos')
-                            ->maxSize(10240)
+                            ->maxSize(1024) // 1 MB
+                            ->validationMessages([
+                                'max'   => 'Ukuran foto terlalu besar. Maksimal 1 MB.',
+                                'mimes' => 'Format tidak didukung. Gunakan JPG, PNG, atau WebP.',
+                            ])
+                            ->helperText('Maks. 1 MB · Format: JPG, PNG, WebP')
                             ->columnSpanFull(),
                         Select::make('roles')
                             ->label('Jabatan')
