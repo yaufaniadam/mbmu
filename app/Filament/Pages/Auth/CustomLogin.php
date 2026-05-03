@@ -64,13 +64,6 @@ class CustomLogin extends BaseLogin
                     ")),
 
                 $this->getRememberFormComponent(),
-
-                // Hidden field to capture reCAPTCHA v3 token
-                \Filament\Forms\Components\Hidden::make('recaptcha_token')
-                    ->extraInputAttributes([
-                        'id'               => 'recaptcha-token-field',
-                        'wire:model'       => 'recaptchaToken',
-                    ]),
             ])
             ->statePath('data');
     }

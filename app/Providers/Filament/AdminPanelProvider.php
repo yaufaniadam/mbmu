@@ -125,46 +125,47 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function getWireComponent() {
+        var el = document.querySelector("[wire\\:id]");
+        if (!el || !window.Livewire) return null;
+        return window.Livewire.find(el.getAttribute("wire:id"));
+    }
+
+    function setRecaptchaToken(token) {
+        var component = getWireComponent();
+        if (component) {
+            component.set("recaptchaToken", token);
+        }
+    }
+
     function attachRecaptcha() {
         var form = document.querySelector("form");
         if (!form) return;
 
+        var tokenSet = false;
+
         form.addEventListener("submit", function (e) {
-            var tokenField = document.getElementById("recaptcha-token-field");
-            if (tokenField && tokenField.value) return; // token already set
+            if (tokenSet) return; // already injected, allow submit
 
             e.preventDefault();
             e.stopPropagation();
 
             executeRecaptcha(function(token) {
-                // Update Livewire component property
-                var livewireEl = form.closest("[wire\\\\:id]");
-                if (livewireEl && window.Livewire) {
-                    var component = window.Livewire.find(livewireEl.getAttribute("wire:id"));
-                    if (component) {
-                        component.set("recaptchaToken", token);
-                    }
-                }
-                if (tokenField) tokenField.value = token;
-                // Re-submit after token is injected
-                setTimeout(function() { form.dispatchEvent(new Event("submit", { bubbles: true })); }, 100);
+                setRecaptchaToken(token);
+                tokenSet = true;
+                // Re-submit after token is injected into Livewire
+                setTimeout(function() {
+                    tokenSet = false; // reset so next submit also gets a fresh token
+                    form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+                }, 200);
             });
         }, true);
     }
 
-    // Also refresh token every 90 seconds (reCAPTCHA v3 tokens expire in 2 minutes)
+    // Refresh token every 90 seconds (reCAPTCHA v3 tokens expire in 2 minutes)
     setInterval(function () {
         executeRecaptcha(function(token) {
-            var tokenField = document.getElementById("recaptcha-token-field");
-            if (tokenField) tokenField.value = token;
-            var form = document.querySelector("form");
-            if (form) {
-                var livewireEl = form.closest("[wire\\\\:id]");
-                if (livewireEl && window.Livewire) {
-                    var component = window.Livewire.find(livewireEl.getAttribute("wire:id"));
-                    if (component) component.set("recaptchaToken", token);
-                }
-            }
+            setRecaptchaToken(token);
         });
     }, 90000);
 
