@@ -47,14 +47,17 @@
 @endphp
 
 @if (count($panels) > 0)
-    <div class="flex flex-row items-center gap-x-2 ms-3">
+    <div style="display: flex !important; flex-direction: row !important; align-items: center !important; gap: 8px !important; margin-left: 12px !important; margin-right: 8px !important;">
         @foreach ($panels as $panel)
             <a href="{{ $panel['url'] }}" 
                title="Pindah ke {{ $panel['label'] }}"
-               class="flex items-center justify-center text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors bg-gray-100 dark:bg-gray-800 p-1.5 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+               style="display: flex !important; align-items: center !important; justify-content: center !important; color: #6b7280 !important; background-color: #f3f4f6 !important; padding: 6px !important; border-radius: 8px !important; border: 1px solid #e5e7eb !important; transition: all 0.2s !important;"
+               onmouseover="this.style.backgroundColor='#e5e7eb'"
+               onmouseout="this.style.backgroundColor='#f3f4f6'">
                 <x-filament::icon
                     :icon="$panel['icon']"
                     class="h-5 w-5"
+                    style="width: 20px !important; height: 20px !important;"
                 />
             </a>
         @endforeach
