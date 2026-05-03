@@ -25,9 +25,11 @@ class HomeSliderForm
                     ->disk('public')
                     ->directory('home-sliders')
                     ->maxSize(1024) // 1 MB
+                    ->validationAttribute('Gambar Slider')
                     ->validationMessages([
-                        'max'   => 'Ukuran gambar terlalu besar. Maksimal 1 MB.',
-                        'mimes' => 'Format tidak didukung. Gunakan JPG, PNG, atau WebP.',
+                        'max'      => 'Ukuran gambar terlalu besar. Maksimal 1 MB.',
+                        'mimes'    => 'Format tidak didukung. Gunakan JPG, PNG, atau WebP.',
+                        'uploaded' => 'Gambar Slider gagal diupload. Pastikan ukuran file di bawah 1 MB.',
                     ])
                     ->helperText('Maks. 1 MB · Format: JPG, PNG, WebP')
                     ->imagePreviewHeight('200')
