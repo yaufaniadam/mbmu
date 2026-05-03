@@ -97,6 +97,8 @@ class SppgPanelProvider extends PanelProvider
                 'panels::body.end',
                 fn(): string => '<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>'
             )
-            ->databaseNotifications();
+            ->databaseNotifications()
+            ->globalSearch(false)
+            ->breadcrumbs(false);
     }
 }

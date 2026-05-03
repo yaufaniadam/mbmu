@@ -147,7 +147,6 @@ class AdminPanelProvider extends PanelProvider
             )
             ->databaseNotifications()
             ->globalSearch(false)
-            ->topNavigation()
             ->breadcrumbs(false);
     }
 }
