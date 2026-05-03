@@ -146,6 +146,8 @@ class AdminPanelProvider extends PanelProvider
 </script>'
             )
             ->databaseNotifications()
-            ->globalSearch(false);
+            ->globalSearch(false)
+            ->topNavigation()
+            ->breadcrumbs(false);
     }
 }
