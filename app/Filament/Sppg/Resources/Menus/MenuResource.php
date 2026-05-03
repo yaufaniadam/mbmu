@@ -78,12 +78,12 @@ class MenuResource extends Resource
                     ->disk('public')
                     ->directory('menu-photos')
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                    ->maxSize(200) // 200 KB
+                    ->maxSize(1024) // 1 MB
                     ->validationMessages([
-                        'max' => 'Ukuran foto terlalu besar. Maksimal 200 KB. Kompres foto terlebih dahulu.',
+                        'max' => 'Ukuran foto terlalu besar. Maksimal 1 MB.',
                         'mimes' => 'Format foto tidak didukung. Gunakan JPG, PNG, atau WebP.',
                     ])
-                    ->helperText('Maks. 200 KB · Format: JPG, PNG, WebP · Kompres di tinypng.com jika perlu')
+                    ->helperText('Maks. 1 MB · Format: JPG, PNG, WebP')
                     ->columnSpanFull()
                     ->required()
                     ->imageEditor(),
