@@ -27,6 +27,11 @@ class KepalaSppgTokenResource extends Resource
     
     protected static string|\UnitEnum|null $navigationGroup = 'SDM & Pengguna';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     // Ensure unique slug so it doesn't conflict with the main resource
     protected static ?string $slug = 'registration-tokens/kepala-sppg';
 

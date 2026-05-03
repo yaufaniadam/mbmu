@@ -142,30 +142,30 @@ class UsersTable
             ->recordActions([
                 \Filament\Actions\Action::make('kirim_wa')
                     ->label('Kirim WA')
-                    ->icon(fn () => config('whatsapp.gateway') === 'manual' ? 'heroicon-o-chat-bubble-left-right' : 'heroicon-o-paper-airplane')
+                    ->icon('heroicon-o-paper-airplane')
                     ->color('success')
                     ->visible(fn () => auth()->user()->hasAnyRole(['Superadmin', 'Staf Kornas']))
-                    ->url(function (\App\Models\User $record) {
-                        if (config('whatsapp.gateway') !== 'manual') return null;
-
-                        $phone = preg_replace('/[^0-9]/', '', $record->telepon);
-                        if (str_starts_with($phone, '0')) {
-                            $phone = '62' . substr($phone, 1);
-                        } elseif (str_starts_with($phone, '8')) {
-                            $phone = '62' . $phone;
-                        }
-
-                        if (empty($phone)) return null;
-
-                        $template = \App\Models\SystemSetting::getByKey('whatsapp_bulk_message', '');
-                        $message = str_replace(["\r\n", "\r"], "\n", $template);
-
-                        return app(\App\Services\WhatsAppService::class)->getManualUrl($phone, $message);
-                    })
-                    ->openUrlInNewTab()
-                    ->requiresConfirmation(fn () => config('whatsapp.gateway') !== 'manual')
+                    // ->url(function (\App\Models\User $record) {
+                    //     if (config('whatsapp.gateway') !== 'manual') return null;
+                    //
+                    //     $phone = preg_replace('/[^0-9]/', '', $record->telepon);
+                    //     if (str_starts_with($phone, '0')) {
+                    //         $phone = '62' . substr($phone, 1);
+                    //     } elseif (str_starts_with($phone, '8')) {
+                    //         $phone = '62' . $phone;
+                    //     }
+                    //
+                    //     if (empty($phone)) return null;
+                    //
+                    //     $template = \App\Models\SystemSetting::getByKey('whatsapp_bulk_message', '');
+                    //     $message = str_replace(["\r\n", "\r"], "\n", $template);
+                    //
+                    //     return app(\App\Services\WhatsAppService::class)->getManualUrl($phone, $message);
+                    // })
+                    // ->openUrlInNewTab()
+                    ->requiresConfirmation()
                     ->action(function (\App\Models\User $record) {
-                        if (config('whatsapp.gateway') === 'manual') return;
+                        // if (config('whatsapp.gateway') === 'manual') return;
 
                         $phone = preg_replace('/[^0-9]/', '', $record->telepon);
                         if (str_starts_with($phone, '0')) {
@@ -183,8 +183,15 @@ class UsersTable
                             return;
                         }
 
-                        $template = \App\Models\SystemSetting::getByKey('whatsapp_bulk_message', '');
+                        $templateRecord = \App\Models\NotificationTemplate::where('key', 'whatsapp_bulk_message')->first();
+                        $template = $templateRecord?->content ?? '';
                         $message = str_replace(["\r\n", "\r"], "\n", $template);
+
+                        // Personalization
+                        $message = str_replace('{{name}}', $record->name, $message);
+
+                        // Anti-Spam: Add unique suffix
+                        $message .= "\n\n_" . now()->format('H:i') . "_" . rand(100, 999);
 
                         $result = app(\App\Services\WhatsAppService::class)->send($phone, $message);
 
