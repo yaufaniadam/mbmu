@@ -90,60 +90,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->spa(hasPrefetching: true)
             ->renderHook(
-                'panels::head.start',
-                fn(): string => '<meta http-equiv="Content-Security-Policy" content="script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' https://unpkg.com https://tile.openstreetmap.org https://www.google.com https://www.gstatic.com blob:; worker-src \'self\' blob:; img-src \'self\' data: blob: https:; style-src \'self\' \'unsafe-inline\' https://unpkg.com; frame-src https://www.google.com;">'
-            )
-            ->renderHook(
                 'panels::head.end',
                 fn(): string => '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />'
             )
             ->renderHook(
                 'panels::body.end',
                 fn(): string => '<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>'
-            )
-            ->renderHook(
-                'panels::body.end',
-                fn(): string => '<script src="https://www.google.com/recaptcha/api.js?render=' . config('recaptcha.site_key') . '"></script>'
-            )
-            ->renderHook(
-                'panels::body.end',
-                fn(): string => '
-<script>
-(function () {
-    var siteKey = "' . config('recaptcha.site_key') . '";
-    if (!siteKey) return;
-
-    var currentToken = "";
-
-    function refreshToken() {
-        if (typeof grecaptcha === "undefined") {
-            setTimeout(refreshToken, 500);
-            return;
-        }
-        grecaptcha.ready(function () {
-            grecaptcha.execute(siteKey, { action: "login" }).then(function (token) {
-                currentToken = token;
-            });
-        });
-    }
-
-    // Generate token immediately, refresh every 90s
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", refreshToken);
-    } else {
-        refreshToken();
-    }
-    setInterval(refreshToken, 90000);
-
-    // Inject token as HTTP header on every Livewire request
-    document.addEventListener("livewire:init", function () {
-        Livewire.hook("request", function ({ options }) {
-            if (!options.headers) options.headers = {};
-            options.headers["X-Recaptcha-Token"] = currentToken;
-        });
-    });
-})();
-</script>'
             )
             ->databaseNotifications()
             ->globalSearch(false)

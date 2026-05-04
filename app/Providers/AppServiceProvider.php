@@ -64,6 +64,56 @@ class AppServiceProvider extends ServiceProvider
             fn (): string => view('filament.components.debug-footer')->render(),
         );
 
+        // Global reCAPTCHA v3 Implementation
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::HEAD_START,
+            fn(): string => '<meta http-equiv="Content-Security-Policy" content="script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' https://unpkg.com https://tile.openstreetmap.org https://www.google.com https://www.gstatic.com blob:; worker-src \'self\' blob:; img-src \'self\' data: blob: https:; style-src \'self\' \'unsafe-inline\' https://unpkg.com; frame-src https://www.google.com;">'
+        );
+
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::BODY_END,
+            fn(): string => '<script src="https://www.google.com/recaptcha/api.js?render=' . config('recaptcha.site_key') . '"></script>'
+        );
+
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::BODY_END,
+            fn(): string => '
+<script>
+(function () {
+    var siteKey = "' . config('recaptcha.site_key') . '";
+    if (!siteKey) return;
+
+    var currentToken = "";
+
+    function refreshToken() {
+        if (typeof grecaptcha === "undefined") {
+            setTimeout(refreshToken, 500);
+            return;
+        }
+        grecaptcha.ready(function () {
+            grecaptcha.execute(siteKey, { action: "login" }).then(function (token) {
+                currentToken = token;
+            });
+        });
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", refreshToken);
+    } else {
+        refreshToken();
+    }
+    setInterval(refreshToken, 90000);
+
+    document.addEventListener("livewire:init", function () {
+        Livewire.hook("request", function ({ options }) {
+            if (!options.headers) options.headers = {};
+            options.headers["X-Recaptcha-Token"] = currentToken;
+        });
+    });
+})();
+</script>'
+        );
+
 
     }
 
