@@ -47,7 +47,7 @@ class SppgForm
                                 'B' => 'B',
                                 'C' => 'C',
                             ])
-                            ->required(),
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin')),
                         Select::make('status')
                             ->label('Status Operasional')
                             ->options([
@@ -55,7 +55,7 @@ class SppgForm
                                 'Verifikasi dan Validasi' => 'Verifikasi dan Validasi',
                                 'Operasional / Siap Berjalan' => 'Operasional / Siap Berjalan',
                             ])
-                            ->required()
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin'))
                             ->default('Proses Persiapan'),
                         \Filament\Forms\Components\Toggle::make('is_active')
                             ->label('Status Aktif')
@@ -63,14 +63,14 @@ class SppgForm
                             ->default(true),
                         TextInput::make('nama_bank')
                             ->label('Nama Bank')
-                            ->required(),
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin')),
                         TextInput::make('nomor_va')
                             ->label('Nomor VA')
-                            ->required(),
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin')),
                         DatePicker::make('tanggal_mulai_sewa')
                             ->label('Tanggal Mulai Operasional')
                             ->helperText('Bisa diisikan tanggal sppg akan mulai ditagih, jika sppg sudah beroperasi sebelum aplikasi ini dibuat.')
-                            ->required(),
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin')),
                         Textarea::make('alamat')
                             ->label('Alamat')
                             ->required(),
@@ -86,7 +86,7 @@ class SppgForm
                             })
                             ->live()
                             ->searchable()
-                            ->required()
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin'))
                             ->validationMessages([
                                 'required' => 'Provinsi wajib diisi',
                             ])
@@ -109,7 +109,7 @@ class SppgForm
                             })
                             ->live()
                             ->searchable()
-                            ->required()
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin'))
                             ->validationMessages([
                                 'required' => 'Kota/Kabupaten wajib diisi',
                             ])
@@ -154,7 +154,7 @@ class SppgForm
                             })
                             ->live()
                             ->searchable()
-                            ->required()
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin'))
                             ->validationMessages([
                                 'required' => 'Kecamatan wajib diisi',
                             ])
@@ -198,7 +198,7 @@ class SppgForm
                             })
                             ->live()
                             ->searchable()
-                            ->required()
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin'))
                             ->validationMessages([
                                 'required' => 'Kelurahan/Desa wajib diisi',
                             ])
@@ -234,7 +234,7 @@ class SppgForm
                             ->defaultLocation(-7.797068, 110.370529)
                             ->zoom(13)
                             ->height('300px')
-                            ->required()
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin'))
                             ->validationMessages([
                                 'required' => 'Lokasi di peta wajib diisi',
                             ])
@@ -252,7 +252,7 @@ class SppgForm
                             ->label('Latitude')
                             ->disabled()
                             ->dehydrated()
-                            ->required()
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin'))
                             ->validationMessages([
                                 'required' => 'Latitude wajib diisi',
                             ]),
@@ -260,7 +260,7 @@ class SppgForm
                             ->label('Longitude')
                             ->disabled()
                             ->dehydrated()
-                            ->required()
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin'))
                             ->validationMessages([
                                 'required' => 'Longitude wajib diisi',
                             ]),
@@ -269,7 +269,7 @@ class SppgForm
                             ->image()
                             ->directory('sppg-photos')
                             ->maxSize(10240)
-                            ->required()
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin'))
                             ->validationMessages([
                                 'required' => 'Foto wajib diisi',
                             ])
@@ -306,7 +306,7 @@ class SppgForm
                             ->directory('sppg-docs')
                             ->maxSize(10240)
                             ->acceptedFileTypes(['application/pdf'])
-                            ->required()
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin'))
                             ->validationMessages([
                                 'required' => 'Dokumen verval wajib diisi',
                             ]),
@@ -351,7 +351,7 @@ class SppgForm
                             ->directory('sppg-docs')
                             ->maxSize(10240)
                             ->acceptedFileTypes(['application/pdf'])
-                            ->required()
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin'))
                             ->validationMessages([
                                 'required' => 'Dokumen wajib diisi',
                             ]),
