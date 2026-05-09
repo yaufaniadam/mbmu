@@ -42,7 +42,7 @@
                     <!-- Logos -->
                     <div class="flex items-center gap-4">
                         <a href="{{ url('/') }}" class="block">
-                            <img src="{{ asset('logo-bpgm.png') }}" alt="BPGM Logo" class="h-10 md:h-14 w-auto object-contain dark:brightness-0 dark:invert transition-all">
+                            <img src="{{ asset('logobaru.png') }}" alt="BPGM Logo" class="h-10 md:h-14 w-auto object-contain dark:brightness-0 dark:invert transition-all">
                         </a>
                         <a href="{{ url('/') }}" class="block">
                              <img src="{{ asset('logobgn.png') }}" alt="Badan Gizi Nasional Logo" class="h-10 md:h-12 w-auto object-contain dark:brightness-0 dark:invert transition-all">
@@ -100,7 +100,7 @@
                 <div class="flex flex-col md:flex-row justify-between gap-10">
                     <div class="flex flex-col gap-4 max-w-xs">
                         <a href="{{ url('/') }}" class="block">
-                            <img src="{{ asset('logo-bpgm.png') }}" alt="BPGM Logo" class="h-10 w-auto object-contain dark:brightness-0 dark:invert transition-all">
+                            <img src="{{ asset('logobaru.png') }}" alt="BPGM Logo" class="h-10 w-auto object-contain dark:brightness-0 dark:invert transition-all">
                         </a>
                         <p class="text-text-secondary text-sm leading-relaxed">
                             Badan Pelayanan dan Pemenuhan Gizi Muhammadiyah hadir untuk memastikan pemenuhan gizi anak bangsa melalui program makan bergizi di sekolah-sekolah seluruh Indonesia.
