@@ -267,7 +267,7 @@
 
         {{-- Help Text --}}
         <div class="text-center mt-6 text-sm text-gray-500">
-            <p>Butuh bantuan? Hubungi Admin Kornas MBM</p>
+            <p>Butuh bantuan? Hubungi Admin BPGM MBM</p>
         </div>
 
     </div>

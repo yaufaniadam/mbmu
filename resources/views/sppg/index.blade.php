@@ -15,7 +15,7 @@
             <div class="flex min-w-72 flex-col gap-2">
                 <h1 class="text-text-main dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Daftar Dapur SPPG</h1>
                 <p class="text-text-secondary dark:text-gray-400 text-base font-normal leading-normal max-w-2xl">
-                    Dapur SPPG yang terdaftar di Kornas Makan Bergizi Muhammadiyah.
+                    Dapur SPPG yang terdaftar di Badan Pelayanan dan Pemenuhan Gizi Muhammadiyah.
                 </p>
             </div>
             <!-- Removed 'Add Kitchen' button as this is public view -->

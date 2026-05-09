@@ -82,7 +82,7 @@
         @else
             <div class="text-center py-4">
                 <p class="text-danger-500">
-                    Akun Anda belum terhubung dengan data SPPG. Harap hubungi Admin Kornas.
+                    Akun Anda belum terhubung dengan data SPPG. Harap hubungi Admin BPGM.
                 </p>
             </div>
         @endif

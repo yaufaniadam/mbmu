@@ -9,7 +9,7 @@
         <!-- Page Heading -->
         <div class="flex flex-col gap-3">
             <h1 class="text-[#181511] dark:text-white text-5xl font-black leading-tight tracking-[-0.033em]">Berita</h1>
-            <p class="text-[#686868] dark:text-[#b0a695] text-xl font-normal leading-normal">Kegiatan dan informasi terbaru Kornas Makan Bergizi Muhammadiyah dan SPPG</p>
+            <p class="text-[#686868] dark:text-[#b0a695] text-xl font-normal leading-normal">Kegiatan dan informasi terbaru Badan Pelayanan dan Pemenuhan Gizi Muhammadiyah dan SPPG</p>
         </div>
 
         @if($posts->count() > 0)

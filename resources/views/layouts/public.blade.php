@@ -42,7 +42,7 @@
                     <!-- Logos -->
                     <div class="flex items-center gap-4">
                         <a href="{{ url('/') }}" class="block">
-                            <img src="{{ asset('logokornas.png') }}" alt="Kornas Logo" class="h-10 md:h-12 w-auto object-contain dark:brightness-0 dark:invert transition-all">
+                            <img src="{{ asset('logo-bpgm.png') }}" alt="BPGM Logo" class="h-10 md:h-14 w-auto object-contain dark:brightness-0 dark:invert transition-all">
                         </a>
                         <a href="{{ url('/') }}" class="block">
                              <img src="{{ asset('logobgn.png') }}" alt="Badan Gizi Nasional Logo" class="h-10 md:h-12 w-auto object-contain dark:brightness-0 dark:invert transition-all">
@@ -100,10 +100,10 @@
                 <div class="flex flex-col md:flex-row justify-between gap-10">
                     <div class="flex flex-col gap-4 max-w-xs">
                         <a href="{{ url('/') }}" class="block">
-                            <img src="{{ asset('logokornas.png') }}" alt="Kornas Logo" class="h-10 w-auto object-contain dark:brightness-0 dark:invert transition-all">
+                            <img src="{{ asset('logo-bpgm.png') }}" alt="BPGM Logo" class="h-10 w-auto object-contain dark:brightness-0 dark:invert transition-all">
                         </a>
                         <p class="text-text-secondary text-sm leading-relaxed">
-                            Kornas Makan Bergizi Muhammadiyah hadir untuk memastikan pemenuhan gizi anak bangsa melalui program makan bergizi di sekolah-sekolah seluruh Indonesia.
+                            Badan Pelayanan dan Pemenuhan Gizi Muhammadiyah hadir untuk memastikan pemenuhan gizi anak bangsa melalui program makan bergizi di sekolah-sekolah seluruh Indonesia.
                         </p>
                     </div>
                     <div class="flex flex-wrap gap-12 md:gap-24">
@@ -119,7 +119,7 @@
                         </div>
                         <div class="flex flex-col gap-4">
                             <h4 class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Area Login</h4>
-                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.admin.auth.login') }}">Login Kornas</a>
+                            <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.admin.auth.login') }}">Login BPGM</a>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.lembaga.auth.login') }}">Login Lembaga Pengusul</a>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.sppg.auth.login') }}">Login SPPG</a>
                             <a class="text-sm text-text-secondary hover:text-primary transition-colors" href="{{ route('filament.production.auth.login') }}">Login Distribusi</a>
@@ -130,7 +130,7 @@
 
 
                 <div class="border-t border-[#e6e1db] dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p class="text-xs text-text-secondary">© {{ date('Y') }} Kornas Makan Bergizi Muhammadiyah. Hak cipta dilindungi.</p>
+                    <p class="text-xs text-text-secondary">© {{ date('Y') }} Badan Pelayanan dan Pemenuhan Gizi Muhammadiyah. Hak cipta dilindungi.</p>
                     <div class="flex gap-4">
                         <a class="text-text-secondary hover:text-primary" href="#"><span class="sr-only">Facebook</span>
                             <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"></path></svg>

@@ -31,9 +31,9 @@ class ProductionPanelProvider extends PanelProvider
         return $panel
             ->id('production')
             ->path('production')
-            ->brandLogo(asset('logokornas.png'))
-            ->darkModeBrandLogo(asset('logombm-w.png'))
-            ->brandLogoHeight('3rem')
+            ->brandLogo(asset('logo-bpgm.png'))
+            ->darkModeBrandLogo(asset('logo-bpgm.png'))
+            ->brandLogoHeight('2.5rem')
             ->colors([
                 'primary' => Color::Amber,
             ])

@@ -85,7 +85,7 @@
                 <div class="bg-primary/5 border-l-4 border-primary p-6 rounded-r-xl my-8">
                     <h4 class="font-bold text-primary text-lg m-0 mb-2">Butuh Bantuan Lebih Lanjut?</h4>
                     <p class="text-base m-0 text-text-main dark:text-gray-300">
-                        Jika Anda mengalami kendala teknis, hubungi <strong>Helpdesk Kornas</strong> melalui WhatsApp di 
+                        Jika Anda mengalami kendala teknis, hubungi <strong>Helpdesk BPGM</strong> melalui WhatsApp di 
                         <a href="#" class="text-primary font-bold hover:underline">0812-3456-7890</a>.
                     </p>
                 </div>

@@ -33,9 +33,9 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login(\App\Filament\Pages\Auth\CustomLogin::class)
             ->profile(\App\Filament\Pages\Auth\EditProfile::class)
-            ->brandLogo(asset('logokornas.png'))
-            ->darkModeBrandLogo(asset('logombm-w.png'))
-            ->brandLogoHeight('3rem')
+            ->brandLogo(asset('logo-bpgm.png'))
+            ->darkModeBrandLogo(asset('logo-bpgm.png'))
+            ->brandLogoHeight('2.5rem')
             ->plugins([
                 FilamentShieldPlugin::make()
                     ->navigationGroup('Pengaturan'),

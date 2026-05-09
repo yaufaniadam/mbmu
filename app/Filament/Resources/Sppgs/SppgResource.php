@@ -35,10 +35,6 @@ class SppgResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';
 
-    public static function canCreate(): bool
-    {
-        return false;
-    }
 
     public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
     {

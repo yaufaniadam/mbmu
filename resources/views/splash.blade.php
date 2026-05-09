@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Kornas Makan Bergizi Muhammadiyah') }}</title>
+    <title>{{ config('app.name', 'Badan Pelayanan dan Pemenuhan Gizi Muhammadiyah') }}</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -54,7 +54,7 @@
         <!-- Logos -->
         <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 mb-12 fade-in-up delay-100">
             <div class="bg-white rounded-3xl p-5 md:p-8 shadow-xl border border-gray-100 transform transition duration-500 hover:scale-105 hover:shadow-2xl">
-                <img src="{{ asset('logokornas.png') }}" alt="Kornas Logo" class="h-24 md:h-36 w-auto object-contain">
+                <img src="{{ asset('logo-bpgm.png') }}" alt="BPGM Logo" class="h-16 md:h-24 w-auto object-contain">
             </div>
             <div class="bg-white rounded-3xl p-5 md:p-8 shadow-xl border border-gray-100 transform transition duration-500 hover:scale-105 hover:shadow-2xl">
                 <img src="{{ asset('logobgn.png') }}" alt="Badan Gizi Nasional" class="h-24 md:h-36 w-auto object-contain">

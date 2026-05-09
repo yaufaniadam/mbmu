@@ -21,7 +21,7 @@
                     <div class="flex flex-col items-center">
                         <div class="bg-blue-600 text-white px-8 py-4 rounded-xl shadow-md text-center w-64">
                             <span class="block text-sm opacity-80 mb-1">Pimpinan Pusat</span>
-                            <span class="block font-bold">Kornas MBM</span>
+                            <span class="block font-bold">BPGM Muhammadiyah</span>
                         </div>
                         <div class="h-8 w-px bg-gray-300"></div>
                     </div>

@@ -55,7 +55,7 @@
                     <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 my-4">
                         <p class="font-bold text-blue-700 dark:text-blue-400 m-0">Butuh Bantuan Lebih Lanjut?</p>
                         <p class="text-sm m-0">
-                            Jika Anda mengalami kendala teknis, hubungi <strong>Helpdesk Kornas</strong> melalui WhatsApp di 
+                            Jika Anda mengalami kendala teknis, hubungi <strong>Helpdesk BPGM</strong> melalui WhatsApp di 
                             <a href="#" class="underline">0812-3456-7890</a>.
                         </p>
                     </div>
