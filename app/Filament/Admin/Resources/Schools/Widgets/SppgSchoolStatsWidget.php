@@ -26,11 +26,11 @@ class SppgSchoolStatsWidget extends BaseWidget
                 ->description('Total unit SPPG')
                 ->icon('heroicon-m-building-office-2'),
             Stat::make('Belum Input Penerima', $unfilledSppg)
-                ->description('Unit yang belum daftar sekolah')
+                ->description('Unit yang belum isi penerima')
                 ->color('danger')
                 ->icon('heroicon-m-x-circle'),
             Stat::make('Total Lembaga Penerima', $totalSchools)
-                ->description('Sekolah/Unit yang terdaftar')
+                ->description('Penerima yang terdaftar')
                 ->color('success')
                 ->icon('heroicon-m-academic-cap'),
             Stat::make('Total Penerima (Porsi)', number_format($grandTotal))
