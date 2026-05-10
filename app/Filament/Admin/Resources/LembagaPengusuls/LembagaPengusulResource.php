@@ -25,6 +25,10 @@ class LembagaPengusulResource extends Resource
     protected static ?string $model = LembagaPengusul::class;
 
     protected static ?string $navigationLabel = 'Lembaga Pengusul';
+    
+    protected static ?string $pluralLabel = 'Lembaga Pengusul';
+
+    protected static ?string $modelLabel = 'Lembaga Pengusul';
 
     protected static string|UnitEnum|null $navigationGroup = 'Kelembagaan';
 
@@ -51,7 +55,7 @@ class LembagaPengusulResource extends Resource
     {
         return $schema
             ->components([
-                Tabs::make('Lembaga Pengusuls')
+                Tabs::make('Lembaga Pengusul')
                     ->tabs([
                         Tab::make('Informasi Lembaga')
                             ->icon('heroicon-m-information-circle')
