@@ -25,6 +25,14 @@ class SchoolForm
                 TextInput::make('nama_sekolah')
                     ->label('Nama Penerima')
                     ->required(),
+                TextInput::make('default_porsi_besar')
+                    ->label('Jumlah Porsi Besar (Guru/Staf)')
+                    ->numeric()
+                    ->default(0),
+                TextInput::make('default_porsi_kecil')
+                    ->label('Jumlah Porsi Kecil (Siswa)')
+                    ->numeric()
+                    ->default(0),
                 Textarea::make('alamat')
                     ->label('Alamat')
                     ->rows(3)

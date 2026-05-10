@@ -24,6 +24,14 @@ class SchoolsTable
                     ->label('Unit SPPG')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('default_porsi_besar')
+                    ->label('Porsi Besar')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('default_porsi_kecil')
+                    ->label('Porsi Kecil')
+                    ->numeric()
+                    ->sortable(),
                 TextColumn::make('alamat')
                     ->label('Alamat')
                     ->limit(50),
