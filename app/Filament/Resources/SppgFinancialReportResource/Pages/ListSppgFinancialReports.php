@@ -10,6 +10,13 @@ class ListSppgFinancialReports extends ListRecords
 {
     protected static string $resource = SppgFinancialReportResource::class;
 
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Resources\SppgFinancialReportResource\Widgets\SppgFinancialReportStatsWidget::class,
+        ];
+    }
+
     protected function getHeaderActions(): array
     {
         return [

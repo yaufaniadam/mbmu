@@ -199,4 +199,11 @@ class SppgFinancialReportResource extends Resource
             'edit' => Pages\EditSppgFinancialReport::route('/{record}/edit'),
         ];
     }
+
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Resources\SppgFinancialReportResource\Widgets\SppgFinancialReportStatsWidget::class,
+        ];
+    }
 }
