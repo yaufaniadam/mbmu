@@ -22,10 +22,10 @@ class SppgOnboardingStatsWidget extends BaseWidget
             Stat::make('Total SPPG', $totalCount)
                 ->description('Total pendaftaran SPPG')
                 ->icon('heroicon-m-building-office-2'),
-            Stat::make('Profil Lengkap', $completeCount)
-                ->description('Sudah melengkapi 100% data')
-                ->color('success')
-                ->icon('heroicon-m-check-badge'),
+            Stat::make('Profil Belum Lengkap', $incompleteCount)
+                ->description('Unit yang belum 100% mengisi data')
+                ->color('warning')
+                ->icon('heroicon-m-exclamation-triangle'),
             Stat::make('Belum Isi Anggota', $noStaffCount)
                 ->description('Unit yang belum mendaftarkan staf')
                 ->color('danger')
