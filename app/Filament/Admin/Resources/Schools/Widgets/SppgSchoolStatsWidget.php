@@ -16,6 +16,7 @@ class SppgSchoolStatsWidget extends BaseWidget
         $filledSppg = $allSppgs->filter(fn($sppg) => $sppg->schools_count > 0)->count();
         $unfilledSppg = $totalSppg - $filledSppg;
 
+        $totalSchools = \App\Models\School::count();
         $totalPorsiBesar = \App\Models\School::sum('default_porsi_besar');
         $totalPorsiKecil = \App\Models\School::sum('default_porsi_kecil');
         $grandTotal = $totalPorsiBesar + $totalPorsiKecil;
@@ -24,8 +25,8 @@ class SppgSchoolStatsWidget extends BaseWidget
             Stat::make('Total SPPG', $totalSppg)
                 ->description('Total unit SPPG')
                 ->icon('heroicon-m-building-office-2'),
-            Stat::make('Unit Sudah Input', $filledSppg)
-                ->description('Unit yang sudah daftar sekolah')
+            Stat::make('Total Lembaga Penerima', $totalSchools)
+                ->description('Sekolah/Unit yang terdaftar')
                 ->color('success')
                 ->icon('heroicon-m-academic-cap'),
             Stat::make('Total Penerima (Porsi)', number_format($grandTotal))
