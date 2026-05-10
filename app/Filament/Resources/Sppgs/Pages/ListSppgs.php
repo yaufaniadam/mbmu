@@ -9,6 +9,13 @@ use Filament\Resources\Pages\ListRecords;
 class ListSppgs extends ListRecords
 {
     protected static string $resource = SppgResource::class;
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Resources\Sppgs\Widgets\SppgOnboardingStatsWidget::class,
+        ];
+    }
+
     protected function getHeaderActions(): array
     {
         return [

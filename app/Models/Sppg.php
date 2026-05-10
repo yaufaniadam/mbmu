@@ -204,4 +204,32 @@ class Sppg extends Model
     {
         return $this->hasMany(Menu::class);
     }
+
+    public function getCompletionScoreAttribute(): int
+    {
+        $score = 0;
+        
+        // Basic Profile (Max 50)
+        $basicFields = ['nama_sppg', 'alamat', 'latitude', 'longitude', 'photo_path', 'city_code'];
+        $filledBasic = 0;
+        foreach ($basicFields as $field) {
+            if (!empty($this->$field)) $filledBasic++;
+        }
+        $score += ($filledBasic / count($basicFields)) * 50;
+
+        // Additional Profile (Max 50)
+        $additionalFields = ['kepala_sppg_id', 'nama_bank', 'nomor_va', 'izin_operasional_path'];
+        $filledAdditional = 0;
+        foreach ($additionalFields as $field) {
+            if (!empty($this->$field)) $filledAdditional++;
+        }
+        $score += ($filledAdditional / count($additionalFields)) * 50;
+
+        return (int) $score;
+    }
+
+    public function getIsProfileCompleteAttribute(): bool
+    {
+        return $this->completion_score >= 100;
+    }
 }

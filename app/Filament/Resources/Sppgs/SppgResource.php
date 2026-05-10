@@ -200,6 +200,13 @@ class SppgResource extends Resource
         ];
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Resources\Sppgs\Widgets\SppgOnboardingStatsWidget::class,
+        ];
+    }
+
     public static function getEloquentQuery(): Builder
     {
         $user = auth()->user();

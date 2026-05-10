@@ -25,6 +25,16 @@ class SppgsTable
                     ->sortable()
                     ->searchable()
                     ->wrap(),
+                TextColumn::make('completion_score')
+                    ->label('Profil')
+                    ->suffix('%')
+                    ->badge()
+                    ->color(fn (int $state): string => match (true) {
+                        $state >= 100 => 'success',
+                        $state >= 50 => 'warning',
+                        default => 'danger',
+                    })
+                    ->sortable(),
                 TextColumn::make('lembagaPengusul.nama_lembaga')
                     ->label('Lembaga Pengusul')
                     ->sortable()
