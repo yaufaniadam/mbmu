@@ -16,18 +16,22 @@ class SppgSchoolStatsWidget extends BaseWidget
         $filledSppg = $allSppgs->filter(fn($sppg) => $sppg->schools_count > 0)->count();
         $unfilledSppg = $totalSppg - $filledSppg;
 
+        $totalPorsiBesar = \App\Models\School::sum('default_porsi_besar');
+        $totalPorsiKecil = \App\Models\School::sum('default_porsi_kecil');
+        $grandTotal = $totalPorsiBesar + $totalPorsiKecil;
+
         return [
             Stat::make('Total SPPG', $totalSppg)
-                ->description('Total pendaftaran unit SPPG')
+                ->description('Total unit SPPG')
                 ->icon('heroicon-m-building-office-2'),
-            Stat::make('Sudah Input Sekolah', $filledSppg)
-                ->description('Unit yang sudah mendaftarkan sekolah')
+            Stat::make('Unit Sudah Input', $filledSppg)
+                ->description('Unit yang sudah daftar sekolah')
                 ->color('success')
                 ->icon('heroicon-m-academic-cap'),
-            Stat::make('Belum Input Sekolah', $unfilledSppg)
-                ->description('Unit yang belum mendaftarkan sekolah')
-                ->color('danger')
-                ->icon('heroicon-m-x-circle'),
+            Stat::make('Total Penerima (Porsi)', number_format($grandTotal))
+                ->description($totalPorsiBesar . ' Besar, ' . $totalPorsiKecil . ' Kecil')
+                ->color('info')
+                ->icon('heroicon-m-users'),
         ];
     }
 }
