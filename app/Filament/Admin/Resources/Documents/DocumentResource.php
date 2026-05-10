@@ -170,4 +170,11 @@ class DocumentResource extends Resource
             'edit' => EditDocument::route('/{record}/edit'),
         ];
     }
+
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Admin\Resources\Documents\Widgets\LembagaDocumentStatsWidget::class,
+        ];
+    }
 }

@@ -10,6 +10,13 @@ class ListDocuments extends ListRecords
 {
     protected static string $resource = DocumentResource::class;
 
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Admin\Resources\Documents\Widgets\LembagaDocumentStatsWidget::class,
+        ];
+    }
+
     protected function getHeaderActions(): array
     {
         return [

@@ -31,4 +31,9 @@ class LembagaPengusul extends Model
     {
         return $this->belongsTo(User::class, 'pimpinan_id');
     }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class, 'lembaga_pengusul_id');
+    }
 }
