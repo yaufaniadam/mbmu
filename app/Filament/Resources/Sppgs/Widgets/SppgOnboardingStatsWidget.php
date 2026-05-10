@@ -15,6 +15,8 @@ class SppgOnboardingStatsWidget extends BaseWidget
         
         $completeCount = $allSppgs->filter(fn($sppg) => $sppg->completion_score >= 100)->count();
         $incompleteCount = $totalCount - $completeCount;
+        
+        $noStaffCount = Sppg::whereDoesntHave('staffs')->count();
 
         return [
             Stat::make('Total SPPG', $totalCount)
@@ -24,10 +26,10 @@ class SppgOnboardingStatsWidget extends BaseWidget
                 ->description('Sudah melengkapi 100% data')
                 ->color('success')
                 ->icon('heroicon-m-check-badge'),
-            Stat::make('Profil Belum Lengkap', $incompleteCount)
-                ->description('Masih perlu melengkapi data')
-                ->color('warning')
-                ->icon('heroicon-m-exclamation-triangle'),
+            Stat::make('Belum Isi Anggota', $noStaffCount)
+                ->description('Unit yang belum mendaftarkan staf')
+                ->color('danger')
+                ->icon('heroicon-m-user-group'),
         ];
     }
 }

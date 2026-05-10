@@ -80,6 +80,9 @@ class SppgsTable
                         'B' => 'B',
                         'C' => 'C',
                     ]),
+                \Filament\Tables\Filters\Filter::make('no_staff')
+                    ->label('Belum isi anggota')
+                    ->query(fn (\Illuminate\Database\Eloquent\Builder $query) => $query->whereDoesntHave('staffs')),
             ])
             ->recordActions([
                 ViewAction::make(),
