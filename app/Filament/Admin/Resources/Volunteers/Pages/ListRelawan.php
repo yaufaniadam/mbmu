@@ -12,6 +12,13 @@ class ListRelawan extends ListRecords
 {
     protected static string $resource = RelawanResource::class;
 
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Admin\Resources\Volunteers\Widgets\SppgVolunteerStatsWidget::class,
+        ];
+    }
+
     protected function getHeaderActions(): array
     {
         return [

@@ -62,4 +62,11 @@ class RelawanResource extends Resource
             'edit' => EditRelawan::route('/{record}/edit'),
         ];
     }
+
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Admin\Resources\Volunteers\Widgets\SppgVolunteerStatsWidget::class,
+        ];
+    }
 }
