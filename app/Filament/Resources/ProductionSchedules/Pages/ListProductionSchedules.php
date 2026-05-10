@@ -10,6 +10,13 @@ class ListProductionSchedules extends ListRecords
 {
     protected static string $resource = ProductionScheduleResource::class;
 
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Resources\ProductionSchedules\Widgets\SppgProductionScheduleStatsWidget::class,
+        ];
+    }
+
     protected function getHeaderActions(): array
     {
         return [];

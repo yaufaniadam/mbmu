@@ -307,6 +307,13 @@ class ProductionScheduleResource extends Resource
         ];
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Resources\ProductionSchedules\Widgets\SppgProductionScheduleStatsWidget::class,
+        ];
+    }
+
     public static function getEloquentQuery(): Builder
     {
         $user = Auth::user();
