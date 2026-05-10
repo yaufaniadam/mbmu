@@ -21,6 +21,11 @@ class LembagaPengusulsTable
                     ->label('Perwakilan Yayasan')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('pimpinan.last_login_at')
+                    ->label('Terakhir Login')
+                    ->dateTime()
+                    ->sortable()
+                    ->placeholder('Belum pernah login'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -31,7 +36,9 @@ class LembagaPengusulsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                \Filament\Tables\Filters\Filter::make('never_logged_in')
+                    ->label('Belum pernah login')
+                    ->query(fn (\Illuminate\Database\Eloquent\Builder $query) => $query->whereHas('pimpinan', fn ($q) => $q->whereNull('last_login_at'))),
             ])
             ->recordActions([
                 ViewAction::make()

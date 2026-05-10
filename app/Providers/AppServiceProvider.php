@@ -115,6 +115,11 @@ class AppServiceProvider extends ServiceProvider
         );
 
 
+        // Last Login Tracker
+        \Illuminate\Support\Facades\Event::listen(
+            \Illuminate\Auth\Events\Login::class,
+            \App\Listeners\UpdateLastLoginAt::class
+        );
     }
 
 }
