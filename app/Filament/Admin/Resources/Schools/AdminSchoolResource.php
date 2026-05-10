@@ -64,4 +64,11 @@ class AdminSchoolResource extends Resource
             'edit' => EditSchool::route('/{record}/edit'),
         ];
     }
+
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Admin\Resources\Schools\Widgets\SppgSchoolStatsWidget::class,
+        ];
+    }
 }

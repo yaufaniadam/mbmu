@@ -10,6 +10,13 @@ class ListSchools extends ListRecords
 {
     protected static string $resource = AdminSchoolResource::class;
 
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Admin\Resources\Schools\Widgets\SppgSchoolStatsWidget::class,
+        ];
+    }
+
     protected function getHeaderActions(): array
     {
         return [
