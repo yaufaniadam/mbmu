@@ -13,6 +13,7 @@ class ListSppgs extends ListRecords
     {
         return [
             \App\Filament\Resources\Sppgs\Widgets\SppgOnboardingStatsWidget::class,
+            \App\Filament\Resources\Sppgs\Widgets\SppgStatusStatsWidget::class,
         ];
     }
 

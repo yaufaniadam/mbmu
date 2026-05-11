@@ -11,23 +11,25 @@ class SppgOnboardingStatsWidget extends BaseWidget
     protected function getStats(): array
     {
         $allSppgs = Sppg::all();
-        $totalCount = Sppg::count();
-        $operasionalCount = Sppg::where('status', 'Operasional / Siap Berjalan')->count();
-        $verifikasiCount = Sppg::where('status', 'Verifikasi dan Validasi')->count();
-        $persiapanCount = Sppg::where('status', 'Proses Persiapan')->count();
+        $totalCount = $allSppgs->count();
+        
+        $completeCount = $allSppgs->filter(fn($sppg) => $sppg->completion_score >= 100)->count();
+        $incompleteCount = $totalCount - $completeCount;
+        
+        $noStaffCount = Sppg::whereDoesntHave('staffs')->count();
 
         return [
             Stat::make('Total SPPG', $totalCount)
+                ->description('Total pendaftaran SPPG')
                 ->icon('heroicon-m-building-office-2'),
-            Stat::make('Operasional', $operasionalCount)
-                ->color('success')
-                ->icon('heroicon-m-check-circle'),
-            Stat::make('Verifikasi', $verifikasiCount)
-                ->color('info')
-                ->icon('heroicon-m-magnifying-glass'),
-            Stat::make('Persiapan', $persiapanCount)
+            Stat::make('Profil Belum Lengkap', $incompleteCount)
+                ->description('Unit yang belum 100% mengisi data')
                 ->color('warning')
-                ->icon('heroicon-m-clock'),
+                ->icon('heroicon-m-exclamation-triangle'),
+            Stat::make('Belum Isi Anggota', $noStaffCount)
+                ->description('Unit yang belum mendaftarkan staf')
+                ->color('danger')
+                ->icon('heroicon-m-user-group'),
         ];
     }
 }

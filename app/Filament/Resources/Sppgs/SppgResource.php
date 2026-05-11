@@ -207,6 +207,7 @@ class SppgResource extends Resource
     {
         return [
             \App\Filament\Resources\Sppgs\Widgets\SppgOnboardingStatsWidget::class,
+            \App\Filament\Resources\Sppgs\Widgets\SppgStatusStatsWidget::class,
         ];
     }
 
