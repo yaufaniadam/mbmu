@@ -53,10 +53,10 @@ class InstructionTable
                         'user' => \App\Models\User::whereIn('id', $record->recipient_ids ?? [])->pluck('name')->join(', '),
                         default => '-',
                     })
-                    ->wrap()
+                    ->limit(100)
                     ->tooltip(function (TextColumn $column): ?string {
                         $state = $column->getState();
-                        if (strlen($state) <= 50) {
+                        if (strlen($state) <= 100) {
                             return null;
                         }
                         return $state;
