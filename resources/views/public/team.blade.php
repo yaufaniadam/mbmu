@@ -45,7 +45,6 @@
                             <p class="text-xs font-bold text-primary uppercase tracking-widest mb-4">{{ $positionLabels[$member->position] ?? $member->position }}</p>
                             <div class="w-full h-px bg-gray-100 dark:bg-gray-800 mb-4"></div>
                             <div class="flex items-center text-gray-500 dark:text-gray-400">
-                                <span class="material-symbols-outlined text-[20px] mr-2">call</span>
                                 <span class="text-sm">Contact Profile</span>
                             </div>
                         </div>
@@ -82,7 +81,6 @@
                             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ $member->name }}</h3>
                             <p class="text-xs font-bold text-primary uppercase tracking-widest mb-4">{{ $positionLabels[$member->position] ?? $member->position }}</p>
                             <div class="w-full h-px bg-gray-100 dark:bg-gray-800 mb-4"></div>
-                            <span class="material-symbols-outlined text-gray-500 dark:text-gray-400">call</span>
                         </div>
                     </div>
                     @endforeach
@@ -98,8 +96,7 @@
             @if($staffMembers->count() > 0)
             <section>
                 <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Tim Pelaksana</h2>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Garda terdepan yang berdedikasi mewujudkan aksi nyata di lapangan setiap harinya.</p>
+                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Staf</h2>
                     <div class="w-full h-px bg-gray-200 dark:bg-gray-800 mt-4"></div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
