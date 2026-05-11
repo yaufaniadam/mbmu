@@ -50,17 +50,12 @@ class SppgsTable
                         default => 'gray',
                     })
                     ->sortable(),
-                \Filament\Tables\Columns\IconColumn::make('is_active')
-                    ->label('Aktif')
-                    ->boolean()
-                    ->sortable(),
-                TextColumn::make('grade')->label('Akreditasi')->sortable(),
                 TextColumn::make('kepalaSppg.name')
                     ->label('Kepala SPPG')
                     ->searchable()
                     ->wrap(),
                 TextColumn::make('tanggal_operasional_pertama')
-                    ->label('Tanggal Operasional')
+                    ->label('Tanggal')
                     ->date()
                     ->sortable(),
             ])
