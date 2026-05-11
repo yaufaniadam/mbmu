@@ -114,7 +114,7 @@
                                 </svg>
                             @endif
                         </div>
-                        <h4 class="text-lg font-bold text-gray-900 dark:text-white leading-tight">{{ $member->name }}</h4>
+                        <h4 class="text-base font-bold text-gray-900 dark:text-white leading-tight">{{ $member->name }}</h4>
                         <p class="text-xs font-medium text-primary mt-2 uppercase tracking-wide" style="font-size: 10px;">{{ $member->bio ?? 'STAF' }}</p>
                     </div>
                     @endforeach
