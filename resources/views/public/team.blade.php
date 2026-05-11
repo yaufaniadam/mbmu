@@ -38,14 +38,16 @@
                         @if($member->photo_path && Storage::disk('public')->exists($member->photo_path))
                             <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" alt="{{ $member->name }}" src="{{ Storage::disk('public')->url($member->photo_path) }}"/>
                         @else
-                            <div class="w-full h-full flex items-center justify-center bg-gray-50 dark:bg-gray-800">
-                                <svg class="w-24 h-24 text-gray-300 dark:text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                            <div class="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-800 text-gray-400 dark:text-gray-600">
+                                <svg class="w-1/3 h-1/3 opacity-50" fill="currentColor" viewBox="0 -960 960 960">
+                                    <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z" />
+                                </svg>
                             </div>
                         @endif
                     </div>
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ $member->name }}</h3>
-                        <p class="font-medium text-gray-500 dark:text-gray-400 tracking-wide" style="font-size: 9px;">{{ $positionLabels[$member->position] ?? $member->position }}</p>
+                        <p class="text-xs font-medium text-primary uppercase tracking-widest" style="font-size: 10px;">{{ $positionLabels[$member->position] ?? $member->position }}</p>
                     </div>
                 </div>
 
@@ -72,14 +74,16 @@
                             @if($member->photo_path && Storage::disk('public')->exists($member->photo_path))
                                 <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" alt="{{ $member->name }}" src="{{ Storage::disk('public')->url($member->photo_path) }}"/>
                             @else
-                                <div class="w-full h-full flex items-center justify-center bg-gray-50 dark:bg-gray-800">
-                                    <svg class="w-24 h-24 text-gray-300 dark:text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                                <div class="text-gray-400 dark:text-gray-600 opacity-50 w-1/3 h-1/3">
+                                    <svg class="w-full h-full" fill="currentColor" viewBox="0 -960 960 960">
+                                        <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z" />
+                                    </svg>
                                 </div>
                             @endif
                         </div>
                         <div class="p-6">
                             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ $member->name }}</h3>
-                            <p class="font-medium text-gray-500 dark:text-gray-400 tracking-wide" style="font-size: 9px;">{{ $positionLabels[$member->position] ?? $member->position }}</p>
+                            <p class="text-xs font-medium text-primary uppercase tracking-widest" style="font-size: 10px;">{{ $positionLabels[$member->position] ?? $member->position }}</p>
                         </div>
                     </div>
                     @endforeach
@@ -101,20 +105,17 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                     @foreach($staffMembers as $member)
                     <div class="bg-white dark:bg-neutral-dark p-6 rounded-lg shadow-sm flex flex-col items-center text-center group hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors duration-300 border border-gray-100 dark:border-gray-800">
-                        <div class="w-24 h-24 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center mb-6 ring-4 ring-white dark:ring-neutral-dark group-hover:ring-gray-200 transition-all overflow-hidden">
+                        <div class="w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-6 ring-4 ring-white dark:ring-neutral-dark group-hover:ring-primary/20 transition-all overflow-hidden">
                             @if($member->photo_path && Storage::disk('public')->exists($member->photo_path))
                                 <img class="w-full h-full object-cover" alt="{{ $member->name }}" src="{{ Storage::disk('public')->url($member->photo_path) }}"/>
                             @else
-                                <svg class="w-12 h-12 text-gray-300 dark:text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                                <svg class="w-1/2 h-1/2 text-gray-400 dark:text-gray-600 opacity-50" fill="currentColor" viewBox="0 -960 960 960">
+                                    <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z" />
+                                </svg>
                             @endif
                         </div>
                         <h4 class="text-lg font-bold text-gray-900 dark:text-white leading-tight">{{ $member->name }}</h4>
-                        @php
-                            $bioText = $member->bio ? ucwords(strtolower($member->bio)) : 'Staf';
-                            // Ensure IT is uppercase
-                            $bioText = str_replace(' It', ' IT', $bioText);
-                        @endphp
-                        <p class="font-medium text-gray-500 dark:text-gray-400 mt-2 tracking-wide" style="font-size: 9px;">{{ $bioText }}</p>
+                        <p class="text-xs font-medium text-primary mt-2 uppercase tracking-wide" style="font-size: 10px;">{{ $member->bio ?? 'STAF' }}</p>
                     </div>
                     @endforeach
                 </div>
