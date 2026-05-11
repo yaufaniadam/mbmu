@@ -28,24 +28,29 @@
         <div class="flex flex-col gap-16">
             <!-- Row 1: Director -->
             @foreach($teamMembers->where('position', 'direktur') as $member)
-            <div class="flex justify-center">
-                <div class="w-full md:w-[calc(33.333%-1.33rem)]">
-                    <div class="bg-white dark:bg-neutral-dark rounded-lg shadow-lg overflow-hidden group hover:translate-y-[-4px] transition-transform duration-300 border border-gray-100 dark:border-gray-800">
-                        <div class="aspect-[4/3] w-full bg-gray-100 dark:bg-gray-900 relative overflow-hidden flex items-center justify-center">
-                            @if($member->photo_path && Storage::disk('public')->exists($member->photo_path))
-                                <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" alt="{{ $member->name }}" src="{{ Storage::disk('public')->url($member->photo_path) }}"/>
-                            @else
-                                <div class="w-full h-full flex items-center justify-center bg-primary/10">
-                                    <span class="text-6xl font-bold text-primary opacity-20">{{ strtoupper(substr($member->name, 0, 1)) }}</span>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ $member->name }}</h3>
-                            <p class="text-xs font-bold text-primary uppercase tracking-widest">{{ $positionLabels[$member->position] ?? $member->position }}</p>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Empty column for centering on desktop -->
+                <div class="hidden md:block"></div>
+                
+                <!-- Director Card -->
+                <div class="bg-white dark:bg-neutral-dark rounded-lg shadow-lg overflow-hidden group hover:translate-y-[-4px] transition-transform duration-300 border border-gray-100 dark:border-gray-800">
+                    <div class="aspect-[4/3] w-full bg-gray-100 dark:bg-gray-900 relative overflow-hidden flex items-center justify-center">
+                        @if($member->photo_path && Storage::disk('public')->exists($member->photo_path))
+                            <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" alt="{{ $member->name }}" src="{{ Storage::disk('public')->url($member->photo_path) }}"/>
+                        @else
+                            <div class="w-full h-full flex items-center justify-center bg-primary/10">
+                                <span class="text-6xl font-bold text-primary opacity-20">{{ strtoupper(substr($member->name, 0, 1)) }}</span>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ $member->name }}</h3>
+                        <p class="text-xs font-bold text-primary uppercase tracking-widest">{{ $positionLabels[$member->position] ?? $member->position }}</p>
                     </div>
                 </div>
+
+                <!-- Empty column for centering on desktop -->
+                <div class="hidden md:block"></div>
             </div>
             @endforeach
 
