@@ -37,7 +37,7 @@
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                @forelse($teamMembers->whereIn('position', ['ketua', 'sekretaris', 'bendahara']) as $member)
+                @forelse($teamMembers as $member)
                 <!-- Team Card -->
                 <div class="group bg-white dark:bg-neutral-dark rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-[#e6e2de] dark:border-[#3a3025]">
                     <div class="relative h-64 overflow-hidden">
@@ -45,10 +45,8 @@
                             $imageUrl = null;
                             if ($member->photo_path && Storage::disk('public')->exists($member->photo_path)) {
                                 $imageUrl = Storage::disk('public')->url($member->photo_path);
-                            } elseif ($member->position === 'ketua') {
+                            } elseif ($member->id === 1 || str_contains(strtolower($member->position), 'direktur')) {
                                 $imageUrl = asset('ketua.png');
-                            } elseif ($member->position === 'sekretaris') {
-                                $imageUrl = asset('sekre.png');
                             }
                         @endphp
                         
@@ -65,7 +63,7 @@
                         <div>
                             <h3 class="text-lg font-bold text-[#181511] dark:text-white">{{ $member->name }}</h3>
                             <span class="inline-block text-primary text-sm font-bold uppercase tracking-wide mt-1">
-                                {{ $member->position === 'ketua' ? 'Ketua' : ($member->position === 'sekretaris' ? 'Sekretaris' : 'Bendahara') }}
+                                {{ $member->position }}
                             </span>
                         </div>
                         @if($member->bio)
@@ -89,41 +87,6 @@
                 </div>
                 @endforelse
             </div>
-        </div>
-
-        <!-- Operations Staff Section -->
-        <div>
-            <div class="mb-8 pb-4 border-b border-[#e6e2de] dark:border-[#3a3025]">
-                <h2 class="text-[#181511] dark:text-white text-3xl font-bold leading-tight tracking-tight">Tim Pelaksana</h2>
-                <p class="text-gray-500 dark:text-gray-400 mt-2">Garda terdepan yang berdedikasi mewujudkan aksi nyata di lapangan setiap harinya.</p>
-            </div>
-            <!-- Grid Layout for Personnel - More compact card style -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-                @forelse($teamMembers->where('position', 'staf') as $member)
-                <!-- Staff Card -->
-                <div class="flex flex-col items-center bg-white dark:bg-neutral-dark p-6 rounded-xl border border-[#e6e2de] dark:border-[#3a3025] text-center hover:shadow-md transition-shadow">
-                    <div class="size-24 rounded-full overflow-hidden mb-4 border-4 border-primary/20">
-                        @if($member->photo_path && Storage::disk('public')->exists($member->photo_path))
-                        <img alt="{{ $member->name }}" class="w-full h-full object-cover" src="{{ Storage::disk('public')->url($member->photo_path) }}"/>
-                        @else
-                        <div class="w-full h-full bg-gradient-to-br from-primary/20 to-secondary-green/20 flex items-center justify-center">
-                            <span class="text-3xl text-primary font-bold">{{ strtoupper(substr($member->name, 0, 1)) }}</span>
-                        </div>
-                        @endif
-                    </div>
-                    <h4 class="font-bold text-[#181511] dark:text-white text-base">{{ $member->name }}</h4>
-                    <p class="text-xs font-semibold text-primary uppercase tracking-wide mb-2">Staf</p>
-                    @if($member->bio)
-                    <p class="text-gray-500 dark:text-gray-400 text-xs">{{ $member->bio }}</p>
-                    @endif
-                </div>
-                @empty
-                <div class="col-span-full text-center py-12">
-                    <p class="text-gray-500 dark:text-gray-400">Belum ada data staff.</p>
-                </div>
-                @endforelse
-            </div>
-        </div>
 
         <!-- Join The Team CTA -->
 
