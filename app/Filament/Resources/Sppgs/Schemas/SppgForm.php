@@ -68,8 +68,11 @@ class SppgForm
                             ->label('Nomor VA')
                             ->required(fn () => ! auth()->user()->hasRole('Superadmin')),
                         DatePicker::make('tanggal_mulai_sewa')
-                            ->label('Tanggal Mulai Operasional')
+                            ->label('Tanggal Mulai Sewa')
                             ->helperText('Bisa diisikan tanggal sppg akan mulai ditagih, jika sppg sudah beroperasi sebelum aplikasi ini dibuat.')
+                            ->required(fn () => ! auth()->user()->hasRole('Superadmin')),
+                        DatePicker::make('tanggal_operasional_pertama')
+                            ->label('Tanggal Mulai Operasional')
                             ->required(fn () => ! auth()->user()->hasRole('Superadmin')),
                         Textarea::make('alamat')
                             ->label('Alamat')

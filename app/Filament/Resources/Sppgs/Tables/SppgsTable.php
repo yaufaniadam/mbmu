@@ -55,7 +55,7 @@ class SppgsTable
                     ->searchable()
                     ->wrap(),
                 TextColumn::make('tanggal_operasional_pertama')
-                    ->label('Tanggal')
+                    ->label('Tgl Operasional')
                     ->date()
                     ->sortable(),
             ])
