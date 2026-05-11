@@ -29,7 +29,7 @@
             <!-- Row 1: Director -->
             @foreach($teamMembers->where('position', 'direktur') as $member)
             <div class="flex justify-center">
-                <div class="w-full max-w-[360px]">
+                <div class="w-full max-w-[340px]">
                     <div class="bg-white dark:bg-neutral-dark rounded-lg shadow-lg overflow-hidden group hover:translate-y-[-4px] transition-transform duration-300 border border-gray-100 dark:border-gray-800">
                         <div class="aspect-[4/3] w-full bg-gray-100 dark:bg-gray-900 relative overflow-hidden">
                             @if($member->photo_path && Storage::disk('public')->exists($member->photo_path))
@@ -41,7 +41,7 @@
                             @endif
                         </div>
                         <div class="p-6">
-                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-1">{{ $member->name }}</h3>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ $member->name }}</h3>
                             <p class="text-xs font-bold text-primary uppercase tracking-widest mb-4">{{ $positionLabels[$member->position] ?? $member->position }}</p>
                             <div class="w-full h-px bg-gray-100 dark:bg-gray-800 mb-4"></div>
                             <div class="flex items-center text-gray-500 dark:text-gray-400">
@@ -64,7 +64,6 @@
             
             @if($wadirMembers->count() > 0)
             <div>
-                <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center md:text-left">Dewan Direksi</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     @foreach($wadirMembers as $member)
                     <div class="bg-white dark:bg-neutral-dark rounded-lg shadow-lg overflow-hidden group hover:translate-y-[-4px] transition-transform duration-300 border border-gray-100 dark:border-gray-800">
