@@ -36,8 +36,30 @@
                     <p class="text-gray-500 dark:text-gray-400 mt-2">Mengarahkan visi dan misi organisasi menuju generasi Indonesia yang sehat dan berdaya.</p>
                 </div>
             </div>
+            @php
+                $leadershipPositions = [
+                    'direktur', 
+                    'wakil_direktur_operasional', 
+                    'wakil_direktur_keuangan', 
+                    'wakil_direktur_investasi',
+                    'ketua', // fallback
+                    'sekretaris',
+                    'bendahara'
+                ];
+                
+                $positionLabels = [
+                    'direktur' => 'Direktur',
+                    'wakil_direktur_operasional' => 'Wakil Direktur Operasional',
+                    'wakil_direktur_keuangan' => 'Wakil Direktur Keuangan dan Finansial',
+                    'wakil_direktur_investasi' => 'Wakil Direktur Investasi dan Pengembangan',
+                    'ketua' => 'Ketua',
+                    'sekretaris' => 'Sekretaris',
+                    'bendahara' => 'Bendahara',
+                    'staf' => 'Staf',
+                ];
+            @endphp
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                @forelse($teamMembers->whereIn('position', ['ketua', 'sekretaris', 'bendahara']) as $member)
+                @forelse($teamMembers->whereIn('position', $leadershipPositions) as $member)
                 <!-- Team Card -->
                 <div class="group bg-white dark:bg-neutral-dark rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-[#e6e2de] dark:border-[#3a3025]">
                     <div class="relative h-64 overflow-hidden">
@@ -45,7 +67,7 @@
                             $imageUrl = null;
                             if ($member->photo_path && Storage::disk('public')->exists($member->photo_path)) {
                                 $imageUrl = Storage::disk('public')->url($member->photo_path);
-                            } elseif ($member->position === 'ketua') {
+                            } elseif ($member->position === 'direktur' || $member->position === 'ketua') {
                                 $imageUrl = asset('ketua.png');
                             } elseif ($member->position === 'sekretaris') {
                                 $imageUrl = asset('sekre.png');
@@ -65,7 +87,7 @@
                         <div>
                             <h3 class="text-lg font-bold text-[#181511] dark:text-white">{{ $member->name }}</h3>
                             <span class="inline-block text-primary text-sm font-bold uppercase tracking-wide mt-1">
-                                {{ $member->position === 'ketua' ? 'Ketua' : ($member->position === 'sekretaris' ? 'Sekretaris' : 'Bendahara') }}
+                                {{ $positionLabels[$member->position] ?? $member->position }}
                             </span>
                         </div>
                         @if($member->bio)

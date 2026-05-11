@@ -21,7 +21,10 @@ class TeamMemberForm
                 Select::make('position')
                     ->label('Jabatan')
                     ->options([
-                        'ketua' => 'Ketua',
+                        'direktur' => 'Direktur',
+                        'wakil_direktur_operasional' => 'Wakil Direktur Operasional',
+                        'wakil_direktur_keuangan' => 'Wakil Direktur Keuangan dan Finansial',
+                        'wakil_direktur_investasi' => 'Wakil Direktur Investasi dan Pengembangan',
                         'sekretaris' => 'Sekretaris',
                         'bendahara' => 'Bendahara',
                         'staf' => 'Staf',
