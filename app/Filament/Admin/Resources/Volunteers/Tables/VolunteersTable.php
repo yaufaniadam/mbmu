@@ -19,7 +19,8 @@ class VolunteersTable
                     ->label('Nama Relawan')
                     ->description(fn($record) => "NIK: " . ($record->nik ?? '-'))
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap(),
                 TextColumn::make('posisi')
                     ->label('Jabatan')
                     ->badge()
@@ -41,7 +42,8 @@ class VolunteersTable
                     ->sortable(),
                 TextColumn::make('sppg.nama_sppg')
                     ->label('Unit SPPG')
-                    ->sortable(),
+                    ->sortable()
+                    ->wrap(),
                 TextColumn::make('kontak')
                     ->label('Kontak'),
             ])

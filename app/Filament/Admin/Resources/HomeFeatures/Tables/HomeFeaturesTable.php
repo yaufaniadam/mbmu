@@ -16,7 +16,8 @@ class HomeFeaturesTable
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap(),
                 TextColumn::make('icon')
                     ->searchable(),
                 TextColumn::make('order')

@@ -144,17 +144,19 @@ class SppgResource extends Resource
                     ->label('Nama SPPG')
                     ->searchable()
                     ->sortable()
-                    ->weight('bold'),
+                    ->weight('bold')
+                    ->wrap(),
                 
                 Tables\Columns\TextColumn::make('kepalaSppg.name')
                     ->label('Kepala SPPG')
                     ->searchable()
-                    ->default('-'),
+                    ->default('-')
+                    ->wrap(),
                 
                 Tables\Columns\TextColumn::make('alamat_sppg')
                     ->label('Alamat')
                     ->searchable()
-                    ->limit(50)
+                    ->wrap()
                     ->tooltip(fn ($record) => $record->alamat_sppg),
                 
                 Tables\Columns\TextColumn::make('city.name')

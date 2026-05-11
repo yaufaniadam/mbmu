@@ -23,7 +23,7 @@ class InstructionTable
                     ->label('Judul')
                     ->searchable()
                     ->sortable()
-                    ->limit(50),
+                    ->wrap(),
                 
                 BadgeColumn::make('recipient_type')
                     ->label('Jenis Penerima')
@@ -53,7 +53,7 @@ class InstructionTable
                         'user' => \App\Models\User::whereIn('id', $record->recipient_ids ?? [])->pluck('name')->join(', '),
                         default => '-',
                     })
-                    ->limit(50)
+                    ->wrap()
                     ->tooltip(function (TextColumn $column): ?string {
                         $state = $column->getState();
                         if (strlen($state) <= 50) {

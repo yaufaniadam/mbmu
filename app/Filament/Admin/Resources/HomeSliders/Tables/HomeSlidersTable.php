@@ -17,10 +17,12 @@ class HomeSlidersTable
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap(),
                 ImageColumn::make('image_path'),
                 TextColumn::make('link_url')
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap(),
                 TextColumn::make('order')
                     ->numeric()
                     ->sortable(),

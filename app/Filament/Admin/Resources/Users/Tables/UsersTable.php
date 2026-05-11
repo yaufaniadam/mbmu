@@ -15,13 +15,14 @@ class UsersTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')->label('Nama')->sortable()->searchable(),
-                TextColumn::make('email')->label('Email')->sortable()->searchable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('name')->label('Nama')->sortable()->searchable()->wrap(),
+                TextColumn::make('email')->label('Email')->sortable()->searchable()->toggleable(isToggledHiddenByDefault: true)->wrap(),
                 TextColumn::make('lembagaDipimpin.nama_lembaga')
                     ->label('Nama Lembaga')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
-                    ->placeholder('-'),
+                    ->placeholder('-')
+                    ->wrap(),
                 TextColumn::make('sppgDiPj.lembagaPengusul.nama_lembaga')
                     ->label('Lembaga (via PJ)')
                     ->searchable()
@@ -58,7 +59,8 @@ class UsersTable
                         return '-';
                     })
                     ->badge()
-                    ->color(fn (string $state): string => $state === 'Kornas' ? 'info' : 'success'),
+                    ->color(fn (string $state): string => $state === 'Kornas' ? 'info' : 'success')
+                    ->wrap(),
                 TextColumn::make('lembaga_pengusul_column')
                     ->label('Lembaga Pengusul')
                     ->state(function (\App\Models\User $record): string {
@@ -81,7 +83,8 @@ class UsersTable
                         return '-';
                     })
                     ->badge()
-                    ->color('warning'),
+                    ->color('warning')
+                    ->wrap(),
             ])
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('roles')

@@ -15,8 +15,8 @@ class VolunteersTable
     {
         return $table
             ->columns([
-                TextColumn::make('nama_relawan')->label('Nama')->sortable()->searchable(),
-                TextColumn::make('posisi')->label('Posisi')->sortable()->searchable(),
+                TextColumn::make('nama_relawan')->label('Nama')->sortable()->searchable()->wrap(),
+                TextColumn::make('posisi')->label('Posisi')->sortable()->searchable()->wrap(),
             ])
             ->filters([
                 //

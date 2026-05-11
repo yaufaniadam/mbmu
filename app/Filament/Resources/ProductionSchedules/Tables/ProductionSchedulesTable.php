@@ -58,8 +58,8 @@ class ProductionSchedulesTable
                         'Selesai' => 'heroicon-m-check-circle',
                         default => null,
                     }),
-                TextColumn::make('sppg.nama_sppg')->label('SPPG'),
-                TextColumn::make('menu_hari_ini')->label('Menu')->sortable()->searchable(),
+                TextColumn::make('sppg.nama_sppg')->label('SPPG')->wrap(),
+                TextColumn::make('menu_hari_ini')->label('Menu')->sortable()->searchable()->wrap(),
             ])
             ->filters([
                 SelectFilter::make('status')

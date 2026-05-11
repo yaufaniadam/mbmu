@@ -16,11 +16,13 @@ class LembagaPengusulsTable
         return $table
             ->columns([
                 TextColumn::make('nama_lembaga')
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap(),
                 TextColumn::make('pimpinan.name')
                     ->label('Perwakilan Yayasan')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap(),
                 TextColumn::make('pimpinan.last_login_at')
                     ->label('Terakhir Login')
                     ->dateTime()

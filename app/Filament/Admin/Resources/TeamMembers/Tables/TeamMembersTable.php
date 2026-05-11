@@ -16,14 +16,17 @@ class TeamMembersTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap(),
                 TextColumn::make('position')
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap(),
                 TextColumn::make('photo_path')
                     ->searchable(),
                 TextColumn::make('email')
                     ->label('Email address')
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap(),
                 TextColumn::make('phone')
                     ->searchable(),
                 TextColumn::make('order')
