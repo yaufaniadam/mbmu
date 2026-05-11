@@ -59,6 +59,10 @@ class SppgsTable
                     ->label('Kepala SPPG')
                     ->searchable()
                     ->wrap(),
+                TextColumn::make('tanggal_operasional_pertama')
+                    ->label('Tanggal Operasional')
+                    ->date()
+                    ->sortable(),
             ])
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('province_code')

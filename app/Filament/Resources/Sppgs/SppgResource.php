@@ -26,6 +26,9 @@ use Illuminate\Support\Facades\Auth;
 class SppgResource extends Resource
 {
     protected static ?string $model = Sppg::class;
+    
+    protected static ?string $modelLabel = 'SPPG';
+    protected static ?string $pluralModelLabel = 'SPPG';
 
     protected static ?string $navigationLabel = 'Unit SPPG';
 
