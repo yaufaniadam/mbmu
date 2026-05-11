@@ -45,7 +45,7 @@
                     </div>
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ $member->name }}</h3>
-                        <p class="text-xs font-bold text-primary uppercase tracking-widest">{{ $positionLabels[$member->position] ?? $member->position }}</p>
+                        <p class="text-xs font-medium text-primary uppercase tracking-widest" style="font-size: 10px;">{{ $positionLabels[$member->position] ?? $member->position }}</p>
                     </div>
                 </div>
 
@@ -79,8 +79,7 @@
                         </div>
                         <div class="p-6">
                             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ $member->name }}</h3>
-                            <p class="text-xs font-bold text-primary uppercase tracking-widest mb-4">{{ $positionLabels[$member->position] ?? $member->position }}</p>
-                            <div class="w-full h-px bg-gray-100 dark:bg-gray-800 mb-4"></div>
+                            <p class="text-xs font-medium text-primary uppercase tracking-widest" style="font-size: 10px;">{{ $positionLabels[$member->position] ?? $member->position }}</p>
                         </div>
                     </div>
                     @endforeach
@@ -110,7 +109,7 @@
                             @endif
                         </div>
                         <h4 class="text-lg font-bold text-gray-900 dark:text-white leading-tight">{{ $member->name }}</h4>
-                        <p class="text-xs font-bold text-primary mt-2 uppercase tracking-wide">{{ $member->bio ?? 'STAF' }}</p>
+                        <p class="text-xs font-medium text-primary mt-2 uppercase tracking-wide" style="font-size: 10px;">{{ $member->bio ?? 'STAF' }}</p>
                     </div>
                     @endforeach
                 </div>
